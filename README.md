@@ -2,6 +2,6 @@
 <figure>
 <p  align=center>
   <img width=85% height=85% 
-  src="https://gitlab.com/nvpm/home/home/-/raw/main/nvpm-usage.gif"/>
+  src="https://gitlab.com/nvpm/home/home/-/raw/main/zoom.gif"/>
 </p>
 </figure>
