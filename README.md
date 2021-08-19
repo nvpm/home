@@ -5,3 +5,7 @@
   src="https://gitlab.com/nvpm/home/-/raw/main/zoom.gif"/>
 </p>
 </figure>
+<details>
+<summary>Title</summary>
+Description of the title
+</details>
