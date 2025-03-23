@@ -74,6 +74,8 @@ fu! nvpm#init(...) " initiate main variables {
   let g:nvpm.flux.leng = 0
   let g:nvpm.flux.indx = 0
 
+  call nvpm#synx()
+
   if get(g:,'nvpm_initload',0) && !argc() 
     if !filereadable(s:dirs.save)
       call nvpm#edit()
@@ -346,6 +348,24 @@ fu! nvpm#flux(...) " {
     let g:nvpm.flux.leng = len(g:nvpm.flux.list)
     let g:nvpm.flux.indx = 0
   endif
+endfu "}
+fu! nvpm#synx(...) " {
+
+  let lexis = get(a:000,0,g:nvpm.conf.lexis)
+  let synx = {}
+
+  let synx[0] = #{s:join(lexis[0],'\|'),e:lexis[0]}
+  let synx[1] = #{s:join(lexis[1],'\|'),e:lexis[1]}
+  let synx[2] = #{s:join(lexis[2],'\|'),e:lexis[2]}
+  let synx[3] = #{s:join(lexis[3],'\|'),e:lexis[3]}
+
+  let synx[0].e = synx[0].e +     []   
+  let synx[1].e = synx[1].e + synx[0].e
+  let synx[2].e = synx[2].e + synx[1].e
+  let synx[3].e = synx[3].e + synx[2].e
+
+  let g:nvpm.synx = synx
+
 endfu "}
 
 " }
