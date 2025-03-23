@@ -4,8 +4,11 @@
       tab code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
-        file nvpm @ ../nvpm/plugin/nvpm.vim
-        file nvpm @ ../nvpm/syntax/nvpm.vim
+        file init @ meta/init.vim
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+      -
       tab test @ test/nvpm
         file case : case.case
         file expt : case.expt
@@ -52,16 +55,15 @@
         file expt : test/zoom/case.expt
     }
   }
-  project NVPM Devl Meta {
-    tab meta : meta
-      buff conf.vim
-      buff menu.vim
+  project NVPM Development @ meta {
+    tab meta 
+      file conf.vim
+      file menu.vim
      -buff init.vim
-    tab root
-      buff README.md
-      buff LICENSE
-    tab code:nvim
+    tab root @
+      file README.md
+      file LICENSE
+    tab code@nvim
       file version
       file README.md
   }
-  ---

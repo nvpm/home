@@ -74,17 +74,17 @@
   let g:nvpm_maketree = 0
   let g:nvpm_initload = 1
 
-  nmap <silent><space>   :NVPMLoop next file<cr>
-  nmap <silent>m<space>  :NVPMLoop prev file<cr>
-  nmap <silent><tab>     :NVPMLoop next pack<cr>
-  nmap <silent>m<tab>    :NVPMLoop prev pack<cr>
-  nmap <silent><BS>      :NVPMLoop next arch<cr>
-  nmap <silent><del>     :NVPMLoop prev arch<cr>
-  nmap <silent><c-n>     :NVPMLoop next arch<cr>
-  nmap <silent><c-p>     :NVPMLoop prev arch<cr>
-  nmap <silent><c-space> :NVPMLoop next proj<cr>
-  nmap <silent>=         :NVPMLoop next flux<cr>
-  nmap <silent>-         :NVPMLoop prev flux<cr>
+  nmap <silent><space>   :NVPMLoop + 3<cr>
+  nmap <silent>m<space>  :NVPMLoop - 3<cr>
+  nmap <silent><tab>     :NVPMLoop + 2<cr>
+  nmap <silent>m<tab>    :NVPMLoop - 2<cr>
+  nmap <silent><BS>      :NVPMLoop + 1<cr>
+  nmap <silent><del>     :NVPMLoop - 1<cr>
+  nmap <silent><c-n>     :NVPMLoop + 1<cr>
+  nmap <silent><c-p>     :NVPMLoop - 1<cr>
+  nmap <silent><c-space> :NVPMLoop + 0<cr>
+  nmap <silent>=         :NVPMLoop + -1<cr>
+  nmap <silent>-         :NVPMLoop - -1<cr>
 
   nmap <F8> <esc>:NVPMLoad<space>
   imap <F8> <esc>:NVPMLoad<space>

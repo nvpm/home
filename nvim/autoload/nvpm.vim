@@ -36,7 +36,7 @@ fu! nvpm#init(...) " initiate main variables {
         \'file',
   \]
 
-  let loop = #{words:words,forward:+1,next:+1,prev:-1,previous:-1,back:-1}
+  let loop = {'+':1,'-':-1,'words':words,'next':+1,'prev':-1}
 
   let conf = {}
   let conf.lexis = ''
@@ -102,7 +102,8 @@ fu! nvpm#loop(...) " loop over nodes {
   let step = get(user,0, 0)
   let type = get(user,1,-1)
   let step = get(g:nvpm.loop,step,0)
-  if type=='flux'
+
+  if type=='flux'||type=='-1' " flux files iteration {
     if g:nvpm.edit.mode|return|endif
     call nvpm#flux()
     if g:nvpm.flux.leng
@@ -114,13 +115,19 @@ fu! nvpm#loop(...) " loop over nodes {
       return nvpm#load(flux)
     endif
     return
-  endif
+  endif "}
+
   if type(step)!=type(0)|ec 'wrong arg-commands'|return 1|endif
   let step = v:count1 * step
-  let type = flux#find(g:nvpm.conf.lexis,type)
   let tree = g:nvpm.tree.root
 
-  if type<0 || type>3|return 1|endif
+  if type!='0'&&type!='1'&&type!='2'&&type!='3'
+    let type = flux#find(g:nvpm.conf.lexis,type)
+  else
+    let type = str2nr(type)
+  endif
+
+  if type<0||type>3|return 1|endif
 
   if g:nvpm.tree.mode
     if type == 2 && g:nvpm.edit.mode|call nvpm#edit()|endif

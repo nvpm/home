@@ -1,7 +1,0 @@
-* zero or more
-+ one  or more
-
-/[] range of characters
-  /[a-z0-9] a to z and 0 to 9
-  /[a-f0-9] a to f and 0 to 9 (hexa)
-  /[a-z0-9-] a to z and 0 to 9 and the char "-"
