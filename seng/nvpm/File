@@ -1,0 +1,105 @@
+  ▶ INTRODUCTION                                                             {
+
+  This   file   discusses   the  file  .-  That  being  said, it's safe to say
+  structure  for user defined project  ||  that a project will always have the
+  and  skeleton  files,  as  well  as  ||  following   terms  related  to  it:
+  files   automatically  created  and  ||  "name"  and "root folder". In other
+  manipulated    by   the   nvpm/proj  ||  words, the bulk of a project should
+  plugin. The creation of project and  ||  live  inside a single directory and
+  skeleton files will be discussed in  ||  it should have a name. For example:
+  details   in   the  synx.sng  file,  ||
+  whereas the data structure produced  ||           /path/to/MyProject/
+  from  those  files  is explained in  ||           ├── file1
+  the data.sng file.                   ||           ├── file2
+                                       ||           ├── file3
+  The   files   manipulated   by  the  ||           ├── file4
+  nvpm/proj  plugin  will  be divided  ||           ├── file5
+  into two scopes. They can either be  ||           └── file6
+  global  or  local  to  project.  Is  ||
+  assumed here that a project will be  ||  In  this  example, we  could have a
+  located   at  a specific   location  ||  situation   where  the  name of the
+  inside the user's directory tree.    ||  project  being  "MyProject" and the
+                                       -´  files from "file1" to "file6" being
+                                           the contents of this project. Also,
+                                           the  root  folder  for  the project
+                                           would be "/path/to/MyProject".
+
+                                                                             }
+  ▶ LOCAL  PROJECT AND SKELETON FILES                                        {
+
+  Considering  the  example  from the  .-  In  other  words, each project file
+  introduction,   local  project  and  ||  may or may not have its counterpart
+  skeleton files will be (by default)  ||  skeleton file present.
+  placed inside a hidden folder named  ||
+  as  ".nvpm/proj". Also, any project  ||  Moreover,  when  a skeleton is used
+  file    must   have   an   "*.proj"  ||  in a local project file, but is not
+  extension,  whereas a skeleton file  ||  found  in  a  local  skeleton file,
+  must have a "*.skel" extension.      ||  then  the  search  continues in the
+                                       ||  global skeleton files. This will be
+  Another  rule  is about the name of  ||  particularly useful for reusability
+  each  project  and  skeleton files.  ||  of    skeletons   throughout   many
+  They must coincide. In other words,  ||  projects, in different locations.
+  if   the  user  intends  to  use  a  ||
+  skeleton  in  a project file called  ||  The following is a depiction of how
+  "files.proj",   then  the  skeleton  ||  a random  project  should look like
+  must  be  defined  in a file called  ||  when  in terms of local project and
+  "files.skel".   Using  the  example  ||  skeleton files:
+  from  the  introduction, onde could  ||
+  do this:                             ||        /path/to/RandomProject/
+                                       ||        ├── .nvpm/
+          /path/to/MyProject/          ||        │   └── proj/
+          ├── .nvpm/                   ||        │       ├── pf1.proj
+          │   └── proj/                ||        │       ├── pf1.skel
+          │       ├── files.proj       ||        │       ├── pf2.proj
+          │       └── files.skel       ||        │       ├── pf2.skel
+          ├── file1                    ||        │       ├── ...
+          ├── file2                    ||        │       ├── pfN.proj
+          ├── file3                    ||        │       └── pfN.skel
+          ├── file4                    ||        ...
+          ├── file5                    ||        └── list of files
+          └── file6                    ||
+                                       -´
+
+                                                                             }
+  ▶ GLOBAL PROJECT AND SKELETON FILES                                        {
+
+  The  global scope works the same as  .-        ~/.config/nvim/nvpm/
+  the   local  one,  apart  from  the  ||        └── proj/
+  default location which then becomes  ||            ├── pf1.proj
+  "~/.config/nvim/nvpm/proj". In this  ||            ├── pf1.skel
+  sense, the following is a depiction  ||            ├── pf2.proj
+  of  a  possible directory structure  ||            ├── pf2.skel
+  for user defined global project and  ||            ├── ...
+  skeleton files:                      ||            ├── pfN.proj
+                                       -´            └── pfN.skel
+
+  TODO: change default location to that of same hierarchy of $MYVIMRC built-in
+  variable.
+
+                                                                             }
+  ▶ AUTOMATICALLY SAVED FILES                                                {
+
+  For now, the only file that will be  .-        ~/.config/nvim/nvpm
+  automatically  overwritten  by  the  ||        ├── proj.save
+  nvpm/proj  is the "proj.save", only  ||        └── proj/
+  present  in  the  global scope, and  ||            └── ...
+  under           the          folder  ||
+  "~/.config/nvim/nvpm"  by  default.  ||
+  So a depiction of this would be:     ||
+                                       -´
+
+                                                                             }
+  ▶ USER CONFIGURATION FILE                                                  {
+
+  An   experimental   file  for  user  .-         GLOBAL
+  configuration   using  a  nvpm/flux  ||         ~/.config/nvim/nvpm
+  syntax  will be adopted in the file  ||         ├── proj.conf <--
+  "proj.conf",  which can be found in  ||         └── proj/
+  both   the  global  and  the  local  ||             └── ...
+  scope.   So  a  depiction  of  this  ||         LOCAL
+  would be:                            ||         /path/to/Project
+                                       -´         └── .nvpm/
+                                                    ├── proj.conf <--
+                                                    └── proj/
+                                                         └── ...
+                                                                             }

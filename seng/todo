@@ -1,0 +1,16 @@
+
+● strip the file field from fluxconf ~
+● include cpoptions save and restore into plugins scripts ~
+  see help use-cpo-save in usr_41.txt
+    let s:save_cpo = &cpo
+    set cpo&vim
+    ... plugin body here ...
+    let &cpo = s:save_cpo
+    unlet s:save_cpo
+● don't deploy all plugins into nvpm ~
+● automated tests for all plugins ~
+● menu#make: build default seng files ~
+● menu#make: build default help/plug.txt ~
+● menu#make: build default README.md ~
+
+vim: ft=help: tw=2

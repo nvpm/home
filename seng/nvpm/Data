@@ -1,0 +1,146 @@
+  ▶ INTRODUCTION                                                             {
+
+  This file discusses the data structure used to store the information used by
+  the  nvpm/proj  plugin.  This  data structure is the result of the nvpm/flux
+  plugin on the project file chosen by the user at any given time.
+
+  The  chosen  type  for  the  data structure is a dictionary with appropriate
+  fields to store the information written in those project files.
+
+                                                                             }
+  ▶ THE PROJECT TREE                                                         {
+
+  After  nvpm/flux  loads  a  project  .-  This tree suggests that each node -
+  file,  the resulting data structure  ||  apart  from  the buffer node - will
+  will  have  a  tree-like  topology,  ||  have  a  list of lower level nodes.
+  which can be shown in the depiction  ||  The  buffer  node,  being  the  end
+  below:                               ||  node,  won't have any lists, but it
+                                       ||  will point to a file  or a  command
+  ╭─────────────────────────────────╮  ||  to be executed.
+  │                w     t     b    │  ||
+  │              .-●-----●-----●    │  ||  It's  also  important  to point out
+  │          p  /        t     b    │  ||  that  nvpm/flux  will  only  be  in
+  │      .---●-·       .-●-----●    │  ||  charge   of   building   the   tree
+  │     /       \  w  /             │  ||  containing  only information inside
+  │   root       `-●-·              │  ||  the   project   file.   Any   other
+  │     \             \  t     b    │  ||  information,   will  eventually  be
+  │      \             `-●-----●    │  ||  stored in the tree or even put into
+  │       \                         │  ||  another object, yet to be defined.
+  │        `-●-----●-----●-----●    │  ||
+  │          p     w     t     b    │  ||  The next  section explains, in more
+  ├─────────────────────────────────┤  ||  details, the  fields  each  type of
+  │ p: project                      │  ||  node carries.
+  │ w: workspace                    │  ||
+  │ t: tab                          │  ||
+  │ b: buffer                       │  ||
+  ╰─────────────────────────────────╯  ||
+                                       -´
+
+                                                                             }
+  ▶ THE 5 NODE LEVELS                                                        {
+
+  There  are  5  possible  levels  of  .-  ≡ Level-2: WORKSPACE NODE    [dict]
+  nodes  -  and  therefore  5 types -  ||
+  after a project file is loaded. The  ||  The  level-2  node is the workspace
+  root  node (level-0) is composed of  ||  entry   inside   a  project  entry,
+  a single  node from which the other  ||  defined     with     the    keyword
+  levels  spread. The  levels  1 to 4  ||  "workspace".  It's expected to have
+  will  be  composed  of  nodes  in a  ||  the following fields:
+  list,  which belong   to  the upper  ||
+  level node, one by one.              ||  name: workspace name         [str ]
+                                       ||  root: workspace root folder  [str ]
+  The following is the description of  ||  last: last L3-node accessed  [int ]
+  the  fields of each type of node in  ||  list: list of L3 nodes       [list]
+  the tree.                            ||
+                                       ||  ≡ Level-3: TAB NODE [dict]
+  ≡ Level-0: PROJECT FILE      [dict]  ||
+                                       ||  The  level-3  node is the tab entry
+  The  level-0  node  is  the project  ||  inside  a  workspace entry, defined
+  file  itself.  It has the following  ||  with   the   keyword   "tab".  It's
+  fields:                              ||  expected  to   have  the  following
+                                       ||  fields:
+  file: full path to the PF    [str ]  ||
+  name: name of the PF         [str ]  ||  name: tab name               [str ]
+  root: PF root folder         [str ]  ||  root: tab root folder        [str ]
+  last: last L1-node accessed  [int ]  ||  last: last L4-node accessed  [int ]
+  list: list of L1 nodes       [list]  ||  list: list of L4 nodes       [list]
+                                       ||
+  ≡ Level-1: PROJECT NODE      [dict]  ||  ≡ Level-4: BUFFER NODE [dict]
+                                       ||
+  The  level-1  node  is  the project  ||  The  level-4  node is the buffer or
+  entry   inside   a   project  file,  ||  term  entry  inside  a  tab  entry,
+  defined with the keyword "project".  ||  defined  with  one  of the keywords
+  It's  suppose to have the following  ||  "buffer"    or   "terminal".   It's
+  fields:                              ||  expected  to   have  the  following
+                                       ||  fields:
+  name: project name           [str ]  ||
+  root: project root folder    [str ]  ||  name: file or terminal name   [str]
+  last: last L2-node accessed  [int ]  ||  file: path to file if file    [str]
+  list: list of L2 nodes       [list]  ||  comm: command if terminal     [str]
+                                       -´
+
+  Note,  each  field  may  or  may not be empty. The emptiness of them will be
+  determined by the project file  being  loaded.  The  flux plug-in won't care
+  about the meaning of an empty field or what each field represents. That task
+  falls upon the proj plug-in (this one). Also, it's important  to notice that
+  the  last node (level 4 node) does not contain a 'list' or a 'last'  fields,
+  for it ends there.
+
+                                                                             }
+  ▶ OVERVIEW OF THE FIELDS                                                   {
+
+  After    the    project   file   is  .-  In the latter case, the information
+  completely  loaded  and passed back  ||  about  the  last  node accessed  is
+  to  the nvpm/proj plugin, important  ||  more suited to be stored inside the
+  information  will  be  missing from  ||  data  structure, in order to access
+  the  DS.  Also,  the engineering of  ||  this information in a seamless way.
+  this  data  structure  is yet to be  ||  The   former   case   is  different
+  thought  and  completed. This means  ||  though,  the  information about the
+  that   the   shape   for  the  data  ||  current node can be put in the root
+  structure - showed in the "THE NODE  ||  node   or  even  outside  the  data
+  LEVELS"  chapter  above - is likely  ||  structure.
+  to change with time.                 ||
+                                       ||  For  now,  an  extra  field  called
+  Regardless,  there  are  some  info  ||  "last"  will  be put in every node,
+  that  are known to be necessary for  ||  apart from the buffer node which is
+  the  navigational  system in charge  ||  the  lower most, and therefore does
+  of  accessing nodes in the tree. At  ||  not  contain  any lists. This field
+  all  times,  the current node being  ||  will hold the index position in the
+  displayed  must  be known, and also  ||  list of lower level nodes contained
+  the last node accessed in the nodes  ||  in   the  "list"  field.  In  other
+  contained in the "list" fields.      ||  words,  the  node  levels  will now
+                                       -´  look like this:
+
+             ╭──────┬────────┬────────┬────────┬────────┬────────╮
+             │      │ level0 │ level1 │ level2 │ level3 │ level4 │
+             ├──────┼────────┴────────┴────────┴────────┴────────┤
+             │ name │   ✗        ✗        ✗        ✗        ✗    │
+             │ root │   ✗        ✗        ✗        ✗             │
+             │ last │   ✗        ✗        ✗        ✗             │
+             │ list │   ✗        ✗        ✗        ✗             │
+             │ file │   ✗                                   ✗    │
+             │ comm │                                       ✗    │
+             ╰──────┴────────────────────────────────────────────╯
+
+                                                                             }
+  ▶ SIMPLE EXAMPLE                                                           {
+
+  The  following  is  a simple example of a project file and its expected data
+  structure after it's read by the nvpm/flux plugin.
+
+                               { 'file':'~/.nvpm/proj/c.proj',
+                                 'name':'C Library Example',
+  ╭─────────────────────────╮    'root':'~/Projects/',
+  │ PF: ~/.nvpm/proj/c.proj │    'last':0,
+  ├─────────────────────────┤    'list':[{
+  │ name C Library Example  │      'root':'clib','name':'clib','last':0,
+  │ root ~/Projects/        │      'list':[{
+  │ project clib : clib     │        'root':'','name':'cdev','last':0,
+  │   workspace cdev        │        'list':[{
+  │     tab code : src      │          'root':'src','name':'code','last':0,
+  │       file bar.c        │          'list':[
+  │       file bar.h        │            {'file':'','name':'bar.c'},
+  ╰─────────────────────────╯            {'file':'','name':'bar.h'}
+                               ]}]}]}]}
+
+                                                                             }

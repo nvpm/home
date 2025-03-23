@@ -1,0 +1,5 @@
+  Execute  Normal  mode  commands  {commands}  for each line in the {range}.
+  Before executing the {commands}, the cursor is  positioned  in  the  first
+  column of the range, for each line. Otherwise it's the same as the
+  ":normal" command without a range.
+

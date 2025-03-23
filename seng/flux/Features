@@ -1,0 +1,16 @@
+
+# future
+  ● fixt ~
+  ● vars ~
+
+# implemented
+  ● read ~
+  ● endl ~
+  ● trim ~
+  ● list ~
+  ● cuts ~
+  ● loop ~
+  ● home ~
+  ● data ~
+
+vim: ft=help: tw=2

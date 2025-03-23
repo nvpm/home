@@ -1,0 +1,41 @@
+HOME libm
+
+# leafless tree dies!
+arch,pack,--,file,file
+
+Archive code  {
+  Folder root
+    File main.c
+    File Makefile
+    entry config # this should be ignored (not in conf)
+
+loop lib : complex matrix -- number binary hexa {
+  TAB $(lib):lib
+    File $(lib).c
+    File $(lib).h
+endl }
+  
+-- # this double cuts will be passed on to below's loop
+LOOP lib : string -file {
+  TAB $(lib):lib
+    File $(lib).c
+    File $(lib).h
+ENDL }
+
+#}
+Archive meta  {
+  Folder root@..
+    File readme.txt
+    --
+    File license
+    File version
+
+  Folder scripts@../scripts
+    File init.sh
+    --
+    File ~/makefile.mk
+    File trash.sh
+
+#}
+
+# vim: ft=flux

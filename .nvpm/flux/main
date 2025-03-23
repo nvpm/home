@@ -1,0 +1,66 @@
+
+  project NVPM Development : nvim {
+    workspace nvpm  {
+      tab code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+        file nvpm @ ../nvpm/plugin/nvpm.vim
+      tab test @ test/nvpm
+        file case : case.case
+        file expt : case.expt
+    }
+    workspace flux {
+     -tab synx
+        file synx : syntax/flux.vim
+       -file file @ test/case
+      tab code
+        file auto : autoload/flux.vim
+       -file synx : syntax/flux.vim
+        file init @ meta/init.vim
+      tab test @ test/flux
+        file case : case.case
+        file expt : case.expt
+        --
+        file file @ .nvpm/nvpm/flux/test
+    }
+    --
+    workspace line {
+      tab code
+        file auto : autoload/line.vim
+        file plug : plugin/line.vim
+     -tab test @ test/line
+        file case : case.case
+        file expt : case.expt
+    }
+    workspace text {
+      tab code
+        file auto : nvim/autoload/text.vim
+        file plug : nvim/plugin/text.vim
+       -file init : meta/init.vim
+      tab test
+        file case : test/text/case.case
+        file expt : test/text/case.expt
+    }
+    workspace zoom {
+      tab code
+        file auto : nvim/autoload/zoom.vim
+        file plug : nvim/plugin/zoom.vim
+        file init : meta/init.vim
+      tab test
+        file case : test/zoom/case.case
+        file expt : test/zoom/case.expt
+    }
+  }
+  project NVPM Devl Meta {
+    tab meta : meta
+      buff conf.vim
+      buff menu.vim
+     -buff init.vim
+    tab root
+      buff README.md
+      buff LICENSE
+    tab code:nvim
+      file version
+      file README.md
+  }
+  ---

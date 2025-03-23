@@ -1,0 +1,12 @@
+
+  ● synx ~
+
+   ● create syntax for single line multiple statement (endline feature)
+     file a,file b,...file n
+
+   ● cutloop fuctionality
+
+  ● var-replace ~
+  ● skel feature ~
+
+vim: ft=help: tw=2

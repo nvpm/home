@@ -1,0 +1,23 @@
+
+home seng
+
+project Software Engineering
+loop plugin: nvpm flux -- line zoom text {
+  workspace $(plugin):$(plugin) {
+    tab misc
+      file TODO     
+      file Concepts 
+      file Features 
+      file Issues   
+    tab code
+      file Random   
+      file Syntax
+      file Data     
+      file File     
+    tab seng
+      file Usecases 
+      file Workflows
+      -
+      buff read @ seng/read
+  }
+endl}

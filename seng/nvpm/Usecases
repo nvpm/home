@@ -1,0 +1,72 @@
+
+case nvpm.make : v0.0.0 #{
+  user : human script
+  info : Creates a new flux file
+  trig : user
+  freq : low
+  prec :
+    C1: a neovim session must be fully loaded
+  posc
+    P1: a skelleton flux file is created
+    P2: the product of P1 is loaded
+  flow
+    main
+      FM1: user calls nvpm.make method inputing the name of the new flux file
+      FM2: nvpm.make builds a default flux file
+      FM3: nvpm.make writes the prod.FM2 to its proper place
+      FM4: nvpm.make calls case nvpm.load to load the prod.FM3
+    altn
+      FA1: user.human inputs nothing
+        - no action is done
+      FA2: user.human inputs a non-string name
+        - no action is done
+      FA3: user.script defines global variable makeload (default 1)
+        - 1: loads prod.FM3
+        - 0: no action is done
+    excp
+      FE1: script call interface
+#}
+case nvpm.edit : v0.0.0 #{
+#}
+case nvpm.load : v0.0.0 #{
+  user : human script
+  info : loads a given flux file into a data structure
+  trig : user
+  freq : medium
+  prec :
+    C1: a neovim session must be fully loaded
+  posc
+    P1: a data structure is populated with the contents of the flux file
+    P2: the current file, inside prod.P1, is buffered
+    P3: sensible visual info,regarding prod.P2, is given back to 
+        user.human as feedback
+  flow
+    main
+      FM1: user calls nvpm.load method inputing the name of the flux file
+      FM2: nvpm.make fluxes prod.FM1 into a data structure
+      FM3: nvpm.make passes prod.FM2 to nvpm.curr method to buffer current
+      FM4: nvpm.make passes prod.FM1 to nvpm.line as visual feedback
+    altn
+      FA1: user.human inputs nothing
+        - no action is done
+      FA2: user.human inputs a non-string name
+        - no action is done
+    excp
+#}
+case nvpm.loop : v0.0.0 #{
+  user : human
+  info : 
+  trig : user
+  freq : high 
+  prec
+  posc
+    P1: the next/previous node is presented
+  flow
+    1 user calls nvpm.loop inputing:
+      - node depth
+      - direction
+      - count (steps)
+    2 updates the current node info regarding passed node depth
+#}
+
+# vim: ft=flux ts=2

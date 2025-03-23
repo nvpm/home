@@ -1,0 +1,108 @@
+multi-terminals              {
+
+conditions  {
+
+  C1) at startup with keyboard 'term' assigned to
+      any command in the project file.
+  C2) after NVPMEditProjects
+  C2) after NVPMNewProject
+
+}
+expected    {
+
+  Each  terminal should not be lost after conditions
+  C1, C2 and/or C3 are met.
+
+}
+description {
+
+  This    bug    makes   multiple   terminals   that
+  become  unreadable  after  NVPM  Edit  Projects is
+  performed.   It  occurs  because  there  currently
+  no  mapping  of  a specific terminal being made by
+  NVPM.  If  for  example  a user has a project file
+  with,
+
+  ---------------------------
+  workspace wname
+    tab tname
+      buff file : file.txt
+      term RANGER : ranger
+  ---------------------------
+
+                              then  the  RANGER  terminal  will be accessible on
+                              the   second   buffer   until   either  NVPM  Edit
+                              Projects   is  performed,  or  when  the  terminal
+                              itself  is killed from within. In this latter case
+                              is  actually  worse,  because  not  only  the same
+                              command  is  performed,  but  the  user  no longer
+                              has  access  to  the  other  buffers. The expected
+                              behaviour  should  be  the  buffer entry for it to
+                              vanish    or    recreate    the    terminal,   but
+                              configurable   by   a   variable.   On  the  other
+                              hand,  if  NVPM  Edit  Projects is performed, then
+                              the user no longer has access to all the terminals
+                              created with the keyword 'term'.
+
+  Another  issue  is  with  the New Project and Edit
+  Project   themselves.   They   carry   their   own
+  specific  terminal,  and  those  terminals are not
+  only  not  being  killed  after  the two functions
+  are  called, but they are also lost. The behaviour
+  for   this   should   be   that   they  are  still
+  visible,  with the same command history as before,
+  after  the two functions are performed in a second
+  and other times, but configurable by variable.
+
+                              This  all  add  up  to  a  growing number of unsed
+                              terminals,  that  will  be unmapped by NVPM's data
+                              tree.
+
+}
+solution    {
+
+  When  reading  the keyword 'term', NVPM should not
+  only  create  the  terminal, but also bind it to a
+  unique  code that is mapped into NVPM's data tree.
+  This  way,  NVPM will use the unique code to cycle
+  through the nodes of the data tree, instead of the
+  names of the terminals.
+
+}
+
+}
+vanishing-init.vim-on-undo   {
+
+conditions  {
+
+  C1) after  performing  'nvim  init.vim',  when  inside
+      ~/.config/nvim,  but  only if a default project is
+      loaded and this project has the file 'init.vim' as
+      its first file to be shown.
+
+}
+expected    {
+
+  This weird behaviour should not happen at all!
+
+}
+description {
+
+  When  the  only  condition  is met and init.vim is
+  being   shown,   when   pressing  'u'  to  perform
+  undo,  the  whole  content  of 'init.vim' is lost,
+  but   somehow   recovered  by  pressing  'ctrl-r'.
+  It's as if u performs 'ggdG' and 'ctrl-r' performs
+  'u'. Very weird!
+
+}
+solution    {
+
+  There's  currently  no solution for this. My hopes
+  is  that  this  bug  flies  away once version 3 is
+  complete.  Once  NVPM  is  being  refactored, this
+  might as well happen. With a bit of luck it will!
+
+}
+
+}

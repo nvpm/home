@@ -1,0 +1,427 @@
+
+
+  --- VimL ---
+  fu! flux#fixt(...) "{
+
+    if empty(a:000)|return {}|else|let conf=a:1|endif
+
+    let list = reverse(conf.word)
+    let body = conf.body
+    let mini = 0
+    let rgex = '^\v *(-*) *(\w*).*$'
+
+    " scan for highest node type
+    for line in body
+      let word = get(matchlist(line,rgex),2,'')
+      let indx = flux#find(list,word)
+      let mini = indx>mini ? indx : mini
+    endfor
+
+    for i in range(len(body))
+      let node = matchlist(body[i],rgex)
+      let cuts = get(node,1,'')
+      let word = get(node,2,'')
+      let indx = flux#find(list,word)
+      let diff = mini-indx
+      if !diff|break|endif
+      let pfix = cuts
+      let list = reverse(list[-diff:])
+      for item in list
+        let pfix.= item[0].','
+      endfor
+      let body[i] = substitute(body[i],'^\v *-*','','')
+      let body[i] = pfix.body[i]
+      "call flux#fixt(conf)
+    endfor
+
+  endfu "}
+  ------------
+
+  --- old nvpm synx.txt ---
+  ▶ INTRODUCTION                                                             {
+
+  This  file  defines  the  syntax for creating project, skeleton and variable
+  files for the nvpm/proj plugin.  As we know, the nvpm/flux plugin will be in
+  charge of regexing out the information from those files and outputing a data
+  structure back to the nvpm/proj plugin.
+
+                                                                             }
+  ▶ NODES KEYWORDS                                                           {
+
+  The  syntax  for  creating  a  node entry is quite simple. There are a fixed
+  amount of nodes allowed, and they are defined as follows:
+
+                ╭──────────────────────────────────────────────╮
+                │ m project   <pname> : <proot> { # comments } │
+                │ m workspace <wname> : <wroot> { # comments } │
+                │ m tab       <tname> : <troot> { # comments } │
+                │ m file      <fname> : <fpath> { # comments } │
+                │ m terminal  <tname> : <commd> { # comments } │
+                ╰──────────────────────────────────────────────╯
+
+  In other words, they'll all have this basic structure,
+
+              ╭──────────────────────────────────────────────────╮
+              │ modifier keyword <kname> : <kroot> { # comment } │
+              │    m        k       n    s    r    b     c     b │
+              ╰──────────────────────────────────────────────────╯
+
+  If  spaces  are  taken  out  of the  .-  It's also possible to nickname  the
+  discussion,  there  are  7 elements  ||  keywords.   In   other  words,  the
+  that need handling. They are:        ||  nicknames offer an alternative that
+                                       ||  might  come  in  handy when writing
+      m: the element modifier          ||  project files.
+      k: the keyword itself            ||
+      n: the name for that keyword     ||  project   : proj and pj
+      s: the separator                 ||  workspace : area and ws
+      r: the root for that keyword     ||  tab       : slot and tb
+      b: the brackets                  ||  file      : buff and bf
+      c: the comments (# ...)          ||  terminal  : term and tm
+                                       ||
+  With   any   number  of  spaces  in  ||
+  between them.                        ||
+                                       -´
+                                                                             }
+  ▶ PROJECT  FILES                                                           {
+
+  These files store a list of project  .-  In  this  project  file,  the first
+  node entries (level 1 nodes), which  ||  project  entry,  called "LaTex", is
+  define  projects  to  be used. Each  ||  defined   directly,   whereas   the
+  project   will  be  either  defined  ||  second one is defined by a skeleton
+  directly  or  with  the  help  of a  ||  called  "latex",  which  should  be
+  skeleton, defined  in a *.skel file  ||  defined  in  the  file "book.skel",
+  with  the  same name. The following  ||  located  at  "~/.nvpm/proj".  Using
+  is  a  full example that shows both  ||  the  skeleton  will  have  the same
+  cases:                               ||  effect   as  if  its  contents  was
+                                       ||  directly  put  into  the  project's
+  ╭─────────────────────────────────╮  ||  definition area. More examples will
+  │ PF: ~/.nvpm/proj/book.proj      │  ||  be given later.
+  ├─────────────────────────────────┤  ||
+  │ root ~/Projects/Book/           │  ||  It's  important  to  notice that no
+  │ name The book I'm writing       │  ||  workspace  entry was defined in the
+  │                                 │  ||  first  project  on  the  example. A
+  │ project LaTex:tex               │  ||  pseudo-workspace       will      be
+  │   tab Chapters                  │  ||  automatically  created by nvpm/proj
+  │     file ch01:chapter01.tex     │  ||  in  this  case.  In  fact, omitting
+  │     file ch02:chapter02.tex     │  ||  entire  nodes, names, root folders,
+  │     file ch03:chapter03.tex     │  ||  paths,  and commands for terminals,
+  │     file ch04:chapter04.tex     │  ||  is  perfectly possible. Appropriate
+  │   tab PreText                   │  ||  decisions   -   based   on  default
+  │     file Cover: cover.tex       │  ||  behaviours  and  values  -  will be
+  │     file Index: index.tex       │  ||  taken when such a situation occurs.
+  │     file toc  : toc.tex         │  ||  The  following  is a description on
+  │                                 │  ||  what  should be possible when doing
+  │ project settings << latex       │  ||  this.
+  ╰─────────────────────────────────╯  ||
+                                       -´
+
+  ≡ OMITTING NODES                     .-  One   can  create  a  project  file
+                                       ||  containing    only    "file"    and
+  The   following   is  a  series  of  ||  "terminal"  nodes, which is perfect
+  examples  of  allowed ways to write  ||  for  small  projects. The following
+  project  files, with the details on  ||  is  a list of possible combinations
+  how  to omit  one or more levels of  ||  for  creating  nodes  in  a project
+  nodes,   in   order   to  make  the  ||  file:
+  creation  of  those  files simpler.  ||
+  The  examples may  also omit names,  ||  ╭──────────────╮   ╭──────────────╮
+  root  folder and filenames in order  ||  │-proj         │   │-proj         │
+  to focus  on  the  node itself, and  ||  │-area         │   │-area         │
+  not on its arguments.                ||  ├──────────────┤   ├──────────────┤
+                                       ||  │tab t1        │   │tab t1        │
+  The  following  shows  what  can be  ||  │  file f1     │   │  file f1     │
+  done when omitting the "proj" node.  ||  │  file f2     │   │  file f2     │
+  The  example  on the left omits the  ||  │tab t2        │   │tab t2        │
+  "proj"  node  in both "area" nodes,  ||  │  term : htop │   │  term : htop │
+  whereas  the  example  on the right  ||  ╰──────────────╯   │proj P1       │
+  omits only the "proj" node for  the  ||  ╭──────────────╮   │  file f1     │
+  first area called "A51".             ||  │-proj         │   │  file f2     │
+                                       ||  │-area         │   ╰──────────────╯
+  ╭──────────────╮  ╭───────────────╮  ||  │-tab          │   ╭──────────────╮
+  │ area A51     │  │ area A51      │  ||  ├──────────────┤   │-file or term │
+  │ area A52     │  │ proj US Army  │  ||  │file f1       │   ├──────────────┤
+  │              │  │  area A52     │  ||  │file f2       │   │tab t1        │
+  ╰──────────────╯  ╰───────────────╯  ||  │term : htop   │   │tab t2        │
+                                       ||  │term : ranger │   │  term : htop │
+  In  this  case,  it's expected from  ||  ╰──────────────╯   ╰──────────────╯
+  nvpm/flux   to   create   a  single  ||
+  unnamed  project  for  both  "area"  ||  In  other  words,  any  node can be
+  nodes  on  the example on the left.  ||  omitted   from   a   project  file,
+  This   means   that   this  unnamed  ||  including  the  lowest  level  node
+  project will have a "list" field of  ||  (the  buffer  node),  which in this
+  length  "2".  Moreover,  the second  ||  case  will produce a "[No Name]ish"
+  example   will   produce   a   data  ||  buffer  node.  The nvpm/flux plugin
+  structure  with  two projects, each  ||  must  -  in  these cases - fill the
+  having  one  "area"  node,  and the  ||  gaps  with  unnamed  (and unrooted)
+  first  one being an unnamed project  ||  nodes,    which   will   be   later
+  as well.                             ||  interpreted appropriately.
+                                       -´
+
+  ≡ OMITTING NAMES
+  ≡ OMITTING ROOTS AND PATHS
+  ≡ OMITTING COMMANDS
+
+                                                                             }
+  ▶ SKELETON FILES                                                           {
+
+  The   skeleton   files  will  store  .-     ╭───────────────────────────╮
+  definitions of skeletons to be used  ||     │ skel main                 │
+  to  define  more  than one project.  ||     │   code = $1               │
+  This  mechanism allows the use of a  ||     │   test = $2               │
+  function-like    call    in   which  ||     │   area Code : $code       │
+  arguments   can  be  defined  in  a  ||     │     slot Main::           │
+  suitable  way to be used later. The  ||     │       file main: main.c   │
+  following is the basic syntax for a  ||     │       file make: Makefile │
+  skeleton definition:                 ||     │     slot Module           │
+                                       ||     │       file modc: module.c │
+  ╭─────────────────────────────────╮  ||     │       file modh: module.h │
+  │ skel <skel-name> : <skel-root>  │  ||     │   area Test : $test       │
+  │                                 │  ||     │     file modc: module.c   │
+  │   arg1=$1                       │  ||     │     file modh: module.h   │
+  │   arg2=$2                       │  ||     ╰───────────────────────────╯
+  │   arg3=$3                       │  ||
+  │   ...                           │  ||  This  example shows a skeleton that
+  ╰─────────────────────────────────╯  ||  can  be  called with two arguments,
+                                       ||  which   are  then  used  in  a  few
+  And   here   the  "..."  means  the  ||  places.
+  content of the skeleton.             ||
+                                       ||  Those skeletons can be called as if
+  The  following is a project section  ||  it was a function call, in the case
+  that  contains  a  skeleton  for  a  ||  it   defines   any  arguments.  For
+  project   file   suitable   for   C  ||  example:
+  software development:                ||
+                                       -´
+
+              ╭──────────────────────────────────────────────────╮
+              │proj LibMath:~/Projects/LibMath << main(src,tests)│
+              ╰──────────────────────────────────────────────────╯
+
+  Which   creates  a  project  called  .-  ╭─────────────────────────────────╮
+  "LibMath", which    is   placed  at  ||  │ proj LibMath:~/Projects/LibMath │
+  "~/Projects/LibMath",  and receives  ||  │   area Code : src               │
+  the  contents  of  skeleton "main",  ||  │     slot Main::                 │
+  but tuned with the string "src" for  ||  │       file main: main.c         │
+  the variable "code" and "tests" for  ||  │       file make: Makefile       │
+  the  variable  "test".               ||  │     slot Module                 │
+                                       ||  │       file modc: module.c       │
+  This  means  that  it  would be the  ||  │       file modh: module.h       │
+  same  as if we just wrote the whole  ||  │   area Test : tests             │
+  project  in  a direct form, without  ||  │     file modc: module.c         │
+  the  need  for  skeleton files. For  ||  │     file modh: module.h         │
+  example,   the   following  project  ||  ╰─────────────────────────────────╯
+  definition  would  produce the same  ||
+  result:                              ||
+                                       -´
+
+  ≡ LOWER LEVEL SKELETONS              .-  This  way,  one could use it in any
+                                       ||  upper  level  node definition, such
+  A skeleton  can  be  defined  to be  ||  as  tab,  workspace, and/or project
+  used  in any node level, apart from  ||  nodes.
+  the  lowest  - a buffer node. As an  ||
+  example,  the following skeleton is  ||  The  following  shows how one could
+  suitable for tab  definitions:       ||  create a project, a workspace and a
+                                       ||  tab, using the skeleton "home":
+      ╭───────────────────────╮        ||
+      │ skel home             │        ||       ╭───────────────────────╮
+      │   file main: main.c   │        ||       │project   FILES << home│
+      │   file make: Makefile │        ||       │workspace FILES << home│
+      │   term tree: ranger   │        ||       │tab       FILES << home│
+      ╰───────────────────────╯        ||       ╰───────────────────────╯
+                                       -´
+
+  The  first  case  will  create  a  project  called "FILES", with one unnamed
+  workspace  and  one unnamed tab which contains the files. The second example
+  will  create  a workspace called "FILES", with an unnamed tab containing the
+  files.  The  last  example  is  the  one  that is likely to be used more. It
+  creates  a  tab  named "FILES" that contains the files. The following is the
+  equivalent creations for the three examples:
+
+     ╭─────────────────────╮╭─────────────────────╮╭─────────────────────╮
+     │project FILES        ││workspace FILES      ││tab FILES            │
+     │  file main: main.c  ││  file main: main.c  ││  file main: main.c  │
+     │  file make: Makefile││  file make: Makefile││  file make: Makefile│
+     │  term tree: ranger  ││  term tree: ranger  ││  term tree: ranger  │
+     ╰─────────────────────╯╰─────────────────────╯╰─────────────────────╯
+
+  And  remember  that is perfectly possible to skip a few lower level nodes as
+  these  examples  suggests.  The  nvpm/flux  will  fill  the gaps by creating
+  unnamed nodes in between.
+
+                                                                             }
+  ▶ LOOP MECHANISM                                                           {
+                                                                             }
+  ▶ NODE MODIFIERS                                                           {
+
+  There  are  some  special  characters  that will modify the way each node is
+  loaded by nvpm/flux. They are:
+
+  CUTTER MODIFIERS
+
+  When  writing  large project files,  .-  1) level 1 cutter: -
+  one   may   feel   the   need   for  |
+  commenting out some of its nodes in  |   If  the string "-" is placed at the
+  order  to concentrate only on a few  |   beginning  of a line, then the node
+  files  at  a  time. Another project  |   right after it, or the next one  in
+  file  can  always  be  created  for  |   another  line, won't  be loaded  by
+  this,  but  it's  also important to  |   nvpm/flux.
+  have  a  quick  way to ignore a few  |
+  nodes  of  our  choosing.  They are  |   In  example-01, the buffer b2 won't
+  called   cutters,   and   they  are  |   be loaded by flux, and neither will
+  available in four  levels:           |   be  tab  t2  and  workspace  w2  in
+                                     --´   examples 02 and 03, respectively.
+
+     ╭────────────────────── ─────────────────────── ────────────────────╮
+     │      example-01      │      example-02       │     example-03     │
+      ────────────────────── ─────────────────────── ────────────────────
+     │                      │                       │                    │
+     │   workspace w1       │    workspace w1       │    workspace w1    │
+     │     tab t1           │      tab t1           │       ...          │
+     │       buff b1 : p1   │        buff b1 : p1   │   -workspace w2    │
+     │      -buff b2 : p2   │     -                 │       ...          │
+     │       buff b3 : p3   │      tab t2           │    workspace w3    │
+     │                      │        buff b1 : p1   │                    │
+     │                      │                       │                    │
+     ╰────────────────────── ─────────────────────── ────────────────────╯
+
+  2) level 2 cutter: --                .-  In  example-01, both buffers b2 and
+                                       |   b3  won't be loaded by flux. In the
+  If the string "--" is placed at the  |   second  example,  tabs  t2  and  t3
+  beginning of a line, then the range  |   won't  either, and so won't be both
+  of  nodes from the node right after  |   w2  and  w3  workspaces in the last
+  it,  and  down until the next upper  |   example.
+  level node will be ignored by flux.  |
+  Examples:                            |
+                                     --´
+
+     ╭────────────────────── ─────────────────────── ────────────────────╮
+     │      example-01      │      example-02       │     example-03     │
+      ────────────────────── ─────────────────────── ────────────────────
+     │                      │                       │                    │
+     │   workspace w1       │    workspace w1       │    workspace w1    │
+     │     tab t1           │      tab t1           │       ...          │
+     │       buff b1 : p1   │        buff b1 : p1   │  --workspace w2    │
+     │     --buff b2 : p2   │    --tab t2           │       ...          │
+     │       buff b3 : p3   │        buff b1 : p1   │    workspace w3    │
+     │     tab t2           │      tab t3           │       ...          │
+     │       buff b1 : p1   │        buff b1 : p1   │                    │
+     │       buff b2 : p2   │    workspace w2       │                    │
+     │       buff b3 : p3   │        ...            │                    │
+     │                      │                       │                    │
+     ╰────────────────────── ─────────────────────── ────────────────────╯
+
+  3) level 3 cutter: ---               .-  workspace w1
+                                       |     tab t1
+  If  the  string  "---" is placed at  |       buff b1 : p1
+  the  beginning  of a line, then the  |       buff b2 : p2
+  whole  structure  after  it will be  |    ---buff b3 : p3
+  ignored by flux. Example:            |     tab t2
+                                     --´       buff b1 : p1
+                                               buff b2 : p2
+                                               buff b3 : p3
+
+  SKIPPER MODIFIERS
+
+  When using cutter modifiers, it may
+  occur   the   need   for   skipping
+  intermediate   nodes   from   being
+  ignored.  This  can  be achieved by
+  using  one  of  the three levels of
+  skipper modifiers:
+
+  1) level 1 Skipper: +
+
+  If  the string "+" is placed at the
+  beginning  of a line, then the node
+  in  front  of  it is saved from not
+  being  loaded  if a cutter modifier
+  was previously used.  Examples:
+
+      ---------------------- ----------------------- --------------------
+     │      example-01      │      example-02       │     example-03     │
+      ---------------------- ----------------------- --------------------
+     │                      │                       │                    │
+     │   workspace w1       │    workspace w1       │    workspace w1    │
+     │     tab t1           │    --tab t1           │       ...          │
+     │     --buff b1 : p1   │        buff b1 : p1   │    workspace w2    │
+     │      +buff b2 : p2   │     +tab t2           │ ---                │
+     │       buff b3 : p3   │        buff b1 : p1   │    workspace w3    │
+     │     tab t2           │      tab t3           │   +workspace w4    │
+     │       buff b1 : p1   │        buff b1 : p1   │    workspace w5    │
+     │        ...           │        buff b2 : p2   │    workspace w6    │
+     │                      │                       │                    │
+      ---------------------- ----------------------- --------------------
+
+  In  the first example, the level 2 cutter was used (--) along with the level
+  1 skip  operator.  This  means that at first, all the buffers from the first
+  tab t1 were supposed to be ignored, but since the "+" operator was used, the
+  buffer b2 will be "saved" from the cutter. Therefore, it would be equivalent
+  to write the following:
+
+         workspace w1
+           tab t1
+             buff b2 : p2
+           tab t2
+             buff b1 : p1
+              ...
+
+  The  second  example  would  produce  an  empty  data  structure if the skip
+  operator was not present. In other words, since the "--"  was  used  in  the
+  first  tab,  all  tabs from that point on were supposed to be ignored, apart
+  from the second tab which was "saved" by the "+" operator.
+
+  The third example is analogous.
+
+
+  2) level 2 Skipper: ++
+
+  If  the  string "++" is placed at the beginning of a line, then the range of
+  nodes from the node right after it and down until the next upper level node,
+  are saved  from  being ignored, in the case a cutter modifier was previously
+  used. Examples:
+
+      ---------------------- ----------------------- --------------------
+     │      example-01      │      example-02       │     example-03     │
+      ---------------------- ----------------------- --------------------
+     │                      │                       │                    │
+     │   workspace w1       │    workspace w1       │    workspace w1    │
+     │     tab t1           │      tab t1           │       ...          │
+     │     --buff b1 : p1   │    --tab t2           │    workspace w2    │
+     │       buff b2 : p2   │      tab t3           │ ---                │
+     │       buff b3 : p3   │      tab t4           │    workspace w3    │
+     │     ++buff b4 : p4   │    ++tab t5           │    workspace w4    │
+     │       buff b5 : p5   │      tab t6           │  ++workspace w5    │
+     │       buff b6 : p6   │      tab t7           │    workspace w6    │
+     │     ...              │                       │                    │
+      ---------------------- ----------------------- --------------------
+
+
+In example-01, the buffers b4, b5, and b6 would be saved from being cut off.
+In  the  second example, the last three tabs would also be saved, and in the
+last example, the workspaces w5 and w6 would be spared.
+
+
+3) level 3 Skipper: +++
+
+If  the string "+++" is placed at the beginning of a line, then the range of
+nodes  from  the  node  right after it and down until the end of the project
+file   would be saved from being ignored if a cutter modifier was previously
+used, regardless of which cut level is being used. Examples:
+
+TODO: descriptions
+
+Sorter  modifiers
+
+
+        workspace w1
+          tab t1
+            buff b1 : p1
+            buff b2 : p2
+            buff b3 : p3
+            buff b3 : p3
+            buff b3 : p3
+            buff b3 : p3
+            buff b3 : p3
+
+}
+  ------------------------
+
+vim: ft=help: tw=2
