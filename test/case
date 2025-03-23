@@ -1,21 +1,10 @@
 
 
-workspace
-  tab 
- -tab code
-    file a
-  tab 
-  tab 
-  tab 
+
+
+project
+--
  -
- tab 
-    file a
-    file a
-    file a
-    file a
-  tab 
-workspace
-  tab 
-    file main
-    file main
-    file main
+project
+  file b
+project

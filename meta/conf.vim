@@ -52,8 +52,10 @@
     hi Function                             gui=bold
 
     hi Normal   guibg=#000000
-    hi Comment  guifg=#5c6773               gui=bold
-    hi Folded   guifg=#3e4b59 guibg=#14191f gui=bold,italic
+    hi Comment  guifg=#5c6773            gui=bold
+    hi Folded   guifg=#3e4b59 guibg=#14191f gui=bold
+    "hi def link Folded       Comment
+    "hi def link FoldedColumn Folded
 
     hi Pmenu      guibg=#1f252a guifg=#888888
     hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold

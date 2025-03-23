@@ -41,15 +41,15 @@ fu! nvpm#init(...) " initiate main variables {
   let conf = {}
   let conf.lexis = ''
 
-  "let conf.lexis.= '|project proj scheme layout book'
-  "let conf.lexis.= '|workspace arch archive architecture section'
-  "let conf.lexis.= '|tab folder fold shelf package pack chapter'
-  "let conf.lexis.= '|file buff buffer path entry node leaf page'
+  let conf.lexis.= '|project proj scheme layout book'
+  let conf.lexis.= '|workspace arch archive architecture section'
+  let conf.lexis.= '|tab folder fold shelf package pack chapter'
+  let conf.lexis.= '|file buff buffer path entry node leaf page'
 
-  let conf.lexis.= '|project'
-  let conf.lexis.= '|workspace'
-  let conf.lexis.= '|tab'
-  let conf.lexis.= '|file'
+  "let conf.lexis.= '|project'
+  "let conf.lexis.= '|workspace'
+  "let conf.lexis.= '|tab'
+  "let conf.lexis.= '|file'
 
   let conf.home  = 1
 

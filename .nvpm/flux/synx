@@ -6,10 +6,10 @@ project Syntax CODE
     file nvpm : nvpm.vim
    -file flux : flux.vim
     file file @ test/case
-  tab code @ nvim/autoload
+--tab code @ nvim/autoload
     file nvpm.vim
     file flux.vim
- -tab flux
+  tab flux
     file flux : flux.vim
     file file @ test/case
 
