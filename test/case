@@ -1,19 +1,28 @@
 
-loop lib : complex matrix -- number binary hexa {
-  TAB $(lib):lib
-    File code:$(lib).c
-    File code:$(lib).h
-    File make: makefile
-endloop }
 
-tab aaaa
-  file main.c
-  file main.h
-project code
-  file x
-  file y
-  tab code
-    file z
-    file w
-
-# vim: ft=nvpm
+project {
+  workspace {
+    tab
+      file
+      file
+      file
+      file
+    tab
+      file
+      file
+      file
+      file
+  }
+  workspace {
+    tab
+      file
+      file
+      file
+      file
+    tab
+      file
+      file
+      file
+      file
+  }
+}

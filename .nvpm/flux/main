@@ -5,6 +5,7 @@
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
         file nvpm @ ../nvpm/plugin/nvpm.vim
+        file nvpm @ ../nvpm/syntax/nvpm.vim
       tab test @ test/nvpm
         file case : case.case
         file expt : case.expt

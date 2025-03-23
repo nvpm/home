@@ -40,10 +40,14 @@ fu! nvpm#init(...) " initiate main variables {
 
   let conf = {}
   let conf.lexis = ''
-  let conf.lexis.= '|project proj scheme layout book'
-  let conf.lexis.= '|workspace arch archive architecture section'
-  let conf.lexis.= '|tab folder fold shelf package pack chapter'
-  let conf.lexis.= '|file buff buffer path entry node leaf page'
+  "let conf.lexis.= '|project proj scheme layout book'
+  "let conf.lexis.= '|workspace arch archive architecture section'
+  "let conf.lexis.= '|tab folder fold shelf package pack chapter'
+  "let conf.lexis.= '|file buff buffer path entry node leaf page'
+  let conf.lexis.= '|project'
+  let conf.lexis.= '|workspace'
+  let conf.lexis.= '|tab'
+  let conf.lexis.= '|file'
   let conf.home  = 1
 
   call flux#conf(conf)
@@ -299,7 +303,8 @@ fu! nvpm#curr(...) " gets the current file path {
   call execute($'edit {file}')
 
   " fixes syntax for nvpm fluxfiles
-  if head == s:dirs.local  || 
+  " TODO: remove this bufname entry before deployment
+  if head == s:dirs.local  || bufname() == 'test/case'||
     \HEAD == s:dirs.global && 
     \&ft  != 'nvpm'
     let &ft = 'nvpm'
@@ -352,7 +357,7 @@ endfu "}
 fu! nvpm#synx(...) " {
 
   let lexis = get(a:000,0,g:nvpm.conf.lexis)
-  let synx = {}
+  let synx = [0,1,2,3]
 
   let synx[0] = #{s:join(lexis[0],'\|'),e:lexis[0]}
   let synx[1] = #{s:join(lexis[1],'\|'),e:lexis[1]}
