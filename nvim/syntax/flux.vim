@@ -43,7 +43,6 @@ b
 
 hi def link fluxlcut1 fluxcomm
 hi def link fluxlcut2 fluxcomm
-hi def link fluxlkeyw fluxkeyw
 hi def link fluxlname fluxvars
 hi def link fluxlhead fluxinfo
 hi def link fluxlcuts fluxcomm

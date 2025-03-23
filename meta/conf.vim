@@ -76,17 +76,17 @@
   let g:nvpm_maketree = 0
   let g:nvpm_initload = 1
 
-  nmap <silent><space>   :NVPMLoop + 3<cr>
-  nmap <silent>m<space>  :NVPMLoop - 3<cr>
-  nmap <silent><tab>     :NVPMLoop + 2<cr>
-  nmap <silent>m<tab>    :NVPMLoop - 2<cr>
-  nmap <silent><BS>      :NVPMLoop + 1<cr>
-  nmap <silent><del>     :NVPMLoop - 1<cr>
-  nmap <silent><c-n>     :NVPMLoop + 1<cr>
-  nmap <silent><c-p>     :NVPMLoop - 1<cr>
-  nmap <silent><c-space> :NVPMLoop + 0<cr>
-  nmap <silent>=         :NVPMLoop + -1<cr>
-  nmap <silent>-         :NVPMLoop - -1<cr>
+  nmap <space>   :NVPMLoop + 3<cr>
+  nmap m<space>  :NVPMLoop - 3<cr>
+  nmap <tab>     :NVPMLoop + 2<cr>
+  nmap m<tab>    :NVPMLoop - 2<cr>
+  nmap <BS>      :NVPMLoop + 1<cr>
+  nmap <del>     :NVPMLoop - 1<cr>
+  nmap <c-n>     :NVPMLoop + 1<cr>
+  nmap <c-p>     :NVPMLoop - 1<cr>
+  nmap <c-space> :NVPMLoop + 0<cr>
+  nmap =         :NVPMLoop + -1<cr>
+  nmap -         :NVPMLoop - -1<cr>
 
   nmap <F8> <esc>:NVPMLoad<space>
   imap <F8> <esc>:NVPMLoad<space>

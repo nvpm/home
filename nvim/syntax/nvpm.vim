@@ -57,7 +57,7 @@ for i in range(4) "{
 
   let s = s:synx[i].s
   let c1= s:synx[i].c1
-  let c2= s:synx[i].c2
+  let c2= s:synx[i].c2..'\|endl\|endlo\|endloo\|endloop'
 
   " for shortening of each code line's length
   let  p= 'nvpm'..i
@@ -70,13 +70,14 @@ for i in range(4) "{
   " the instructions themselves
   exec syn..'cuts '..cuts
   exec syn..'cut1 '..cut1
-  exec syn..'cut2 '..cut1
+  exec syn..'cut2 '..cut2
   exec hi ..'cuts  fluxcomm'
   exec hi ..'cut1  fluxcomm'
   exec hi ..'cut2  fluxcomm'
 
 endfor "}
 
+unlet s:synx
 
 
 
