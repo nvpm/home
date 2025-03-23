@@ -1,12 +1,12 @@
 
   ● synx ~
-
    ● create syntax for single line multiple statement (endline feature)
      file a,file b,...file n
 
-   ● cutloop fuctionality
-
   ● var-replace ~
   ● skel feature ~
+  ● transfer nvpm#seek to flux#seek ~
+  ● flux#cuts takes higher standalone cut instead of next node's ~
+  ● use "=" as absolute path instead of "@", and then remove @ support ~
 
 vim: ft=help: tw=2

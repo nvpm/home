@@ -1,4 +1,6 @@
 
+
+  ● [bug] cut 1 inside loop's content ~
   ● [fixed] bug with standalone cut1 inline loop vars ~
   ● [fixed] bug with cut2 in loop ~
   ● [fixed] bug with cut2 in home ~

@@ -1,0 +1,38 @@
+ Software development is usually tricky because it's development
+ requires the usage of concepts that don't exist in the physical
+ world. As opposed to other sciences, Software development can't directly 
+ be experimented with using any of the 5 human senses.
+
+  It's  not like having a physical phenomenon and finding a way to tame it's
+  nature,  using  physical  instruments  and tools. In Software development,
+  neither the phenomenon nor it's control  is  usually known. The phenomenon
+  being the necessity of a software and the control  being the software as a
+  complete and working product.
+
+  In  other  words,  until  the idea becomes the final product, the software
+  will exclusively belong in the stakeholder's mind. Therefore, an efficient
+  way of retrieving sensible  information  about  the software is paramount.
+
+Software   Engineering (seng), usually follows 6 steps from 'idea/necessity'
+to 'working  software'.  They  are:  Planning,  Analysis,  Design, Coding,
+Testing, and Deployment.
+
+  Not  all of these steps will be used though. For instance, the design step
+  will be replaced by the coding itself. 
+
+
+  List  of Software Engineering files in each folder and their explanation. Say a plugin named fooo:
+
+  --- directory structure ---
+
+  fooo/
+    Concepts  -> concepts used and their explanations
+    Data      -> file to discuss data structures manipulated by the Software
+    Features  -> file to store list of features and their explanations
+    File      -> file to discuss files manipulated by the Software
+    Issues    -> to describe bugs or any other problems with the software
+    Random    -> to save code, snippets, and random things
+    TODO      -> todo tracking file
+    Usecases  -> use cases file
+    Workflows -> a file to describe user/machine use case workflows
+
