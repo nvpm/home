@@ -13,7 +13,7 @@ project Syntax CODE
     file flux : flux.vim
     file file @ test/case
 
-project NVIM runtime: /usr/share/nvim/runtime
+project NVIM runtime@ /usr/share/nvim/runtime
   tab syntax & regex
     file us27 : doc/usr_27.txt
     file us44 : doc/usr_44.txt

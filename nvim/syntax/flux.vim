@@ -29,6 +29,8 @@ hi def link fluxinfo Include
 hi def link fluxname Normal
 hi def link fluxcut3 fluxcomm
 
+syn cluster fluxall contains=fluxvars,fluxcomm,fluxkeyw,fluxinfo,fluxname,fluxcut3
+
 " }
 " loop definitions {
 

@@ -42,8 +42,6 @@ fu! s:test.nvpm(...) "{
   so nvim/plugin/nvpm.vim
   so nvim/syntax/nvpm.vim
 
-  call nvpm#synx()
-
   "let inpt = 'test/nvpm/case.case'
 
   "execute 'NVPMEdit'
