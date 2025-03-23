@@ -53,29 +53,29 @@ endfu "}
 
 let s:synx = s:synx()
 
-for i in range(4)
+for i in range(4) "{
+
   let s = s:synx[i].s
   let c1= s:synx[i].c1
   let c2= s:synx[i].c2
+
+  " for shortening of each code line's length
   let  p= 'nvpm'..i
   let syn = 'syntax match '..p
   let hi  = 'hi def  link '..p
-
   let cuts ='/^\c\s*-\{-1,2}\s*\n*\s*-*\('..s..'\)\_.*/'
   let cut1 = '/^\c\s*-\s*\n*\s*-*\('..s..'\)\_.\{-}-*\('..c1..'\)/me=e-50'
   let cut2 ='/^\c\s*--\s*\n*\s*-*\('..s..'\)\_.\{-}-*\('..c2..'\)/me=e-50'
 
+  " the instructions themselves
   exec syn..'cuts '..cuts
   exec syn..'cut1 '..cut1
   exec syn..'cut2 '..cut1
-
   exec hi ..'cuts  fluxcomm'
   exec hi ..'cut1  fluxcomm'
   exec hi ..'cut2  fluxcomm'
 
-endfor
-
-
+endfor "}
 
 
 
