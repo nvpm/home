@@ -36,7 +36,7 @@ syn match fluxlcut1 contained /\s*-\s*[a-z0-9_./\\:]\+/
 syn match fluxlcut2 contained /\s*-\{2,}.*$/
 syn match fluxlname contained /\w*\s*[:=@]/
 syn match fluxlhead           /^\c\s*loop\s*\w*\s*[:=@].*$/ contains=fluxkeyw,fluxlname,fluxlinfo,fluxlcut1,fluxlcut2,fluxcomm
-syn region fluxlcuts start=/^\c\s*-\{1,2}\s*.*\n*\s*loop/ end=/\(endl\|endlo\|endloo\|endloop\).*$/ contains=fluxcut3
+syn region fluxlcuts start=/^\c\s*-\{1,2}\s*.*\n*\s*loop/ end=/\c\(endl\|endlo\|endloo\|endloop\).*$/ contains=fluxcut3
 b
 
 hi def link fluxlcut1 fluxcomm

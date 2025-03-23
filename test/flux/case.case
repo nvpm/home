@@ -22,7 +22,7 @@ LOOP lib : string -file {
     File $(lib).h
 ENDL }
 
-#}
+}
 Archive meta  {
   Folder root@..
     File readme.txt
@@ -36,6 +36,6 @@ Archive meta  {
     File ~/makefile.mk
     File trash.sh
 
-#}
+}
 
-# vim: ft=flux
+# vim: ft=nvpm
