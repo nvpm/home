@@ -1,9 +1,8 @@
 
 home seng
 
-project Software Engineering
 loop plugin: nvpm flux -- line zoom text {
-  workspace $(plugin):$(plugin) {
+  project SENG $(plugin):$(plugin) {
     tab misc
       file TODO     
       file Concepts 
@@ -17,7 +16,7 @@ loop plugin: nvpm flux -- line zoom text {
     tab seng
       file Usecases 
       file Workflows
-      ---
+      --
       file read @ seng/read
   }
 endl}

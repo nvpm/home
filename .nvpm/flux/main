@@ -1,6 +1,6 @@
 
   project NVPM Development : nvim {
-    workspace nvpm  {
+    workspace nvpm {Software EngineeringSoftware EngineeringSoftware EngineeringSoftware EngineeringSoftware EngineeringSoftware EngineeringSoftware Engineering
       tab code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
@@ -24,7 +24,7 @@
       tab test @ test/flux
         file case : case.case
         file expt : case.expt
-        --
+        - 
         file file @ .nvpm/nvpm/flux/test
     }
     --
@@ -55,6 +55,26 @@
         file expt : test/zoom/case.expt
     }
   }
+loop plugin: nvpm flux -- line zoom text {
+  project SENG $(plugin):$(plugin) {
+    tab misc
+      file TODO     
+      file Concepts 
+      file Features 
+      file Issues   
+    tab code
+      file Random   
+      file Syntax
+      file Data     
+      file File     
+    tab seng
+      file Usecases 
+      file Workflows
+      --
+      file read @ seng/read
+  }
+endl}
+  ---
   project NVPM Development @ meta {
     tab meta 
       file conf.vim

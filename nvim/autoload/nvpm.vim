@@ -286,6 +286,8 @@ fu! nvpm#info(...) " info overview {
 endfu "}
 fu! nvpm#menu(...) " nvpm menu {
 endfu "}
+fu! nvpm#quit(...) " {
+endfu "}
 
 " }
 " help functions {
@@ -328,6 +330,8 @@ fu! nvpm#curr(...) " gets the current file path {
     call mkdir(head,'p')
   endif
 
+endfu "}
+fu! nvpm#diff(...) " {
 endfu "}
 fu! nvpm#seek(...) " seeks either list or node of given type{
 
