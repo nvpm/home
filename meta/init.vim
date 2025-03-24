@@ -75,7 +75,7 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.flux()|endif
-if 1|call s:test.nvpm()|endif
+if 1|call s:test.flux()|endif
+if 0|call s:test.nvpm()|endif
 
 "}

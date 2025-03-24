@@ -1,18 +1,5 @@
 
   project NVPM Development : nvim {
-    workspace nvpm {Software EngineeringSoftware EngineeringSoftware EngineeringSoftware EngineeringSoftware EngineeringSoftware EngineeringSoftware Engineering
-      tab code
-        file auto : autoload/nvpm.vim
-        file plug : plugin/nvpm.vim
-        file init @ meta/init.vim
-      tab oldnvpm @ ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-      -
-      tab test @ test/nvpm
-        file case : case.case
-        file expt : case.expt
-    }
     workspace flux {
      -tab synx
         file synx : syntax/flux.vim
@@ -27,7 +14,19 @@
         - 
         file file @ .nvpm/nvpm/flux/test
     }
-    --
+    workspace nvpm {
+      tab code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+        file init @ meta/init.vim
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+      -
+      tab test @ test/nvpm
+        file case : case.case
+        file expt : case.expt
+    }
     workspace line {
       tab code
         file auto : autoload/line.vim
@@ -36,6 +35,7 @@
         file case : case.case
         file expt : case.expt
     }
+    --
     workspace text {
       tab code
         file auto : nvim/autoload/text.vim

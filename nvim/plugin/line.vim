@@ -7,7 +7,7 @@ let __LINEPLUG__ = 1
 " end-once}
 " init {
 
-call line#init()
+call line#line()
 
 " end-init}
 " cmds {

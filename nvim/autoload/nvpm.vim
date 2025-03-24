@@ -9,7 +9,7 @@ let __NVPMAUTO__ = 1
 
 " main functions {
 
-fu! nvpm#init(...) " initiate main variables {
+fu! nvpm#nvpm(...) " initiate main variables {
 
   if has_key(s:,'once')&&g:NVPMTEST|return|endif
   let s:once = 1
@@ -46,11 +46,6 @@ fu! nvpm#init(...) " initiate main variables {
   let conf.lexis.= '|tab folder fold shelf package pack chapter'
   let conf.lexis.= '|file buff buffer path entry node leaf page'
 
-  "let conf.lexis.= '|project'
-  "let conf.lexis.= '|workspace'
-  "let conf.lexis.= '|tab'
-  "let conf.lexis.= '|file'
-
   let conf.home  = 1
 
   call flux#conf(conf)
@@ -61,9 +56,6 @@ fu! nvpm#init(...) " initiate main variables {
   let g:nvpm.tree.root = {}
   let g:nvpm.tree.file = ''
   let g:nvpm.tree.mode = 0
-
-  let g:nvpm.line = {}
-  let g:nvpm.line.mode = 1
 
   let g:nvpm.edit = {}
   let g:nvpm.edit.line = 0
@@ -178,7 +170,7 @@ fu! nvpm#load(...) " loads a flux file {
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
 
-  call line#line()
+  call line#init()
   call nvpm#save()
   let g:nvpm.tree.mode = 1
 

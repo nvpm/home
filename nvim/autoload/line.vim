@@ -9,7 +9,7 @@ let __LINEAUTO__ = 1
 
 " main functions {
 
-fu! line#init(...) " initiate script variables {
+fu! line#line(...) " initiate script variables {
 
   let botr = '%y%m ⬤ %l,%c/%P'
   let botc = ' ⬤ %f'
@@ -30,7 +30,7 @@ fu! line#init(...) " initiate script variables {
   let s:line = 1
 
 endfu "}
-fu! line#line(...) " {
+fu! line#init(...) " {
 
   if s:line
     call line#show()

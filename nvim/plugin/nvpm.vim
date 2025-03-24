@@ -7,7 +7,7 @@ let __NVPMPLUG__ = 1
 " }
 " init {
 
-call nvpm#init()
+call nvpm#nvpm()
 
 " end-init}
 " cmds {
