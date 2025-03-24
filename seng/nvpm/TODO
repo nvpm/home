@@ -1,4 +1,7 @@
 
+  ● incorporate g:nvpm.flux into the g:nvpm.tree  ~
+    ● This way when changing between flux files using loop,
+      only non-loaded flux files will be loaded.
   ● save data structure ~
     ● save the contents of the tree, such as: indx,type, etc. 
     ● restore such content after nvpm#edit or at startup
@@ -33,8 +36,5 @@
       it at startup
   ● develop global flux files and skelletons  ~
     ● needs flux#skel() method first
-  ● incorporate g:nvpm.flux into the g:nvpm.tree  ~
-    ● This way when changing between flux files using loop,
-      only non-loaded flux files will be loaded.
 
 vim: ft=help: tw=2
