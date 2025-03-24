@@ -27,6 +27,7 @@
         file case : case.case
         file expt : case.expt
     }
+    --
     workspace line {
       tab code
         file auto : autoload/line.vim
@@ -35,7 +36,6 @@
         file case : case.case
         file expt : case.expt
     }
-    --
     workspace text {
       tab code
         file auto : nvim/autoload/text.vim
