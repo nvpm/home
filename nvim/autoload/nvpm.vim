@@ -127,7 +127,7 @@ fu! nvpm#loop(...) " loop over nodes {
     if type == 1 && g:nvpm.edit.mode|call nvpm#edit()|endif
     if type == 0 && g:nvpm.edit.mode|call nvpm#edit()|endif
     if bufname()==g:nvpm.tree.curr 
-      let node = nvpm#seek(type,'node',tree)
+      let node = flux#seek(tree,type)
       if empty(node)|return 1|endif
       call nvpm#indx(node.meta,step)
     endif
@@ -292,7 +292,7 @@ fu! nvpm#curr(...) " gets the current file path {
   if empty(root)|return 1|endif
   if empty(list)|return 2|endif
                                      
-  let curr = nvpm#seek(3,'node',root)
+  let curr = flux#seek(root,3)
   if empty(curr)|return 3|endif
   let curr = curr.list[curr.meta.indx%curr.meta.leng].data.info
   let g:nvpm.tree.curr = curr
@@ -324,22 +324,6 @@ fu! nvpm#curr(...) " gets the current file path {
 
 endfu "}
 fu! nvpm#diff(...) " {
-endfu "}
-fu! nvpm#seek(...) " seeks either list or node of given type{
-
-  let type = get(a:000,0,-1)
-  let code = get(a:000,1,'node')
-  let tree = get(a:000,2,g:nvpm.tree.root)
-
-  if code=='node'
-    if !has_key(tree,'list')|return {}|endif
-    if type==tree.meta.type|return tree|endif
-
-    return nvpm#seek(type,'node',tree.list[tree.meta.indx%tree.meta.leng])
-  endif
-
-  return get(nvpm#seek(type,'node',tree),'list',code=='list'?[]:{})
-
 endfu "}
 fu! nvpm#show(...) " {
   let tree = get(a:,1,g:nvpm.tree.root)

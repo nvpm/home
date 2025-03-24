@@ -48,7 +48,7 @@ fu! line#topl(...) " makes the top line {
 
   let line.= line#list(1,1)
 
-  let proj = nvpm#seek(0,'node')
+  let proj = flux#seek(g:nvpm.tree.root,0)
 
   if empty(proj)
     let proj = g:nvpm.tree.file
@@ -116,7 +116,7 @@ endfu "}
 fu! line#list(...) "{
   let type = get(a:000,0,-1)
   let revs = get(a:000,1)
-  let node = nvpm#seek(type,'node') 
+  let node = flux#seek(g:nvpm.tree.root,type) 
 
   if empty(node)|return ''|endif
 

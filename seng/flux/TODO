@@ -1,5 +1,4 @@
 
-  ● transfer nvpm#seek to flux#seek ~
   ● synx ~
    ● create syntax for single line multiple statement (endline feature)
      file a,file b,...file n
