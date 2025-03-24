@@ -483,5 +483,24 @@ fu! flux#argv(...) " catches last inner argument {
   endif
   return argv
 endfu "}
+fu! flux#seek(...) " catches last inner argument {
+
+  let root = get(a:000,0,{})
+  let type = get(a:000,1,-1)
+  let code = get(a:000,2,'node')
+  if !has_key(root,'meta')|return {}|endif
+  if !has_key(root,'list')|return {}|endif
+  if type==root.meta.type
+    if code=='node'|return root     |endif
+    if code=='list'|return root.list|endif
+  endif
+  if has_key(root,'list')&&root.meta.leng
+    let indx = root.meta.indx
+    let leng = root.meta.leng
+    return flux#seek(root.list[indx%leng],type,code)
+  endif
+  return {}
+
+endfu "}
 
 " end-func }
