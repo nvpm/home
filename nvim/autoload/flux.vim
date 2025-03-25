@@ -31,7 +31,7 @@ fu! flux#data(...) " returns flux-tree data structure {
 
   let tree = flux#tree(list,leng,home)
 
-  "if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
+  if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
