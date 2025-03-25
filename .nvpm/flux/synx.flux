@@ -1,12 +1,8 @@
-
 home nvim/syntax
 
 project Syntax CODE {
   tab nvpm
-    file nvpm : nvpm.vim
-    file flux : flux.vim
-    file file @ test/case
---
+    file nvpm : nvpm.vim,file flux : flux.vim,file file @ test/case
   tab code @ nvim/autoload
     file nvpm.vim
     file flux.vim

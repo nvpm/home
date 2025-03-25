@@ -46,7 +46,8 @@ fu! nvpm#nvpm(...) " initiate main variables {
   let conf.lexis.= '|tab folder fold shelf package pack chapter'
   let conf.lexis.= '|file buff buffer path entry node leaf page'
 
-  let conf.home  = 1
+  let conf.home = 1
+  let conf.fixt = 1
 
   call flux#conf(conf)
 
@@ -243,6 +244,8 @@ fu! nvpm#make(...) " make a new flux file {
 
   call mkdir(s:dirs.local,'p')
   call nvpm#flux()
+
+  let name = fnamemodify(name,':e')=='flux'?name:fnamemodify(name,':t:r')..'.flux'
 
   for flux in g:nvpm.flux.list
     if flux==a:1

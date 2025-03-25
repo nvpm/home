@@ -50,9 +50,9 @@ fu! line#topl(...) " makes the top line {
 
   let proj = flux#seek(g:nvpm.tree.root,0)
 
-  if empty(proj)
+  if empty(proj)||proj.list[proj.meta.indx].data.name=='<unnamed>'||proj.list[proj.meta.indx].data.name==''
     let proj = g:nvpm.tree.file
-    let proj = fnamemodify(proj,':t:r')
+    let proj = fnamemodify(proj,':t')
   else
     let proj = proj.list[proj.meta.indx].data.name
   endif

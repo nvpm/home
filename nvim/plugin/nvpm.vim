@@ -40,6 +40,7 @@ call nvpm#nvpm()
 " '_ NVPMMake {
 
        command!
+\      -complete=customlist,nvpm#DIRS
 \      -nargs=*
 \      NVPMMake
 \      call nvpm#make("<args>")

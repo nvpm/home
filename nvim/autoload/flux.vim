@@ -52,6 +52,7 @@ fu! flux#fixt(...) " fixes tree into proper order {
 
   if empty(root)|return|endif
   if empty(conf)|return|endif
+
   if has_key(root,'list')&&root.meta.leng
     let leng = root.meta.leng
     let mintype = conf.leaftype
@@ -75,7 +76,7 @@ fu! flux#fixt(...) " fixes tree into proper order {
       let next = root.list[indx]
       let node = #{data:{},meta:{}}
       let node.data.keyw = minkeyw
-      let node.data.name = 'No Name'
+      let node.data.name = '<unnamed>'
       let node.data.info = ''
       let node.meta.leng = len(list)
       let node.meta.indx = root.meta.indx

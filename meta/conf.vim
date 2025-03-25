@@ -34,7 +34,7 @@
 
 " end-devl}
 " user {
-" main {
+"   main {
 
   if !exists('s:colors')
 
@@ -70,7 +70,7 @@
   endif
 
 " }
-" nvpm {
+"   nvpm {
 
   " nvpm user variables tree
   let g:nvpm_maketree = 0
@@ -114,7 +114,7 @@
   nmap mt :NVPMTerm<cr>i
 
 " }
-" line {
+"   line {
 
   set hidden
   set showtabline=2
@@ -145,9 +145,9 @@
   nmap ml :LINESwap<cr><c-l>
 
 " }
-" zoom {
+"   zoom {
 
- "let zoom_height = 10
+  let zoom_height = 10
   let zoom_width  = 80
   let zoom_layout = 'center'
   let zoom_left   = 0
@@ -156,7 +156,7 @@
   nmap <silent>mz    :Zoom<cr>
 
 " }
-" text {
+"   text {
 
   nmap maj vip:TEXTFixs<cr>vip:TEXTJust 74<cr>{vapoj<vip>
   vmap maj :'<,'>TEXTFixs<cr>:'<,'>TEXTJust 74<cr>

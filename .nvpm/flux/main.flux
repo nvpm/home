@@ -1,5 +1,5 @@
 
-  project NVPM Development : nvim {
+  project NVPM devl : nvim {
     workspace flux {
      -tab synx
         file synx : syntax/flux.vim
@@ -27,7 +27,6 @@
         file case : case.case
         file expt : case.expt
     }
-    --
     workspace line {
       tab code
         file auto : autoload/line.vim
@@ -36,6 +35,7 @@
         file case : case.case
         file expt : case.expt
     }
+    --
     workspace text {
       tab code
         file auto : nvim/autoload/text.vim
@@ -74,8 +74,7 @@ loop plugin: nvpm flux -- line zoom text {
       file read @ seng/read
   }
 endl}
-  ---
-  project NVPM Development @ meta {
+  project NVPM meta @ meta {
     tab meta 
       file conf.vim
       file menu.vim
