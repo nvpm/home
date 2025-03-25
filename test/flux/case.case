@@ -1,15 +1,7 @@
-
-
-
-file a,file b,file c
-fold f1
-  file x,file y,file z
-fold f2
-  file x,file y,file z
-
-----
-
 HOME libm
+
+# leafless tree dies!
+fold,pack,--,file,file
 
   Folder root
     File main.c
@@ -28,8 +20,7 @@ LOOP lib : string -file {
     File $(lib).c
     File $(lib).h
 ENDL }
-
-Archive meta  {
+Archive meta {
   Folder root@..
     File readme.txt
     --

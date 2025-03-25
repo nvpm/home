@@ -1,38 +1,38 @@
-#{meta:#{depth:1,leng:2,type:1,indx:0},
+#{meta:#{leng:2,type:1,indx:0},
   list:[
     #{data:#{keyw:'Archive',name:'No Name',info:''},
-      meta:#{depth:2,leng:3,type:2,indx:0},
+      meta:#{leng:3,type:2,indx:0},
       list:[
         #{data:#{keyw:'Folder',name:'root',info:''}, 
-          meta:#{depth:3,leng:2,type:3,indx:0},      
+          meta:#{leng:2,type:3,indx:0},      
           list:[
           #{data:#{keyw:'File',name:'main.c'  ,info:'libm/main.c'}},
           #{data:#{keyw:'File',name:'Makefile',info:'libm/Makefile'}},
         ]},
         #{data:#{keyw:'TAB',name:'complex',info:'lib'}, 
-          meta:#{depth:3,leng:2,type:3,indx:0},      
+          meta:#{leng:2,type:3,indx:0},      
           list:[
           #{data:#{keyw:'File',name:'complex.c',info:'libm/lib/complex.c'}},
           #{data:#{keyw:'File',name:'complex.h',info:'libm/lib/complex.h'}},
         ]},
         #{data:#{keyw:'TAB',name:'matrix',info:'lib'}, 
-          meta:#{depth:3,leng:2,type:3,indx:0},      
+          meta:#{leng:2,type:3,indx:0},      
           list:[
           #{data:#{keyw:'File',name:'matrix.c',info:'libm/lib/matrix.c'}},
           #{data:#{keyw:'File',name:'matrix.h',info:'libm/lib/matrix.h'}},
         ]},
     ]},
-    #{data:#{keyw:'arch',name:'meta',info:''},
-      meta:#{depth:2,leng:2,type:2,indx:0},
+    #{data:#{keyw:'Archive',name:'meta',info:''},
+      meta:#{leng:2,type:2,indx:0},
       list:[
       #{data:#{keyw:'Folder',name:'root',info:'..'}, 
-        meta:#{depth:3,leng:1,type:3,indx:0},      
+        meta:#{leng:1,type:3,indx:0},      
         list:[
         #{data:#{keyw:'File',name:'readme.txt',info:'../readme.txt'}},
              ]
       },
       #{data:#{keyw:'Folder',name:'scripts',info:'../scripts'}, 
-        meta:#{depth:3,leng:1,type:3,indx:0},      
+        meta:#{leng:1,type:3,indx:0},      
         list:[
         #{data:#{keyw:'File',name:'init.sh',info:'../scripts/init.sh'}},
              ]

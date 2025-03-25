@@ -77,51 +77,18 @@ fu! flux#fixt(...) " fixes tree into proper order {
       let node.data.keyw = minkeyw
       let node.data.name = 'No Name'
       let node.data.info = ''
-      let node.meta.depth= next.meta.depth
       let node.meta.leng = len(list)
       let node.meta.indx = root.meta.indx
       let node.meta.type = flux#find(conf.lexis,list[0].data.keyw)
       let node.list = list
-      call flux#show(node)
-      "let root.list = [node]+root.list
-      "let root.meta.leng = len(root.list)
+      let root.list = [node]+root.list[indx:]
+      let root.meta.leng = len(root.list)
     endif
-    return
-    "return
-    "for node in root.list
-    "  let type = flux#find(conf.lexis,node.data.keyw)
-    "  if has_key(node,'list')
-    "    if type>mintype
-    "      let node.data.keyw = minkeyw
-    "    endif
-    "    call flux#fixt(node,conf)
-    "  endif
-    "endfor
-    "return
-    "if flux#find(s:conf.lexis,root.list[0].data.keyw)==conf.leaftype
-    "  let indx = 0
-    "  let list = []
-    "  while indx<root.meta.leng " look for preceding leaf nodes
-    "    let node = root.list[0]
-    "    if flux#find(s:conf.lexis,node.data.keyw)!=conf.leaftype|break|endif
-    "    call add(list,remove(root.list,0))
-    "    let indx+=1
-    "  endwhile
-    "  if empty(root.list)|let root.list=list|else " build new parent node
-    "    let next = root.list[0]
-    "    let node = #{data:{},meta:{}}
-    "    let node.data.keyw = next.data.keyw
-    "    let node.data.name = 'No Name'
-    "    let node.data.info = ''
-    "    let node.meta.depth= next.meta.depth
-    "    let node.meta.leng = len(list)
-    "    let node.meta.indx = root.meta.indx
-    "    let node.meta.type = conf.leaftype
-    "    let node.list = list
-    "    let root.list = [node]+root.list
-    "    let root.meta.leng = len(root.list)
-    "  endif
-    "endif
+    for node in root.list
+      if has_key(node,'list')
+        call flux#fixt(node,conf)
+      endif
+    endfor
   endif
 
 endfu "}
@@ -131,10 +98,9 @@ fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
   let leng = get(a:000,1,len(list))
   let home = get(a:000,2,'')
   let home = [home .. '/',home][empty(home)]
-  let depth= get(a:000,3,1)
   let indx = 0
 
-  let tree = #{list:[],meta:#{depth:depth,leng:0,indx:0}}
+  let tree = #{list:[],meta:#{leng:0,indx:0}}
 
   " loop over conf.list
   while indx<leng
@@ -159,9 +125,9 @@ fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
         let indx+=1
       endwhile
 
-      " extend node fields with.list, indx, leng, and depth, recursively
+      " extend node fields with.list, indx and leng recursively
       let sublist = list[init:indx-1]
-      let subtree = flux#tree(sublist,indx-init,path,depth+1)
+      let subtree = flux#tree(sublist,indx-init,path)
       call extend(node,subtree)
 
     endif
