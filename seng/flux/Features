@@ -12,5 +12,6 @@
   ● loop ~
   ● home ~
   ● data ~
+  ● fixt ~
 
 vim: ft=help: tw=2

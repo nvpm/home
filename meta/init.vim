@@ -18,10 +18,10 @@ fu! s:test.flux(...) "{
   let conf.fixt = 1
 
   let conf.lexis = ''
-  let conf.lexis.= '|project scheme'
+  let conf.lexis.= '|project proj'
   let conf.lexis.= '|workspace archive arch'
-  let conf.lexis.= '|tab pack folder'
-  let conf.lexis.= '|file buff term'
+  let conf.lexis.= '|tab pack folder fold'
+  let conf.lexis.= '|file buff'
 
   let flux = flux#flux(conf)
   let expt = s:test.eval('test/flux/case.expt')

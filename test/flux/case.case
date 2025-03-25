@@ -1,3 +1,7 @@
+arch,file a1,file a2
+arch,file b1,file b2
+arch,file c1,file c2
+---
 HOME libm
 
 # leafless tree dies!
