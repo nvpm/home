@@ -1,6 +1,4 @@
 
+file name surname # comment
+file name surname: $(variable)/info # comment
 
-
-
-loop code : 1 2 3 {
-endl }

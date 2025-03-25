@@ -46,23 +46,14 @@
   loop plugin: nvpm flux -- line zoom text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
-        file TODO     
-        file Concepts 
-        file Features 
-        file Issues   
+        file TODO,file Concepts,file Features,file Issues
       tab code
-        file Random   
-        file Syntax
-        file Data     
-        file File     
+        file Random,file Syntax,file Data,file File
       tab seng
-        file Usecases 
-        file Workflows
-        --
-        file read @ seng/read
+        file Usecases,file Workflows,-,file read @ seng/read
   endl }
   project NVPM meta @ meta {
-    tab meta 
+    tab meta
       file conf.vim
       file menu.vim
      -buff init.vim

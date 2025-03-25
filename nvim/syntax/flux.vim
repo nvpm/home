@@ -20,6 +20,33 @@ else
   let s:lexis = g:nvpm.conf.lexis
 endif
 
+syn case ignore
+
+"for i in range(4) "{
+"
+"  let s = s:synx[i].s
+"  let c1= s:synx[i].c1
+"  let c2= s:synx[i].c2..'\|endl\|endlo\|endloo\|endloop'
+"
+"  " for shortening of each code line's length
+"  let  p= 'nvpm'..i
+"  let syn = 'syntax match '..p
+"  let hi  = 'hi def  link '..p
+"  let cuts ='/^\c\s*-\{-1,2}\s*\n*\s*-*\('..s..'\)\_.*/'
+"  let cut1 = '/^\c\s*-\s*\n*\s*-*\('..s..'\)\_.\{-}-*\('..c1..'\)/me=e-50'
+"  let cut2 ='/^\c\s*--\s*\n*\s*-*\('..s..'\)\_.\{-}-*\('..c2..'\)/me=e-50'
+"
+"  " the instructions themselves
+"  exec syn..'cuts '..cuts
+"  exec syn..'cut1 '..cut1
+"  exec syn..'cut2 '..cut2
+"  exec hi ..'cuts  fluxcomm'
+"  exec hi ..'cut1  fluxcomm'
+"  exec hi ..'cut2  fluxcomm'
+"
+"endfor "}
+"----------------------------------------------------
+
 fu! s:synx(...) " {
 
 let synx  = [{},{},{},{}]
@@ -60,6 +87,7 @@ endfu "}
 
 let s:synx = s:synx()
 let s:keyw = ''
+let s:loop = 'loop endl endlo endloo endloop'
 
 for type in s:lexis
   for keyw in type
@@ -67,51 +95,36 @@ for type in s:lexis
   endfor
 endfor
 
-"for i in range(4) "{
-"
-"  let s = s:synx[i].s
-"  let c1= s:synx[i].c1
-"  let c2= s:synx[i].c2..'\|endl\|endlo\|endloo\|endloop'
-"
-"  " for shortening of each code line's length
-"  let  p= 'nvpm'..i
-"  let syn = 'syntax match '..p
-"  let hi  = 'hi def  link '..p
-"  let cuts ='/^\c\s*-\{-1,2}\s*\n*\s*-*\('..s..'\)\_.*/'
-"  let cut1 = '/^\c\s*-\s*\n*\s*-*\('..s..'\)\_.\{-}-*\('..c1..'\)/me=e-50'
-"  let cut2 ='/^\c\s*--\s*\n*\s*-*\('..s..'\)\_.\{-}-*\('..c2..'\)/me=e-50'
-"
-"  " the instructions themselves
-"  exec syn..'cuts '..cuts
-"  exec syn..'cut1 '..cut1
-"  exec syn..'cut2 '..cut2
-"  exec hi ..'cuts  fluxcomm'
-"  exec hi ..'cut1  fluxcomm'
-"  exec hi ..'cut2  fluxcomm'
-"
-"endfor "}
-"----------------------------------------------------
+let s:keyw = trim(s:keyw)
+let s:KEYW = substitute(s:keyw,'\s','\\|','g')
+let s:LOOP = substitute(s:loop,'\s','\\|','g')
 
 let s:r = 'syn region  flux'
 let s:m = 'syn match   flux'
 let s:k = 'syn keyword flux'
 let s:h = 'hi def link flux'
 
-exe s:m..'comm           /[#{}].*$/'
-exe s:m..'sepr contained /[:=@]/'
-exe s:m..'vars contained /\$(\w\+)/'
-exe s:k..'keyw '..s:keyw
-exe s:k..'loop loop endl[oop]'
+exe s:m.'comm           /[#{}].*$/'
+exe s:m.'sepr contained /[:=@,\/|]/'
+exe s:m.'vars contained /\$(\w\+)/'
+exe s:m.'keyw contained /\('.s:KEYW.'\)/'
+exe s:m.'loop contained /\('.s:LOOP.'\)/'
 
-exe s:h..'comm Comment'
-exe s:h..'sepr Normal'
-exe s:h..'vars WarningMsg'
-exe s:h..'keyw Keyword'
-exe s:h..'loop fluxkeyw'
+syn cluster flux contains=fluxkeyw,fluxvars,fluxsepr,fluxcomm
+exe s:m.'name /\s*\('.s:KEYW.'\)\s\+[$().a-z0-9_-|\/ ]\+\s*[:=@]/ contains=@flux'
+exe s:m.'line /\s*\('.s:KEYW.'\)\s\+[$().a-z0-9_-|\/]\+\s*[:=@]\=.*$/ contains=@flux,fluxname'
 
-"hi def link fluxinfo Include
-"hi def link fluxname SpellBad
-"hi def link fluxcut3 fluxcomm
+exe s:h.'name  Normal'
+exe s:h.'line  Operator'
+
+exe s:h.'comm  Comment'
+exe s:h.'sepr  Normal'
+exe s:h.'vars  CursorLineNr'
+exe s:h.'keyw  Keyword'
+
+
+"exe s:h.'line  NonText'
+"exe s:h.'cut3 fluxcomm'
 
 
 finish
