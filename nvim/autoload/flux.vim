@@ -7,7 +7,8 @@ let __FLUXAUTO__=1
 " end-once }
 " func {
 
-" main functions
+" main functions {
+
 fu! flux#flux(...) " the main flux function {
 
   if !a:0|return {}|else|let s:conf=flux#argv(a:000)|endif
@@ -167,7 +168,9 @@ endfu "}
 fu! flux#skel(...) " {
 endfu "}
 
-" conf functions
+" }
+" conf functions {
+
 fu! flux#conf(...) " puts fluxconf in its order {
 
   if !a:0|return flux#conf(s:conf)|else|let conf=a:1|endif
@@ -347,7 +350,9 @@ fu! flux#vars(...) " {
 
 endfu "}
 
-" help functions
+" }
+" help functions {
+
 fu! flux#node(...) " transforms a line into a node {
 
   let line = get(a:000,0,'')
@@ -461,7 +466,8 @@ fu! flux#show(...) " shows flux-tree structure {
     let info = get(node.data,'info','')
     let keyw = get(node.data,'keyw','')
     let char = [' : ',''][empty(info)]
-    echon tabs keyw..' '..name..char..info..' <-' get(node,'meta','')
+    let arrow= ['',' <- '][has_key(node,'meta')]
+    echon tabs keyw..' '..name..char..info..arrow get(node,'meta','')
     echon "\n"
     if has_key(node,'list')
       call flux#show(node,step+2)
@@ -498,5 +504,7 @@ fu! flux#seek(...) " {
   return {}
 
 endfu "}
+
+" }
 
 " end-func }
