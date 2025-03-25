@@ -485,15 +485,18 @@ fu! flux#find(...) " finds a keyword's index in a given structured string {
 endfu "}
 fu! flux#show(...) " shows flux-tree structure {
 
-  let tree = get(a:000,0,{})
+  let root = get(a:000,0,{})
   let step = get(a:000,1, 0)
   let tabs = repeat(' ',step)
-  let list = get(tree,'list',[])
+  let list = get(root,'list',[])
 
   " 1st run
   if a:0==1
     ec repeat('-',54)
-    ec '[root]:' get(tree,'meta','')
+    if has_key(root,'data')
+      ec 'data:' get(root,'data','')
+    endif
+    ec 'meta:' get(root,'meta','')
     ec repeat('-',54)
     ec ''
   endif
