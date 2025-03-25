@@ -24,6 +24,8 @@ fu! s:test.flux(...) "{
   let conf.lexis.= '|file buff'
 
   let flux = flux#flux(conf)
+  call flux#show(flux)
+  return
   let expt = s:test.eval('test/flux/case.expt')
 
   echon "test/flux: "

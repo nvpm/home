@@ -1,6 +1,6 @@
 #{meta:#{depth:1,leng:2,type:1,indx:0},
   list:[
-    #{data:#{keyw:'Archive',name:'code',info:''},
+    #{data:#{keyw:'Archive',name:'No Name',info:''},
       meta:#{depth:2,leng:3,type:2,indx:0},
       list:[
         #{data:#{keyw:'Folder',name:'root',info:''}, 
@@ -22,7 +22,7 @@
           #{data:#{keyw:'File',name:'matrix.h',info:'libm/lib/matrix.h'}},
         ]},
     ]},
-    #{data:#{keyw:'Archive',name:'meta',info:''},
+    #{data:#{keyw:'arch',name:'meta',info:''},
       meta:#{depth:2,leng:2,type:2,indx:0},
       list:[
       #{data:#{keyw:'Folder',name:'root',info:'..'}, 

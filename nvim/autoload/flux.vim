@@ -45,6 +45,72 @@ fu! flux#data(...) " returns flux-tree data structure {
   return tree
 
 endfu "}
+fu! flux#fixt(...) " fixes tree into proper order {
+
+  let root = get(a:000,0,{})
+  let conf = get(a:000,1,{})
+
+  if empty(root)|return|endif
+  if empty(conf)|return|endif
+  if has_key(root,'list')&&root.meta.leng
+    let leng = root.meta.leng
+    let mintype = conf.leaftype
+    let minkeyw = conf.lexis[mintype][0]
+    for node in root.list
+      let type = flux#find(conf.lexis,node.data.keyw)
+      if type<mintype
+        let mintype = type
+        let minkeyw = node.data.keyw
+      endif
+    endfor
+    let indx = 0
+    let list = []
+    let node = root.list[indx]
+    while indx<root.meta.leng&&flux#find(conf.lexis,node.data.keyw)>mintype
+      call add(list,node)
+      let indx+=1
+      let node = root.list[indx]
+    endwhile
+    ec list
+    return
+    "return
+    "for node in root.list
+    "  let type = flux#find(conf.lexis,node.data.keyw)
+    "  if has_key(node,'list')
+    "    if type>mintype
+    "      let node.data.keyw = minkeyw
+    "    endif
+    "    call flux#fixt(node,conf)
+    "  endif
+    "endfor
+    "return
+    "if flux#find(s:conf.lexis,root.list[0].data.keyw)==conf.leaftype
+    "  let indx = 0
+    "  let list = []
+    "  while indx<root.meta.leng " look for preceding leaf nodes
+    "    let node = root.list[0]
+    "    if flux#find(s:conf.lexis,node.data.keyw)!=conf.leaftype|break|endif
+    "    call add(list,remove(root.list,0))
+    "    let indx+=1
+    "  endwhile
+    "  if empty(root.list)|let root.list=list|else " build new parent node
+    "    let next = root.list[0]
+    "    let node = #{data:{},meta:{}}
+    "    let node.data.keyw = next.data.keyw
+    "    let node.data.name = 'No Name'
+    "    let node.data.info = ''
+    "    let node.meta.depth= next.meta.depth
+    "    let node.meta.leng = len(list)
+    "    let node.meta.indx = root.meta.indx
+    "    let node.meta.type = conf.leaftype
+    "    let node.list = list
+    "    let root.list = [node]+root.list
+    "    let root.meta.leng = len(root.list)
+    "  endif
+    "endif
+  endif
+
+endfu "}
 fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
 
   let list = get(a:000,0,[])
@@ -120,49 +186,6 @@ fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
   endwhile
 
   return tree
-
-endfu "}
-fu! flux#fixt(...) " fixes tree into proper order {
-
-  let root = get(a:000,0,{})
-  let conf = get(a:000,1,{})
-
-  if empty(root)|return|endif
-  if empty(conf)|return|endif
-
-  if has_key(root,'list')&&root.meta.leng
-    if flux#find(s:conf.lexis,root.list[0].data.keyw)==conf.leaftype
-      let indx = 0
-      let list = []
-      while indx<root.meta.leng
-        let node = root.list[0]
-        if flux#find(s:conf.lexis,node.data.keyw)!=conf.leaftype|break|endif
-        call add(list,remove(root.list,0))
-        let indx+=1
-      endwhile
-      if empty(root.list)|let root.list=list|else
-        let next = root.list[0]
-        let node = #{data:{},meta:{}}
-        let node.data.keyw = next.data.keyw
-        let node.data.name = 'No Name'
-        let node.data.info = ''
-        let node.meta.depth= next.meta.depth
-        let node.meta.leng = len(list)
-        let node.meta.indx = root.meta.indx
-        let node.meta.type = conf.leaftype
-        let node.list = list
-        let root.list = [node]+root.list
-      endif
-    endif
-    let root.meta.leng = 0
-    for node in root.list
-      if has_key(node,'list')|call flux#fixt(node,conf)|endif
-      let keyw = get(conf.lexis,root.meta.type,[])
-      let keyw = get(keyw,0,'')
-      let node.data.keyw = empty(keyw)?node.data.keyw:keyw
-      let root.meta.leng+= 1
-    endfor
-  endif
 
 endfu "}
 fu! flux#skel(...) " {
@@ -465,9 +488,9 @@ fu! flux#show(...) " shows flux-tree structure {
     let name = get(node.data,'name','')
     let info = get(node.data,'info','')
     let keyw = get(node.data,'keyw','')
-    let char = [' : ',''][empty(info)]
-    let arrow= ['',' <- '][has_key(node,'meta')]
-    echon tabs keyw..' '..name..char..info..arrow get(node,'meta','')
+    let name = [name,"''"][empty(name)]
+    let info = [info,"''"][empty(info)]
+    echon tabs keyw..' '..name..' : '..info..' ' get(node,'meta','')
     echon "\n"
     if has_key(node,'list')
       call flux#show(node,step+2)

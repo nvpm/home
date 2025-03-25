@@ -1,13 +1,16 @@
-arch,file a1,file a2
-arch,file b1,file b2
-arch,file c1,file c2
----
+
+
+
+#file a,file b,file c
+fold f1
+  file x,file y,file z
+fold f2
+  file x,file y,file z
+
+----
+
 HOME libm
 
-# leafless tree dies!
-arch,pack,--,file,file
-
-Archive code  {
   Folder root
     File main.c
     File Makefile
@@ -19,14 +22,13 @@ loop lib : complex matrix -- number binary hexa {
     File $(lib).h
 endl }
   
--- # this double cuts will be passed on to below's loop
+- # this double cuts will be passed on to below's loop
 LOOP lib : string -file {
   TAB $(lib):lib
     File $(lib).c
     File $(lib).h
 ENDL }
 
-}
 Archive meta  {
   Folder root@..
     File readme.txt
