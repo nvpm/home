@@ -1,19 +1,5 @@
 
   project NVPM devl : nvim {
-    workspace flux {
-     -tab synx
-        file synx : syntax/flux.vim
-       -file file @ test/case
-      tab code
-        file auto : autoload/flux.vim
-       -file synx : syntax/flux.vim
-        file init @ meta/init.vim
-      tab test @ test/flux
-        file case : case.case
-        file expt : case.expt
-        - 
-        file file @ .nvpm/nvpm/flux/test
-    }
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
@@ -22,8 +8,12 @@
       tab oldnvpm @ ../nvpm
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
-      -
-      tab test @ test/nvpm
+    }
+    workspace flux {
+      tab code
+        file auto : autoload/flux.vim
+        file init @ meta/init.vim
+      tab test @ test/flux
         file case : case.case
         file expt : case.expt
     }
@@ -31,49 +21,46 @@
       tab code
         file auto : autoload/line.vim
         file plug : plugin/line.vim
-     -tab test @ test/line
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+    }
+    workspace text {
+      tab code
+        file auto : autoload/text.vim
+        file plug : plugin/text.vim
+      tab test @ test/text
         file case : case.case
         file expt : case.expt
     }
-    --
-    workspace text {
-      tab code
-        file auto : nvim/autoload/text.vim
-        file plug : nvim/plugin/text.vim
-       -file init : meta/init.vim
-      tab test
-        file case : test/text/case.case
-        file expt : test/text/case.expt
-    }
     workspace zoom {
       tab code
-        file auto : nvim/autoload/zoom.vim
-        file plug : nvim/plugin/zoom.vim
-        file init : meta/init.vim
-      tab test
-        file case : test/zoom/case.case
-        file expt : test/zoom/case.expt
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
     }
   }
-loop plugin: nvpm flux -- line zoom text {
-  project SENG $(plugin): seng/$(plugin) {
-    tab misc
-      file TODO     
-      file Concepts 
-      file Features 
-      file Issues   
-    tab code
-      file Random   
-      file Syntax
-      file Data     
-      file File     
-    tab seng
-      file Usecases 
-      file Workflows
-      --
-      file read @ seng/read
-  }
-endl}
+  -
+  loop plugin: nvpm flux -- line zoom text {
+    project SENG $(plugin): seng/$(plugin)
+      tab misc
+        file TODO     
+        file Concepts 
+        file Features 
+        file Issues   
+      tab code
+        file Random   
+        file Syntax
+        file Data     
+        file File     
+      tab seng
+        file Usecases 
+        file Workflows
+        --
+        file read @ seng/read
+  endl }
   project NVPM meta @ meta {
     tab meta 
       file conf.vim

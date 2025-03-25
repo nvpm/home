@@ -76,6 +76,19 @@
   let g:nvpm_maketree = 0
   let g:nvpm_initload = 1
 
+  let g:nvpm_fluxconf = {}
+  let g:nvpm_fluxconf.lexis = ''
+  let g:nvpm_fluxconf.lexis.= '|project proj scheme layout book'
+  let g:nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
+  let g:nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
+  let g:nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
+
+  hi fluxcomm guifg=#444444 gui=undercurl
+  hi fluxkeyw guifg=#ffffff gui=bold
+  hi fluxloop guifg=#ffffff gui=bold
+  "hi fluxinfo guifg=#ffff00 gui=bold
+  "hi fluxname guifg=#aaaa00
+
   nmap <space>   :NVPMLoop + 3<cr>
   nmap m<space>  :NVPMLoop - 3<cr>
   nmap <tab>     :NVPMLoop + 2<cr>

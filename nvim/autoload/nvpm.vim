@@ -14,9 +14,6 @@ fu! nvpm#nvpm(...) " initiate main variables {
   if has_key(s:,'once')&&g:NVPMTEST|return|endif
   let s:once = 1
 
-  let s:user = {}
-  let s:user.maketree = get(g:,'nvpm_maketree',0)
-
   let s:dirs = {}
   let s:dirs.local  = '.nvpm/flux/'
   let s:dirs.global = '~/nvim/flux/'
@@ -40,14 +37,15 @@ fu! nvpm#nvpm(...) " initiate main variables {
 
   let conf = {}
   let conf.lexis = ''
-
   let conf.lexis.= '|project proj scheme layout book'
   let conf.lexis.= '|workspace arch archive architecture section'
   let conf.lexis.= '|tab folder fold shelf package pack chapter'
   let conf.lexis.= '|file buff buffer path entry node leaf page'
 
-  let conf.home = 1
-  let conf.fixt = 1
+  call extend(conf,get(g:,'nvpm_fluxconf',{}))
+
+  let conf.fixt = get(conf,'fixt',1)
+  let conf.home = 1 " mandatory!
 
   call flux#conf(conf)
 
@@ -309,16 +307,13 @@ fu! nvpm#curr(...) " gets the current file path {
 
   " fixes syntax for nvpm fluxfiles
   " TODO: remove this bufname entry before deployment
-  if head == s:dirs.local  || bufname() == 'test/case'||
+  if head == s:dirs.local  || bufname() == 'test/case.flux'||
     \HEAD == s:dirs.global && 
-    \&ft  != 'nvpm'
-    let &ft = 'nvpm'
+    \&ft  != 'flux'
+    let &ft = 'flux'
   endif
 
-  " maketree functionality
-  " TODO:
-  "   - add help files identification & handling (I mean ignoring)
-  if s:user.maketree &&
+  if get(g:,'nvpm_maketree',0) &&
     \!empty(head) &&
     \!filereadable(head) &&
     \-1==match(file,'term\:\/\/')
