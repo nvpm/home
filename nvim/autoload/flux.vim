@@ -15,8 +15,8 @@ fu! flux#flux(...) " the main flux function {
 
   call flux#conf()
   call flux#read()
-  call flux#endl()
   call flux#trim()
+  call flux#endl()
   call flux#list()
   call flux#cuts()
   call flux#loop()
@@ -71,7 +71,21 @@ fu! flux#fixt(...) " fixes tree into proper order {
       let indx+=1
       let node = root.list[indx]
     endwhile
-    ec list
+    if indx
+      let next = root.list[indx]
+      let node = #{data:{},meta:{}}
+      let node.data.keyw = minkeyw
+      let node.data.name = 'No Name'
+      let node.data.info = ''
+      let node.meta.depth= next.meta.depth
+      let node.meta.leng = len(list)
+      let node.meta.indx = root.meta.indx
+      let node.meta.type = flux#find(conf.lexis,list[0].data.keyw)
+      let node.list = list
+      call flux#show(node)
+      "let root.list = [node]+root.list
+      "let root.meta.leng = len(root.list)
+    endif
     return
     "return
     "for node in root.list
@@ -227,23 +241,6 @@ fu! flux#read(...) " reads conf.file if it is present {
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! flux#endl(...) " splits lines by endl char {
-
-  if has_key(s:conf,'body')
-    let endl = '\m\s*,\s*'
-    let leng = get(s:conf,'leng',len(s:conf.body))|let s:conf.leng=0
-    let indx = 0
-    let body = []
-    while indx<leng
-      let line = s:conf.body[indx]|let indx+=1
-      let line = split(line,endl)
-      call extend(body,line)
-      let s:conf.leng+=len(line)
-    endwhile
-    let s:conf.body = body
-  endif
-
-endfu "}
 fu! flux#trim(...) " trims-out comments and empty lines {
 
   if has_key(s:conf,'body')
@@ -256,6 +253,23 @@ fu! flux#trim(...) " trims-out comments and empty lines {
       let line = trim(substitute(line,comm,'',''))
       if !empty(line)|call add(body,line)|let s:conf.leng+=1|endif
       let indx+=1
+    endwhile
+    let s:conf.body = body
+  endif
+
+endfu "}
+fu! flux#endl(...) " splits lines by endl char {
+
+  if has_key(s:conf,'body')
+    let endl = '\m\s*,\s*'
+    let leng = get(s:conf,'leng',len(s:conf.body))|let s:conf.leng=0
+    let indx = 0
+    let body = []
+    while indx<leng
+      let line = s:conf.body[indx]|let indx+=1
+      let line = split(line,endl)
+      call extend(body,line)
+      let s:conf.leng+=len(line)
     endwhile
     let s:conf.body = body
   endif

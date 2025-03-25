@@ -1,7 +1,7 @@
 
 
 
-#file a,file b,file c
+file a,file b,file c
 fold f1
   file x,file y,file z
 fold f2
