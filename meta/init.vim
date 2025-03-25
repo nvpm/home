@@ -24,11 +24,6 @@ fu! s:test.flux(...) "{
   let conf.lexis.= '|file buff term'
 
   let flux = flux#flux(conf)
-  let node = flux#seek(flux,2,'list')
-  for n in node
-    call flux#show(n)
-  endfor
-  return
   let expt = s:test.eval('test/flux/case.expt')
 
   echon "test/flux: "

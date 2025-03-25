@@ -23,6 +23,27 @@ fu! flux#flux(...) " the main flux function {
   retu flux#data()
 
 endfu "}
+fu! flux#data(...) " returns flux-tree data structure {
+
+  let list = get(s:conf,'list',[])
+  let leng = get(s:conf,'leng',len(list))
+  let home = get(s:conf,'HOME','')
+
+  let tree = flux#tree(list,leng,home)
+
+  "if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
+
+  " leave conf the way it was
+  if has_key(s:conf,'leng')|unlet s:conf.leng|endif
+  if has_key(s:conf,'list')|unlet s:conf.list|endif
+  if has_key(s:conf,'body')|unlet s:conf.body|endif
+  if has_key(s:conf,'HOME')|unlet s:conf.HOME|endif
+
+  unlet s:conf
+
+  return tree
+
+endfu "}
 fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
 
   let list = get(a:000,0,[])
@@ -67,8 +88,6 @@ fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
     " skips non-matching nodes
     if node.type<0|continue|endif
 
-    let node.data.type = node.type
-
     " handles cut-tree functionality
     if node.cuts==1|continue|endif
     if node.cuts==2| break  |endif
@@ -102,27 +121,6 @@ fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
   return tree
 
 endfu "}
-fu! flux#data(...) " returns flux-tree data structure {
-
-  let list = get(s:conf,'list',[])
-  let leng = get(s:conf,'leng',len(list))
-  let home = get(s:conf,'HOME','')
-
-  let tree = flux#tree(list,leng,home)
-
-  if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
-
-  " leave conf the way it was
-  if has_key(s:conf,'leng')|unlet s:conf.leng|endif
-  if has_key(s:conf,'list')|unlet s:conf.list|endif
-  if has_key(s:conf,'body')|unlet s:conf.body|endif
-  if has_key(s:conf,'HOME')|unlet s:conf.HOME|endif
-
-  unlet s:conf
-
-  return tree
-
-endfu "}
 fu! flux#fixt(...) " fixes tree into proper order {
 
   let root = get(a:000,0,{})
@@ -132,13 +130,12 @@ fu! flux#fixt(...) " fixes tree into proper order {
   if empty(conf)|return|endif
 
   if has_key(root,'list')&&root.meta.leng
-    if root.list[0].data.type==conf.leaftype
-
+    if flux#find(s:conf.lexis,root.list[0].data.keyw)==conf.leaftype
       let indx = 0
       let list = []
       while indx<root.meta.leng
         let node = root.list[0]
-        if node.data.type!=conf.leaftype|break|endif
+        if flux#find(s:conf.lexis,node.data.keyw)!=conf.leaftype|break|endif
         call add(list,remove(root.list,0))
         let indx+=1
       endwhile
@@ -148,7 +145,6 @@ fu! flux#fixt(...) " fixes tree into proper order {
         let node.data.keyw = next.data.keyw
         let node.data.name = 'No Name'
         let node.data.info = ''
-        let node.data.type = next.data.keyw
         let node.meta.depth= next.meta.depth
         let node.meta.leng = len(list)
         let node.meta.indx = root.meta.indx
@@ -157,19 +153,14 @@ fu! flux#fixt(...) " fixes tree into proper order {
         let root.list = [node]+root.list
       endif
     endif
-
     let root.meta.leng = 0
     for node in root.list
-      if has_key(node,'list')
-        call flux#fixt(node,conf)
-      endif
+      if has_key(node,'list')|call flux#fixt(node,conf)|endif
       let keyw = get(conf.lexis,root.meta.type,[])
       let keyw = get(keyw,0,'')
-      let node.data.type = root.meta.type
       let node.data.keyw = empty(keyw)?node.data.keyw:keyw
       let root.meta.leng+= 1
     endfor
-
   endif
 
 endfu "}
