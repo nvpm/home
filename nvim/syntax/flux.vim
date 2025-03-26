@@ -14,8 +14,10 @@ let s:m = 'syn match   FLUX'
 let s:k = 'syn keyword FLUX'
 let s:h = 'hi def link FLUX'
 
-fu! s:main() "{
+fu!  s:main() "{{{2
 
+  exe s:m.'keyw /^\v *\w+/                '
+  exe s:m.'ckey /\v, *\w+/ contains=fluxsepr'
   exe s:m.'comm /[#{}].*$/                '
   exe s:m.'sepr /[:=@,_\/|]/     contained'
   exe s:m.'vars /\$(\w\+)/       contained'
@@ -25,40 +27,42 @@ fu! s:main() "{
   exe s:h.'sepr Normal'
   exe s:h.'vars Title'
   exe s:h.'cut3 fluxcomm'
+  exe s:h.'keyw Keyword'
+  exe s:h.'ckey fluxkeyw'
 
-  "exe s:h.'name Normal'
-  "exe s:h.'line Operator'
-  "exe s:h.'keyw Keyword'
-  "exe s:h.'kcom fluxkeyw'
-
-endfu "}
-call s:main()
-fu! s:loop() "{
+endfu "}}}
+fu! s:loop() "{{{2
   let head = '/^\v *loop +.*$/ contains=@fluxloop'
   let name = '/\w*\s*[:=@]/ contains=fluxsepr'
   let cut1 = '/\s*-\s*[a-z0-9_.-\/]\+/'
   let cut2 = '/\s*-\{2,}.*$/'
+  let endl = '/^\v *endl.*$/ contains=fluxcomm'
   let cuts = 'start=/^\s*-\{1,2}\s*.*\n*\s*loop/ end=/^\s*\(endl\|endlo\|endloo\|endloop\).*$/'
   syn cluster fluxloop 
-\ contains=fluxlkeyw,fluxlname,fluxlcut1,fluxlcut2,fluxcomm
-  exe s:k.'lkeyw loop endl[oop]'
+\ contains=fluxkeyw,fluxlname,fluxlcut1,fluxlcut2,fluxcomm
   exe s:m.'lname '.name.' contained'
   exe s:m.'lcut1 '.cut1.' contained'
   exe s:m.'lcut2 '.cut2.' contained'
   exe s:m.'lhead '.head
   exe s:r.'lcuts '.cuts
+  exe s:m.'lendl '.endl
 
-  exe s:h.'lkeyw Keyword'
   exe s:h.'lhead Operator'
   exe s:h.'lcut1 fluxcomm'
   exe s:h.'lcut2 fluxcomm'
   exe s:h.'lname fluxvars'
   exe s:h.'lcuts fluxcomm'
+  exe s:h.'lendl fluxkeyw'
 
-endfu "}
-call s:loop()
+endfu "}}}
 fu! s:cuts()
 endfu
+
+call s:main()
+call s:loop()
+
+
+
 
 finish
 if !exists('g:nvpm.conf.lexis')
