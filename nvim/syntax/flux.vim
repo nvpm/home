@@ -9,6 +9,58 @@ else
   syntax clear
 endif
 
+let s:r = 'syn region  FLUX'
+let s:m = 'syn match   FLUX'
+let s:k = 'syn keyword FLUX'
+let s:h = 'hi def link FLUX'
+
+fu! s:main() "{
+
+  exe s:m.'comm /[#{}].*$/                '
+  exe s:m.'sepr /[:=@,_\/|]/     contained'
+  exe s:m.'vars /\$(\w\+)/       contained'
+  exe s:m.'cut3 /^\s*-\{3,}\_.*/          '
+
+  exe s:h.'comm Comment'
+  exe s:h.'sepr Normal'
+  exe s:h.'vars Title'
+  exe s:h.'cut3 fluxcomm'
+
+  "exe s:h.'name Normal'
+  "exe s:h.'line Operator'
+  "exe s:h.'keyw Keyword'
+  "exe s:h.'kcom fluxkeyw'
+
+endfu "}
+call s:main()
+fu! s:loop() "{
+  let head = '/^\v *loop +.*$/ contains=@fluxloop'
+  let name = '/\w*\s*[:=@]/ contains=fluxsepr'
+  let cut1 = '/\s*-\s*[a-z0-9_.-\/]\+/'
+  let cut2 = '/\s*-\{2,}.*$/'
+  let cuts = 'start=/^\s*-\{1,2}\s*.*\n*\s*loop/ end=/^\s*\(endl\|endlo\|endloo\|endloop\).*$/'
+  syn cluster fluxloop 
+\ contains=fluxlkeyw,fluxlname,fluxlcut1,fluxlcut2,fluxcomm
+  exe s:k.'lkeyw loop endl[oop]'
+  exe s:m.'lname '.name.' contained'
+  exe s:m.'lcut1 '.cut1.' contained'
+  exe s:m.'lcut2 '.cut2.' contained'
+  exe s:m.'lhead '.head
+  exe s:r.'lcuts '.cuts
+
+  exe s:h.'lkeyw Keyword'
+  exe s:h.'lhead Operator'
+  exe s:h.'lcut1 fluxcomm'
+  exe s:h.'lcut2 fluxcomm'
+  exe s:h.'lname fluxvars'
+  exe s:h.'lcuts fluxcomm'
+
+endfu "}
+call s:loop()
+fu! s:cuts()
+endfu
+
+finish
 if !exists('g:nvpm.conf.lexis')
   if !exists('g:nvpm_fluxconf')
     finish
@@ -112,7 +164,7 @@ let s:h = 'hi def link flux'
 syn cluster flux contains=fluxkeyw,fluxvars,fluxsepr,fluxcomm
 
 exe s:m.'comm             /[#{}].*$/'
-exe s:m.'sepr   contained /[:=@,\/|]/'
+exe s:m.'sepr   contained /[:=@,_\/|]/'
 exe s:m.'vars   contained /\$(\w\+)/'
 exe s:m.'keyw   contained /^\s*\('.s:KEYW.'\)/'
 exe s:m.'kcom   contained /,\s*\('.s:KEYW.'\)/ contains=fluxsepr'

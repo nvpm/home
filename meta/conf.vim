@@ -89,23 +89,21 @@
   "let g:nvpm_fluxconf.lexis.= '|tab'
   "let g:nvpm_fluxconf.lexis.= '|file'
 
-  "hi fluxcomm guifg=#575757
-  "hi fluxkeyw guifg=#553399 gui=bold
-  "hi fluxloop guifg=#ffffff gui=bold
-  "hi fluxinfo guifg=#ffff00 gui=bold
+  hi fluxcomm guifg=#575757
+  hi fluxkeyw guifg=#553399 gui=bold
   "hi fluxname guifg=#aaaa00
 
-  nmap <space>   :NVPMLoop + 3<cr>
-  nmap m<space>  :NVPMLoop - 3<cr>
-  nmap <tab>     :NVPMLoop + 2<cr>
-  nmap m<tab>    :NVPMLoop - 2<cr>
-  nmap <BS>      :NVPMLoop + 1<cr>
-  nmap <del>     :NVPMLoop - 1<cr>
-  nmap <c-n>     :NVPMLoop + 1<cr>
-  nmap <c-p>     :NVPMLoop - 1<cr>
-  nmap <c-space> :NVPMLoop + 0<cr>
-  nmap =         :NVPMLoop + -1<cr>
-  nmap -         :NVPMLoop - -1<cr>
+  nmap <silent><space>   :NVPMLoop + 3<cr>
+  nmap <silent>m<space>  :NVPMLoop - 3<cr>
+  nmap <silent><tab>     :NVPMLoop + 2<cr>
+  nmap <silent>m<tab>    :NVPMLoop - 2<cr>
+  nmap <silent><BS>      :NVPMLoop + 1<cr>
+  nmap <silent><del>     :NVPMLoop - 1<cr>
+  nmap <silent><c-n>     :NVPMLoop + 1<cr>
+  nmap <silent><c-p>     :NVPMLoop - 1<cr>
+  nmap <silent><c-space> :NVPMLoop + 0<cr>
+  nmap <silent>=         :NVPMLoop + -1<cr>
+  nmap <silent>-         :NVPMLoop - -1<cr>
 
   nmap <F8> <esc>:NVPMLoad<space>
   imap <F8> <esc>:NVPMLoad<space>
