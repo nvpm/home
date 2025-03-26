@@ -83,14 +83,14 @@
   let g:nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
   let g:nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
-  let g:nvpm_fluxconf.lexis = ''
-  let g:nvpm_fluxconf.lexis.= '|project'
-  let g:nvpm_fluxconf.lexis.= '|workspace'
-  let g:nvpm_fluxconf.lexis.= '|tab'
-  let g:nvpm_fluxconf.lexis.= '|file'
+  "let g:nvpm_fluxconf.lexis = ''
+  "let g:nvpm_fluxconf.lexis.= '|project'
+  "let g:nvpm_fluxconf.lexis.= '|workspace'
+  "let g:nvpm_fluxconf.lexis.= '|tab'
+  "let g:nvpm_fluxconf.lexis.= '|file'
 
-  hi fluxcomm guifg=#343434
-  hi fluxkeyw guifg=#553399 gui=bold
+  "hi fluxcomm guifg=#575757
+  "hi fluxkeyw guifg=#553399 gui=bold
   "hi fluxloop guifg=#ffffff gui=bold
   "hi fluxinfo guifg=#ffff00 gui=bold
   "hi fluxname guifg=#aaaa00

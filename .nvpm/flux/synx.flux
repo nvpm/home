@@ -5,7 +5,7 @@ project Syntax CODE {
     file flux : flux.vim
     file file @ test/case.flux
   tab code @ nvim/autoload
-    file @ meta/conf.vim
+    file conf @ meta/conf.vim
     --
     file nvpm.vim
     file flux.vim

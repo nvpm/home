@@ -1,4 +1,23 @@
 
-file name surname # comment
-file name surname: $(variable)/info # comment
+-
+proj
+proj
+   file main.c
+   file main.c
+   file main.c
+proj
+   file main.c
+   --
+   file main.c
+  -file main.c
+   file main.c
+   --
+proj
+   file main.c
+   file main.c
+   file main.c
+proj
+
+
+
 
