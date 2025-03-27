@@ -7,8 +7,11 @@ if exists("b:current_syntax")
 else
   let b:current_syntax = "flux"
   syntax clear
-  syntax case ignore
 endif
+
+" Note: this function exists only to use any names 
+"	for local variables,instead of using s: vars
+"	It's deleted immediately after its 1st call
 fu! s:main()
 
 " main {{{3
@@ -49,6 +52,7 @@ fu! s:main()
   let line = ' start=/^/'
   let line.= '   end=/$/'
   let line.= ct.'fluxkeyw,fluxsepr,fluxname,fluxvars,fluxcomm,fluxcut3'
+  let line.= ' keepend'
   exe r.'line '.line|exe h.'line Operator'
 
 " }}}
@@ -56,7 +60,7 @@ fu! s:main()
 
   let keyw = '^\s*loop\s*'
   let loop = '/'.keyw.'/'
-  let endl = '/^\s*endl\s*'.comm.'*.*$/'
+  let endl = '/^\s*endl\s*'.comm.'*$/'
   let endl.= ct.'fluxcomm'
   let cut1 = '/\s*-\s*\w\+/'.cd
   let cut2 = '/\s*--\+.*$/'.cd
@@ -85,7 +89,8 @@ fu! s:main()
   let head.= ' keepend'
   exe r.'lhead '.head|exe h.'lhead fluxline'
 
-  return
+" }}}
+" cuts {{{3
 
 " }}}
 
