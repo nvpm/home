@@ -55,7 +55,7 @@
     tab meta
       file conf.vim
       file menu.vim
-     -buff init.vim
+     -file init.vim
     tab root @
       file README.md
       file LICENSE

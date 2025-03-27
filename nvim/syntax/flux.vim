@@ -16,11 +16,11 @@ fu! s:main()
 
 " main {{{3
 
-  let c  = 'syn cluster FLUX'
-  let k  = 'syn keyword FLUX'
-  let r  = 'syn  region FLUX'
-  let m  = 'syn   match FLUX'
-  let h  = 'hi def link FLUX'
+  let c  = 'syn cluster flux'
+  let k  = 'syn keyword flux'
+  let r  = 'syn  region flux'
+  let m  = 'syn   match flux'
+  let h  = 'hi def link flux'
   let cd = ' contained '
   let ct = ' contains='
 
@@ -49,11 +49,10 @@ fu! s:main()
   let name.= ct.'fluxkeyw,fluxsepr,fluxvars'
   exe m.'name '.name|exe h.'name Normal'
 
-  let line = ' start=/^/'
-  let line.= '   end=/$/'
+  let line = '/^.*$/'
   let line.= ct.'fluxkeyw,fluxsepr,fluxname,fluxvars,fluxcomm,fluxcut3'
-  let line.= ' keepend'
-  exe r.'line '.line|exe h.'line Operator'
+  "let line.= ' keepend'
+  exe m.'line '.line|exe h.'line Operator'
 
 " }}}
 " loop {{{3
@@ -91,6 +90,59 @@ fu! s:main()
 
 " }}}
 " cuts {{{3
+
+" lexis {
+
+let lexis = []
+if !exists('g:nvpm.conf.lexis')
+  if !exists('g:nvpm_fluxconf')
+    return
+  else
+    let lexis = g:nvpm_fluxconf.lexis
+  endif
+else
+  let lexis = g:nvpm.conf.lexis
+endif
+
+" }
+" vars  {
+
+let init = []
+let cut1 = []
+let cut2 = []
+let cpre  = '^\s*-\{-1,2}\s*\n*\s*-*'
+let c1pre =  '^\s*-\s*\n*\s*-*'
+let c2pre = '^\s*--\s*\n*\s*-*'
+let cmid  = '\_.\{-}-*'
+
+" }
+" loop  {
+
+for i in range(len(lexis))
+  let init = lexis[i]
+  let cut1 = init+cut1 
+  let cut2 = cut1[1:]
+
+  let s  = join(init,'\|')
+  let c1 = join(cut1,'\|')
+  let c2 = join(cut2,'\|')
+
+  let syn = r..'flux'..i
+  let hi  = h..'flux'..i
+
+  let cpatt  = '/'.cpre.'\('.s.'\)\_.*/'
+  let c1patt = '/'.c1pre.'\('.s.'\)'.cmid.'\('.c1.'\)/me=e-50'
+  let c2patt = '/'.c2pre.'\('.s.'\)'.cmid.'\('.c2.'\)/me=e-50'
+  let c2patt = i ? c2patt : '/jeebajebanotfound/'
+
+  exe m..i..'cuts '..cpatt
+  exe m..i..'cut1 '..c1patt
+  exe m..i..'cut2 '..c2patt
+  exe h..i..'cuts fluxcomm'
+  exe h..i..'cut1 fluxcomm'
+  exe h..i..'cut2 fluxcomm'
+  
+endfor "}
 
 " }}}
 

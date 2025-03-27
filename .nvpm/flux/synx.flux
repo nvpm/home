@@ -9,6 +9,7 @@ project Syntax CODE {
     file nvpm.vim
     file flux.vim
     file line.vim
+
   tab meta @ meta
     file conf.vim
 }
@@ -28,12 +29,12 @@ project NVIM runtime@ /usr/share/nvim/runtime {
     file vim.vim
 
 }
----
+--
 project NVPM meta @ meta {
   tab meta 
     file conf.vim
     file menu.vim
-   -buff init.vim
+   -file init.vim
   tab root @
     file README.md
     file LICENSE
