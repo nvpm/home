@@ -13,10 +13,20 @@ project Syntax CODE {
     file conf.vim
 }
 project NVIM runtime@ /usr/share/nvim/runtime {
-  file us27 : doc/usr_27.txt
-  file us44 : doc/usr_44.txt
-  file synx : doc/syntax.txt
-  file patt : doc/pattern.txt
+
+  tab doc/synx: doc
+    file us44 : usr_44.txt
+    file us27 : usr_27.txt
+    file synx : syntax.txt
+    file patt : pattern.txt
+
+  tab synxtax : syntax
+    file markdown.vim
+    file html.vim
+    --
+    file c.vim
+    file vim.vim
+
 }
 ---
 project NVPM meta @ meta {

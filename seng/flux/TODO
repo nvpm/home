@@ -1,4 +1,11 @@
 
+  ● flux#loop consider no varname before : ~
+    ● Instead of create 'loop <name>: arg1 arg2 ... argn',
+      one would create just 'loop arg1 arg2 ... argn'
+      and use the values using the wild variable '$_',
+      like in the Perl language.
+    ● Also, the syntax file should consider this as well
+
   ● fixt update parent's indx field ~
   ● skel feature ~
   ● var-replace ~

@@ -42,7 +42,6 @@
         file synx : syntax/nvpm.vim
     }
   }
-  -
   loop plugin: nvpm flux -- line zoom text {
     project SENG $(plugin): seng/$(plugin)
       tab misc

@@ -89,9 +89,13 @@
   "let g:nvpm_fluxconf.lexis.= '|tab'
   "let g:nvpm_fluxconf.lexis.= '|file'
 
-  hi fluxcomm guifg=#575757
-  hi fluxkeyw guifg=#553399 gui=bold
-  "hi fluxname guifg=#aaaa00
+  "hi fluxcomm guifg=#4f4f4f
+  "hi fluxkeyw guifg=#cf8f1f gui=bold
+  "hi fluxkeyw guifg=#ffff00 gui=bold
+  "hi fluxkeyw guifg=#ff4400 gui=bold
+  "hi fluxvars guifg=#0044ff gui=bold
+  "hi fluxinfo guifg=#ffff00
+  "hi fluxsepr guifg=#ffffff gui=bold
 
   nmap <silent><space>   :NVPMLoop + 3<cr>
   nmap <silent>m<space>  :NVPMLoop - 3<cr>

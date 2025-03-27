@@ -7,205 +7,45 @@ if exists("b:current_syntax")
 else
   let b:current_syntax = "flux"
   syntax clear
+  syntax case ignore
 endif
+fu! s:main()
 
-let s:r = 'syn region  FLUX'
-let s:m = 'syn match   FLUX'
-let s:k = 'syn keyword FLUX'
-let s:h = 'hi def link FLUX'
+let c  = 'syn cluster FLUX'
+let k  = 'syn keyword FLUX'
+let r  = 'syn  region FLUX'
+let m  = 'syn   match FLUX'
+let h  = 'hi def link FLUX'
+let cd = ' contained '
+let ct = ' contains='
 
-fu!  s:main() "{{{2
+let comm = '[#{}]'
+let sepr = '[:=@,\_/]'
+let cut3 = '/\(^\|,\)\s*---\_.*/'
+exe m.'comm /'.comm.'.*$/'.cd|exe h.'comm Comment'
+exe m.'vars /\$(\w\+)/'   .cd|exe h.'vars Title'
+exe m.'sepr /'.sepr.'/'   .cd|exe h.'vars Normal'
+exe m.'cut3 '. cut3          |exe h.'cut3 fluxcomm'
 
-  exe s:m.'keyw /^\v *\w+/                '
-  exe s:m.'ckey /\v, *\w+/ contains=fluxsepr'
-  exe s:m.'comm /[#{}].*$/                '
-  exe s:m.'sepr /[:=@,_\/|]/     contained'
-  exe s:m.'vars /\$(\w\+)/       contained'
-  exe s:m.'cut3 /^\s*-\{3,}\_.*/          '
+let keyw = '\(^\|,\)\s*\w\+\s*'
+exe m.'keyw /'.keyw.'/'.cd.ct.'fluxsepr'|exe h.'keyw Keyword'
 
-  exe s:h.'comm Comment'
-  exe s:h.'sepr Normal'
-  exe s:h.'vars Title'
-  exe s:h.'cut3 fluxcomm'
-  exe s:h.'keyw Keyword'
-  exe s:h.'ckey fluxkeyw'
+let sep='[:=@]' 
+let name = '/'
+let name.= '\('.keyw.'\)*'
+let name.= '\([-_+a-zA-Z0-9$()\|/]\+\s*\)\+'
+let name.= sep
+let name.= '/'
+let name.= cd
+let name.= ct.'fluxkeyw,fluxsepr,fluxvars'
+exe m.'name '.name|exe h.'name Normal'
 
-endfu "}}}
-fu! s:loop() "{{{2
-  let head = '/^\v *loop +.*$/ contains=@fluxloop'
-  let name = '/\w*\s*[:=@]/ contains=fluxsepr'
-  let cut1 = '/\s*-\s*[a-z0-9_.-\/]\+/'
-  let cut2 = '/\s*-\{2,}.*$/'
-  let endl = '/^\v *endl.*$/ contains=fluxcomm'
-  let cuts = 'start=/^\s*-\{1,2}\s*.*\n*\s*loop/ end=/^\s*\(endl\|endlo\|endloo\|endloop\).*$/'
-  syn cluster fluxloop 
-\ contains=fluxkeyw,fluxlname,fluxlcut1,fluxlcut2,fluxcomm
-  exe s:m.'lname '.name.' contained'
-  exe s:m.'lcut1 '.cut1.' contained'
-  exe s:m.'lcut2 '.cut2.' contained'
-  exe s:m.'lhead '.head
-  exe s:r.'lcuts '.cuts
-  exe s:m.'lendl '.endl
-
-  exe s:h.'lhead Operator'
-  exe s:h.'lcut1 fluxcomm'
-  exe s:h.'lcut2 fluxcomm'
-  exe s:h.'lname fluxvars'
-  exe s:h.'lcuts fluxcomm'
-  exe s:h.'lendl fluxkeyw'
-
-endfu "}}}
-fu! s:cuts()
-endfu
-
-call s:main()
-call s:loop()
+let line = ' start=/^/'
+let line.= '   end=/$/'
+let line.= ct.'fluxkeyw,fluxsepr,fluxname,fluxvars,fluxcomm,fluxcut3'
+exe r.'line '.line|exe h.'line Operator'
 
 
+endfu|call s:main()|delfunc s:main
 
-
-finish
-if !exists('g:nvpm.conf.lexis')
-  if !exists('g:nvpm_fluxconf')
-    finish
-  else
-    let s:lexis = g:nvpm_fluxconf.lexis
-    if len(s:lexis)<4|finish|endif
-  endif
-else
-  let s:lexis = g:nvpm.conf.lexis
-endif
-
-syn case ignore
-
-fu! s:synx(...) " {
-
-let synx  = [{},{},{},{}]
-
-let synx[0].s = s:lexis[0]
-let synx[1].s = s:lexis[1]
-let synx[2].s = s:lexis[2]
-let synx[3].s = s:lexis[3]
-
-let synx[0].c1 = synx[0].s +    []
-let synx[1].c1 = synx[1].s + synx[0].c1
-let synx[2].c1 = synx[2].s + synx[1].c1
-let synx[3].c1 = synx[3].s + synx[2].c1
-
-let synx[0].c2 =    []
-let synx[1].c2 = synx[0].c1
-let synx[2].c2 = synx[1].c1
-let synx[3].c2 = synx[2].c1
-
-let synx[0].s = join(synx[0].s,'\|')
-let synx[1].s = join(synx[1].s,'\|')
-let synx[2].s = join(synx[2].s,'\|')
-let synx[3].s = join(synx[3].s,'\|')
-
-let synx[0].c1 = join(synx[0].c1,'\|')
-let synx[1].c1 = join(synx[1].c1,'\|')
-let synx[2].c1 = join(synx[2].c1,'\|')
-let synx[3].c1 = join(synx[3].c1,'\|')
-
-let synx[0].c2 = join(synx[0].c2,'\|')
-let synx[1].c2 = join(synx[1].c2,'\|')
-let synx[2].c2 = join(synx[2].c2,'\|')
-let synx[3].c2 = join(synx[3].c2,'\|')
-
-return synx
-
-endfu "}
-
-let s:synx = s:synx()
-
-for i in range(4) "{
-
-  let s = s:synx[i].s
-  let c1= s:synx[i].c1
-  let c2= s:synx[i].c2..'\|endl\|endlo\|endloo\|endloop'
-
-  " for shortening of each code line's length
-  let  p= 'flux'..i
-  let syn = 'syntax match '..p
-  let hi  = 'hi def  link '..p
-
-  let cuts = '/^\s*-\{-1,2}\s*\n*\s*-*\('.s.'\)\_.*/'
-  let cut1 = '/^\s*-\s*\n*\s*-*\('.s.'\)\_.\{-}-*\('.c1.'\)/me=e-50'
-  let cut2 ='/^\s*--\s*\n*\s*-*\('.s.'\)\_.\{-}-*\('.c2.'\)/me=e-50'
-
-  exe syn..'cuts '..cuts
-  exe syn..'cut1 '..cut1
-  exe syn..'cut2 '..cut2
-
-  exe hi ..'cuts  fluxcomm'
-  exe hi ..'cut1  fluxcomm'
-  exe hi ..'cut2  fluxcomm'
-
-
-endfor "}
-
-"----------------------------------------------------
-" main flux definitions
-
-let s:keyw = ''
-let s:loop = 'loop endl endlo endloo endloop'
-
-for type in s:lexis
-  for keyw in type
-    let s:keyw.= keyw..' '
-  endfor
-endfor
-
-let s:keyw = trim(s:keyw)
-let s:KEYW = substitute(s:keyw,'\s','\\|','g')
-let s:LOOP = substitute(s:loop,'\s','\\|','g')
-
-let s:r = 'syn region  flux'
-let s:m = 'syn match   flux'
-let s:k = 'syn keyword flux'
-let s:h = 'hi def link flux'
-
-syn cluster flux contains=fluxkeyw,fluxvars,fluxsepr,fluxcomm
-
-exe s:m.'comm             /[#{}].*$/'
-exe s:m.'sepr   contained /[:=@,_\/|]/'
-exe s:m.'vars   contained /\$(\w\+)/'
-exe s:m.'keyw   contained /^\s*\('.s:KEYW.'\)/'
-exe s:m.'kcom   contained /,\s*\('.s:KEYW.'\)/ contains=fluxsepr'
-exe s:m.'name /,*\s*\('.s:KEYW.'\)\s\+[$().a-z0-9_-|\/ ]*\s*[:=@]/ contains=@flux,fluxkcom'
-exe s:m.'line /^\(,*\s*\('.s:KEYW.'\)\s*[$().a-z0-9_-|\/]*\s*[:=@]\=.*\)\+$/ contains=@flux,fluxname'
-"exe s:m.'line /\s*\('.s:KEYW.'\)\s\+[$().a-z0-9_-|\/]*\s*[:=@]\=.*$/ contains=@flux,fluxname'
-exe s:m.'cut3 /^\s*-\{3,}\_.*/ contains=fluxlendl'
-
-exe s:h.'name  Normal'
-exe s:h.'line  Operator'
-exe s:h.'comm  Comment'
-exe s:h.'cut3  fluxcomm'
-exe s:h.'sepr  Normal'
-exe s:h.'vars  Title'
-exe s:h.'keyw  Keyword'
-exe s:h.'kcom  fluxkeyw'
-
-"----------------------------------------------------
-" loop definitions
-
-exe s:m.'lkeyw contained /\('.s:LOOP.'\)/'
-exe s:m.'lcut1 contained /\s*-\s*[a-z0-9_.-\/]\+/'
-exe s:m.'lcut2 contained /\s*-\{2,}.*$/'
-exe s:m.'lname contained /\w*\s*[:=@]/ contains=fluxsepr'
-exe s:r.'lcuts start=/^\s*-\{1,2}\s*.*\n*\s*loop/ end=/^\s*\(endl\|endlo\|endloo\|endloop\).*$/ contains=fluxcut3'
-
-exe s:m.'lendl /^\s*\('.s:LOOP.'\).*$/ contains=fluxcomm'
-exe s:m.'lhead /^\s*loop\s*\w*\s*[:=@].*$/ contains=fluxlkeyw,fluxlname,fluxlcut1,fluxlcut2,fluxcomm'
-
-exe s:h.'lkeyw fluxkeyw'
-exe s:h.'lendl fluxkeyw'
-exe s:h.'lcut1 fluxcomm'
-exe s:h.'lcut2 fluxcomm'
-exe s:h.'lname fluxvars'
-exe s:h.'lcuts fluxcomm'
-exe s:h.'lhead fluxline'
-
-"----------------------------------------------------
-
-unlet s:synx s:lexis s:keyw
+" vim: nowrap sw=2 sts=2 ts=8 noet fdm=marker:
