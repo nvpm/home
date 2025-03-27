@@ -83,19 +83,18 @@ let g:nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
 let g:nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
 let g:nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
-let g:nvpm_fluxconf.lexis = ''
-let g:nvpm_fluxconf.lexis.= '|project'
-let g:nvpm_fluxconf.lexis.= '|workspace'
-let g:nvpm_fluxconf.lexis.= '|tab'
-let g:nvpm_fluxconf.lexis.= '|file'
+"let g:nvpm_fluxconf.lexis = ''
+"let g:nvpm_fluxconf.lexis.= '|project'
+"let g:nvpm_fluxconf.lexis.= '|workspace'
+"let g:nvpm_fluxconf.lexis.= '|tab'
+"let g:nvpm_fluxconf.lexis.= '|file'
 
-"hi fluxcomm guifg=#4f4f4f
-"hi fluxkeyw guifg=#cf8f1f gui=bold
-"hi fluxkeyw guifg=#ffff00 gui=bold
-"hi fluxkeyw guifg=#ff4400 gui=bold
-"hi fluxvars guifg=#0044ff gui=bold
-"hi fluxinfo guifg=#ffff00
-"hi fluxsepr guifg=#ffffff gui=bold
+hi fluxcomm guifg=#4f4f4f
+hi fluxkeyw guifg=#00ff00 gui=bold,italic
+"hi fluxname guifg=#00ff99
+hi fluxvars guifg=#1177ff
+hi fluxline guifg=#ffee00
+hi fluxsepr guifg=#ffffff gui=bold
 
 nmap <silent><space>   :NVPMLoop + 3<cr>
 nmap <silent>m<space>  :NVPMLoop - 3<cr>

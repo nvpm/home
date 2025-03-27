@@ -1,5 +1,13 @@
 
   project NVPM devl : nvim {
+    workspace flux {
+      tab code
+        file auto : autoload/flux.vim
+        file init @ meta/init.vim
+      tab test @ test/flux
+        file case : case.case
+        file expt : case.expt
+    }
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
@@ -9,14 +17,7 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
-    workspace flux {
-      tab code
-        file auto : autoload/flux.vim
-        file init @ meta/init.vim
-      tab test @ test/flux
-        file case : case.case
-        file expt : case.expt
-    }
+    --
     workspace line {
       tab code
         file auto : autoload/line.vim

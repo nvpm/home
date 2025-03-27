@@ -1,3 +1,4 @@
+
 home nvim/syntax
 
 project Syntax CODE {
@@ -16,10 +17,8 @@ project Syntax CODE {
 project NVIM runtime@ /usr/share/nvim/runtime {
 
   tab doc/synx: doc
-    file us44 : usr_44.txt
-    file us27 : usr_27.txt
-    file synx : syntax.txt
-    file patt : pattern.txt
+    file usr_44.txt , file usr_27.txt
+    file syntax.txt , file pattern.txt
 
   tab synxtax : syntax
     file markdown.vim

@@ -1,3 +1,19 @@
+
+-
+-
+--
+--
+--
+-
+-
+-
+-
+--
+file a
+file b
+file c
+
+---
 HOME libm
 
 # leafless tree dies!
@@ -34,4 +50,4 @@ Archive meta {
     File trash.sh
 }
 
-# vim: ft=nvpm
+# vim: ft=flux
