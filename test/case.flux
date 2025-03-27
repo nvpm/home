@@ -1,17 +1,10 @@
 
 
 
+loop code:name -name name name -- name name name { comment 
+  file $_main.c  , file a: $(code).txt # comment
+endl   }
 
-home iasj 
-
-proj code : $(_)/code{
-  file mainc: main.c
-  file mainh: main.h #comment
-  ----
-  file make : Makefile
-  file make : Makefile
-  file make : Makefile
-  file make : Makefile
-}
-
-
+loop code:name -name name name -- name name name { comment 
+  file $_main.c  , file a: $(code).txt # comment
+endl }

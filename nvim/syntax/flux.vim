@@ -11,40 +11,83 @@ else
 endif
 fu! s:main()
 
-let c  = 'syn cluster FLUX'
-let k  = 'syn keyword FLUX'
-let r  = 'syn  region FLUX'
-let m  = 'syn   match FLUX'
-let h  = 'hi def link FLUX'
-let cd = ' contained '
-let ct = ' contains='
+" main {{{3
 
-let comm = '[#{}]'
-let sepr = '[:=@,\_/]'
-let cut3 = '/\(^\|,\)\s*---\_.*/'
-exe m.'comm /'.comm.'.*$/'.cd|exe h.'comm Comment'
-exe m.'vars /\$(\w\+)/'   .cd|exe h.'vars Title'
-exe m.'sepr /'.sepr.'/'   .cd|exe h.'vars Normal'
-exe m.'cut3 '. cut3          |exe h.'cut3 fluxcomm'
+  let c  = 'syn cluster FLUX'
+  let k  = 'syn keyword FLUX'
+  let r  = 'syn  region FLUX'
+  let m  = 'syn   match FLUX'
+  let h  = 'hi def link FLUX'
+  let cd = ' contained '
+  let ct = ' contains='
 
-let keyw = '\(^\|,\)\s*\w\+\s*'
-exe m.'keyw /'.keyw.'/'.cd.ct.'fluxsepr'|exe h.'keyw Keyword'
+  let comm = '[#{}]'
+  let sepr = '[:=@,\_/]'
+  let cut3 = '/\(^\|,\)\s*---\_.*/'
+  let vars = '\(\$_\|\$(\w\+)\)'
+  exe m.'comm /'.comm.'.*$/'.cd|exe h.'comm Comment'
+  exe m.'vars /'.vars.'/'   .cd|exe h.'vars Title'
+  exe m.'sepr /'.sepr.'/'   .cd|exe h.'vars Normal'
+  exe m.'cut3 '. cut3          |exe h.'cut3 fluxcomm'
 
-let sep='[:=@]' 
-let name = '/'
-let name.= '\('.keyw.'\)*'
-let name.= '\([-_+a-zA-Z0-9$()\|/]\+\s*\)\+'
-let name.= sep
-let name.= '/'
-let name.= cd
-let name.= ct.'fluxkeyw,fluxsepr,fluxvars'
-exe m.'name '.name|exe h.'name Normal'
+" }}}
+" flux {{{3
 
-let line = ' start=/^/'
-let line.= '   end=/$/'
-let line.= ct.'fluxkeyw,fluxsepr,fluxname,fluxvars,fluxcomm,fluxcut3'
-exe r.'line '.line|exe h.'line Operator'
+  let keyw = '\(^\|,\)\s*\w\+\s*'
+  exe m.'keyw /'.keyw.'/'.cd.ct.'fluxsepr'|exe h.'keyw Keyword'
 
+  let sep  = '[:=@]' 
+  let name = '/'
+  let name.= '\('.keyw.'\)*'
+  let name.= '\([-_+a-zA-Z0-9$()\|/]\+\s*\)\+'
+  let name.= sep
+  let name.= '/'
+  let name.= cd
+  let name.= ct.'fluxkeyw,fluxsepr,fluxvars'
+  exe m.'name '.name|exe h.'name Normal'
+
+  let line = ' start=/^/'
+  let line.= '   end=/$/'
+  let line.= ct.'fluxkeyw,fluxsepr,fluxname,fluxvars,fluxcomm,fluxcut3'
+  exe r.'line '.line|exe h.'line Operator'
+
+" }}}
+" loop {{{3
+
+  let keyw = '^\s*loop\s*'
+  let loop = '/'.keyw.'/'
+  let endl = '/^\s*endl\s*'.comm.'*.*$/'
+  let endl.= ct.'fluxcomm'
+  let cut1 = '/\s*-\s*\w\+/'.cd
+  let cut2 = '/\s*--\+.*$/'.cd
+  let lcut = ' start=/^\s*--*\s*\n*\s*loop/'
+  let lcut.= '   end=/^\s*endl.*$/'
+  let lcut.= ct.'fluxcut3'
+  exe m.'lkeyw '.loop|exe h.'lkeyw Include'
+  exe m.'lendl '.endl|exe h.'lendl fluxlkeyw'
+  exe m.'lcut1 '.cut1|exe h.'lcut1 fluxcomm'
+  exe m.'lcut2 '.cut2|exe h.'lcut2 fluxcomm'
+  exe r.'lcuts '.lcut|exe h.'lcuts fluxcomm'
+
+  let sep  = '[:=@]' 
+  let name = '/'
+  let name.= keyw
+  let name.= '\w\+'
+  let name.= sep
+  let name.= '/'
+  let name.= cd
+  let name.= ct.'fluxlkeyw,fluxsepr'
+  exe m.'lname '.name|exe h.'lname fluxvars'
+
+  let head = ' start=/'.keyw.'/'
+  let head.= '   end=/$/'
+  let head.= ct.'fluxlkeyw,fluxsepr,fluxlname,fluxlcut1,fluxlcut2,fluxcomm'
+  let head.= ' keepend'
+  exe r.'lhead '.head|exe h.'lhead fluxline'
+
+  return
+
+" }}}
 
 endfu|call s:main()|delfunc s:main
 
