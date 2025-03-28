@@ -1,15 +1,17 @@
 
-  ● adapt plugin to accept any number of lexis nodes  ~
-    ● not only four
-
   ● incorporate g:nvpm.flux into the g:nvpm.tree  ~
     ● This way when changing between flux files using loop,
       only non-loaded flux files will be loaded.
+
+  ● adapt plugin to accept any number of lexis nodes  ~
+    ● not only four
+
   ● save data structure ~
     ● save the contents of the tree, such as: indx,type, etc. 
     ● restore such content after nvpm#edit or at startup
     ● methods such as nvpm#diff, nvpm#quit, and others, may need
       development
+
   ● nvpm#bind  ~
     ● handles user keyboard mappings 
       Instead of directly mapping, receive bindings as arguments. Say:
@@ -23,6 +25,7 @@
                         ...
                            
       ---------------------------------
+
   ● nvpm#quit  ~
     ● actions to be done before quiting a neovim session.
       Instead of directly leaving, save DS, current flux file loaded,
@@ -37,6 +40,7 @@
       freshly edited current flux file.
       This may be useful to avoid calling flux#flux to much and to use 
       it at startup
+
   ● develop global flux files and skelletons  ~
     ● needs flux#skel() method first
 

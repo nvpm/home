@@ -307,8 +307,9 @@ fu! nvpm#curr(...) " gets the current file path {
 
   " fixes syntax for nvpm fluxfiles
   " TODO: remove this bufname entry before deployment
-  if head == s:dirs.local  || bufname() == 'test/case.flux'||
-    \HEAD == s:dirs.global && 
+  if 1+match(file,'^.*\.flux$')||
+    \head == s:dirs.local      || 
+    \HEAD == s:dirs.global     && 
     \&ft  != 'flux'
     let &ft = 'flux'
   endif

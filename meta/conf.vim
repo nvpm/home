@@ -167,7 +167,7 @@ nmap ml :LINESwap<cr><c-l>
 " }
 "   zoom {
 
-let zoom_height = 10
+"let zoom_height = 10
 let zoom_width  = 80
 let zoom_layout = 'center'
 let zoom_left   = 0

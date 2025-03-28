@@ -85,8 +85,9 @@ fu! s:main()
   let head.= ct.'fluxlkeyw,fluxsepr,fluxlname,fluxlcut1,fluxlcut2,fluxcomm'
   exe m.'lhead '.head|exe h.'lhead fluxline'
 
-  let none = '/'.keyw.'\s\+-*\s*\w*s*'.sep.'\=\s*--\_.*endl.*$/'
-  exe m.'lnone '.none|exe h.'lnone fluxcomm'
+  exe m.'lnone /'.keyw.'\s\+-*\s*\w*s*'.sep.'\=\s*--\_.*endl.*$/'
+  exe m.'lnone /^.*'.sep.'\(\s*-\s*\w\+\s*\)*\s*--\_.*endl.*$/'
+  exe h.'lnone fluxcomm'
 
   exe m.'lbadf /'.keyw.'\s*-\+\s*\w*s*'.sep.'.*$/'
   exe h.'lbadf Error'
@@ -136,7 +137,7 @@ for i in range(len(lexis))
 
   exe m..i..'cuts '..cpatt ..ct..'fluxlendl,fluxlcuts'
   exe m..i..'cut1 '..c1patt..ct..'fluxlendl,fluxlcuts,flux'.i.'cut1'
-  exe m..i..'cut2 '..c2patt..ct..'fluxlendl,fluxlcuts,fluxcut3'.i.'cut2'
+  exe m..i..'cut2 '..c2patt..ct..'fluxlendl,fluxlcuts,fluxcut3,flux'.i.'cut2'
 
   exe h..i..'cuts fluxcomm'
   exe h..i..'cut1 fluxcomm'

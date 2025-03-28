@@ -7,15 +7,20 @@
     ● Also, the syntax file should consider this as well
 
   ● fixt update parent's indx field ~
+
   ● skel feature ~
+
   ● var-replace ~
+
   ● use "=" as absolute path instead of "@", and then remove @ support ~
+
   ● synx ~
    ● create syntax for single line multiple statement (endline feature)
      file a,file b,...file n
    ● incorporate synx/nvpm into synx/flux, and leave it just one syntax file
      ● fluxkeyw should be made of only the words in lexis
    ● create autocommands for recognizing flux files
+
   ● flux#node info field made of multiple ':' splits (make it a list) ~
 
 vim: ft=help: tw=2
