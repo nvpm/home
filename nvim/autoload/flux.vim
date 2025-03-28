@@ -268,14 +268,15 @@ fu! flux#cuts(...) " handles standalone cuts & cut3+ {
     let list = []
     while indx<leng
       let node = s:conf.list[indx]|let indx+=1
-      " breaks at cut3+
       if node.cuts>=3|break|endif
-      " pushes forward current cut info if stand-alone
-      let standalone = empty(node.data.keyw..node.data.name..node.data.info)
-      if standalone && node.cuts
-        let cuts      = node.cuts
-        let node      = s:conf.list[indx]|let indx+= 1
+      let stda = empty(node.data.keyw..node.data.name..node.data.info)
+      if stda && node.cuts
+        let cuts = node.cuts
+        continue
+      endif
+      if cuts
         let node.cuts = cuts
+        let cuts = 0
       endif
       call add(list,node)|let s:conf.leng+=1
     endwhile
@@ -309,11 +310,20 @@ fu! flux#loop(...) " handles loop functionality {
         endwhile
         let name = node.data.name
         let vars = split(node.data.info,' ')
+        let cuts = 0
         for var in vars
           " cut-tree for loop-vars
-          let cuts = flux#node(var).cuts
-          if  cuts==1|continue|endif
-          if  cuts>=2|  break |endif
+          let item = flux#node(var)
+          if empty(item.data.keyw..item.data.name..item.data.info) && item.cuts
+            let cuts = item.cuts
+            continue
+          endif
+          if cuts
+            let item.cuts = cuts
+            let cuts = 0
+          endif
+          if  item.cuts==1|continue|endif
+          if  item.cuts>=2|  break |endif
           if empty(var)|continue|endif
           for item in loop
             let info = deepcopy(item)

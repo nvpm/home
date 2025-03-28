@@ -9,7 +9,6 @@
   ● fixt update parent's indx field ~
   ● skel feature ~
   ● var-replace ~
-  ● flux#cuts takes higher standalone cut instead of next node's ~
   ● use "=" as absolute path instead of "@", and then remove @ support ~
   ● synx ~
    ● create syntax for single line multiple statement (endline feature)
