@@ -7,7 +7,9 @@ let __ZOOMAUTO__ = 1
 " end-once}
 " func {
 
-fu! zoom#zoom(...) "{
+fu! zoom#init(...) "{
+  if exists('s:init')|return|else|let s:init=1|endif
+
   let s:zoom = 0
 
   let s:h = get(g:,'zoom_height','80%')
@@ -37,6 +39,9 @@ fu! zoom#hide(...) "{
   call line#show()
 
   let s:zoom = 0
+
+endfu "}
+fu! zoom#open(...) "{
 
 endfu "}
 

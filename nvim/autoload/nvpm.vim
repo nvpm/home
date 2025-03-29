@@ -9,10 +9,8 @@ let __NVPMAUTO__ = 1
 
 " main functions {
 
-fu! nvpm#nvpm(...) " initiate main variables {
-
-  if has_key(s:,'once')&&g:NVPMTEST|return|endif
-  let s:once = 1
+fu! nvpm#init(...) " initiate main variables {
+  if exists('s:init')|return|else|let s:init=1|endif
 
   let s:dirs = {}
   let s:dirs.local  = '.nvpm/flux/'
@@ -169,7 +167,7 @@ fu! nvpm#load(...) " loads a flux file {
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
 
-  call line#init()
+  call line#keep()
   call nvpm#save()
   let g:nvpm.tree.mode = 1
 

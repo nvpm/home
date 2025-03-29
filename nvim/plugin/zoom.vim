@@ -7,7 +7,7 @@ let __ZOOMPLUG__ = 1
 " end-once}
 " init {
 
-call zoom#zoom()
+call zoom#init()
 
 " end-init}
 " cmds {
