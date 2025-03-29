@@ -285,7 +285,7 @@ endfu "}
 " }
 " help functions {
 
-fu! nvpm#curr(...) " gets the current file path {
+fu! nvpm#curr(...) " stores  the current file path {
 
   let root = get(a:,1,g:nvpm.tree.root)
   let list = get(root,'list',[])
@@ -301,7 +301,7 @@ fu! nvpm#curr(...) " gets the current file path {
   let g:nvpm.tree.curr = curr
 
 endfu "}
-fu! nvpm#rend(...) " {
+fu! nvpm#rend(...) " renders the current file path {
 
   let curr = simplify(g:nvpm.tree.curr)
   let head = fnamemodify(curr,':h')..'/'
@@ -328,24 +328,27 @@ fu! nvpm#rend(...) " {
   endif
 
 endfu "}
-fu! nvpm#diff(...) " {
-endfu "}
-fu! nvpm#show(...) " {
-  let tree = get(a:,1,g:nvpm.tree.root)
-  call flux#show(tree)
-endfu "}
-fu! nvpm#indx(...) " {
+fu! nvpm#indx(...) " updates index from meta field {
+
   let meta = a:1
   let step = a:2
   let meta.indx+= step
   let meta.indx%= meta.leng
+
 endfu "}
-fu! nvpm#flux(...) " {
+fu! nvpm#show(...) " shows   the current flux file {
+
+  call flux#show(get(a:,1,g:nvpm.tree.root))
+
+endfu "}
+fu! nvpm#flux(...) " reads   the flux directory    {
+
   if isdirectory(s:dirs.local)&&empty(g:nvpm.flux.list)
     let g:nvpm.flux.list = readdir(s:dirs.local)
     let g:nvpm.flux.leng = len(g:nvpm.flux.list)
     let g:nvpm.flux.indx = 0
   endif
+
 endfu "}
 
 " }
