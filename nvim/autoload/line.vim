@@ -24,10 +24,7 @@ fu! line#init(...) " initiate script variables {
   let s:user.gitinfo      = get(g:,'line_git_info'      , 0    )
   let s:user.gitdelayms   = get(g:,'line_git_delayms'   , 2000 )
 
-  let s:git = {}
-  let s:git.info = ''
-  "let s:git.time = 0
-
+  let s:git  = ''
   let s:line = 1
 
   call line#save()
@@ -70,7 +67,7 @@ fu! line#botl(...) " makes the bottom line {
 
   let line .= line#list(3)
 
-  let line .= s:git.info
+  let line .= s:git
   let line .= '%#LINEFill#'
   let line .= s:user.bottomcenter
   let line .= '%='
@@ -82,8 +79,7 @@ endfu "}
 fu! line#show(...) " shows the nvpm line {
 
   if g:nvpm.tree.mode
-    if s:user.gitinfo " && !s:git.time
-      "let s:git.time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
+    if s:user.gitinfo
       let time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
     endif
     set tabline=%!line#topl()
@@ -183,7 +179,7 @@ fu! line#time(...) "{
       let info = cr .' ' . branch . char
     endif
   endif
-  let s:git.info = info
+  let s:git = info
 endfu "}
 fu! line#file(...) "{
   let termpatt = 'term://.*'
