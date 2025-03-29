@@ -1,29 +1,19 @@
-" plug/zoom.vim
-" once {
+"-- plug/zoom.vim --
 
 if !NVPMTEST&&exists('__ZOOMPLUG__')|finish|endif
 let __ZOOMPLUG__ = 1
 
-" end-once}
-" init {
-
 call zoom#init()
 
-" end-init}
-" cmds {
-
+"-- user commands --
 command! Zoom call zoom#swap()
 
-" end-cmds}
-" acmd {
-
+"-- auto commands --
 if get(g:,'zoom_autocmds',1)
   augroup ZOOM
     au!
-    au WinEnter    * call zoom#back()
     au BufWinEnter * call zoom#help()
     au QuitPre     * call zoom#quit()
+    au WinEnter    * call zoom#back()
   augroup END
 endif
-
-" end-acmd}

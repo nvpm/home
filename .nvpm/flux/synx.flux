@@ -3,12 +3,12 @@ home nvim/syntax
 
 project Syntax CODE {
 
-  tab meta @ meta
-    file conf.vim
-
   tab flux
     file flux : flux.vim
     file file @ test/case.flux
+
+  tab meta @ meta
+    file conf.vim
 
   -
   tab code @ nvim/autoload

@@ -47,6 +47,22 @@ fu! s:test.zoom(...) "{
   so nvim/autoload/zoom.vim
   so nvim/plugin/zoom.vim
 
+  return
+  let conf = {}
+  let conf.relative = 'win'
+  let conf.style = 'minimal'
+  let conf.border = ['+','-','+','|']
+  let conf.title = 'zoom mode'
+  let conf.title_pos = 'center'
+  let conf.width = 40
+  let conf.height= 12
+  let conf.col= 10
+  let conf.row= 1
+
+  return
+  call nvim_open_win(0,1,conf)
+  ec nvim_win_get_config(0)
+
 endfu "}
 "} 
 " test {

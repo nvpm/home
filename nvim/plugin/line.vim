@@ -1,37 +1,9 @@
-" plug/line.vim
-" once {
+"-- plug/line.vim --
 
 if !NVPMTEST&&exists('__LINEPLUG__')|finish|endif
 let __LINEPLUG__ = 1
 
-" end-once}
-" init {
-
 call line#init()
 
-" end-init}
-" cmds {
-
-" '_ LINEShow {
-
-       command!
-\      LINEShow
-\      call line#show()
-
-" }
-" '_ LINEHide {
-
-       command!
-\      LINEHide
-\      call line#hide()
-
-" }
-" '_ LINESwap {
-
-       command!
-\      LINESwap
-\      call line#swap()
-
-" }
-
-" end-cmds}
+"-- user commands --
+command! LINESwap call line#swap()

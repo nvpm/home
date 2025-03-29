@@ -1,11 +1,7 @@
-" auto/line.vim
-" once {
+"-- auto/line.vim  --
 
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
-
-" end-once}
-" func {
 
 "-- main functions --
 fu! line#init(...) "{
@@ -110,7 +106,7 @@ fu! line#swap(...) "{
 
 endfu "}
 
-"-- help functions --
+"-- auxy functions --
 fu! line#save(...) "{
 
   let s:topnr = &showtabline
@@ -194,4 +190,3 @@ fu! line#file(...) "{
   endif
 endfu "}
 
-" end-func}

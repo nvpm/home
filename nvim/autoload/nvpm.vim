@@ -1,11 +1,7 @@
-" auto/nvpm.vim
-" once {
+"-- auto/nvpm.vim  --
 
 if !NVPMTEST&&exists('__NVPMAUTO__')|finish|endif
 let __NVPMAUTO__ = 1
-
-" end-once}
-" func {
 
 "-- main functions --
 fu! nvpm#init(...) "{ 
@@ -183,7 +179,10 @@ fu! nvpm#edit(...) "{
   endif
 
   " makes the edit file otherwise
-  let fluxes = readdir(s:dirs.local)
+  let fluxes = []
+  if isdirectory(s:dirs.local)
+    let fluxes = readdir(s:dirs.local)
+  endif
   let body   = []
   for file in fluxes
     let file = s:dirs.local..file
@@ -306,6 +305,7 @@ fu! nvpm#rend(...) "{
       \HEAD == s:dirs.global     && 
       \&ft  != 'flux'
       set filetype=flux
+      set commentstring=-%s
     endif
 
     if get(g:,'nvpm_maketree',0) &&
@@ -344,17 +344,9 @@ endfu "}
 "-- user functions --
 fu! nvpm#DIRS(...) "{
   let files = readdir(s:dirs.local)
-  "for i in range(len(files))
-  "  let files[i] = s:dirs.local ..files[i]
-  "endfor
   return files
-endfu "}
-fu! nvpm#MAKE(...) "{
 endfu "}
 fu! nvpm#LOOP(...) "{
   return g:nvpm.loop.words
 endfu "}
 
-" }
-
-" end-func}

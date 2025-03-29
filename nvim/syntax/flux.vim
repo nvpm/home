@@ -110,13 +110,9 @@ endif
 let init = []
 let cut1 = []
 let cut2 = []
-let cpre  = '^\s*-\{-1,2}\s*\n*\s*-*'
-let c1pre =  '^\s*-\s*\n*\s*'
-let c2pre = '^\s*--\s*\n*\s*'
-let cmid  = '\_.\{-}-*'
 
 " }
-" loop  {
+" cuts  {
 
 for i in range(len(lexis))
   let init = lexis[i]
@@ -125,20 +121,35 @@ for i in range(len(lexis))
 
   let s  = join(init,'\|')
   let c1 = join(cut1,'\|')
-  let c2 = join(cut2,'\|')..'\|loop\|endl'
+  let c2 = join(cut2,'\|')
 
   let syn = r..'flux'..i
   let hi  = h..'flux'..i
 
+  let cpre  = '^\s*-\{-1,2}\s*\n*\s*-*'
+  let c1pre =  '^\s*-\s*\n*\s*-*'
+  let c2pre = '^\s*--\s*\n*\s*-*'
+  let cmid  = '\_.\{-}\(-*\s*\n*\)*'
+  let cmid  = '\_.\{-}-*'
+
   let cpatt  = '/'.cpre.'\('.s.'\)\_.*/'
-  let c1patt = '/'.c1pre.'\('.s.'\)\_.\{-}-*\('.c1.'\)/me=e-50'
-  let c2patt = '/'.c2pre.'\('.s.'\)\_.\{-}-*\('.c2.'\)/me=e-50'
+  let c1patt = '/'.c1pre.'\('.s.'\)'.cmid.'\('.c1.'\)/'
+  let c2patt = '/'.c2pre.'\('.s.'\)'.cmid.'\('.c2.'\)/'
+  let c1patt = '/'.c1pre.'\('.s.'\)'.cmid.'\('.c1.'\)/me=e-50'
+  let c2patt = '/'.c2pre.'\('.s.'\)'.cmid.'\('.c2.'\)/me=e-50'
   let c2patt = i ? c2patt : '/jeebajebanotfound/'
 
-  exe m..i..'cuts '..cpatt ..ct..'fluxlendl,fluxlcuts'
-  exe m..i..'cut1 '..c1patt..ct..'fluxlendl,fluxlcuts,flux'.i.'cut1'
-  exe m..i..'cut2 '..c2patt..ct..'fluxlendl,fluxlcuts,fluxcut3,flux'.i.'cut2'
+  let cpatt = m..i..'cuts '..cpatt
+  let cpat1 = m..i..'cut1 '..c1patt
+  let cpat2 = m..i..'cut2 '..c2patt
 
+  exe cpatt..ct..'fluxlendl,fluxlcuts,fluxlhead'
+  exe cpat1..ct..'fluxlendl,fluxlcuts,fluxlhead'
+  exe cpat2..ct..'fluxlendl,fluxlcuts,fluxlhead,fluxcut3'
+
+  "exe h..i..'cuts Error'
+  "exe h..i..'cut1 fluxcomm'
+  "exe h..i..'cut2 SpellBad'
   exe h..i..'cuts fluxcomm'
   exe h..i..'cut1 fluxcomm'
   exe h..i..'cut2 fluxcomm'

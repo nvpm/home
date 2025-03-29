@@ -1,26 +1,27 @@
 
   project NVPM devl : nvim {
-    workspace nvpm {
-      tab code
-        file auto : autoload/nvpm.vim
-        file plug : plugin/nvpm.vim
-        file init @ meta/init.vim
-      tab oldnvpm @ ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-    }
     workspace zoom {
       tab code
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
        -file init @ meta/init.vim
-      tab nvimdocs @ /usr/share/nvim/runtime/doc
-       -file eval.txt
-        file api.txt
-        file usr_41.txt
       tab oldzoom @ ../nvpm
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
+        --
+      tab nvimdocs @ /usr/share/nvim/runtime/doc
+        file eval.txt
+        file api.txt
+        file usr_41.txt
+    }
+    workspace nvpm {
+      tab code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+       -file init @ meta/init.vim
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
     }
     workspace line {
       tab code
@@ -30,6 +31,7 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
+    --
     workspace flux {
       tab code
         file auto : autoload/flux.vim
@@ -46,7 +48,6 @@
         file case : case.case
         file expt : case.expt
     }
-    --
   }
   -
   loop plugin: nvpm flux -- line zoom text {

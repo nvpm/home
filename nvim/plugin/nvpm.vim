@@ -1,76 +1,18 @@
-" plug/nvpm.vim
-" once {
+"-- plug/nvpm.vim --
 
 if !NVPMTEST&&exists('__NVPMPLUG__')|finish|endif
 let __NVPMPLUG__ = 1
 
-" }
-" init {
-
 call nvpm#init()
 
-" end-init}
-" cmds {
-" '_ NVPMLoad {
+"-- user commands --
+com! -complete=customlist,nvpm#DIRS        -nargs=* NVPMMake call nvpm#make("<args>")
+com! -complete=customlist,nvpm#DIRS        -nargs=1 NVPMLoad call nvpm#load("<args>")
+com! -complete=customlist,nvpm#LOOP -count -nargs=1 NVPMLoop call nvpm#loop("<args>")
+com!                                                NVPMEdit call nvpm#edit()
+com!                                                NVPMTerm call nvpm#term()
 
-       command!
-\      -complete=customlist,nvpm#DIRS
-\      -nargs=1
-\      NVPMLoad
-\      call nvpm#load("<args>")
-
-" }
-" '_ NVPMLoop {
-
-       command!
-\      -count
-\      -complete=customlist,nvpm#LOOP
-\      -nargs=1
-\      NVPMLoop
-\      call nvpm#loop("<args>")
-
-" }
-" '_ NVPMEdit {
-
-       command!
-\      NVPMEdit
-\      call nvpm#edit()
-
-" }
-" '_ NVPMMake {
-
-       command!
-\      -complete=customlist,nvpm#DIRS
-\      -nargs=*
-\      NVPMMake
-\      call nvpm#make("<args>")
-
-" }
-" '_ NVPMTerm {
-
-       command!
-\      NVPMTerm
-\      call nvpm#term()
-
-" }
-" '_ NVPMInfo {
-
-       command!
-\      NVPMInfo
-\      call nvpm#info()
-
-" }
-" '_ NVPMMenu {
-
-       command!
-\      NVPMMenu
-\      call nvpm#menu()
-       command! NVPM NVPMMenu
-
-" }
-" end-cmds }
-" acmd {
-
+"-- auto commands  --
 if get(g:,'nvpm_autocmds',1)
   augroup NVPM
     au!
@@ -78,4 +20,3 @@ if get(g:,'nvpm_autocmds',1)
   augroup END
 endif
 
-" }

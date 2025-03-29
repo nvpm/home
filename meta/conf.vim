@@ -36,14 +36,14 @@ command! NVPMMenuPush so meta/menu.vim|call menu#push()
 " user {
 "   main {
 
-if !exists('s:colors')
+"if !exists('s:colors')
 
   set termguicolors     " enable true colors support
   let ayucolor="mirage" " for mirage version of theme
   let ayucolor="light"  " for light version of theme
   let ayucolor="dark"   " for dark version of theme
   colorscheme ayu
-   
+
   call execute(':set fillchars+=vert:\ ')
 
   hi Constant                             gui=bold
@@ -52,8 +52,8 @@ if !exists('s:colors')
   hi Function                             gui=bold
 
   hi Normal   guibg=#000000
-  hi Comment  guifg=#5c6773            gui=bold
-  hi Folded   guifg=#3e4b59 guibg=#14191f gui=bold
+  hi Comment  guifg=#5c6773
+  hi Folded   guifg=#5c6773 guibg=#0a0a0a
   "hi def link Folded       Comment
   "hi def link FoldedColumn Folded
 
@@ -65,9 +65,9 @@ if !exists('s:colors')
 
   hi NonText ctermfg=0 guifg=#000000
 
-  let s:colors = 1
-
-endif
+"  let s:colors = 1
+"
+"endif
 
 " }
 "   nvpm {
