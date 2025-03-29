@@ -5,9 +5,6 @@ if !NVPMTEST&&exists('__TEXTPLUG__')|finish|endif
 let __TEXTPLUG__ = 1
 
 " end-once}
-" init {
-
-" end-init}
 " cmds {
 
 " '_ TEXTJust {

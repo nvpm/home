@@ -7,9 +7,8 @@ let __NVPMAUTO__ = 1
 " end-once}
 " func {
 
-" main functions {
-
-fu! nvpm#init(...) "{
+"-- main functions --
+fu! nvpm#init(...) "{ 
   if exists('s:init')|return|else|let s:init=1|endif
 
   let s:dirs = {}
@@ -275,9 +274,7 @@ fu! nvpm#make(...) "{
 
 endfu "}
 
-" }
-" help functions {
-
+"-- auxy functions --
 fu! nvpm#curr(...) "{
 
   let root = get(a:,1,g:nvpm.tree.root)
@@ -344,19 +341,17 @@ fu! nvpm#flux(...) "{
 
 endfu "}
 
-" }
-" user functions {
-
-fu! nvpm#DIRS(...) " {
+"-- user functions --
+fu! nvpm#DIRS(...) "{
   let files = readdir(s:dirs.local)
   "for i in range(len(files))
   "  let files[i] = s:dirs.local ..files[i]
   "endfor
   return files
 endfu "}
-fu! nvpm#MAKE(...) " {
+fu! nvpm#MAKE(...) "{
 endfu "}
-fu! nvpm#LOOP(...) " {
+fu! nvpm#LOOP(...) "{
   return g:nvpm.loop.words
 endfu "}
 

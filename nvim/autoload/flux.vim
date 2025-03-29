@@ -7,9 +7,8 @@ let __FLUXAUTO__=1
 " end-once }
 " func {
 
-" main functions {
-
-fu! flux#flux(...) " the main flux function {
+"-- main functions --
+fu! flux#flux(...) "{
 
   if !a:0|return {}|else|let s:conf=flux#argv(a:000)|endif
 
@@ -24,7 +23,7 @@ fu! flux#flux(...) " the main flux function {
   retu flux#data()
 
 endfu "}
-fu! flux#data(...) " returns flux-tree data structure {
+fu! flux#data(...) "{
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
@@ -46,7 +45,7 @@ fu! flux#data(...) " returns flux-tree data structure {
   return tree
 
 endfu "}
-fu! flux#fixt(...) " fixes tree into proper order {
+fu! flux#fixt(...) "{
 
   let root = get(a:000,0,{})
   let conf = get(a:000,1,{})
@@ -94,7 +93,7 @@ fu! flux#fixt(...) " fixes tree into proper order {
   endif
 
 endfu "}
-fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
+fu! flux#tree(...) "{
 
   let list = get(a:000,0,[])
   let leng = get(a:000,1,len(list))
@@ -170,13 +169,11 @@ fu! flux#tree(...) " builds the tree out of the conf.list of nodes {
   return tree
 
 endfu "}
-fu! flux#skel(...) " {
+fu! flux#skel(...) "{
 endfu "}
 
-" }
-" conf functions {
-
-fu! flux#conf(...) " puts fluxconf in its order {
+"-- conf functions --
+fu! flux#conf(...) "{
 
   if !a:0|return flux#conf(s:conf)|else|let conf=a:1|endif
   if !has_key(conf,'lexis')|let conf.lexis=''|endif
@@ -192,7 +189,7 @@ fu! flux#conf(...) " puts fluxconf in its order {
   let conf.leaftype = len(conf.lexis)-1
 
 endfu "}
-fu! flux#read(...) " reads conf.file if it is present {
+fu! flux#read(...) "{
 
   if !has_key(s:conf,'file')|return|endif
   if !empty(s:conf.file)
@@ -209,7 +206,7 @@ fu! flux#read(...) " reads conf.file if it is present {
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! flux#trim(...) " trims-out comments and empty lines {
+fu! flux#trim(...) "{
 
   if has_key(s:conf,'body')
     let comm = '\c\s*[#{}].*'
@@ -226,7 +223,7 @@ fu! flux#trim(...) " trims-out comments and empty lines {
   endif
 
 endfu "}
-fu! flux#endl(...) " splits lines by endl char {
+fu! flux#endl(...) "{
 
   if has_key(s:conf,'body')
     let endl = '\m\s*,\s*'
@@ -243,7 +240,7 @@ fu! flux#endl(...) " splits lines by endl char {
   endif
 
 endfu "}
-fu! flux#list(...) " transforms conf.body into a list of nodes {
+fu! flux#list(...) "{
 
   if has_key(s:conf,'body')
     let list = []
@@ -260,7 +257,7 @@ fu! flux#list(...) " transforms conf.body into a list of nodes {
   endif
 
 endfu "}
-fu! flux#cuts(...) " handles standalone cuts & cut3+ {
+fu! flux#cuts(...) "{
 
   if has_key(s:conf,'list')
     let leng = get(s:conf,'leng',len(s:conf.list))|let s:conf.leng = 0
@@ -285,7 +282,7 @@ fu! flux#cuts(...) " handles standalone cuts & cut3+ {
   endif
 
 endfu "}
-fu! flux#loop(...) " handles loop functionality {
+fu! flux#loop(...) "{
 
   if has_key(s:conf,'list')
     let indx = 0
@@ -340,7 +337,7 @@ fu! flux#loop(...) " handles loop functionality {
   endif
 
 endfu "}
-fu! flux#home(...) " handles home functionality {
+fu! flux#home(...) "{
 
   if has_key(s:conf,'list')&&get(s:conf,'home')
     let indx = 0
@@ -361,14 +358,12 @@ fu! flux#home(...) " handles home functionality {
   endif
 
 endfu "}
-fu! flux#vars(...) " {
+fu! flux#vars(...) "{
 
 endfu "}
 
-" }
-" help functions {
-
-fu! flux#node(...) " transforms a line into a node {
+"-- auxy functions --
+fu! flux#node(...) "{
 
   let line = get(a:000,0,'')
   let line = ['',line][type(line)==type('')]
@@ -407,7 +402,7 @@ fu! flux#node(...) " transforms a line into a node {
   return node
 
 endfu "}
-fu! flux#find(...) " finds a keyword's index in a given structured string {
+fu! flux#find(...) "{
 
   if !exists('a:1')|return -1|endif
   if !exists('a:2')|return -1|endif
@@ -461,7 +456,7 @@ fu! flux#find(...) " finds a keyword's index in a given structured string {
   return -1
 
 endfu "}
-fu! flux#show(...) " shows flux-tree structure {
+fu! flux#show(...) "{
 
   let root = get(a:000,0,{})
   let step = get(a:000,1, 0)
@@ -493,7 +488,7 @@ fu! flux#show(...) " shows flux-tree structure {
   endfor
 
 endfu "}
-fu! flux#argv(...) " catches last inner argument {
+fu! flux#argv(...) "{
   let argv = get(a:000,0,{})
   if type(argv)==type([])
     if len(argv)>1
@@ -503,7 +498,7 @@ fu! flux#argv(...) " catches last inner argument {
   endif
   return argv
 endfu "}
-fu! flux#seek(...) " {
+fu! flux#seek(...) "{
 
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
@@ -522,7 +517,5 @@ fu! flux#seek(...) " {
   return {}
 
 endfu "}
-
-" }
 
 " end-func }

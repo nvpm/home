@@ -22,7 +22,6 @@
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
     }
-    --
     workspace line {
       tab code
         file auto : autoload/line.vim
@@ -47,6 +46,7 @@
         file case : case.case
         file expt : case.expt
     }
+    --
   }
   -
   loop plugin: nvpm flux -- line zoom text {

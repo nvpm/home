@@ -7,9 +7,8 @@ let __LINEAUTO__ = 1
 " end-once}
 " func {
 
-" main functions {
-
-fu! line#init(...) " initiate script variables {
+"-- main functions --
+fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
 
   let botr = '%y%m ⬤ %l,%c/%P'
@@ -30,12 +29,12 @@ fu! line#init(...) " initiate script variables {
   call line#save()
 
 endfu "}
-fu! line#keep(...) " {
+fu! line#keep(...) "{
 
   if s:line|call line#show()|endif
 
 endfu "}
-fu! line#topl(...) " makes the top line {
+fu! line#topl(...) "{
   let line  = ''
 
   let line .= line#list(2)
@@ -60,7 +59,7 @@ fu! line#topl(...) " makes the top line {
   return line
 
 endfu "}
-fu! line#botl(...) " makes the bottom line {
+fu! line#botl(...) "{
   let space = repeat(' ',s:user.innerspace)
   let line  = ''
   let indx  = 0
@@ -76,7 +75,7 @@ fu! line#botl(...) " makes the bottom line {
   return line
 
 endfu "}
-fu! line#show(...) " shows the nvpm line {
+fu! line#show(...) "{
 
   if g:nvpm.tree.mode
     if s:user.gitinfo
@@ -91,7 +90,7 @@ fu! line#show(...) " shows the nvpm line {
   let s:line = 1
 
 endfu "}
-fu! line#hide(...) " hides the nvpm line {
+fu! line#hide(...) "{
 
   call line#save()
 
@@ -101,7 +100,7 @@ fu! line#hide(...) " hides the nvpm line {
   let s:line = 0
 
 endfu "}
-fu! line#swap(...) " swaps the nvpm line {
+fu! line#swap(...) "{
 
   if s:line
     call line#hide()
@@ -111,16 +110,14 @@ fu! line#swap(...) " swaps the nvpm line {
 
 endfu "}
 
-" }
-" help functions {
-
-fu! line#save(...) " saves current tab and status lines numbers{
+"-- help functions --
+fu! line#save(...) "{
 
   let s:topnr = &showtabline
   let s:botnr = &laststatus
 
 endfu "}
-fu! line#setl(...) " sets  current tab and status lines numbers{
+fu! line#setl(...) "{
 
   let &showtabline = s:topnr
   let &laststatus  = s:botnr
@@ -196,7 +193,5 @@ fu! line#file(...) "{
     return file
   endif
 endfu "}
-
-"}
 
 " end-func}

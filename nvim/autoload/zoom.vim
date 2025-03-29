@@ -7,7 +7,7 @@ let __ZOOMAUTO__ = 1
 " end-once}
 " func {
 
-" --- main functions ---
+"-- main functions --
 fu! zoom#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
 
@@ -57,7 +57,7 @@ fu! zoom#bdel(...) "{
 
 endfu "}
 
-" --- au   functions ---
+"-- auto functions --
 fu! zoom#help(...) "{
   let bufname=bufname()
   if &filetype == 'man'
