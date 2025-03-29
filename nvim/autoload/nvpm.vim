@@ -9,7 +9,7 @@ let __NVPMAUTO__ = 1
 
 " main functions {
 
-fu! nvpm#init(...) " initiate main variables {
+fu! nvpm#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
 
   let s:dirs = {}
@@ -84,7 +84,7 @@ fu! nvpm#init(...) " initiate main variables {
   endif
 
 endfu "}
-fu! nvpm#load(...) " loads a flux file {
+fu! nvpm#load(...) "{
 
   let file = flux#argv(a:000)
 
@@ -111,7 +111,7 @@ fu! nvpm#load(...) " loads a flux file {
   call nvpm#rend()
 
 endfu "}
-fu! nvpm#loop(...) " loop over nodes {
+fu! nvpm#loop(...) "{
 
   if !a:0|return 1|endif
 
@@ -174,7 +174,7 @@ fu! nvpm#loop(...) " loop over nodes {
   endif
 
 endfu "}
-fu! nvpm#edit(...) " enters edit flux files area {
+fu! nvpm#edit(...) "{
 
   " loads bufname if in edit mode 
   " only leaves edit mode upon correct load
@@ -211,14 +211,14 @@ fu! nvpm#edit(...) " enters edit flux files area {
   call nvpm#load(s:dirs.edit)
 
 endfu "}
-fu! nvpm#save(...) " saves DS info including default {
+fu! nvpm#save(...) "{
 
   if g:nvpm.tree.file != s:dirs.edit
     call writefile([fnamemodify(g:nvpm.tree.file,':t')],s:dirs.save)
   endif
 
 endfu "}
-fu! nvpm#term(...) " wild terminals {
+fu! nvpm#term(...) "{
 
   if !bufexists(g:nvpm.term.buff)
    exec 'buffer|terminal'
@@ -230,7 +230,7 @@ fu! nvpm#term(...) " wild terminals {
   endif
 
 endfu "}
-fu! nvpm#make(...) " make a new flux file {
+fu! nvpm#make(...) "{
 
   let name = get(a:000,0,'')
 
@@ -274,18 +274,11 @@ fu! nvpm#make(...) " make a new flux file {
   call nvpm#edit()
 
 endfu "}
-" unfinished
-fu! nvpm#info(...) " info overview {
-endfu "}
-fu! nvpm#menu(...) " nvpm menu {
-endfu "}
-fu! nvpm#quit(...) " {
-endfu "}
 
 " }
 " help functions {
 
-fu! nvpm#curr(...) " stores  the current file path {
+fu! nvpm#curr(...) "{
 
   let root = get(a:,1,g:nvpm.tree.root)
   let list = get(root,'list',[])
@@ -301,7 +294,7 @@ fu! nvpm#curr(...) " stores  the current file path {
   let g:nvpm.tree.curr = curr
 
 endfu "}
-fu! nvpm#rend(...) " renders the current file path {
+fu! nvpm#rend(...) "{
 
   let curr = simplify(g:nvpm.tree.curr)
   let head = fnamemodify(curr,':h')..'/'
@@ -328,7 +321,7 @@ fu! nvpm#rend(...) " renders the current file path {
   endif
 
 endfu "}
-fu! nvpm#indx(...) " updates index from meta field {
+fu! nvpm#indx(...) "{
 
   let meta = a:1
   let step = a:2
@@ -336,12 +329,12 @@ fu! nvpm#indx(...) " updates index from meta field {
   let meta.indx%= meta.leng
 
 endfu "}
-fu! nvpm#show(...) " shows   the current flux file {
+fu! nvpm#show(...) "{
 
   call flux#show(get(a:,1,g:nvpm.tree.root))
 
 endfu "}
-fu! nvpm#flux(...) " reads   the flux directory    {
+fu! nvpm#flux(...) "{
 
   if isdirectory(s:dirs.local)&&empty(g:nvpm.flux.list)
     let g:nvpm.flux.list = readdir(s:dirs.local)
