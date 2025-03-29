@@ -72,66 +72,62 @@ endif
 " }
 "   nvpm {
 
-" nvpm user variables tree
-let g:nvpm_maketree = 0
-let g:nvpm_initload = 1
+  " nvpm user variables tree
+  let g:nvpm_maketree = 0
+  let g:nvpm_initload = 1
 
-let g:nvpm_fluxconf = {}
-let g:nvpm_fluxconf.lexis = ''
-let g:nvpm_fluxconf.lexis.= '|project proj scheme layout book'
-let g:nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
-let g:nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
-let g:nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
+  let g:nvpm_fluxconf = {}
+  let g:nvpm_fluxconf.lexis = ''
+  let g:nvpm_fluxconf.lexis.= '|project proj scheme layout book'
+  let g:nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
+  let g:nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
+  let g:nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
-"let g:nvpm_fluxconf.lexis = ''
-"let g:nvpm_fluxconf.lexis.= '|project'
-"let g:nvpm_fluxconf.lexis.= '|workspace'
-"let g:nvpm_fluxconf.lexis.= '|tab'
-"let g:nvpm_fluxconf.lexis.= '|file'
+  "let g:nvpm_fluxconf.lexis = ''
+  "let g:nvpm_fluxconf.lexis.= '|project'
+  "let g:nvpm_fluxconf.lexis.= '|workspace'
+  "let g:nvpm_fluxconf.lexis.= '|tab'
+  "let g:nvpm_fluxconf.lexis.= '|file'
 
-hi fluxcomm guifg=#4f4f4f
-hi fluxkeyw guifg=#00ff00 gui=bold,italic
-"hi fluxname guifg=#00ff99
-hi fluxvars guifg=#1177ff
-hi fluxline guifg=#ffee00
-hi fluxsepr guifg=#ffffff gui=bold
+  hi fluxcomm guifg=#6c6776
+  hi fluxkeyw guifg=#00ff00 gui=bold,italic
+  hi fluxname guifg=#ffffff
+  hi fluxvars guifg=#1177ff
+  hi fluxline guifg=#ffee00
+  hi fluxsepr guifg=#ffffff gui=bold
 
-nmap <silent><space>   :NVPMLoop + 3<cr>
-nmap <silent>m<space>  :NVPMLoop - 3<cr>
-nmap <silent><tab>     :NVPMLoop + 2<cr>
-nmap <silent>m<tab>    :NVPMLoop - 2<cr>
-nmap <silent><BS>      :NVPMLoop + 1<cr>
-nmap <silent><del>     :NVPMLoop - 1<cr>
-nmap <silent><c-n>     :NVPMLoop + 1<cr>
-nmap <silent><c-p>     :NVPMLoop - 1<cr>
-nmap <silent><c-space> :NVPMLoop + 0<cr>
-nmap <silent>=         :NVPMLoop + -1<cr>
-nmap <silent>-         :NVPMLoop - -1<cr>
+  nmap <silent><space>   :NVPMLoop + 3<cr>
+  nmap <silent>m<space>  :NVPMLoop - 3<cr>
+  nmap <silent><tab>     :NVPMLoop + 2<cr>
+  nmap <silent>m<tab>    :NVPMLoop - 2<cr>
+  nmap <silent><BS>      :NVPMLoop + 1<cr>
+  nmap <silent><del>     :NVPMLoop - 1<cr>
+  nmap <silent><c-n>     :NVPMLoop + 1<cr>
+  nmap <silent><c-p>     :NVPMLoop - 1<cr>
+  nmap <silent><c-space> :NVPMLoop + 0<cr>
+  nmap <silent>=         :NVPMLoop + -1<cr>
+  nmap <silent>-         :NVPMLoop - -1<cr>
 
-nmap <F8> <esc>:NVPMLoad<space>
-imap <F8> <esc>:NVPMLoad<space>
-cmap <F8> <esc>:NVPMLoad<space>
+  nmap <F8> <esc>:NVPMLoad<space>
+  imap <F8> <esc>:NVPMLoad<space>
+  cmap <F8> <esc>:NVPMLoad<space>
 
-nmap <F9> <esc>:NVPMLoad<space>
-imap <F9> <esc>:NVPMLoad<space>
-cmap <F9> <esc>:NVPMLoad<space>
+  nmap <F9> <esc>:NVPMLoad<space>
+  imap <F9> <esc>:NVPMLoad<space>
+  cmap <F9> <esc>:NVPMLoad<space>
 
-"nmap <F9> <esc>:NVPMSave<space>
-"imap <F9> <esc>:NVPMSave<space>
-"cmap <F9> <esc>:NVPMSave<space>
-"
-"nmap <F10> <esc>:NVPMMake<space>
-"imap <F10> <esc>:NVPMMake<space>
-"cmap <F10> <esc>:NVPMMake<space>
+  nmap <F10> <esc>:NVPMMake<space>
+  imap <F10> <esc>:NVPMMake<space>
+  cmap <F10> <esc>:NVPMMake<space>
 
-nmap <F11> <esc>:wall<cr>:NVPMEdit<cr>
-imap <F11> <esc>:wall<cr>:NVPMEdit<cr>
-cmap <F11> <esc>:wall<cr>:NVPMEdit<cr>
-nmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
-imap <F12> <esc>:wall<cr>:NVPMEdit<cr>
-cmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
+  nmap <F11> <esc>:wall<cr>:NVPMEdit<cr>
+  imap <F11> <esc>:wall<cr>:NVPMEdit<cr>
+  cmap <F11> <esc>:wall<cr>:NVPMEdit<cr>
+  nmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
+  imap <F12> <esc>:wall<cr>:NVPMEdit<cr>
+  cmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
 
-nmap mt :NVPMTerm<cr>i
+  nmap mt :NVPMTerm<cr>i
 
 " }
 "   line {

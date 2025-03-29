@@ -2,17 +2,20 @@
 home nvim/syntax
 
 project Syntax CODE {
+
+  tab meta @ meta
+    file conf.vim
+
   tab flux
     file flux : flux.vim
     file file @ test/case.flux
+
   -
   tab code @ nvim/autoload
     file nvpm.vim
     file flux.vim
     file line.vim
 
-  tab meta @ meta
-    file conf.vim
 }
 project NVIM runtime@ /usr/share/nvim/runtime {
 

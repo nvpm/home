@@ -84,6 +84,33 @@ fu! nvpm#init(...) " initiate main variables {
   endif
 
 endfu "}
+fu! nvpm#load(...) " loads a flux file {
+
+  let file = flux#argv(a:000)
+
+  if !g:nvpm.edit.mode
+    let file = s:dirs.local..file
+  endif
+
+  if !filereadable(file)|return 1|endif
+
+  let g:nvpm.conf.file = file
+  let root = flux#flux(g:nvpm.conf)
+  let list = get(root,'list',[])
+
+  if empty(root)    |let g:nvpm.conf.file=''|return 2|endif
+  if empty(list)    |let g:nvpm.conf.file=''|return 3|endif
+  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 4|endif
+
+  let g:nvpm.tree.root = root
+  let g:nvpm.tree.file = file
+  let g:nvpm.tree.mode = 1
+
+  call line#keep()
+  call nvpm#save()
+  call nvpm#rend()
+
+endfu "}
 fu! nvpm#loop(...) " loop over nodes {
 
   if !a:0|return 1|endif
@@ -129,6 +156,7 @@ fu! nvpm#loop(...) " loop over nodes {
       call nvpm#indx(node.meta,step)
     endif
     call nvpm#curr()
+    call nvpm#rend()
   else
     if type == g:nvpm.conf.leaftype
       if step < 0
@@ -144,32 +172,6 @@ fu! nvpm#loop(...) " loop over nodes {
       endif
     endif
   endif
-
-endfu "}
-fu! nvpm#load(...) " loads a flux file {
-
-  let file = flux#argv(a:000)
-
-  if !g:nvpm.edit.mode
-    let file = s:dirs.local..file
-  endif
-
-  if !filereadable(file)|return 1|endif
-
-  let g:nvpm.conf.file = file
-  let root = flux#flux(g:nvpm.conf)
-  let list = get(root,'list',[])
-
-  if empty(root)    |let g:nvpm.conf.file=''|return 2|endif
-  if empty(list)    |let g:nvpm.conf.file=''|return 3|endif
-  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 4|endif
-
-  let g:nvpm.tree.root = root
-  let g:nvpm.tree.file = file
-  let g:nvpm.tree.mode = 1
-
-  call line#keep()
-  call nvpm#save()
 
 endfu "}
 fu! nvpm#edit(...) " enters edit flux files area {
@@ -291,32 +293,38 @@ fu! nvpm#curr(...) " gets the current file path {
   if empty(root)|return 1|endif
   if empty(list)|return 2|endif
                                      
-  let curr = flux#seek(root,3)
-  if empty(curr)|return 3|endif
-  let curr = curr.list[curr.meta.indx%curr.meta.leng].data.info
+  let node = flux#seek(root,3)
+  if empty(node)|return 3|endif
+  let curr = node.list[node.meta.indx].data.info
+  if empty(curr)|return 4|endif
+
   let g:nvpm.tree.curr = curr
-  let file = g:nvpm.tree.curr
-  if empty(file)|return 4|endif
-  let file = simplify(file)
-  let head = fnamemodify(file,':h')..'/'
+
+endfu "}
+fu! nvpm#rend(...) " {
+
+  let curr = simplify(g:nvpm.tree.curr)
+  let head = fnamemodify(curr,':h')..'/'
   let HEAD = fnamemodify(head,':p')..'/'
 
-  call execute($'edit {file}')
+  if !empty(curr)
 
-  " fixes syntax for nvpm fluxfiles
-  " TODO: remove this bufname entry before deployment
-  if 1+match(file,'^.*\.flux$')||
-    \head == s:dirs.local      || 
-    \HEAD == s:dirs.global     && 
-    \&ft  != 'flux'
-    let &ft = 'flux'
-  endif
+    call execute('edit '.curr)
 
-  if get(g:,'nvpm_maketree',0) &&
-    \!empty(head) &&
-    \!filereadable(head) &&
-    \-1==match(file,'term\:\/\/')
-    call mkdir(head,'p')
+    if 1+match(curr,'^.*\.flux$')||
+      \head == s:dirs.local      || 
+      \HEAD == s:dirs.global     && 
+      \&ft  != 'flux'
+      set filetype=flux
+    endif
+
+    if get(g:,'nvpm_maketree',0) &&
+      \!empty(head) &&
+      \!filereadable(head) &&
+      \-1==match(curr,'term\:\/\/')
+      call mkdir(head,'p')
+    endif
+
   endif
 
 endfu "}

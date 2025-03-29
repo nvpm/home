@@ -39,6 +39,7 @@ fu! flux#data(...) " returns flux-tree data structure {
   if has_key(s:conf,'list')|unlet s:conf.list|endif
   if has_key(s:conf,'body')|unlet s:conf.body|endif
   if has_key(s:conf,'HOME')|unlet s:conf.HOME|endif
+  if has_key(s:conf,'file')|unlet s:conf.file|endif
 
   unlet s:conf
 

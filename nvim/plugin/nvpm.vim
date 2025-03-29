@@ -71,8 +71,11 @@ call nvpm#init()
 " end-cmds }
 " acmd {
 
-if get(g:,'nvpm_autocomm',1)
-  au! bufenter *.flux set ft=flux
+if get(g:,'nvpm_autocmds',1)
+  augroup NVPM
+    au!
+    au! BufEnter *.flux set ft=flux
+  augroup END
 endif
 
 " }
