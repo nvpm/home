@@ -32,9 +32,7 @@ fu! line#line(...) " initiate script variables {
 endfu "}
 fu! line#init(...) " {
 
-  if s:line
-    call line#show()
-  endif
+  if s:line|call line#show()|endif
 
 endfu "}
 fu! line#topl(...) " makes the top line {
@@ -85,17 +83,19 @@ fu! line#show(...) " shows the nvpm line {
           \'line#time',{'repeat':-1})
   endif
 
-  " NOTE: Don't put spaces!
   set tabline=%!line#topl()
   set statusline=%!line#botl()
+
+  set showtabline=2
+  set laststatus=3
 
   let s:line = 1
 
 endfu "}
 fu! line#hide(...) " hides the nvpm line {
 
-  set tabline=%#Normal#
-  set statusline=%#Normal#
+  set showtabline=0
+  set laststatus=0
 
   let s:line = 0
 
@@ -167,9 +167,8 @@ fu! line#time(...) "{
     endif
   endif
   let s:git.info = info
-endfunction
-" }
-fu! line#file() "{
+endfu "}
+fu! line#file(...) "{
   let termpatt = 'term://.*'
   if !empty(matchstr(bufname(),termpatt))
     return 'terminal'
@@ -183,9 +182,8 @@ fu! line#file() "{
     endif
     return file
   endif
-endfunction
-" }
+endfu "}
 
-" }
+"}
 
 " end-func}

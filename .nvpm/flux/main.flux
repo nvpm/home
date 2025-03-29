@@ -1,13 +1,13 @@
 
   project NVPM devl : nvim {
-    workspace nvpm {
+    workspace zoom {
       tab code
-        file auto : autoload/nvpm.vim
-        file plug : plugin/nvpm.vim
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
         file init @ meta/init.vim
-      tab oldnvpm @ ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
+      tab oldzoom @ ../nvpm
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
     }
     workspace line {
       tab code
@@ -17,6 +17,16 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
+    workspace nvpm {
+      tab code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+        file init @ meta/init.vim
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+    }
+    --
     workspace flux {
       tab code
         file auto : autoload/flux.vim
@@ -34,15 +44,8 @@
         file case : case.case
         file expt : case.expt
     }
-    workspace zoom {
-      tab code
-        file auto : autoload/zoom.vim
-        file plug : plugin/zoom.vim
-      tab oldnvpm @ ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-    }
   }
+  -
   loop plugin: nvpm flux -- line zoom text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
@@ -52,7 +55,6 @@
       tab seng
         file Usecases,file Workflows,-,file read @ seng/read
   endl }
-  --
   project NVPM meta @ meta {
     tab meta
       file conf.vim

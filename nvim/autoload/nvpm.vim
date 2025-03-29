@@ -329,10 +329,10 @@ fu! nvpm#show(...) " {
   call flux#show(tree)
 endfu "}
 fu! nvpm#indx(...) " {
-  let dict = a:1
+  let meta = a:1
   let step = a:2
-  let dict.indx+= step
-  let dict.indx%= dict.leng
+  let meta.indx+= step
+  let meta.indx%= meta.leng
 endfu "}
 fu! nvpm#flux(...) " {
   if isdirectory(s:dirs.local)&&empty(g:nvpm.flux.list)

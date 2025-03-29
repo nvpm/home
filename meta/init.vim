@@ -42,6 +42,12 @@ fu! s:test.nvpm(...) "{
   so nvim/plugin/nvpm.vim
 
 endfu "}
+fu! s:test.zoom(...) "{
+
+  so nvim/autoload/zoom.vim
+  so nvim/plugin/zoom.vim
+
+endfu "}
 "} 
 " test {
 fu! s:test.eval(...) "{"
@@ -72,5 +78,6 @@ endfu "}
 
 if 1|call s:test.flux()|endif
 if 1|call s:test.nvpm()|endif
+if 1|call s:test.zoom()|endif
 
 "}

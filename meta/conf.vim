@@ -138,7 +138,7 @@ nmap mt :NVPMTerm<cr>i
 
 set hidden
 set showtabline=2
-set laststatus=2
+set laststatus=3
 
 " Line options for use with colors
 let g:line_closure       = 1
