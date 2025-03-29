@@ -166,10 +166,10 @@ fu! nvpm#load(...) " loads a flux file {
 
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
+  let g:nvpm.tree.mode = 1
 
   call line#keep()
   call nvpm#save()
-  let g:nvpm.tree.mode = 1
 
 endfu "}
 fu! nvpm#edit(...) " enters edit flux files area {

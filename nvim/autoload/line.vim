@@ -26,9 +26,11 @@ fu! line#init(...) " initiate script variables {
 
   let s:git = {}
   let s:git.info = ''
-  let s:git.time = 0
+  "let s:git.time = 0
 
   let s:line = 1
+
+  call line#save()
 
 endfu "}
 fu! line#keep(...) " {
@@ -79,21 +81,23 @@ fu! line#botl(...) " makes the bottom line {
 endfu "}
 fu! line#show(...) " shows the nvpm line {
 
-  if s:user.gitinfo && !s:git.time
-    let s:git.time = timer_start(s:user.gitdelayms,
-          \'line#time',{'repeat':-1})
+  if g:nvpm.tree.mode
+    if s:user.gitinfo " && !s:git.time
+      "let s:git.time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
+      let time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
+    endif
+    set tabline=%!line#topl()
+    set statusline=%!line#botl()
   endif
 
-  set tabline=%!line#topl()
-  set statusline=%!line#botl()
-
-  set showtabline=2
-  set laststatus=3
+  call line#setl()
 
   let s:line = 1
 
 endfu "}
 fu! line#hide(...) " hides the nvpm line {
+
+  call line#save()
 
   set showtabline=0
   set laststatus=0
@@ -114,10 +118,22 @@ endfu "}
 " }
 " help functions {
 
+fu! line#save(...) " saves current tab and status lines numbers{
+
+  let s:topnr = &showtabline
+  let s:botnr = &laststatus
+
+endfu "}
+fu! line#setl(...) " sets  current tab and status lines numbers{
+
+  let &showtabline = s:topnr
+  let &laststatus  = s:botnr
+
+endfu "}
 fu! line#list(...) "{
   let type = get(a:000,0,-1)
   let revs = get(a:000,1)
-  let node = flux#seek(g:nvpm.tree.root,type) 
+  let node = flux#seek(g:nvpm.tree.root,type)
 
   if empty(node)|return ''|endif
 
