@@ -7,175 +7,225 @@ let __ZOOMAUTO__ = 1
 fu! zoom#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
 
-  let s:user = {}
-  let s:user.height = get(g:,'zoom_height','90%')
-  let s:user.width  = get(g:,'zoom_width' , 80  )
-  let s:user.layout = get(g:,'zoom_layout' ,'center')
+  let g:zoom = {}
 
-  if get(g:,'zoom_initload',0)
-    call zoom#show()
-  endif
+  let size = {}
+  let size.l = 0
+  let size.r = 0
+  let size.t = 0
+  let size.b = 0
+  let size.h = 0
+  let size.w = 0
 
-  let s:buff      = {}
-  let s:buff.l    = '.nvpm/zoom/left'
-  let s:buff.r    = '.nvpm/zoom/right'
-  let s:buff.b    = '.nvpm/zoom/bottom'
-  let s:buff.t    = '.nvpm/zoom/top'
-  let s:buff.list = [s:buff.l,s:buff.r,s:buff.b,s:buff.t]
+  let pads = {}
+  let pads.l = '.nvpm/zoom/left'
+  let pads.r = '.nvpm/zoom/right'
+  let pads.t = '.nvpm/zoom/top'
+  let pads.b = '.nvpm/zoom/bottom'
+  let pads.list = [pads.l,pads.r,pads.t,pads.b]
 
-  let s:size   = {}
-  let s:size.l = 0
-  let s:size.r = 0
-  let s:size.b = 0
-  let s:size.t = 0
+  let user = {}
+  let user.h = get(g:,'zoom_height',-90)
+  let user.w = get(g:,'zoom_width',80)
 
-  let s:zoom = 0
+  let g:zoom.size  = size
+  let g:zoom.pads  = pads
+  let g:zoom.user  = user
+  let g:zoom.vars  = {}
+  let g:zoom.mode  = 0
+  let g:zoom.split = 0
+  let g:zoom.tgit  = 0
 
-  let s:spliting = 0
+  call zoom#vars()
+  call execute('set fillchars+=vert:\ ')
+  call execute('set fillchars+=vertleft:\ ')
+  call execute('set fillchars+=vertright:\ ')
+  call execute('set fillchars+=horiz:\ ')
+  call execute('set fillchars+=horizup:\ ')
+  call execute('set fillchars+=horizdown:\ ')
+  call execute('set fillchars+=eob:\ ')
 
 endfu "}
-fu! zoom#calc(...) "{
+fu! zoom#vars(...) "{
 
-  let currheight = winheight(0)
-  let currwidth  = winwidth(0)
-
-
-
-
-  let s:size.t = float2nr((currheight-s:user.height)/2)
-  let s:size.l = float2nr((currwidth -s:user.width )/2)
-  let s:size.b = s:size.t
-  let s:size.r = s:size.l
-
-  "if self.layout == 'left'
-  "  let self.right = currwidth - self.width - self.left
-  "elseif self.layout == 'right'
-  "  let self.left   = currwidth - self.width - self.right
-  "else
-  "  let self.left  = float2nr((currwidth-self.width)/2)
-  "  let self.right = float2nr((currwidth-self.width)/2)
-  "endif
-
-endf " }
-fu! zoom#swap(...) "{
-  if s:zoom
-    call zoom#hide()
-  else
-    call zoom#show()
+  if a:0
+    let &showtabline = g:zoom.vars.showtabline
+    let &laststatus  = g:zoom.vars.laststatus
+    let &cmdheight   = g:zoom.vars.cmdheight
+    return
   endif
-endfu "}
-fu! zoom#show(...) "{
+  let g:zoom.vars.showtabline = &showtabline
+  let g:zoom.vars.laststatus  = &laststatus
+  let g:zoom.vars.cmdheight   = &cmdheight
 
-  call zoom#calc()
-  let s:spliting = 1
-  call zoom#chop()
-  call zoom#size()
-  let s:spliting = 0
+endfu " }
+fu! zoom#prep(...) "{
 
+  silent! only
+  "call zoom#vars()
   call line#hide()
 
-  let s:zoom = 1
+endfu " }
+fu! zoom#calc(...) "{
+
+  let g:zoom.size.h = winheight(0)
+  let g:zoom.size.w = winwidth(0)
+
+  let g:zoom.size.t = float2nr((g:zoom.size.h-g:zoom.user.h)/2)
+  let g:zoom.size.l = float2nr((g:zoom.size.w-g:zoom.user.w)/2)
+
+  let g:zoom.size.b = g:zoom.size.t
+  let g:zoom.size.r = g:zoom.size.l
+  "let g:zoom.size.l+= g:zoom.size.l%2
+
+endfu " }
+fu! zoom#pads(...) "{
+
+  let g:zoom.split = 1
+
+  if g:zoom.size.l
+    exec 'vsplit'..g:zoom.pads.l
+    setl nomodifiable
+    setl readonly
+    setl nobuflisted
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.r
+    exec 'silent! rightbelow vsplit '. g:zoom.pads.r
+    setl nomodifiable
+    setl readonly
+    setl nobuflisted
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.t
+    exec 'silent! top split '. g:zoom.pads.t
+    setl nomodifiable
+    setl readonly
+    setl nobuflisted
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.b
+    exec 'silent! bot split '. g:zoom.pads.b
+    setl nomodifiable
+    setl readonly
+    setl nobuflisted
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.l
+    silent! wincmd h
+    exec 'vertical resize ' . g:zoom.size.l
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.r
+    silent! wincmd l
+    exec 'vertical resize ' . g:zoom.size.r
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.t
+    silent! wincmd k
+    exec 'resize ' . g:zoom.size.t
+    silent! wincmd p
+  endif
+
+  if g:zoom.size.b
+    silent! wincmd j
+    exec 'resize ' . g:zoom.size.b
+    silent! wincmd p
+  endif
+
+  let g:zoom.split = 0
+
+endfu " }
+fu! zoom#show(...) "{
+
+  call zoom#prep()
+  call zoom#calc()
+  call zoom#pads()
+
+  call zoom#none()
+
+  let g:zoom.mode = 1
 
 endfu "}
 fu! zoom#hide(...) "{
 
-  "call zoom#bdel()
-  only
-  set cmdheight=1
-  call line#show()
+  silent! only
+  call zoom#bdel()
+  let g:zoom.mode = 0
 
-  let s:zoom = 0
+  "call zoom#vars(1)
+  call line#keep()
+
+endfu "}
+fu! zoom#swap(...) "{
+
+  if g:zoom.mode
+    call zoom#hide()
+  else
+    call zoom#show()
+  endif
 
 endfu "}
 fu! zoom#bdel(...) "{
 
-  call execute(':silent! bdel '..s:buff.l)
-  call execute(':silent! bdel '..s:buff.r)
-  call execute(':silent! bdel '..s:buff.b)
-  call execute(':silent! bdel '..s:buff.t)
+  call execute(':silent! bdel '..g:zoom.pads.l)
+  call execute(':silent! bdel '..g:zoom.pads.r)
+  call execute(':silent! bdel '..g:zoom.pads.b)
+  call execute(':silent! bdel '..g:zoom.pads.t)
 
 endfu "}
-fu! zoom#chop(...) "{
+fu! zoom#none(...) "{
 
-  if s:size.l > 0
-    exec 'silent! vsplit'. s:buff.l
-    let &l:statusline=' '
-    call zoom#buff()
-    silent! wincmd p
-  endif
+  hi TabLineFill  ctermfg=none ctermbg=none guifg=none guibg=bg
+  hi TabLineSell  ctermfg=none ctermbg=none guifg=none guibg=bg
+  hi StatusLine   ctermfg=none ctermbg=none guifg=none guibg=bg
+  hi StatusLineNC ctermfg=none ctermbg=none guifg=bg   guibg=bg
+  hi LineNr       ctermfg=none ctermbg=none guibg=bg
+  hi SignColumn   ctermfg=none ctermbg=none guibg=bg
+  hi VertSplit    ctermfg=none ctermbg=none guifg=bg guibg=bg
+  hi NonText      ctermfg=none ctermbg=none guifg=bg
 
-  if s:size.r > 0
-    exec 'silent! rightbelow vsplit '. s:buff.r
-    let &l:statusline=' '
-    call zoom#buff()
-    silent! wincmd p
-  endif
-
-  if s:size.t > 0
-    exec 'silent! top split '. s:buff.t
-    let &l:statusline=' '
-    call zoom#buff()
-    silent! wincmd p
-  endif
-
-  "if s:size.b > 0
-  "  exec 'silent! bot split '. s:buff.b
-  "  let &l:statusline=' '
-  "  call zoom#buff()
-  "  silent! wincmd p
-  "endif
-
-endf " }
-fu! zoom#size(...) "{
-
-  if s:size.l > 0
-    silent! wincmd h
-    exec 'vertical resize ' . s:size.l
-    silent! wincmd p
-  endif
-
-  exec 'resize          ' . s:user.height
-  exec 'vertical resize ' . s:user.width
-
-  if s:size.t > 0
-    silent! wincmd k
-    exec 'resize ' . s:size.t
-    silent! wincmd p
-  endif
-
-  if s:size.b > 0
-    exec 'set cmdheight='.s:size.bot
-  endif
-
-endfu "}
-fu! zoom#buff(...) "{
-
-  set nomodifiable
-  set readonly
-  setlocal nobuflisted
-
-endfu "}
+endfu " }
 
 "-- auto functions --
 fu! zoom#help(...) "{
 
-  if &filetype == 'man'  && !s:zoom|only|endif
-  if &filetype == 'help' && !s:zoom|only|endif
+  if &ft=='help'||&ft=='man'
+    only
+    if g:zoom.mode
+      call zoom#show()
+    endif
+  endif
 
 endfu "}
 fu! zoom#quit(...) "{
 
-  call zoom#hide()
+  only
   quit
 
 endfu "}
 fu! zoom#back(...) "{
 
-  if (1+match(s:buff.list,bufname())) && !s:spliting && s:zoom
-    call zoom#hide()
-    call zoom#show()
-    call nvpm#rend()
+  if !g:zoom.mode|return|endif
+  if !g:zoom.split && 1+match(g:zoom.pads.list,bufname())
+    silent! wincmd p
   endif
 
 endfu "}
+fu! zoom#term(...) "{
 
+  if g:zoom.mode
+    call feedkeys('j','i')
+    only
+    call nvpm#rend()
+    call zoom#show()
+  endif
+
+endfu "}
+" end of buffer

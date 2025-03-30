@@ -1,40 +1,4 @@
-" devl {
-
-set verbose=1
-
-hi NVPMPassed  guifg=#009900 gui=bold
-hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
-
-let NVPMTEST = 1
-
-nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-command! NVPMInit so meta/init.vim
-
-nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
-cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-command! NVPMMenuSync so meta/conf.vim|
-                     \so meta/menu.vim|
-                     \call menu#sync()
-
-nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-command! NVPMMenuMake so meta/conf.vim|
-                     \so meta/menu.vim|
-                     \call menu#make()
-
-nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
-nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
-
-command! NVPMMenuSave so meta/menu.vim|call menu#save()
-command! NVPMMenuPush so meta/menu.vim|call menu#push()
-
-" end-devl}
-" user {
-"   main {
+" main {
 
 "if !exists('s:colors')
 
@@ -44,24 +8,12 @@ command! NVPMMenuPush so meta/menu.vim|call menu#push()
   let ayucolor="dark"   " for dark version of theme
   colorscheme ayu
 
-  call execute(':set fillchars+=vert:\ ')
-
-  hi Constant                             gui=bold
-  hi Keyword  guifg=#00ff00               gui=bold
-  hi Statement                            gui=bold
-  hi Function                             gui=bold
-
-  hi Normal   guibg=#000000
-  hi Comment  guifg=#5c6773
-  hi Folded   guifg=#5c6773 guibg=#0a0a0a
-  "hi def link Folded       Comment
-  "hi def link FoldedColumn Folded
-
   hi Pmenu      guibg=#1f252a guifg=#888888
   hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
 
-  hi DiffAdded   guifg=#00ff00
-  hi DiffRemoved guifg=#ff0000
+  hi Folded                    gui=italic
+  hi DiffAdded   guifg=#00ff00 gui=bold
+  hi DiffRemoved guifg=#ff0000 gui=italic
 
   hi NonText ctermfg=0 guifg=#000000
 
@@ -70,7 +22,7 @@ command! NVPMMenuPush so meta/menu.vim|call menu#push()
 "endif
 
 " }
-"   nvpm {
+" nvpm {
 
   " nvpm user variables tree
   let g:nvpm_maketree = 0
@@ -130,7 +82,16 @@ command! NVPMMenuPush so meta/menu.vim|call menu#push()
   nmap mt :NVPMTerm<cr>i
 
 " }
-"   line {
+" zoom {
+
+  let zoom_initload = 1
+  let zoom_height   = 16
+  let zoom_width    = 75
+
+  nmap <silent>mz    :Zoom<cr>
+
+" }
+" line {
 
 set hidden
 set showtabline=2
@@ -161,22 +122,46 @@ hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
 nmap ml :LINESwap<cr><c-l>
 
 " }
-"   zoom {
-
-"let zoom_height = 10
-let zoom_width  = 80
-let zoom_layout = 'center'
-let zoom_left   = 0
-"let zoom_right  = 0
-
-nmap <silent>mz    :Zoom<cr>
-
-" }
-"   text {
+" text {
 
 nmap maj vip:TEXTFixs<cr>vip:TEXTJust 74<cr>{vapoj<vip>
 vmap maj :'<,'>TEXTFixs<cr>:'<,'>TEXTJust 74<cr>
+
 "}
 
 " }
-" end-user}
+" devl {
+
+set verbose=1
+
+hi NVPMPassed  guifg=#009900 gui=bold
+hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
+
+let NVPMTEST = 1
+
+nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+command! NVPMInit so meta/init.vim
+
+nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
+imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
+cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
+command! NVPMMenuSync so meta/conf.vim|
+                     \so meta/menu.vim|
+                     \call menu#sync()
+
+nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+command! NVPMMenuMake so meta/conf.vim|
+                     \so meta/menu.vim|
+                     \call menu#make()
+
+nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
+nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
+
+command! NVPMMenuSave so meta/menu.vim|call menu#save()
+command! NVPMMenuPush so meta/menu.vim|call menu#push()
+
+" end-devl}

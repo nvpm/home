@@ -65,6 +65,9 @@ fu! nvpm#init(...) "{
   let g:nvpm.flux.leng = 0
   let g:nvpm.flux.indx = 0
 
+  let g:nvpm.zoom = {}
+  let g:nvpm.zoom.mode = 0
+  let g:nvpm.zoom.term = 0
   if get(g:,'nvpm_initload',0) && !argc() 
     if !filereadable(s:dirs.save)
       call nvpm#edit()
@@ -145,7 +148,8 @@ fu! nvpm#loop(...) "{
     if type == 2 && g:nvpm.edit.mode|call nvpm#edit()|endif
     if type == 1 && g:nvpm.edit.mode|call nvpm#edit()|endif
     if type == 0 && g:nvpm.edit.mode|call nvpm#edit()|endif
-    if bufname()==g:nvpm.tree.curr 
+    let bufname = bufname()
+    if bufname==g:nvpm.tree.curr 
       let node = flux#seek(tree,type)
       if empty(node)|return 1|endif
       call nvpm#indx(node.meta,step)

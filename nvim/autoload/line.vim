@@ -22,8 +22,6 @@ fu! line#init(...) "{
   let s:git  = ''
   let s:line = 1
 
-  call line#save()
-
 endfu "}
 fu! line#keep(...) "{
 
@@ -73,6 +71,7 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
+  "if exists('g:zoom.mode')&&g:zoom.mode|return|endif
   if g:nvpm.tree.mode
     if s:user.gitinfo
       let time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
@@ -81,17 +80,19 @@ fu! line#show(...) "{
     set statusline=%!line#botl()
   endif
 
-  call line#setl()
+  set showtabline=2
+  set laststatus=3
 
   let s:line = 1
 
 endfu "}
 fu! line#hide(...) "{
 
-  call line#save()
-
   set showtabline=0
   set laststatus=0
+
+  let &tabline = ' '
+  let &statusline = ' '
 
   let s:line = 0
 
@@ -107,18 +108,6 @@ fu! line#swap(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! line#save(...) "{
-
-  let s:topnr = &showtabline
-  let s:botnr = &laststatus
-
-endfu "}
-fu! line#setl(...) "{
-
-  let &showtabline = s:topnr
-  let &laststatus  = s:botnr
-
-endfu "}
 fu! line#list(...) "{
   let type = get(a:000,0,-1)
   let revs = get(a:000,1)

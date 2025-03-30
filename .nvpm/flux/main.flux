@@ -14,19 +14,19 @@
         file api.txt
         file usr_41.txt
     }
+    workspace line {
+      tab code
+        file auto : autoload/line.vim
+        file plug : plugin/line.vim
+      tab oldnvpm @ ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+    }
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
        -file init @ meta/init.vim
-      tab oldnvpm @ ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-    }
-    workspace line {
-      tab code
-        file auto : autoload/line.vim
-        file plug : plugin/line.vim
       tab oldnvpm @ ../nvpm
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
