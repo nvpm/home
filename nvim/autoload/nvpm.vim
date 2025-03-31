@@ -223,8 +223,12 @@ endfu "}
 fu! nvpm#term(...) "{
 
   if !bufexists(g:nvpm.term.buff)
-   exec 'buffer|terminal'
-   let g:nvpm.term.buff = bufname()
+    if has('nvim')
+      exec 'buffer|terminal'
+    else
+      exec '!'.$SHELL
+    endif
+    let g:nvpm.term.buff = bufname()
   endif
 
   if !empty(matchstr(g:nvpm.term.buff,'term://.*'))

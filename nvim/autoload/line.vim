@@ -80,7 +80,7 @@ fu! line#show(...) "{
   endif
 
   set showtabline=2
-  set laststatus=3
+  let &laststatus=2
 
   let s:line = 1
 

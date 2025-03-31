@@ -16,6 +16,8 @@ if get(g:,'zoom_autocmds',1)
     au WinEnter    * call zoom#back()
     au BufWinEnter * call zoom#help()
     au QuitPre     * call zoom#quit()
-    au TermClose   * call timer_start(20,{->zoom#term()})
+    if has('nvim')
+      au TermClose   * call timer_start(20,{->zoom#term()})
+    endif
   augroup END
 endif

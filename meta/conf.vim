@@ -1,10 +1,18 @@
 " main {
 
-  set termguicolors     " enable true colors support
-  let ayucolor="light"  " for light version of theme
-  let ayucolor="mirage" " for mirage version of theme
-  let ayucolor="dark"   " for dark version of theme
-  colorscheme ayu
+  if has('nvim')
+    "set termguicolors     " enable true colors support
+    "let ayucolor="light"  " for light version of theme
+    "let ayucolor="mirage" " for mirage version of theme
+    "let ayucolor="dark"   " for dark version of theme
+    "colorscheme ayu
+
+    set bg=dark
+    colorscheme lunaperche
+  else
+    set bg=dark
+    colorscheme lunaperche
+  endif
 
   hi Pmenu      guibg=#1f252a guifg=#888888
   hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
@@ -18,6 +26,9 @@
 " }
 " nvpm {
 
+  if !has('nvim')
+    set hidden
+  endif
   " nvpm user variables tree
   let g:nvpm_maketree = 1
   let g:nvpm_initload = 1
@@ -80,7 +91,7 @@
 
   let zoom_initload = 1
   let zoom_height   = 16
-  let zoom_width    = 75
+  let zoom_width    = 80
 
   nmap <silent>mz    :Zoom<cr>
 
@@ -104,12 +115,12 @@
   hi LINEGitClean    guifg=#77aaaa gui=bold
 
   " Line Colors
-  hi LINEFill guibg=none
-  hi LINEItem guifg=#aaaaaa guibg=none
-  hi LINECurr guifg=#ffffff guibg=none gui=bold
+  hi LINEFill guibg=bg
+  hi LINEItem guifg=#aaaaaa guibg=bg
+  hi LINECurr guifg=#ffffff guibg=bg
   hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
 
-  nmap ml :LINESwap<cr><c-l>
+  nmap <silent>ml :LINESwap<cr><c-l>
 
 " }
 " text {

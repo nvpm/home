@@ -46,9 +46,15 @@ fu! zoom#init(...) "{
 endfu "}
 fu! zoom#prep(...) "{
 
-
   silent! only
   call line#hide()
+  let s:cmdh = &cmdheight
+  "set cmdheight=0
+
+endfu " }
+fu! zoom#post(...) "{
+
+  let &cmdheight = s:cmdh
 
 endfu " }
 fu! zoom#calc(...) "{
@@ -71,11 +77,16 @@ fu! zoom#buff(...) "{
   setl nobuflisted
   setl nonumber
 
+  let &l:tabline    = ' '
+  let &l:statusline = ' '
+
 endfu " }
 fu! zoom#pads(...) "{
 
   let g:zoom.split = 1
 
+  "let g:zoom.split = 0
+  "return
   if g:zoom.size.l
     exec 'vsplit'..g:zoom.pads.l
     call zoom#buff()
@@ -134,6 +145,7 @@ fu! zoom#show(...) "{
   call zoom#pads()
 
   call zoom#none()
+  call zoom#post()
 
   let g:zoom.mode = 1
 
@@ -166,14 +178,14 @@ fu! zoom#bdel(...) "{
 endfu "}
 fu! zoom#none(...) "{
 
-  hi TabLineFill  ctermfg=none ctermbg=none guifg=none guibg=bg
-  hi TabLineSell  ctermfg=none ctermbg=none guifg=none guibg=bg
-  hi StatusLine   ctermfg=none ctermbg=none guifg=none guibg=bg
-  hi StatusLineNC ctermfg=none ctermbg=none guifg=bg   guibg=bg
-  hi LineNr       ctermfg=none ctermbg=none guibg=bg
-  hi SignColumn   ctermfg=none ctermbg=none guibg=bg
-  hi VertSplit    ctermfg=none ctermbg=none guifg=bg guibg=bg
-  hi NonText      ctermfg=none ctermbg=none guifg=bg
+  hi TabLineFill  ctermfg=bg ctermbg=bg guifg=bg guibg=bg
+  hi TabLineSell  ctermfg=bg ctermbg=bg guifg=bg guibg=bg
+  hi StatusLine   ctermfg=bg ctermbg=bg guifg=bg guibg=bg
+  hi StatusLineNC ctermfg=bg ctermbg=bg guifg=bg guibg=bg
+  hi LineNr       ctermfg=bg ctermbg=bg guibg=bg
+  hi SignColumn   ctermfg=bg ctermbg=bg guibg=bg
+  hi VertSplit    ctermfg=bg ctermbg=bg guifg=bg guibg=bg
+  hi NonText      ctermfg=bg ctermbg=bg guifg=bg
 
 endfu " }
 
