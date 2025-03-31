@@ -1,18 +1,20 @@
 
   project NVPM devl : nvim {
     workspace zoom {
+
       tab code
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
-       -file init @ meta/init.vim
+
       tab oldzoom @ ../nvpm
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
-        --
+
       tab nvimdocs @ /usr/share/nvim/runtime/doc
         file eval.txt
         file api.txt
         file usr_41.txt
+
     }
     workspace line {
       tab code
@@ -63,7 +65,7 @@
     tab meta
       file conf.vim
       file menu.vim
-     -file init.vim
+      file init.vim
     tab root @
       file README.md
       file LICENSE

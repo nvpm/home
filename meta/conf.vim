@@ -1,7 +1,5 @@
 " main {
 
-"if !exists('s:colors')
-
   set termguicolors     " enable true colors support
   let ayucolor="mirage" " for mirage version of theme
   let ayucolor="light"  " for light version of theme
@@ -16,10 +14,6 @@
   hi DiffRemoved guifg=#ff0000 gui=italic
 
   hi NonText ctermfg=0 guifg=#000000
-
-"  let s:colors = 1
-"
-"endif
 
 " }
 " nvpm {
@@ -93,75 +87,73 @@
 " }
 " line {
 
-set hidden
-set showtabline=2
-set laststatus=3
+  set hidden
 
-" Line options for use with colors
-let g:line_closure       = 1
-let g:line_innerspace    = 0
-let g:line_show_projname = 1
-let g:line_bottomright   = ''
-let g:line_bottomright   = '%y%m ⬤ %l,%c/%P'
-let g:line_bottomcenter  = ''
-let g:line_bottomcenter  = ' ⬤ %{line#file()}'
-let g:line_git_info      = 1
-let g:line_git_delayms   = 5000
+  " Line options for use with colors
+  let g:line_closure       = 1
+  let g:line_innerspace    = 0
+  let g:line_show_projname = 1
+  let g:line_bottomright   = ''
+  let g:line_bottomright   = '%y%m ⬤ %l,%c/%P'
+  let g:line_bottomcenter  = ''
+  let g:line_bottomcenter  = ' ⬤ %{line#file()}'
+  let g:line_git_info      = 1
+  let g:line_git_delayms   = 5000
 
-" Git Info Colors
-hi LINEGitModified guifg=#aa4371 gui=bold
-hi LINEGitStaged   guifg=#00ff00 gui=bold
-hi LINEGitClean    guifg=#77aaaa gui=bold
+  " Git Info Colors
+  hi LINEGitModified guifg=#aa4371 gui=bold
+  hi LINEGitStaged   guifg=#00ff00 gui=bold
+  hi LINEGitClean    guifg=#77aaaa gui=bold
 
-" Line Colors
-hi LINEFill guibg=none
-hi LINEItem guifg=#aaaaaa guibg=none
-hi LINECurr guifg=#ffffff guibg=none gui=bold
-hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
+  " Line Colors
+  hi LINEFill guibg=none
+  hi LINEItem guifg=#aaaaaa guibg=none
+  hi LINECurr guifg=#ffffff guibg=none gui=bold
+  hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
 
-nmap ml :LINESwap<cr><c-l>
+  nmap ml :LINESwap<cr><c-l>
 
 " }
 " text {
 
-nmap maj vip:TEXTFixs<cr>vip:TEXTJust 74<cr>{vapoj<vip>
-vmap maj :'<,'>TEXTFixs<cr>:'<,'>TEXTJust 74<cr>
+  nmap maj vip:TEXTFixs<cr>vip:TEXTJust 74<cr>{vapoj<vip>
+  vmap maj :'<,'>TEXTFixs<cr>:'<,'>TEXTJust 74<cr>
 
 "}
 
 " }
 " devl {
 
-set verbose=1
+  set verbose=1
 
-hi NVPMPassed  guifg=#009900 gui=bold
-hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
+  hi NVPMPassed  guifg=#009900 gui=bold
+  hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
 
-let NVPMTEST = 1
+  let NVPMTEST = 1
 
-nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-command! NVPMInit so meta/init.vim
+  nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+  imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+  cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+  command! NVPMInit so meta/init.vim
 
-nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
-cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-command! NVPMMenuSync so meta/conf.vim|
-                     \so meta/menu.vim|
-                     \call menu#sync()
+  nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
+  imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
+  cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
+  command! NVPMMenuSync so meta/conf.vim|
+                       \so meta/menu.vim|
+                       \call menu#sync()
 
-nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-command! NVPMMenuMake so meta/conf.vim|
-                     \so meta/menu.vim|
-                     \call menu#make()
+  nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+  imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+  cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+  command! NVPMMenuMake so meta/conf.vim|
+                       \so meta/menu.vim|
+                       \call menu#make()
 
-nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
-nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
+  nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
+  nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
 
-command! NVPMMenuSave so meta/menu.vim|call menu#save()
-command! NVPMMenuPush so meta/menu.vim|call menu#push()
+  command! NVPMMenuSave so meta/menu.vim|call menu#save()
+  command! NVPMMenuPush so meta/menu.vim|call menu#push()
 
 " end-devl}

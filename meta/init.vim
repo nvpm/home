@@ -2,7 +2,6 @@
 " init {
 
 let s:test = {}
-so meta/conf.vim
 
 "}
 " plug {
@@ -47,6 +46,7 @@ fu! s:test.zoom(...) "{
   so nvim/autoload/zoom.vim
   so nvim/plugin/zoom.vim
 
+  ec winheight(0) winwidth(0)
   return
   let conf = {}
   let conf.relative = 'win'
@@ -92,8 +92,9 @@ endfu "}
 "}
 " exec {
 
-if 1|call s:test.flux()|endif
-if 1|call s:test.nvpm()|endif
+if 0| so meta/conf.vim |endif
+if 0|call s:test.flux()|endif
+if 0|call s:test.nvpm()|endif
 if 1|call s:test.zoom()|endif
 
 "}

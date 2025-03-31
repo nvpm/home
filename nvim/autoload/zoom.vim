@@ -196,10 +196,23 @@ endfu " }
 "-- auto functions --
 fu! zoom#help(...) "{
 
-  if &ft=='help'||&ft=='man'
-    only
+  let bufname=bufname()
+  if &filetype == 'man'
+    bdel
+    "if g:zoom.mode
+    "  call zoom#hide()
+    "  call zoom#show()
+    "endif
+    exec 'edit '. bufname
+  endif
+  if &filetype == 'help'
     if g:zoom.mode
-      call zoom#show()
+      if bufname!=g:nvpm.tree.curr
+        bdel
+        exec 'edit '. bufname
+      endif
+    else
+      only
     endif
   endif
 
