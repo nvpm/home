@@ -52,7 +52,7 @@
     }
   }
   -
-  loop plugin: nvpm flux -- line zoom text {
+  loop plugin: -nvpm flux -line zoom -text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
         file TODO,file Concepts,file Features,file Issues

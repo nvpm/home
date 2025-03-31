@@ -1,8 +1,8 @@
 " main {
 
   set termguicolors     " enable true colors support
-  let ayucolor="mirage" " for mirage version of theme
   let ayucolor="light"  " for light version of theme
+  let ayucolor="mirage" " for mirage version of theme
   let ayucolor="dark"   " for dark version of theme
   colorscheme ayu
 
@@ -19,7 +19,7 @@
 " nvpm {
 
   " nvpm user variables tree
-  let g:nvpm_maketree = 0
+  let g:nvpm_maketree = 1
   let g:nvpm_initload = 1
 
   let g:nvpm_fluxconf = {}
@@ -86,8 +86,6 @@
 
 " }
 " line {
-
-  set hidden
 
   " Line options for use with colors
   let g:line_closure       = 1

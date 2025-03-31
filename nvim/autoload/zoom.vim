@@ -31,12 +31,10 @@ fu! zoom#init(...) "{
   let g:zoom.size  = size
   let g:zoom.pads  = pads
   let g:zoom.user  = user
-  let g:zoom.vars  = {}
   let g:zoom.mode  = 0
   let g:zoom.split = 0
   let g:zoom.tgit  = 0
 
-  call zoom#vars()
   call execute('set fillchars+=vert:\ ')
   call execute('set fillchars+=vertleft:\ ')
   call execute('set fillchars+=vertright:\ ')
@@ -46,20 +44,8 @@ fu! zoom#init(...) "{
   call execute('set fillchars+=eob:\ ')
 
 endfu "}
-fu! zoom#vars(...) "{
-
-  if a:0
-    let &showtabline = g:zoom.vars.showtabline
-    let &laststatus  = g:zoom.vars.laststatus
-    let &cmdheight   = g:zoom.vars.cmdheight
-    return
-  endif
-  let g:zoom.vars.showtabline = &showtabline
-  let g:zoom.vars.laststatus  = &laststatus
-  let g:zoom.vars.cmdheight   = &cmdheight
-
-endfu " }
 fu! zoom#prep(...) "{
+
 
   silent! only
   call line#hide()
@@ -83,6 +69,7 @@ fu! zoom#buff(...) "{
   setl nomodifiable
   setl readonly
   setl nobuflisted
+  setl nonumber
 
 endfu " }
 fu! zoom#pads(...) "{
@@ -157,8 +144,7 @@ fu! zoom#hide(...) "{
   call zoom#bdel()
   let g:zoom.mode = 0
 
-  "call zoom#vars(1)
-  call line#keep()
+  call line#show()
 
 endfu "}
 fu! zoom#swap(...) "{
@@ -234,6 +220,7 @@ fu! zoom#term(...) "{
   if g:zoom.mode
     call feedkeys('j','i')
     only
+    bdel
     call nvpm#rend()
     call zoom#show()
   endif
