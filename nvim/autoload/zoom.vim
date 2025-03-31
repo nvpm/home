@@ -62,7 +62,6 @@ endfu " }
 fu! zoom#prep(...) "{
 
   silent! only
-  "call zoom#vars()
   call line#hide()
 
 endfu " }

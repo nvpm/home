@@ -71,7 +71,6 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
-  "if exists('g:zoom.mode')&&g:zoom.mode|return|endif
   if g:nvpm.tree.mode
     if s:user.gitinfo
       let time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
@@ -109,6 +108,7 @@ endfu "}
 
 "-- auxy functions --
 fu! line#list(...) "{
+
   let type = get(a:000,0,-1)
   let revs = get(a:000,1)
   let node = flux#seek(g:nvpm.tree.root,type)
