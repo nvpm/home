@@ -78,39 +78,38 @@ fu! zoom#calc(...) "{
   "let g:zoom.size.l+= g:zoom.size.l%2
 
 endfu " }
+fu! zoom#buff(...) "{
+
+  setl nomodifiable
+  setl readonly
+  setl nobuflisted
+
+endfu " }
 fu! zoom#pads(...) "{
 
   let g:zoom.split = 1
 
   if g:zoom.size.l
     exec 'vsplit'..g:zoom.pads.l
-    setl nomodifiable
-    setl readonly
-    setl nobuflisted
+    call zoom#buff()
     silent! wincmd p
   endif
 
   if g:zoom.size.r
     exec 'silent! rightbelow vsplit '. g:zoom.pads.r
-    setl nomodifiable
-    setl readonly
-    setl nobuflisted
+    call zoom#buff()
     silent! wincmd p
   endif
 
   if g:zoom.size.t
     exec 'silent! top split '. g:zoom.pads.t
-    setl nomodifiable
-    setl readonly
-    setl nobuflisted
+    call zoom#buff()
     silent! wincmd p
   endif
 
   if g:zoom.size.b
     exec 'silent! bot split '. g:zoom.pads.b
-    setl nomodifiable
-    setl readonly
-    setl nobuflisted
+    call zoom#buff()
     silent! wincmd p
   endif
 
