@@ -28,7 +28,7 @@ fu! zoom#init(...) "{
   let user.h = get(g:,'zoom_height',-100)
   let user.w = get(g:,'zoom_width' ,80)
   let user.r = get(g:,'zoom_ratio',-1)
-  
+
   if user.r >= 0
     let user.h = -user.r
     let user.w = -user.r
@@ -40,6 +40,7 @@ fu! zoom#init(...) "{
   let g:zoom.mode  = 0
   let g:zoom.split = 0
   let g:zoom.tgit  = 0
+  return
 
   call execute('set fillchars+=vert:\ ')
   call execute('set fillchars+=vertleft:\ ')
@@ -54,48 +55,59 @@ fu! zoom#prep(...) "{
 
   silent! only
   call line#hide()
-  let s:cmdh = &cmdheight
+  let s:wrap = &wrap
   let s:numb = &number
-  set nonumber
-  set cmdheight=0
+  let s:cmdh = &cmdheight
+  let s:sign = &signcolumn
+  let &wrap       = 
+  let &number     = 0
+  let &cmdheight  = 0
+  let &signcolumn = 'no'
 
 endfu " }
 fu! zoom#calc(...) "{
 
-  let g:zoom.size.h = winheight(0)
-  let g:zoom.size.w = winwidth(0)
+  let h = winheight(0)
+  let w = winwidth(0)
 
-  if g:zoom.user.h<=0
-    let g:zoom.user.h = abs(g:zoom.user.h)*g:zoom.size.h/100
+  if g:zoom.user.h<0
+    let g:zoom.user.h = abs(g:zoom.user.h)*h/100
     let g:zoom.user.h = float2nr(g:zoom.user.h)
     let g:zoom.user.h+= g:zoom.user.h%2
   endif
-  if g:zoom.user.w<=0
-    let g:zoom.user.w = abs(g:zoom.user.w)*g:zoom.size.w/100
+  if g:zoom.user.w<0
+    let g:zoom.user.w = abs(g:zoom.user.w)*w/100
     let g:zoom.user.w = float2nr(g:zoom.user.w)
     let g:zoom.user.w+= g:zoom.user.w%2
   endif
 
-  let h = g:zoom.size.h-g:zoom.user.h
-  let w = g:zoom.size.w-g:zoom.user.w
+  let h = h-g:zoom.user.h
+  let w = w-g:zoom.user.w
 
-  if w<=3
-    let g:zoom.size.l = w-1
-    let g:zoom.size.r = 0
-  else
-    let g:zoom.size.r = -1+float2nr(w/2)
-    let g:zoom.size.l = g:zoom.size.r+w%2
+  let g:zoom.size.t = 0
+  let g:zoom.size.b = 0
+  if g:zoom.user.h
+    if h==1
+      let &cmdheight=1
+    elseif h>1&&h<=3
+      let g:zoom.size.b = h-1
+    elseif h>3
+      let g:zoom.size.t = -1+float2nr(h/2)
+      let g:zoom.size.b = g:zoom.size.t+h%2
+    endif
   endif
 
-  if h>=0&&h<=3
-    let &cmdheight=h
-    let g:zoom.size.t = 0
-    let g:zoom.size.b = 0
-  else
-    let g:zoom.size.t = float2nr(h/2)
-    let g:zoom.size.b = 0
-    let &cmdheight    = g:zoom.size.t+h%2
-    let g:zoom.size.t-= 1
+  let g:zoom.size.l = 0
+  let g:zoom.size.r = 0
+  if g:zoom.user.w
+    if w==1
+      let &signcolumn='yes:1'
+    elseif w>1&&w<=3
+      let g:zoom.size.l = w-1
+    elseif w>3
+      let g:zoom.size.r = -1+float2nr(w/2)
+      let g:zoom.size.l = g:zoom.size.r+w%2
+    endif
   endif
 
 endfu " }
@@ -105,6 +117,7 @@ fu! zoom#buff(...) "{
   setl readonly
   "setl nobuflisted
   setl nonumber
+  setl signcolumn=no
 
   let &l:tabline    = ' '
   let &l:statusline = ' '
@@ -167,8 +180,9 @@ fu! zoom#pads(...) "{
 endfu " }
 fu! zoom#post(...) "{
 
-  hi StatusLine   ctermfg=none ctermbg=none guifg=none guibg=bg
-  hi StatusLineNC ctermfg=none ctermbg=none guifg=bg   guibg=bg
+  hi StatusLine   guifg=none guibg=none
+  hi StatusLineNC guifg=none guibg=none
+  hi SignColumn   guifg=none guibg=none
 
 endfu " }
 fu! zoom#show(...) "{
@@ -185,13 +199,15 @@ fu! zoom#hide(...) "{
 
   silent! only
   call zoom#bdel()
-  let g:zoom.mode = 0
 
-  let &cmdheight = s:cmdh
-  if s:numb
-    set number
-  endif
+  let &wrap       = s:wrap
+  let &number     = s:numb
+  let &cmdheight  = s:cmdh
+  let &signcolumn = s:sign
+
   call line#show()
+
+  let g:zoom.mode = 0
 
 endfu "}
 fu! zoom#swap(...) "{
