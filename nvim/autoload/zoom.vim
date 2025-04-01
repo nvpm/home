@@ -49,9 +49,11 @@ fu! zoom#prep(...) "{
   silent! only
   call line#hide()
   let s:cmdh = &cmdheight
+  let s:numb = &number
   if has('nvim')
     set cmdheight=0
   endif
+  set nonumber
 
 endfu " }
 fu! zoom#calc(...) "{
@@ -59,6 +61,14 @@ fu! zoom#calc(...) "{
   let g:zoom.size.h = winheight(0)
   let g:zoom.size.w = winwidth(0)
 
+  let h = g:zoom.size.h-g:zoom.user.h
+  let w = g:zoom.size.w-g:zoom.user.w
+
+
+
+
+
+  return
   let g:zoom.size.t = float2nr((g:zoom.size.h-g:zoom.user.h)/2)
   let g:zoom.size.l = float2nr((g:zoom.size.w-g:zoom.user.w)/2)
 
@@ -158,6 +168,9 @@ fu! zoom#hide(...) "{
   let g:zoom.mode = 0
 
   let &cmdheight = s:cmdh
+  if s:numb
+    set number
+  endif
   call line#show()
 
 endfu "}
