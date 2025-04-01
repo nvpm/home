@@ -8,178 +8,109 @@ fu! zoom#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
 
   let g:zoom = {}
+  let g:zoom.mode = 0
 
-  let size = {}
-  let size.l = 0
-  let size.r = 0
-  let size.t = 0
-  let size.b = 0
-  let size.h = 0
-  let size.w = 0
+  let pads        = {}
+  let pads.left   = '.nvpm/zoom/left'
+  let pads.right  = '.nvpm/zoom/right'
+  let pads.top    = '.nvpm/zoom/top'
+  let pads.list   = [pads.left,pads.right,pads.top]
+  let g:zoom.pads = pads
 
-  let pads = {}
-  let pads.l = '.nvpm/zoom/left'
-  let pads.r = '.nvpm/zoom/right'
-  let pads.t = '.nvpm/zoom/top'
-  let pads.b = '.nvpm/zoom/bottom'
-  let pads.list = [pads.l,pads.r,pads.t,pads.b]
+  let h = get(g:,'zoom_height',-4 )
+  let w = get(g:,'zoom_width' ,+80)
 
-  let user = {}
-  let user.h = get(g:,'zoom_height',-100)
-  let user.w = get(g:,'zoom_width' ,80)
-  let user.r = get(g:,'zoom_ratio',-1)
+  "if type(user.height)==type(3.14)
+  "  let user.height = float2nr(&lines*user.height)
+  "  "let user.height = abs(user.height)
+  "endif
+  "if type(user.width)==type(3.14)
+  "  let user.width = float2nr(&columns*user.width)
+  "  "let user.width = abs(user.width)
+  "endif
 
-  if user.r >= 0
-    let user.h = -user.r
-    let user.w = -user.r
-  endif
+  "let s:height    = (user.h>=-&lines  )*(user.h+(user.h<=0)*&lines)
+  "let s:width     = (user.w>=-&columns)*(user.w+(user.w<=0)*&columns)
 
-  let g:zoom.size  = size
-  let g:zoom.pads  = pads
-  let g:zoom.user  = user
-  let g:zoom.mode  = 0
-  let g:zoom.split = 0
-  let g:zoom.tgit  = 0
-  return
+  let s:height = h
+  let s:width  = w
 
-  call execute('set fillchars+=vert:\ ')
-  call execute('set fillchars+=vertleft:\ ')
-  call execute('set fillchars+=vertright:\ ')
-  call execute('set fillchars+=horiz:\ ')
-  call execute('set fillchars+=horizup:\ ')
-  call execute('set fillchars+=horizdown:\ ')
-  call execute('set fillchars+=eob:\ ')
+  let s:splitting = 0
 
 endfu "}
-fu! zoom#prep(...) "{
-
-  silent! only
-  call line#hide()
-  let s:wrap = &wrap
-  let s:numb = &number
-  let s:cmdh = &cmdheight
-  let s:sign = &signcolumn
-  let &wrap       = 0
-  let &number     = 0
-  let &cmdheight  = 0
-  let &signcolumn = 'no'
-
-endfu " }
 fu! zoom#calc(...) "{
 
-  let h = winheight(0)
-  let w = winwidth(0)
+  let totalheight = &lines
+  let totalwidth  = &columns
 
-  if g:zoom.user.h<0
-    let g:zoom.user.h = abs(g:zoom.user.h)*h/100
-    let g:zoom.user.h = float2nr(g:zoom.user.h)
-    let g:zoom.user.h+= g:zoom.user.h%2
-  endif
-  if g:zoom.user.w<0
-    let g:zoom.user.w = abs(g:zoom.user.w)*w/100
-    let g:zoom.user.w = float2nr(g:zoom.user.w)
-    let g:zoom.user.w+= g:zoom.user.w%2
-  endif
+  let s:height+=(s:height<=0)*totalheight
+  let s:width +=(s:width <=0)*totalwidth
 
-  let h = h-g:zoom.user.h
-  let w = w-g:zoom.user.w
+  let s:top    = 0
+  let s:bottom = 0
+  let s:left   = 0
+  let s:right  = 0
 
-  let g:zoom.size.t = 0
-  let g:zoom.size.b = 0
-  if g:zoom.user.h
-    if h==1
-      let &cmdheight=1
-    elseif h>1&&h<=3
-      let g:zoom.size.b = h-1
-    elseif h>3
-      let g:zoom.size.t = -1+float2nr(h/2)
-      let g:zoom.size.b = g:zoom.size.t+h%2
+  if s:height<totalheight
+    " bottom pad takes whole height difference under 3
+    let s:bottom = totalheight-s:height
+    if s:bottom>3
+      " top pad takes smaller portion, if odd difference
+      let s:top    = float2nr(s:bottom/2)
+      let s:bottom = s:top+s:bottom%2
     endif
   endif
 
-  let g:zoom.size.l = 0
-  let g:zoom.size.r = 0
-  if g:zoom.user.w
-    if w==1
-      let &signcolumn='yes:1'
-    elseif w>1&&w<=3
-      let g:zoom.size.l = w-1
-    elseif w>3
-      let g:zoom.size.r = -1+float2nr(w/2)
-      let g:zoom.size.l = g:zoom.size.r+w%2
+  if s:width<totalwidth
+    " left pad takes whole width difference under 3
+    let s:left = totalwidth-s:width
+    if s:left>3
+      " right pad takes smaller portion, if odd difference
+      let s:right = float2nr(s:left/2)
+      let s:left  = s:right+s:left%2
     endif
   endif
+
+endfu " }
+fu! zoom#pads(...) "{
+
+  let s:splitting = 1
+
+  if s:left>1
+    exec string(s:left-1)..'vsplit '..g:zoom.pads.left
+    call zoom#buff()
+    silent! wincmd p
+  endif
+  if s:right>1
+    exec 'rightbelow '..string(s:right-1)..'vsplit '..g:zoom.pads.right
+    call zoom#buff()
+    silent! wincmd p
+  endif
+  if s:top>1
+    exec 'top '..string(s:top-1)..'split '..g:zoom.pads.top
+    call zoom#buff()
+    silent! wincmd p
+  endif
+  let &cmdheight = s:bottom
+
+  let s:splitting = 0
 
 endfu " }
 fu! zoom#buff(...) "{
 
   setl nomodifiable
   setl readonly
-  "setl nobuflisted
   setl nonumber
   setl signcolumn=no
+  setl nobuflisted
 
   let &l:tabline    = ' '
   let &l:statusline = ' '
 
 endfu " }
-fu! zoom#pads(...) "{
+fu! zoom#none(...) "{
 
-  let g:zoom.split = 1
-
-  if g:zoom.size.l
-    exec 'vsplit'..g:zoom.pads.l
-    call zoom#buff()
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.r
-    exec 'silent! rightbelow vsplit '. g:zoom.pads.r
-    call zoom#buff()
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.t
-    exec 'silent! top split '. g:zoom.pads.t
-    call zoom#buff()
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.b
-    exec 'silent! bot split '. g:zoom.pads.b
-    call zoom#buff()
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.l
-    silent! wincmd h
-    exec 'vertical resize ' . g:zoom.size.l
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.r
-    silent! wincmd l
-    exec 'vertical resize ' . g:zoom.size.r
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.t
-    silent! wincmd k
-    exec 'resize ' . g:zoom.size.t
-    silent! wincmd p
-  endif
-
-  if g:zoom.size.b
-    silent! wincmd j
-    exec 'resize ' . g:zoom.size.b
-    silent! wincmd p
-  endif
-
-  let g:zoom.split = 0
-
-endfu " }
-fu! zoom#post(...) "{
-
+  return
   hi StatusLine   guifg=none guibg=none
   hi StatusLineNC guifg=none guibg=none
   hi SignColumn   guifg=none guibg=none
@@ -187,10 +118,29 @@ fu! zoom#post(...) "{
 endfu " }
 fu! zoom#show(...) "{
 
-  call zoom#prep()
+  silent! only
+
+  let s:wrap = &wrap
+  let s:numb = &number
+  let s:cmdh = &cmdheight
+  let s:fill = &fillchars
+  let s:sign = &signcolumn
+  let &wrap       = 0
+  let &number     = 0
+  let &cmdheight  = 0
+  let &signcolumn = 'no'
+  "call execute('set fillchars+=vert:\ ')
+  "call execute('set fillchars+=vertleft:\ ')
+  "call execute('set fillchars+=vertright:\ ')
+  "call execute('set fillchars+=horiz:\ ')
+  "call execute('set fillchars+=horizup:\ ')
+  "call execute('set fillchars+=horizdown:\ ')
+  "call execute('set fillchars+=eob:\ ')
+
+  call line#hide()
   call zoom#calc()
   call zoom#pads()
-  call zoom#post()
+  call zoom#none()
 
   let g:zoom.mode = 1
 
@@ -203,6 +153,7 @@ fu! zoom#hide(...) "{
   let &wrap       = s:wrap
   let &number     = s:numb
   let &cmdheight  = s:cmdh
+  let &fillchars  = s:fill
   let &signcolumn = s:sign
 
   call line#show()
@@ -221,10 +172,9 @@ fu! zoom#swap(...) "{
 endfu "}
 fu! zoom#bdel(...) "{
 
-  call execute(':silent! bdel '..g:zoom.pads.l)
-  call execute(':silent! bdel '..g:zoom.pads.r)
-  call execute(':silent! bdel '..g:zoom.pads.b)
-  call execute(':silent! bdel '..g:zoom.pads.t)
+  call execute(':silent! bdel '..g:zoom.pads.left)
+  call execute(':silent! bdel '..g:zoom.pads.right)
+  call execute(':silent! bdel '..g:zoom.pads.top)
 
 endfu "}
 
@@ -260,8 +210,7 @@ fu! zoom#quit(...) "{
 endfu "}
 fu! zoom#back(...) "{
 
-  if !g:zoom.mode|return|endif
-  if !g:zoom.split && 1+match(g:zoom.pads.list,bufname())
+  if !s:splitting&&1+match(g:zoom.pads.list,bufname())
     silent! wincmd p
   endif
 

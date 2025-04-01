@@ -1,3 +1,41 @@
+" devl {
+
+  set verbose=1
+  set cmdheight=1
+  "set laststatus=0
+  "set showtabline=0
+
+  hi NVPMPassed  guifg=#009900 gui=bold
+  hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
+
+  let NVPMTEST = 1
+
+  nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+  imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+  cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
+  command! NVPMInit so meta/init.vim
+
+  nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
+  imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
+  cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
+  command! NVPMMenuSync so meta/conf.vim|
+                       \so meta/menu.vim|
+                       \call menu#sync()
+
+  nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+  imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+  cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
+  command! NVPMMenuMake so meta/conf.vim|
+                       \so meta/menu.vim|
+                       \call menu#make()
+
+  nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
+  nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
+
+  command! NVPMMenuSave so meta/menu.vim|call menu#save()
+  command! NVPMMenuPush so meta/menu.vim|call menu#push()
+
+" end-devl}
 " main {
 
   if has('nvim')
@@ -92,8 +130,8 @@
 " zoom {
 
   let zoom_initload = 1
-  let zoom_height   = 0
-  let zoom_width    = 40
+  let zoom_height   = -19
+  let zoom_width    = 80
 
   nmap <silent>mz    :Zoom<cr>
 
@@ -133,38 +171,3 @@
 "}
 
 " }
-" devl {
-
-  set verbose=1
-
-  hi NVPMPassed  guifg=#009900 gui=bold
-  hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
-
-  let NVPMTEST = 1
-
-  nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-  imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-  cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-  command! NVPMInit so meta/init.vim
-
-  nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-  imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
-  cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-  command! NVPMMenuSync so meta/conf.vim|
-                       \so meta/menu.vim|
-                       \call menu#sync()
-
-  nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-  imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-  cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-  command! NVPMMenuMake so meta/conf.vim|
-                       \so meta/menu.vim|
-                       \call menu#make()
-
-  nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
-  nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
-
-  command! NVPMMenuSave so meta/menu.vim|call menu#save()
-  command! NVPMMenuPush so meta/menu.vim|call menu#push()
-
-" end-devl}

@@ -47,7 +47,9 @@ fu! s:test.zoom(...) "{
   so nvim/plugin/zoom.vim
 
   ec 'h:'.winheight(0) 'w:'.winwidth(0)
+
   return
+
   let conf = {}
   let conf.relative = 'win'
   let conf.style = 'minimal'

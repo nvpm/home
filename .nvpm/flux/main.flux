@@ -7,6 +7,7 @@
         file plug : plugin/zoom.vim
 
       tab oldzoom @ ../nvpm
+        file help : doc/nvpm.txt
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
 

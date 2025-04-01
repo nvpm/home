@@ -7,7 +7,6 @@ call zoom#init()
 
 "-- user commands --
 command! Zoom call zoom#swap()
-"command! Zoom call zoom#show()
 
 "-- auto commands --
 if get(g:,'zoom_autocmds',1)
