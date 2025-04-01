@@ -49,12 +49,9 @@ fu! zoom#prep(...) "{
   silent! only
   call line#hide()
   let s:cmdh = &cmdheight
-  "set cmdheight=0
-
-endfu " }
-fu! zoom#post(...) "{
-
-  let &cmdheight = s:cmdh
+  if has('nvim')
+    set cmdheight=0
+  endif
 
 endfu " }
 fu! zoom#calc(...) "{
@@ -138,13 +135,17 @@ fu! zoom#pads(...) "{
   let g:zoom.split = 0
 
 endfu " }
+fu! zoom#post(...) "{
+
+  hi StatusLine   ctermfg=none ctermbg=none guifg=none guibg=bg
+  hi StatusLineNC ctermfg=none ctermbg=none guifg=bg   guibg=bg
+
+endfu " }
 fu! zoom#show(...) "{
 
   call zoom#prep()
   call zoom#calc()
   call zoom#pads()
-
-  call zoom#none()
   call zoom#post()
 
   let g:zoom.mode = 1
@@ -156,6 +157,7 @@ fu! zoom#hide(...) "{
   call zoom#bdel()
   let g:zoom.mode = 0
 
+  let &cmdheight = s:cmdh
   call line#show()
 
 endfu "}
@@ -176,18 +178,6 @@ fu! zoom#bdel(...) "{
   call execute(':silent! bdel '..g:zoom.pads.t)
 
 endfu "}
-fu! zoom#none(...) "{
-
-  hi TabLineFill  ctermfg=bg ctermbg=bg guifg=bg guibg=bg
-  hi TabLineSell  ctermfg=bg ctermbg=bg guifg=bg guibg=bg
-  hi StatusLine   ctermfg=bg ctermbg=bg guifg=bg guibg=bg
-  hi StatusLineNC ctermfg=bg ctermbg=bg guifg=bg guibg=bg
-  hi LineNr       ctermfg=bg ctermbg=bg guibg=bg
-  hi SignColumn   ctermfg=bg ctermbg=bg guibg=bg
-  hi VertSplit    ctermfg=bg ctermbg=bg guifg=bg guibg=bg
-  hi NonText      ctermfg=bg ctermbg=bg guifg=bg
-
-endfu " }
 
 "-- auto functions --
 fu! zoom#help(...) "{

@@ -1,14 +1,13 @@
 " main {
 
   if has('nvim')
-    "set termguicolors     " enable true colors support
-    "let ayucolor="light"  " for light version of theme
-    "let ayucolor="mirage" " for mirage version of theme
-    "let ayucolor="dark"   " for dark version of theme
-    "colorscheme ayu
 
-    set bg=dark
-    colorscheme lunaperche
+    set termguicolors     " enable true colors support
+    let ayucolor="light"  " for light version of theme
+    let ayucolor="mirage" " for mirage version of theme
+    let ayucolor="dark"   " for dark version of theme
+    colorscheme ayu
+
   else
     set bg=dark
     colorscheme lunaperche
@@ -17,9 +16,12 @@
   hi Pmenu      guibg=#1f252a guifg=#888888
   hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
 
+  hi Normal     guibg=#000000
   hi Folded                    gui=italic
   hi DiffAdded   guifg=#00ff00 gui=bold
   hi DiffRemoved guifg=#ff0000 gui=italic
+  hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
+
 
   hi NonText ctermfg=0 guifg=#000000
 
@@ -90,7 +92,7 @@
 " zoom {
 
   let zoom_initload = 1
-  let zoom_height   = 16
+  let zoom_height   = 20
   let zoom_width    = 80
 
   nmap <silent>mz    :Zoom<cr>
