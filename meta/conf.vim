@@ -92,8 +92,8 @@
 " zoom {
 
   let zoom_initload = 1
-  let zoom_height   = 20
-  let zoom_width    = 80
+  let zoom_height   = 19
+  let zoom_width    = 83
 
   nmap <silent>mz    :Zoom<cr>
 

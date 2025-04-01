@@ -25,8 +25,14 @@ fu! zoom#init(...) "{
   let pads.list = [pads.l,pads.r,pads.t,pads.b]
 
   let user = {}
-  let user.h = get(g:,'zoom_height',-90)
-  let user.w = get(g:,'zoom_width',80)
+  let user.h = get(g:,'zoom_height',-100)
+  let user.w = get(g:,'zoom_width' ,80)
+  let user.r = get(g:,'zoom_ratio',-1)
+  
+  if user.r >= 0
+    let user.h = -user.r
+    let user.w = -user.r
+  endif
 
   let g:zoom.size  = size
   let g:zoom.pads  = pads
@@ -50,10 +56,8 @@ fu! zoom#prep(...) "{
   call line#hide()
   let s:cmdh = &cmdheight
   let s:numb = &number
-  if has('nvim')
-    set cmdheight=0
-  endif
   set nonumber
+  set cmdheight=0
 
 endfu " }
 fu! zoom#calc(...) "{
@@ -61,27 +65,45 @@ fu! zoom#calc(...) "{
   let g:zoom.size.h = winheight(0)
   let g:zoom.size.w = winwidth(0)
 
+  if g:zoom.user.h<=0
+    let g:zoom.user.h = abs(g:zoom.user.h)*g:zoom.size.h/100
+    let g:zoom.user.h = float2nr(g:zoom.user.h)
+    let g:zoom.user.h+= g:zoom.user.h%2
+  endif
+  if g:zoom.user.w<=0
+    let g:zoom.user.w = abs(g:zoom.user.w)*g:zoom.size.w/100
+    let g:zoom.user.w = float2nr(g:zoom.user.w)
+    let g:zoom.user.w+= g:zoom.user.w%2
+  endif
+
   let h = g:zoom.size.h-g:zoom.user.h
   let w = g:zoom.size.w-g:zoom.user.w
 
+  if w<=3
+    let g:zoom.size.l = w-1
+    let g:zoom.size.r = 0
+  else
+    let g:zoom.size.r = -1+float2nr(w/2)
+    let g:zoom.size.l = g:zoom.size.r+w%2
+  endif
 
-
-
-
-  return
-  let g:zoom.size.t = float2nr((g:zoom.size.h-g:zoom.user.h)/2)
-  let g:zoom.size.l = float2nr((g:zoom.size.w-g:zoom.user.w)/2)
-
-  let g:zoom.size.b = g:zoom.size.t
-  let g:zoom.size.r = g:zoom.size.l
-  "let g:zoom.size.l+= g:zoom.size.l%2
+  if h>=0&&h<=3
+    let &cmdheight=h
+    let g:zoom.size.t = 0
+    let g:zoom.size.b = 0
+  else
+    let g:zoom.size.t = float2nr(h/2)
+    let g:zoom.size.b = 0
+    let &cmdheight    = g:zoom.size.t+h%2
+    let g:zoom.size.t-= 1
+  endif
 
 endfu " }
 fu! zoom#buff(...) "{
 
   setl nomodifiable
   setl readonly
-  setl nobuflisted
+  "setl nobuflisted
   setl nonumber
 
   let &l:tabline    = ' '
@@ -92,8 +114,6 @@ fu! zoom#pads(...) "{
 
   let g:zoom.split = 1
 
-  "let g:zoom.split = 0
-  "return
   if g:zoom.size.l
     exec 'vsplit'..g:zoom.pads.l
     call zoom#buff()
