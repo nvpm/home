@@ -59,7 +59,7 @@ fu! zoom#prep(...) "{
   let s:numb = &number
   let s:cmdh = &cmdheight
   let s:sign = &signcolumn
-  let &wrap       = 
+  let &wrap       = 0
   let &number     = 0
   let &cmdheight  = 0
   let &signcolumn = 'no'
