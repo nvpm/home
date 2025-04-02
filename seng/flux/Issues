@@ -1,6 +1,6 @@
 
 
-  ● [bug] cut 1 inside loop's content ~
+  ● [bug] cut 1/2 inside loop's content ~
   ● [bug] synx: cut1/2 followed same cut ~
   ● [fixed] bug with standalone cut1 inline loop vars ~
   ● [fixed] bug with cut2 in loop ~

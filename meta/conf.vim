@@ -1,7 +1,6 @@
 " devl {
 
   set verbose=1
-  set cmdheight=1
   "set laststatus=0
   "set showtabline=0
 
@@ -54,14 +53,12 @@
   hi Pmenu      guibg=#1f252a guifg=#888888
   hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
 
-  hi Normal     guibg=#000000
+  hi Normal     ctermbg=0 guibg=#000000
   hi Folded                    gui=italic
   hi DiffAdded   guifg=#00ff00 gui=bold
   hi DiffRemoved guifg=#ff0000 gui=italic
   hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
-
-
-  hi NonText ctermfg=0 guifg=#000000
+  hi NonText     ctermfg=0 guifg=#000000
 
 " }
 " nvpm {
@@ -129,8 +126,9 @@
 " }
 " zoom {
 
+  set cmdheight=1
   let zoom_initload = 1
-  let zoom_height   = -19
+  let zoom_height   = -5
   let zoom_width    = 80
 
   nmap <silent>mz    :Zoom<cr>

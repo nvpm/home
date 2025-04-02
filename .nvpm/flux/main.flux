@@ -2,16 +2,17 @@
   project NVPM devl : nvim {
     workspace zoom {
 
+       -file init @ meta/init.vim
       tab code
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
 
       tab oldzoom @ ../nvpm
-        file help : doc/nvpm.txt
+        -file help : doc/nvpm.txt
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
 
-      tab nvimdocs @ /usr/share/nvim/runtime/doc
+      -tab nvimdocs @ /usr/share/nvim/runtime/doc
         file eval.txt
         file api.txt
         file usr_41.txt
@@ -52,11 +53,15 @@
         file expt : case.expt
     }
   }
-  -
-  loop plugin: -nvpm flux -line zoom -text {
+
+  loop plugin: -nvpm -flux -line zoom -text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
-        file TODO,file Concepts,file Features,file Issues
+        file TODO
+        file Issues
+        --
+        file Concepts
+        file Features
       tab code
         file Random,file Syntax,file Data,file File
       tab seng

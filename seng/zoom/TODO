@@ -1,0 +1,8 @@
+
+  ● properly save & restore highlight groups changed ~
+  ● add action for colorscheme changed event (autocommand) ~
+  ● initload feature ~
+  ● account for cmdheight, signcolumn, and others in zoom#calc ~
+  ● same behaviours for vim too ~
+
+vim: ft=help: tw=2
