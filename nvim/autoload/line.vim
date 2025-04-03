@@ -15,7 +15,7 @@ fu! line#init(...) "{
   let s:user.bottomright  = get(g:,'line_bottomright'   , botr )
   let s:user.closure      = get(g:,'line_closure'       , 1    )
   let s:user.innerspace   = get(g:,'line_innerspace'    , 0    )
-  let s:user.projname     = get(g:,'line_show_projname' , 1    )
+  let s:user.projname     = get(g:,'line_projname' , 1    )
   let s:user.gitinfo      = get(g:,'line_git_info'      , 0    )
   let s:user.gitdelayms   = get(g:,'line_git_delayms'   , 2000 )
 
@@ -39,6 +39,7 @@ fu! line#topl(...) "{
 
   let line.= line#list(1,1)
 
+  if !s:user.projname|return line|endif
   let proj = flux#seek(g:nvpm.tree.root,0)
 
   if empty(proj)||proj.list[proj.meta.indx].data.name=='<unnamed>'||proj.list[proj.meta.indx].data.name==''

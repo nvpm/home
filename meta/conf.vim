@@ -115,6 +115,7 @@
 " zoom {
 
   set cmdheight=1
+  set nowrap
   let zoom_initload = 1
   let zoom_height   = -4
   let zoom_width    = 80
@@ -127,7 +128,7 @@
   " Line options for use with colors
   let g:line_closure       = 1
   let g:line_innerspace    = 0
-  let g:line_show_projname = 1
+  let g:line_projname = 0
   let g:line_bottomright   = ''
   let g:line_bottomright   = '%y%m ⬤ %l,%c/%P'
   let g:line_bottomcenter  = ''
