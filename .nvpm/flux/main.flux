@@ -2,7 +2,7 @@
   project NVPM devl : nvim {
     workspace zoom {
 
-       -file init @ meta/init.vim
+      -file init @ meta/init.vim
       tab code
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
@@ -53,8 +53,7 @@
         file expt : case.expt
     }
   }
-
-  loop plugin: -nvpm -flux -line zoom -text {
+  -loop plugin: zoom nvpm flux line text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
         file TODO
@@ -70,12 +69,12 @@
   project NVPM meta @ meta {
     tab meta
       file conf.vim
-      file menu.vim
+      -file menu.vim
       file init.vim
     tab root @
       file README.md
-      file LICENSE
     tab code@nvim
       file version
       file README.md
+      -file LICENSE
   }

@@ -94,6 +94,8 @@ fu! zoom#pads(...) "{
 endfu " }
 fu! zoom#show(...) "{
 
+  if a:0&&!g:zoom.mode|return|endif
+
   silent! only
 
   call line#hide()
@@ -187,14 +189,14 @@ endfu "}
 fu! zoom#none(...) "{
 
   if s:nvim
-    hi TabLineFill  ctermbg=bg guibg=bg
-    hi TabLineSell  ctermbg=bg guibg=bg
-    hi StatusLine   ctermbg=bg guibg=bg
-    hi StatusLineNC ctermbg=bg guibg=bg
-    hi LineNr       ctermbg=bg guibg=bg
-    hi SignColumn   ctermbg=bg guibg=bg
-    hi VertSplit    ctermbg=bg guibg=bg
-    hi NonText      ctermbg=bg guibg=bg
+    hi TabLineFill  ctermbg=none guibg=none
+    hi TabLineSell  ctermbg=none guibg=none
+    hi StatusLine   ctermbg=none guibg=none
+    hi StatusLineNC ctermbg=none guibg=none
+    hi LineNr       ctermbg=none guibg=none
+    hi SignColumn   ctermbg=none guibg=none
+    hi VertSplit    ctermbg=none guibg=none
+    hi NonText      ctermbg=none guibg=none
   else
     if !empty(s:bgcolors)
       exe 'hi TabLineFill  '..s:bgcolors

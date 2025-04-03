@@ -1,9 +1,5 @@
 " devl {
 
-  set verbose=1
-  "set laststatus=0
-  "set showtabline=0
-
   hi NVPMPassed  guifg=#009900 gui=bold
   hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
 
@@ -37,26 +33,18 @@
 " end-devl}
 " main {
 
-  if has('nvim')
-
-    set termguicolors     " enable true colors support
-    let ayucolor="light"  " for light version of theme
-    let ayucolor="mirage" " for mirage version of theme
-    let ayucolor="dark"   " for dark version of theme
-    colorscheme ayu
-
-  else
-    set bg=dark
-    colorscheme lunaperche
-  endif
+  set termguicolors     " enable true colors support
+  let ayucolor="light"  " for light version of theme
+  let ayucolor="mirage" " for mirage version of theme
+  let ayucolor="dark"   " for dark version of theme
+  colorscheme ayu
 
   hi Pmenu      guibg=#1f252a guifg=#888888
   hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
 
-  hi Normal     ctermbg=0 guibg=#000000
-  hi Folded                    gui=italic
-  hi DiffAdded   guifg=#00ff00 gui=bold
-  hi DiffRemoved guifg=#ff0000 gui=italic
+  hi Folded      guifg=#749984
+  hi DiffAdded   guifg=#00ff00              gui=bold
+  hi DiffRemoved guifg=#ff0000              gui=italic
   hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
   hi NonText     ctermfg=0 guifg=#000000
 
@@ -128,7 +116,7 @@
 
   set cmdheight=1
   let zoom_initload = 1
-  let zoom_height   = -5
+  let zoom_height   = -4
   let zoom_width    = 80
 
   nmap <silent>mz    :Zoom<cr>

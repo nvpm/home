@@ -46,7 +46,7 @@ fu! s:test.zoom(...) "{
   so nvim/autoload/zoom.vim
   so nvim/plugin/zoom.vim
 
-  "ec 'h:'.winheight(0) 'w:'.winwidth(0)
+  ec 'h:'.winheight(0) 'w:'.winwidth(0)
   
   return
 

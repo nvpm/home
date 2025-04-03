@@ -1,4 +1,5 @@
 
   ● [bug] au WinResized removes visual & possibly other things ~
+  ● [bug] persistent cmdheight ~
 
 vim: ft=help: tw=2

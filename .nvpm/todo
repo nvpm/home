@@ -6,5 +6,6 @@
   ● init iris plugin ~
   ● continue text plugin ~
   ● line, zoom & text as independent plugins ~
+  ● continue nvpm plugin ~
 
 vim: ft=help: tw=2
