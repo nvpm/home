@@ -11,10 +11,7 @@ fu! zoom#init(...) "{
   let g:zoom = {}
   let g:zoom.mode = 0
   let g:zoom.buff = '.nvpm/zoom'
-
-  let s:bgcolors = ''
-
-  let s:splitting = 0
+  let g:zoom.carg = ''
 
 endfu "}
 fu! zoom#calc(...) "{
@@ -85,8 +82,6 @@ fu! zoom#calc(...) "{
 endfu " }
 fu! zoom#pads(...) "{
 
-  let s:splitting = 1
-
   if s:left>1
     silent! exec string(s:left-1)..'vsplit '..g:zoom.buff
     call zoom#buff()
@@ -105,14 +100,14 @@ fu! zoom#pads(...) "{
 
   let &cmdheight = s:bottom
 
-  let s:splitting = 0
-
 endfu " }
 fu! zoom#show(...) "{
 
   if a:0&&!g:zoom.mode|return|endif
 
   silent! only
+
+  let g:zoom.mode = 0
 
   call line#hide()
   call zoom#save()
@@ -129,7 +124,8 @@ fu! zoom#hide(...) "{
 
   call line#show()
   call zoom#rest()
-  call execute(':silent! bdel '..g:zoom.buff)
+
+  exe ':silent! bdel '..g:zoom.buff
 
   let g:zoom.mode = 0
 
@@ -150,14 +146,14 @@ fu! zoom#save(...) "{
   if !s:nvim
     let normal = execute('hi Normal')
     let normal = split(split(normal,'\n')[0])[2:]
-    let s:bgcolors = ''
+    let g:zoom.carg = ''
     for arg in normal
       if 1+match(arg,'^\(ctermbg\|guibg\)')
-        let s:bgcolors.= arg..' '
-        let s:bgcolors.= substitute(arg,'bg','fg','')..' '
+        let g:zoom.carg.= arg..' '
+        let g:zoom.carg.= substitute(arg,'bg','fg','')..' '
       endif
     endfor
-    let s:bgcolors = trim(s:bgcolors)
+    let g:zoom.carg = trim(g:zoom.carg)
   endif
 
   let s:numb = &number
@@ -187,7 +183,6 @@ endfu "}
 fu! zoom#buff(...) "{
 
   silent! setl nomodifiable
-  silent! setl readonly
   silent! setl nonumber
   silent! setl signcolumn=no
   silent! setl nobuflisted
@@ -210,15 +205,15 @@ fu! zoom#none(...) "{
     hi VertSplit    ctermbg=none guibg=none
     hi NonText      ctermbg=none guibg=none
   else
-    if !empty(s:bgcolors)
-      exe 'hi TabLineFill  '..s:bgcolors
-      exe 'hi TabLineSell  '..s:bgcolors
-      exe 'hi StatusLine   '..s:bgcolors
-      exe 'hi StatusLineNC '..s:bgcolors
-      exe 'hi LineNr       '..s:bgcolors
-      exe 'hi SignColumn   '..s:bgcolors
-      exe 'hi VertSplit    '..s:bgcolors
-      exe 'hi NonText      '..s:bgcolors
+    if !empty(g:zoom.carg)
+      exe 'hi TabLineFill  '..g:zoom.carg
+      exe 'hi TabLineSell  '..g:zoom.carg
+      exe 'hi StatusLine   '..g:zoom.carg
+      exe 'hi StatusLineNC '..g:zoom.carg
+      exe 'hi LineNr       '..g:zoom.carg
+      exe 'hi SignColumn   '..g:zoom.carg
+      exe 'hi VertSplit    '..g:zoom.carg
+      exe 'hi NonText      '..g:zoom.carg
     endif
   endif
 
@@ -241,13 +236,6 @@ fu! zoom#help(...) "{
     else
       only
     endif
-  endif
-
-endfu "}
-fu! zoom#back(...) "{
-
-  if g:zoom.mode && !s:splitting
-    silent! wincmd p
   endif
 
 endfu "}

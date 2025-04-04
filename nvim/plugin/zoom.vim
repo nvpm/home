@@ -12,7 +12,7 @@ command! Zoom call zoom#swap()
 if get(g:,'zoom_autocmds',1)
   augroup ZOOM
     au!
-    exe 'au WinEnter '..g:zoom.buff..' call zoom#back()'
+    exe 'au WinEnter '..g:zoom.buff..' if g:zoom.mode|wincmd p|endif'
     au QuitPre     * if g:zoom.mode|only|quit|endif
     au BufWinEnter * call zoom#help()
     au ColorScheme * call zoom#show(1)
