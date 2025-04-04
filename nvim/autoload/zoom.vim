@@ -244,7 +244,6 @@ fu! zoom#term(...) "{
   if g:zoom.mode&&s:nvim
     only
     bdel
-    call nvpm#rend()
     call zoom#show()
   endif
 
