@@ -304,7 +304,7 @@ fu! nvpm#rend(...) "{
 
   if !empty(curr)
 
-    call execute('hide edit '.curr)
+    call execute('edit '.curr)
 
     if 1+match(curr,'^.*\.flux$')||
       \head == s:dirs.local      || 

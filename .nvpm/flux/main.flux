@@ -26,7 +26,6 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
-    --
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
@@ -36,6 +35,7 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
+    --
     workspace flux {
       tab code
         file auto : autoload/flux.vim
