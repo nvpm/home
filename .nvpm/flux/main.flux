@@ -26,6 +26,7 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
+    --
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
@@ -35,7 +36,6 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
-    --
     workspace flux {
       tab code
         file auto : autoload/flux.vim
@@ -53,7 +53,7 @@
         file expt : case.expt
     }
   }
-  loop plugin: zoom --nvpm flux line text {
+  -loop plugin: zoom --nvpm flux line text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
         file TODO

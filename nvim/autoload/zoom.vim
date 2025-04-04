@@ -37,6 +37,9 @@ fu! zoom#calc(...) "{
     let width = float2nr(width*totalwidth)
   endif
 
+  let height%=totalheight
+  let width %=totalwidth
+
   let height+= (height<=0)*totalheight
   let width += (width <=0)*totalwidth
 
