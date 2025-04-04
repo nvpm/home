@@ -1,5 +1,5 @@
 
+  ● [bug] still some help files is resizing buf when loaded ~
   ● [bug] au WinResized removes visual & possibly other things ~
-  ● [bug] persistent cmdheight ~
 
 vim: ft=help: tw=2
