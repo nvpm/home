@@ -175,6 +175,7 @@ fu! zoom#save(...) "{
   let &signcolumn     = 'no'
   let &relativenumber = 0
 
+  if get(g:,'zoom_devl')|return|endif
   exe 'set fillchars=vert:\ '
   exe 'set fillchars+=eob:\ '
 
@@ -196,6 +197,7 @@ fu! zoom#buff(...) "{
   silent! setl signcolumn=no
   silent! setl nobuflisted
 
+  if get(g:,'zoom_devl')|return|endif
   let &l:tabline    = ' '
   let &l:statusline = ' '
 
@@ -209,6 +211,7 @@ fu! zoom#bdel(...) "{
 endfu "}
 fu! zoom#none(...) "{
 
+  if get(g:,'zoom_devl')|return|endif
   if s:nvim
     hi TabLineFill  ctermbg=none guibg=none
     hi TabLineSell  ctermbg=none guibg=none
