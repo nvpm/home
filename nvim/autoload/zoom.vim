@@ -27,21 +27,27 @@ fu! zoom#calc(...) "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  let height = get(g:,'zoom_height',-4 )  
-  let width = get(g:,'zoom_width' ,+80)  
+  let height = get(g:,'zoom_height',totalheight)  
+  let width  = get(g:,'zoom_width' ,80)  
 
-  if type(height)==type(3.14)
-    let height = float2nr(height*totalheight)
+  if get(g:,'zoom_usefloat',1)
+    if type(height)==type(3.14)
+      let height = height*totalheight
+    endif
+    if type(width)==type(3.14)
+      let width = width*totalwidth
+    endif
   endif
-  if type(width)==type(3.14)
-    let width = float2nr(width*totalwidth)
+
+  if get(g:,'zoom_uselimit',1)
+    let height%=totalheight
+    let width %=totalwidth
   endif
 
-  let height%=totalheight
-  let width %=totalwidth
-
-  let height+= (height<=0)*totalheight
-  let width += (width <=0)*totalwidth
+  if get(g:,'zoom_useminus',1)
+    let height+= (height<=0)*totalheight
+    let width += (width <=0)*totalwidth
+  endif
 
   let s:top    = 0
   let s:bottom = 0
@@ -49,6 +55,7 @@ fu! zoom#calc(...) "{
   let s:right  = 0
 
   if height<totalheight
+    let height = float2nr(height)
     " bottom pad takes whole height difference under 3
     let s:bottom = totalheight-height
     if s:bottom>3
@@ -59,6 +66,7 @@ fu! zoom#calc(...) "{
   endif
 
   if width<totalwidth
+    let width = float2nr(width)
     " left pad takes whole width difference under 3
     let s:left = totalwidth-width
     if s:left>3

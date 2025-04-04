@@ -115,9 +115,13 @@
 " zoom {
 
   set cmdheight=1
-  set nowrap
+  let zoom_autocmds = 1
   let zoom_initload = 1
-  let zoom_height   = 2.0/3
+  let zoom_usefloat = 1
+  let zoom_uselimit = 1
+  let zoom_useminus = 1
+
+  let zoom_height   = -4
   let zoom_width    = 80
 
   nmap <silent>mz    :Zoom<cr>
