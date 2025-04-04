@@ -6,7 +6,6 @@ let __ZOOMAUTO__ = 1
 "-- main functions --
 fu! zoom#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
-
   let s:nvim = has('nvim')
 
   let g:zoom = {}

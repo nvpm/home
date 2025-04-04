@@ -6,6 +6,7 @@ let __LINEAUTO__ = 1
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
+  let s:nvim = has('nvim')
 
   let botr = '%y%m ⬤ %l,%c/%P'
   let botc = ' ⬤ %f'

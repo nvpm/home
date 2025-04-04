@@ -6,6 +6,7 @@ let __NVPMAUTO__ = 1
 "-- main functions --
 fu! nvpm#init(...) "{ 
   if exists('s:init')|return|else|let s:init=1|endif
+  let s:nvim = has('nvim')
 
   let s:dirs = {}
   let s:dirs.local  = '.nvpm/flux/'
