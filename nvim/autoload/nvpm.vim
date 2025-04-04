@@ -301,9 +301,10 @@ fu! nvpm#rend(...) "{
   let head = fnamemodify(curr,':h')..'/'
   let HEAD = fnamemodify(head,':p')..'/'
 
+
   if !empty(curr)
 
-    call execute('edit '.curr)
+    call execute('hide edit '.curr)
 
     if 1+match(curr,'^.*\.flux$')||
       \head == s:dirs.local      || 
