@@ -10,12 +10,7 @@ fu! zoom#init(...) "{
 
   let g:zoom = {}
   let g:zoom.mode = 0
-
-  let s:buff        = {}
-  let s:buff.left   = '.nvpm/zoom/left'
-  let s:buff.right  = '.nvpm/zoom/right'
-  let s:buff.top    = '.nvpm/zoom/top'
-  let s:buff.list   = [s:buff.left,s:buff.right,s:buff.top]
+  let g:zoom.buff = '.nvpm/zoom'
 
   let s:bgcolors = ''
 
@@ -93,17 +88,17 @@ fu! zoom#pads(...) "{
   let s:splitting = 1
 
   if s:left>1
-    silent! exec string(s:left-1)..'vsplit '..s:buff.left
+    silent! exec string(s:left-1)..'vsplit '..g:zoom.buff
     call zoom#buff()
     silent! wincmd p
   endif
   if s:right>1
-    silent! exec 'rightbelow '..string(s:right-1)..'vsplit '..s:buff.right
+    silent! exec 'rightbelow '..string(s:right-1)..'vsplit '..g:zoom.buff
     call zoom#buff()
     silent! wincmd p
   endif
   if s:top>1
-    silent! exec 'top '..string(s:top-1)..'split '..s:buff.top
+    silent! exec 'top '..string(s:top-1)..'split '..g:zoom.buff
     call zoom#buff()
     silent! wincmd p
   endif
@@ -133,8 +128,8 @@ fu! zoom#hide(...) "{
   silent! only
 
   call line#show()
-  call zoom#bdel()
   call zoom#rest()
+  call execute(':silent! bdel '..g:zoom.buff)
 
   let g:zoom.mode = 0
 
@@ -202,13 +197,6 @@ fu! zoom#buff(...) "{
   let &l:statusline = ' '
 
 endfu " }
-fu! zoom#bdel(...) "{
-
-  call execute(':silent! bdel '..s:buff.left)
-  call execute(':silent! bdel '..s:buff.right)
-  call execute(':silent! bdel '..s:buff.top)
-
-endfu "}
 fu! zoom#none(...) "{
 
   if get(g:,'zoom_devl')|return|endif
@@ -264,7 +252,7 @@ fu! zoom#quit(...) "{
 endfu "}
 fu! zoom#back(...) "{
 
-  if !s:splitting&&1+match(s:buff.list,bufname())
+  if g:zoom.mode && !s:splitting
     silent! wincmd p
   endif
 

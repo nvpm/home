@@ -12,9 +12,9 @@ command! Zoom call zoom#swap()
 if get(g:,'zoom_autocmds',1)
   augroup ZOOM
     au!
-    au WinEnter    * call zoom#back(1)
-    au BufWinEnter * call zoom#help(1)
-    au QuitPre     * call zoom#quit(1)
+    exe 'au WinEnter '..g:zoom.buff..' call zoom#back()'
+    au BufWinEnter * call zoom#help()
+    au QuitPre     * call zoom#quit()
     au ColorScheme * call zoom#show(1)
     if has('nvim')
       au TermClose   * call timer_start(20,{->zoom#term()})
