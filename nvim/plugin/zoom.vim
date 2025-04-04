@@ -13,8 +13,8 @@ if get(g:,'zoom_autocmds',1)
   augroup ZOOM
     au!
     exe 'au WinEnter '..g:zoom.buff..' call zoom#back()'
+    au QuitPre     * if g:zoom.mode|only|quit|endif
     au BufWinEnter * call zoom#help()
-    au QuitPre     * call zoom#quit()
     au ColorScheme * call zoom#show(1)
     if has('nvim')
       au TermClose   * call timer_start(20,{->zoom#term()})

@@ -244,12 +244,6 @@ fu! zoom#help(...) "{
   endif
 
 endfu "}
-fu! zoom#quit(...) "{
-
-  only
-  quit
-
-endfu "}
 fu! zoom#back(...) "{
 
   if g:zoom.mode && !s:splitting
