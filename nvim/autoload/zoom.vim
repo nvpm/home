@@ -75,6 +75,17 @@ fu! zoom#calc(...) "{
       let s:left  = s:right+s:left%2
     endif
   endif
+  let left = get(g:,'zoom_left',-1)
+  if left>=0
+    "let left = [left,totalwidth-width][left+width>=totalwidth]
+    let s:right+= s:left-left
+    let s:left  = left
+  endif
+  let right = get(g:,'zoom_right',-1)
+  if right>=0
+    let s:left+= s:right-right
+    let s:right  = right
+  endif
 
 endfu " }
 fu! zoom#pads(...) "{

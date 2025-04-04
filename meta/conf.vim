@@ -123,6 +123,7 @@
 
   let zoom_height   = -4
   let zoom_width    = 80
+  let zoom_left     = 3
 
   nmap <silent>mz    :Zoom<cr>
 
