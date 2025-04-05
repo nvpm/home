@@ -1,5 +1,5 @@
 
-  ● properly save & restore highlight groups changed ~
+  ● check for line# funcs if they exist first ~
   ● initload feature ~
   ● account for cmdheight, signcolumn, and others in zoom#calc ~
   ● same behaviours for vim too ~

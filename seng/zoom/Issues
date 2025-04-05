@@ -1,5 +1,6 @@
 
-  ● [bug] still some help files is resizing buf when loaded ~
   ● [bug] au WinResized removes visual & possibly other things ~
+  ● [fixed] still some help files are resizing buf when loaded ~
+    ● still needs some pay attention to
 
 vim: ft=help: tw=2

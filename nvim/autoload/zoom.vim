@@ -225,7 +225,7 @@ fu! zoom#help(...) "{
   let bufname=bufname()
 
   if &filetype == 'help'
-    close
+    silent! helpclose
     exec 'edit '. bufname
   endif
 
