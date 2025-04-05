@@ -25,9 +25,11 @@ fu! zoom#calc(...) "{
   if get(g:,'zoom_usefloat',1)
     if type(s:height)==type(3.14)
       let s:height = s:height*totalheight
+      let s:height = float2nr(s:height)
     endif
     if type(s:width)==type(3.14)
       let s:width = s:width*totalwidth
+      let s:width = float2nr(s:width)
     endif
   endif
 
@@ -47,29 +49,22 @@ fu! zoom#calc(...) "{
   let s:right  = 0
 
   if s:height<totalheight
-    let s:height = float2nr(s:height)
-    " bottom pad takes whole height difference under 3
     let s:bottom = totalheight-s:height
     if s:bottom>3
-      " top pad takes smaller portion, if odd difference
       let s:top    = float2nr(s:bottom/2)
       let s:bottom = s:top+s:bottom%2
     endif
   endif
 
   if s:width<totalwidth
-    let s:width = float2nr(s:width)
-    " left pad takes whole width difference under 3
     let s:left = totalwidth-s:width
     if s:left>3
-      " right pad takes smaller portion, if odd difference
       let s:right = float2nr(s:left/2)
       let s:left  = s:right+s:left%2
     endif
   endif
   let left = get(g:,'zoom_left',-1)
   if left>=0
-    "let left = [left,totalwidth-width][left+width>=totalwidth]
     let s:right+= s:left-left
     let s:left  = left
   endif
@@ -99,6 +94,9 @@ fu! zoom#pads(...) "{
   endif
 
   let &cmdheight = s:bottom
+
+  exe 'vert resize '..s:width
+  exe 'resize      '..s:height
 
 endfu " }
 fu! zoom#show(...) "{

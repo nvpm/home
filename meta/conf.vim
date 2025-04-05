@@ -8,9 +8,9 @@
   let zoom_uselimit = 1
   let zoom_useminus = 1
 
-  let zoom_height   = -4
+  let zoom_height   = 0.80
   let zoom_width    = 80
-  "let zoom_left     = 3
+  let zoom_left     = 3
 
   nmap <silent>mz    :Zoom<cr>
 
