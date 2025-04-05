@@ -33,11 +33,6 @@ fu! zoom#calc(...) "{
     endif
   endif
 
-  if get(g:,'zoom_uselimit',1)
-    let s:height%=totalheight
-    let s:width %=totalwidth
-  endif
-
   if get(g:,'zoom_useminus',1)
     let s:height+= (s:height<=0)*totalheight
     let s:width += (s:width <=0)*totalwidth
@@ -71,7 +66,7 @@ fu! zoom#calc(...) "{
   let right = get(g:,'zoom_right',-1)
   if right>=0
     let s:left+= s:right-right
-    let s:right  = right
+    let s:right= right
   endif
 
 endfu " }
@@ -82,13 +77,13 @@ fu! zoom#pads(...) "{
     call zoom#buff()
     silent! wincmd p
   endif
-  if s:right>1
-    silent! exec 'rightbelow '..string(s:right-1)..'vsplit '..g:zoom.buff
+  if s:top>1
+    silent! exec 'top '..string(s:top-1)..'split '..g:zoom.buff
     call zoom#buff()
     silent! wincmd p
   endif
-  if s:top>1
-    silent! exec 'top '..string(s:top-1)..'split '..g:zoom.buff
+  if s:right>1
+    silent! exec 'rightbelow '..string(s:right-1)..'vsplit '..g:zoom.buff
     call zoom#buff()
     silent! wincmd p
   endif
