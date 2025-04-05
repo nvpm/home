@@ -1,4 +1,4 @@
-"-- plug/zoom.vim --
+"-- auto/zoom.vim --
 
 if !NVPMTEST&&exists('__ZOOMAUTO__')|finish|endif
 let __ZOOMAUTO__ = 1
@@ -19,8 +19,8 @@ fu! zoom#calc(...) "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  let height = get(g:,'zoom_height',totalheight)  
-  let width  = get(g:,'zoom_width' ,80)  
+  let height = get(g:,'zoom_height',totalheight)
+  let width  = get(g:,'zoom_width' ,80)
 
   if get(g:,'zoom_usefloat',1)
     if type(height)==type(3.14)
@@ -223,18 +223,22 @@ endfu " }
 fu! zoom#help(...) "{
 
   let bufname=bufname()
-  if &filetype == 'man'
-    bdel
+
+  if &filetype == 'help'
+    close
     exec 'edit '. bufname
   endif
-  if &filetype == 'help'
+
+  if &filetype == 'man'
     if g:zoom.mode
-      if bufname!=g:nvpm.tree.curr
-        bdel
-        exec 'edit '. bufname
-      endif
-    else
       only
+      let g:zoom.mode = 0
+      call zoom#show()
+    " Note:
+    " this will never work because of edit part!
+    "else
+    "  close
+    "  exec 'edit '. bufname
     endif
   endif
 

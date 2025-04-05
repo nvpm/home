@@ -115,7 +115,7 @@
 " zoom {
 
   set cmdheight=1
-  let zoom_devl = 0
+  let zoom_devl = 1
   let zoom_autocmds = 1
   let zoom_initload = 1
   let zoom_usefloat = 1
