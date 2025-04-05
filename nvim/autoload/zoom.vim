@@ -19,26 +19,26 @@ fu! zoom#calc(...) "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  let height = get(g:,'zoom_height',totalheight)
-  let width  = get(g:,'zoom_width' ,80)
+  let s:height = get(g:,'zoom_height',totalheight)
+  let s:width  = get(g:,'zoom_width' ,80)
 
   if get(g:,'zoom_usefloat',1)
-    if type(height)==type(3.14)
-      let height = height*totalheight
+    if type(s:height)==type(3.14)
+      let s:height = s:height*totalheight
     endif
-    if type(width)==type(3.14)
-      let width = width*totalwidth
+    if type(s:width)==type(3.14)
+      let s:width = s:width*totalwidth
     endif
   endif
 
   if get(g:,'zoom_uselimit',1)
-    let height%=totalheight
-    let width %=totalwidth
+    let s:height%=totalheight
+    let s:width %=totalwidth
   endif
 
   if get(g:,'zoom_useminus',1)
-    let height+= (height<=0)*totalheight
-    let width += (width <=0)*totalwidth
+    let s:height+= (s:height<=0)*totalheight
+    let s:width += (s:width <=0)*totalwidth
   endif
 
   let s:top    = 0
@@ -46,10 +46,10 @@ fu! zoom#calc(...) "{
   let s:left   = 0
   let s:right  = 0
 
-  if height<totalheight
-    let height = float2nr(height)
+  if s:height<totalheight
+    let s:height = float2nr(s:height)
     " bottom pad takes whole height difference under 3
-    let s:bottom = totalheight-height
+    let s:bottom = totalheight-s:height
     if s:bottom>3
       " top pad takes smaller portion, if odd difference
       let s:top    = float2nr(s:bottom/2)
@@ -57,10 +57,10 @@ fu! zoom#calc(...) "{
     endif
   endif
 
-  if width<totalwidth
-    let width = float2nr(width)
+  if s:width<totalwidth
+    let s:width = float2nr(s:width)
     " left pad takes whole width difference under 3
-    let s:left = totalwidth-width
+    let s:left = totalwidth-s:width
     if s:left>3
       " right pad takes smaller portion, if odd difference
       let s:right = float2nr(s:left/2)

@@ -1,3 +1,20 @@
+" zoom {
+
+  set cmdheight=1
+  let zoom_devl = 0
+  let zoom_autocmds = 1
+  let zoom_initload = 1
+  let zoom_usefloat = 1
+  let zoom_uselimit = 1
+  let zoom_useminus = 1
+
+  let zoom_height   = -4
+  let zoom_width    = 80
+  "let zoom_left     = 3
+
+  nmap <silent>mz    :Zoom<cr>
+
+" }
 " devl {
 
   hi NVPMPassed  guifg=#009900 gui=bold
@@ -110,23 +127,6 @@
   cmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
 
   nmap mt :NVPMTerm<cr>i
-
-" }
-" zoom {
-
-  set cmdheight=1
-  let zoom_devl = 0
-  let zoom_autocmds = 1
-  let zoom_initload = 1
-  let zoom_usefloat = 1
-  let zoom_uselimit = 1
-  let zoom_useminus = 1
-
-  let zoom_height   = -4
-  let zoom_width    = 80
-  "let zoom_left     = 3
-
-  nmap <silent>mz    :Zoom<cr>
 
 " }
 " line {
