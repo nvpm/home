@@ -19,7 +19,7 @@ fu! zoom#calc(...) "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  let s:height = get(g:,'zoom_height',totalheight)
+  let s:height = get(g:,'zoom_height',totalheight-5)
   let s:width  = get(g:,'zoom_width' ,80)
 
   if get(g:,'zoom_usefloat',1)
