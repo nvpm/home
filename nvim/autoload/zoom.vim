@@ -7,6 +7,7 @@ let __ZOOMAUTO__ = 1
 fu! zoom#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
+  let s:devl = get(g:,'nvpmdevl')
 
   let g:zoom = {}
   let g:zoom.mode = 0
@@ -112,13 +113,19 @@ fu! zoom#show(...) "{
 
   let g:zoom.mode = 1
 
+  if s:devl|return|endif
+  exe 'set fillchars=vert:\ '
+  exe 'set fillchars+=eob:\ '
+
 endfu "}
 fu! zoom#hide(...) "{
 
   silent! only
 
   call line#show()
-  call zoom#rest()
+
+  let &cmdheight = s:cmdh
+  let &fillchars = s:fill
 
   exe ':silent! bdel '..g:zoom.buff
 
@@ -151,28 +158,8 @@ fu! zoom#save(...) "{
     let g:zoom.carg = trim(g:zoom.carg)
   endif
 
-  let s:numb = &number
   let s:cmdh = &cmdheight
   let s:fill = &fillchars
-  let s:sign = &signcolumn
-  let s:reln = &relativenumber
-  let &number         = 0
-  let &cmdheight      = !s:nvim
-  let &signcolumn     = 'no'
-  let &relativenumber = 0
-
-  if get(g:,'zoom_devl')|return|endif
-  exe 'set fillchars=vert:\ '
-  exe 'set fillchars+=eob:\ '
-
-endfu "}
-fu! zoom#rest(...) "{
-
-  let &number         = s:numb
-  let &cmdheight      = s:cmdh
-  let &fillchars      = s:fill
-  let &signcolumn     = s:sign
-  let &relativenumber = s:reln
 
 endfu "}
 fu! zoom#buff(...) "{
@@ -184,14 +171,14 @@ fu! zoom#buff(...) "{
   silent! setl winfixwidth
   silent! setl winfixheight
 
-  if get(g:,'zoom_devl')|return|endif
+  if s:devl|return|endif
   let &l:tabline    = ' '
   let &l:statusline = ' '
 
 endfu " }
 fu! zoom#none(...) "{
 
-  if get(g:,'zoom_devl')|return|endif
+  if s:devl|return|endif
   if s:nvim
     hi TabLineFill  ctermbg=none guibg=none
     hi TabLineSell  ctermbg=none guibg=none

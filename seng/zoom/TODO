@@ -4,5 +4,6 @@
   ● initload feature ~
   ● account for cmdheight, signcolumn, and others in zoom#calc ~
   ● same behaviours for vim too ~
+  ● effectively save & restore highlight of groups changed ~
 
 vim: ft=help: tw=2
