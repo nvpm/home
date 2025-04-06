@@ -8,18 +8,12 @@ fold,pack,--,file,file
     File Makefile
     entry config # this should be ignored (not in conf)
 
-loop lib : complex matrix -- number binary hexa {
-  TAB $(lib):lib
-    File $(lib).c
-    File $(lib).h
+loop complex matrix -- number binary hexa string file {
+  TAB $_:lib
+    File $_.c
+    File $_.h
 endl }
   
-- # this double cuts will be passed on to below's loop
-LOOP lib : string -file {
-  TAB $(lib):lib
-    File $(lib).c
-    File $(lib).h
-ENDL }
 Archive meta {
   Folder root@..
     File readme.txt

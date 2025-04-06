@@ -306,19 +306,25 @@ fu! flux#loop(...) "{
       if node.data.keyw !=? 'loop'
         call add(list,node)
         let s:conf.leng+=1
-      else
+      else " found loop keyword {
         let loop = []
         while indx<leng
           let item = s:conf.list[indx]|let indx+=1
           if item.data.keyw==?'endl'|break|endif
-          if !node.cuts|call add(loop,item)|endif
+          if node.cuts|continue|endif
+          call add(loop,item)
         endwhile
+        if node.cuts==1|continue|endif
+        if node.cuts==2
+          let s:conf.list[indx].cuts = 2
+          continue
+        endif
         let info = empty(node.data.info)?node.data.name:node.data.info
         let name = empty(node.data.info)?'':node.data.name
         let vars = split(info,' ')
         let vars = flux#list(vars)
         let vars = flux#cuts(vars)
-        for node in vars
+        for node in vars "{
           if node.cuts==1|continue|endif
           if node.cuts>=2|  break |endif
           let var = node.data.keyw
@@ -336,8 +342,8 @@ fu! flux#loop(...) "{
             endif
             call add(list,info)|let s:conf.leng+=1
           endfor
-        endfor
-      endif
+        endfor "}
+      endif "}
     endwhile
     let s:conf.list = list
   endif

@@ -56,7 +56,7 @@
         file expt : case.expt
     }
   }
-  -loop plugin: zoom flux --nvpm line text {
+  -loop plugin: zoom -flux --nvpm line text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
         file TODO
@@ -64,10 +64,9 @@
         --
         file Concepts
         file Features
-       
-      -tab code
+      tab code
         file Random,file Syntax,file Data,file File
-      -tab seng
+      tab seng
         file Usecases,file Workflows,-,file read @ seng/read
   endl }
   project NVPM meta @ meta {
