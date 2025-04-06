@@ -1,0 +1,20 @@
+
+Distraction-free view {
+
+  This  refers  to  a  display  mode  where  the  text  is  the major visual
+  information  on  the screen. Everything else is switched off:  statusline,
+  tabline, vertical splits, etc.
+
+  This offers the user a very powerful tool to concentrate on the code being
+  edited.
+
+  The zoom name will be self-explanatory as soon as the plugin is used.
+
+}
+Padding buffers       {
+
+  The padding buffers are buffers used to occupy space around the central
+  buffer  (zoomed  buffer),   in   order   to  create  the  desired  effect.
+
+}
+

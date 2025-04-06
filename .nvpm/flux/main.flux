@@ -1,18 +1,19 @@
 
   project NVPM devl : nvim {
+    workspace line {
+      tab code
+        file auto : autoload/line.vim
+        -file plug : plugin/line.vim
+        file init = meta/init.vim
+    }
     workspace zoom {
 
-      -file init @ meta/init.vim
+      -file Concepts = seng/zoom/Concepts
       tab code
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
 
-      tab oldzoom @ ../nvpm
-        -file help : doc/nvpm.txt
-        file auto : autoload/zoom.vim
-        file plug : plugin/zoom.vim
-
-      tab nvimdocs @ /usr/share/nvim/runtime/doc
+      -tab nvimdocs = /usr/share/nvim/runtime/doc
         file windows.txt
         file options.txt
         --
@@ -21,46 +22,39 @@
         file usr_41.txt
 
     }
-    workspace line {
-      tab code
-        file auto : autoload/line.vim
-        file plug : plugin/line.vim
-      tab oldnvpm @ ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-    }
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
-       -file init @ meta/init.vim
-      tab oldnvpm @ ../nvpm
+       -file init = meta/init.vim
+      tab oldnvpm = ../nvpm
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
+    --
     workspace text {
       tab code
         file auto : autoload/text.vim
         file plug : plugin/text.vim
-      tab test @ test/text
+      tab test = test/text
         file case : case.case
         file expt : case.expt
     }
     workspace flux {
       tab code
         file auto : autoload/flux.vim
-        file init @ meta/init.vim
-      tab test @ test/flux
+        file init = meta/init.vim
+      tab test = test/flux
         file case : case.case
         file expt : case.expt
     }
   }
-  project NVPM meta @ meta {
+  project NVPM meta = meta {
     tab meta
       file conf.vim
       file menu.vim
       file init.vim
-    tab code@nvim
+    tab code=nvim
       file version
       file README.md
       file LICENSE

@@ -388,7 +388,7 @@ fu! flux#node(...) "{
   let info = info[3]
 
   let node = {}
-  let rgex = '\v *[=:@] *'
+  let rgex = '\v *[=:] *'
 
   " stores absolute key for home absolute path functionality
   let absl = trim(matchstr(info,rgex))
@@ -404,7 +404,7 @@ fu! flux#node(...) "{
   endif
 
   let node.cuts = len(cuts)
-  let node.absl = absl=='@'
+  let node.absl = absl=='='
 
   let node.data = {}
   let node.data.keyw = keyw

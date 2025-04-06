@@ -1,10 +1,10 @@
 
-  ● deal w/ conf/menu.vim  ~
+  ● line, zoom & text as independent plugins ~
+  ● deal with conf/menu.vim  ~
   ● init gith plugin ~
   ● init seng plugin ~
   ● init iris plugin ~
-  ● continue text plugin ~
-  ● line, zoom & text as independent plugins ~
-  ● continue nvpm plugin ~
+  ● cont text plugin ~
+  ● cont nvpm plugin ~
 
 vim: ft=help: tw=2

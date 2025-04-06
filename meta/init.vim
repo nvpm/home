@@ -35,8 +35,6 @@ fu! s:test.nvpm(...) "{
 
   so nvim/autoload/flux.vim                        
   so nvim/syntax/flux.vim
-  so nvim/autoload/line.vim
-  so nvim/plugin/line.vim
   so nvim/autoload/nvpm.vim
   so nvim/plugin/nvpm.vim
 
@@ -64,6 +62,12 @@ fu! s:test.zoom(...) "{
   return
   call nvim_open_win(0,1,conf)
   ec nvim_win_get_config(0)
+
+endfu "}
+fu! s:test.line(...) "{
+
+  so nvim/autoload/line.vim
+  so nvim/plugin/line.vim
 
 endfu "}
 "} 
@@ -95,8 +99,9 @@ endfu "}
 " exec {
 
 if 0| so meta/conf.vim |endif
-if 1|call s:test.flux()|endif
+if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
 if 0|call s:test.zoom()|endif
+if 1|call s:test.line()|endif
 
 "}

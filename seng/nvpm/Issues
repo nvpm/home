@@ -106,3 +106,5 @@ solution    {
 }
 
 }
+
+vim: ft=help: tw=2

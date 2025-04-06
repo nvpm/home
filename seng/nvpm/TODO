@@ -1,4 +1,9 @@
 
+  ● float windows for edit mode nd terminal ~
+    ● nvim only
+
+  ● remake the term keyword support  ~
+
   ● adapt plugin to accept any number of lexis nodes  ~
     ● not only four
 

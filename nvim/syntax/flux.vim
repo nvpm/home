@@ -25,7 +25,7 @@ fu! s:main()
   let ct = ' contains='
 
   let comm = '[#{}]'
-  let sepr = '[:=@,]'
+  let sepr = '[:=,]'
   let vars = '\(\$_\|\$(\w\+)\)'
   let cut3 = '/\(^\|,\)\s*---\_.*/'
   let cuts = '/^\s*--\=\s*$/'
@@ -42,7 +42,7 @@ fu! s:main()
   let keyw = '\(^\|,\)\s*\w\+\s*'
   exe m.'keyw /'.keyw.'/'.cd.ct.'fluxsepr'|exe h.'keyw Keyword'
 
-  let sep  = '[:=@]'
+  let sep  = '[:=]'
   let name = '/'
   let name.= '\('.keyw.'\)*'
   let name.= '\([-_+a-zA-Z0-9$()\|/]\+\s*\)\+'
@@ -59,7 +59,7 @@ fu! s:main()
 " }}}
 " loop {{{3
 
-  let sep  = '[:=@]'
+  let sep  = '[:=]'
   let keyw = '^\s*loop'
   let loop = '/'.keyw.'\s\+/'
   let endl = '/^\s*endl\s*'.comm.'*$/'

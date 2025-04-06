@@ -9,24 +9,38 @@ fu! line#init(...) "{
   let s:nvim = has('nvim')
 
   let botr = '%y%m ⬤ %l,%c/%P'
-  let botc = ' ⬤ %f'
+  let botc = ' ⬤ %{line#file()}'
 
   let s:user = {}
   let s:user.bottomcenter = get(g:,'line_bottomcenter'  , botc )
   let s:user.bottomright  = get(g:,'line_bottomright'   , botr )
   let s:user.closure      = get(g:,'line_closure'       , 1    )
   let s:user.innerspace   = get(g:,'line_innerspace'    , 0    )
-  let s:user.projname     = get(g:,'line_projname' , 1    )
-  let s:user.gitinfo      = get(g:,'line_git_info'      , 0    )
-  let s:user.gitdelayms   = get(g:,'line_git_delayms'   , 2000 )
+  let s:user.projname     = get(g:,'line_projname'      , 1    )
+  let s:user.gitinfo      = get(g:,'line_gitinfo'       , 1    )
+  let s:user.gitdelay     = get(g:,'line_gitdelay'    , 5000 )
+  let s:user.initload     = get(g:,'line_initload'    , 1 )
 
-  let s:git  = ''
-  let s:line = 1
+  let g:line = {}
+  let g:line.mode = 1
+  let g:line.timer= -1
+  let g:line.git  = ''
+
+  let s:opts = {}
+  let s:opts.tabline     = &tabline
+  let s:opts.statusline  = &statusline
+  let s:opts.showtabline = &showtabline
+  let s:opts.laststatus  = &laststatus
+
+  if s:user.initload
+    call line#show(1)
+    let &showtabline = s:opts.showtabline
+  endif
 
 endfu "}
 fu! line#keep(...) "{
 
-  if s:line|call line#show()|endif
+  if g:line.mode|call line#show()|endif
 
 endfu "}
 fu! line#topl(...) "{
@@ -60,9 +74,23 @@ fu! line#botl(...) "{
   let line  = ''
   let indx  = 0
 
-  let line .= line#list(3)
+  if exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+    let line .= line#list(3)
+  else
+    let list = execute('ls')
+    let list = split(list,'\n')
+    for item in list
+      let item = split(item,'\s')
+      call filter(item,"v:val!=''")
+      let curr = item[1]
+      let file = item[2][1:-2]
+      if curr=~'%'|break|endif
+    endfor
+    let file = fnamemodify(file,':t')
+    let file = ' '..file..' '
+  endif
 
-  let line .= s:git
+  let line .= g:line.git
   let line .= '%#LINEFill#'
   let line .= s:user.bottomcenter
   let line .= '%='
@@ -73,18 +101,18 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
-  if g:nvpm.tree.mode
-    if s:user.gitinfo
-      let time = timer_start(s:user.gitdelayms,'line#time',{'repeat':-1})
-    endif
-    set tabline=%!line#topl()
-    set statusline=%!line#botl()
+  if s:user.gitinfo && g:line.timer==-1
+    let g:line.timer = timer_start(s:user.gitdelay,'line#time',{'repeat':-1})
   endif
 
-  set showtabline=2
-  let &laststatus=2
+  if !a:0&&exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+    set tabline=%!line#topl()
+    let &showtabline=2
+  endif
+  set statusline=%!line#botl()
+  let &laststatus=2+s:nvim
 
-  let s:line = 1
+  let g:line.mode = 1
 
 endfu "}
 fu! line#hide(...) "{
@@ -92,15 +120,20 @@ fu! line#hide(...) "{
   set showtabline=0
   set laststatus=0
 
-  let &tabline = ' '
-  let &statusline = ' '
+  if 1+g:line.timer
+    call timer_stop(g:line.timer)
+    let g:line.timer = -1
+  endif
 
-  let s:line = 0
+  "let &tabline = ' '
+  "let &statusline = ' '
+
+  let g:line.mode = 0
 
 endfu "}
 fu! line#swap(...) "{
 
-  if s:line
+  if g:line.mode
     call line#hide()
   else
     call line#show()
@@ -163,7 +196,7 @@ fu! line#time(...) "{
       let info = cr .' ' . branch . char
     endif
   endif
-  let s:git = info
+  let g:line.git = info
 endfu "}
 fu! line#file(...) "{
   let termpatt = 'term://.*'

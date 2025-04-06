@@ -1,0 +1,4 @@
+
+  ● print the name of the project onto the tabline in zoom mode ~
+
+vim: ft=help: tw=2

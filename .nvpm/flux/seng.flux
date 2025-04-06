@@ -17,6 +17,6 @@ loop plugin: nvpm flux line zoom text {
     tab seng
       file Usecases 
       file Workflows
-      file read @ seng/read
+      file read = seng/read
   }
 endl}
