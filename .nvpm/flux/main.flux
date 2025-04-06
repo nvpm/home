@@ -56,7 +56,7 @@
         file expt : case.expt
     }
   }
-  -loop plugin: zoom --nvpm flux line text {
+  loop plugin: zoom --nvpm flux line text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
         file TODO
