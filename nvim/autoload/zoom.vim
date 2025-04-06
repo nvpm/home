@@ -132,7 +132,7 @@ fu! zoom#hide(...) "{
   let g:zoom.mode = 0
 
 endfu "}
-fu! zoom#swap(...) "{
+fu! zoom#zoom(...) "{
 
   if g:zoom.mode
     call zoom#hide()

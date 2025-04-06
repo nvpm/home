@@ -6,7 +6,7 @@ let __ZOOMPLUG__ = 1
 call zoom#init()
 
 "-- user commands --
-command! Zoom call zoom#swap()
+command! Zoom call zoom#zoom()
 
 "-- auto commands --
 if get(g:,'zoom_autocmds',1)
