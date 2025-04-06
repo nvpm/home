@@ -311,30 +311,17 @@ fu! flux#loop(...) "{
         while indx<leng
           let item = s:conf.list[indx]|let indx+=1
           if item.data.keyw==?'endl'|break|endif
-          call add(loop,item)
+          if !node.cuts|call add(loop,item)|endif
         endwhile
-        if empty(node.data.info)
-          let vars = split(node.data.name,' ')
-          let name = ''
-        else
-          let name = node.data.name
-          let vars = split(node.data.info,' ')
-        endif
-        let cuts = 0
-        for var in vars
-          " cut-tree for loop-vars
-          let item = flux#node(var)
-          if empty(item.data.keyw..item.data.name..item.data.info) && item.cuts
-            let cuts = item.cuts
-            continue
-          endif
-          if cuts
-            let item.cuts = cuts
-            let cuts = 0
-          endif
-          if  item.cuts==1|continue|endif
-          if  item.cuts>=2|  break |endif
-          if empty(var)|continue|endif
+        let info = empty(node.data.info)?node.data.name:node.data.info
+        let name = empty(node.data.info)?'':node.data.name
+        let vars = split(info,' ')
+        let vars = flux#list(vars)
+        let vars = flux#cuts(vars)
+        for node in vars
+          if node.cuts==1|continue|endif
+          if node.cuts>=2|  break |endif
+          let var = node.data.keyw
           for item in loop
             let info = deepcopy(item)
             if empty(name)
