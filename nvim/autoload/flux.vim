@@ -313,8 +313,13 @@ fu! flux#loop(...) "{
           if item.data.keyw==?'endl'|break|endif
           call add(loop,item)
         endwhile
-        let name = node.data.name
-        let vars = split(node.data.info,' ')
+        if empty(node.data.info)
+          let vars = split(node.data.name,' ')
+          let name = ''
+        else
+          let name = node.data.name
+          let vars = split(node.data.info,' ')
+        endif
         let cuts = 0
         for var in vars
           " cut-tree for loop-vars
@@ -332,8 +337,13 @@ fu! flux#loop(...) "{
           if empty(var)|continue|endif
           for item in loop
             let info = deepcopy(item)
-            let info.data.name = substitute(info.data.name,'$('..name..')',var,'g')
-            let info.data.info = substitute(info.data.info,'$('..name..')',var,'g')
+            if empty(name)
+              let info.data.name = substitute(info.data.name,'$_',var,'g')
+              let info.data.info = substitute(info.data.info,'$_',var,'g')
+            else
+              let info.data.name = substitute(info.data.name,'$('..name..')',var,'g')
+              let info.data.info = substitute(info.data.info,'$('..name..')',var,'g')
+            endif
             if node.cuts
               let info.cuts = node.cuts
             endif

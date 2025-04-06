@@ -1,11 +1,6 @@
 
--
-  loop plugin: zoom --nvpm flux line text {
-    file TODO
-    file Issues
-    --
-    file Concepts
-    file Features
+  loop zoom nvpm --flux line text {
+    file $_.c
   endl }
 ---
 HOME libm
