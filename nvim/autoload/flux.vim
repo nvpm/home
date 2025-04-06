@@ -310,12 +310,7 @@ fu! flux#loop(...) "{
         let loop = []
         while indx<leng
           let item = s:conf.list[indx]|let indx+=1
-          if item.data.keyw==?'endl'   ||
-            \item.data.keyw==?'endlo'  ||
-            \item.data.keyw==?'endloo' ||
-            \item.data.keyw==?'endloop'
-            break
-          endif
+          if item.data.keyw==?'endl'|break|endif
           call add(loop,item)
         endwhile
         let name = node.data.name
