@@ -1,5 +1,14 @@
 
   project NVPM devl : nvim {
+    workspace flux {
+      tab code
+        file auto : autoload/flux.vim
+        file init @ meta/init.vim
+      tab test @ test/flux
+        file case : case.case
+        file expt : case.expt
+    }
+    --
     workspace zoom {
 
       -file init @ meta/init.vim
@@ -38,15 +47,6 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
-    --
-    workspace flux {
-      tab code
-        file auto : autoload/flux.vim
-        file init @ meta/init.vim
-      tab test @ test/flux
-        file case : case.case
-        file expt : case.expt
-    }
     workspace text {
       tab code
         file auto : autoload/text.vim
@@ -56,7 +56,7 @@
         file expt : case.expt
     }
   }
-  -loop plugin: zoom --nvpm flux line text {
+  loop plugin: zoom flux --nvpm line text {
     project SENG $(plugin): seng/$(plugin)
       tab misc
         file TODO
@@ -64,9 +64,10 @@
         --
         file Concepts
         file Features
-      tab code
+       
+      -tab code
         file Random,file Syntax,file Data,file File
-      tab seng
+      -tab seng
         file Usecases,file Workflows,-,file read @ seng/read
   endl }
   project NVPM meta @ meta {

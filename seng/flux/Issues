@@ -1,6 +1,7 @@
 
 
-  ● [bug] cut 1/2 inside loop's content ~
   ● [bug] synx: cut1/2 followed same cut ~
+
+  ● [fixed] cut 1/2 inside loop's content ~
 
 vim: ft=help: tw=2

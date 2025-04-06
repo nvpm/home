@@ -334,7 +334,7 @@ fu! flux#loop(...) "{
             let info = deepcopy(item)
             let info.data.name = substitute(info.data.name,'$('..name..')',var,'g')
             let info.data.info = substitute(info.data.info,'$('..name..')',var,'g')
-            let info.cuts      = node.cuts
+            "let info.cuts      = node.cuts
             call add(list,info)|let s:conf.leng+=1
           endfor
         endfor
