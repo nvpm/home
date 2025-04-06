@@ -12,7 +12,10 @@
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
 
-      -tab nvimdocs @ /usr/share/nvim/runtime/doc
+      tab nvimdocs @ /usr/share/nvim/runtime/doc
+        file windows.txt
+        file options.txt
+        --
         file eval.txt
         file api.txt
         file usr_41.txt

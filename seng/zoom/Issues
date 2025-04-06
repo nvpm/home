@@ -1,4 +1,5 @@
 
+|bugs|
   ● [bug] au WinResized removes visual & possibly other things ~
   ● [fixed] still some help files are resizing buf when loaded ~
     ● still needs some pay attention to

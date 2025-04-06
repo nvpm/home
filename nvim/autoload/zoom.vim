@@ -19,7 +19,7 @@ fu! zoom#calc(...) "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  let s:height = get(g:,'zoom_height',totalheight-5)
+  let s:height = get(g:,'zoom_height',totalheight)
   let s:width  = get(g:,'zoom_width' ,80)
 
   if get(g:,'zoom_usefloat',1)
@@ -58,6 +58,7 @@ fu! zoom#calc(...) "{
       let s:left  = s:right+s:left%2
     endif
   endif
+
   let left = get(g:,'zoom_left',-1)
   if left>=0
     let s:right+= s:left-left
@@ -71,6 +72,8 @@ fu! zoom#calc(...) "{
 
 endfu " }
 fu! zoom#pads(...) "{
+
+  let &cmdheight = s:bottom
 
   if s:left>1
     silent! exec string(s:left-1)..'vsplit '..g:zoom.buff
@@ -88,10 +91,9 @@ fu! zoom#pads(...) "{
     silent! wincmd p
   endif
 
-  let &cmdheight = s:bottom
-
   exe 'vert resize '..s:width
-  exe 'resize      '..s:height
+  silent! setl winfixwidth
+  silent! setl winfixheight
 
 endfu " }
 fu! zoom#show(...) "{
@@ -179,6 +181,8 @@ fu! zoom#buff(...) "{
   silent! setl nonumber
   silent! setl signcolumn=no
   silent! setl nobuflisted
+  silent! setl winfixwidth
+  silent! setl winfixheight
 
   if get(g:,'zoom_devl')|return|endif
   let &l:tabline    = ' '
