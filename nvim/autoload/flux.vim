@@ -242,30 +242,42 @@ fu! flux#endl(...) "{
 endfu "}
 fu! flux#list(...) "{
 
-  if has_key(s:conf,'body')
+  let objc = get(a:,1,s:conf)
+
+  if type(objc)==type({})
+    if has_key(objc,'body')
+      let objc.list = flux#list(objc.body)
+      let objc.leng = len(objc.list)
+    endif
+  endif
+  if type(objc)==type([])
+    let body = objc
     let list = []
-    let leng = get(s:conf,'leng',len(s:conf.body))
-    let indx = 0
-    while indx<leng
-      let node = flux#node(s:conf.body[indx])
+    for line in body
+      let node = flux#node(line)
       call add(list,node)
-      let indx+= 1
-    endwhile
-    unlet s:conf.body
-    let s:conf.leng = indx
-    let s:conf.list = list
+    endfor
+    return list
   endif
 
 endfu "}
 fu! flux#cuts(...) "{
 
-  if has_key(s:conf,'list')
-    let leng = get(s:conf,'leng',len(s:conf.list))|let s:conf.leng = 0
-    let indx = 0
+  let objc = get(a:,1,s:conf)
+
+  if type(objc)==type({})
+    if has_key(objc,'list')
+      let objc.list = flux#cuts(objc.list)
+      let objc.leng = len(objc.list)
+    endif
+  endif
+  if type(objc)==type([])
+    let leng = len(objc)
     let cuts = 0
-    let list = []
+    let indx = 0
+    let newlist = []
     while indx<leng
-      let node = s:conf.list[indx]|let indx+=1
+      let node = objc[indx]|let indx+=1
       if node.cuts>=3|break|endif
       let stda = empty(node.data.keyw..node.data.name..node.data.info)
       if stda && node.cuts
@@ -276,9 +288,9 @@ fu! flux#cuts(...) "{
         let node.cuts = cuts
         let cuts = 0
       endif
-      call add(list,node)|let s:conf.leng+=1
+      call add(newlist,node)
     endwhile
-    let s:conf.list = list
+    return newlist
   endif
 
 endfu "}
