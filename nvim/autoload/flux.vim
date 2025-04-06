@@ -79,7 +79,7 @@ fu! flux#fixt(...) "{
       let node.data.name = '<unnamed>'
       let node.data.info = ''
       let node.meta.leng = len(list)
-      let node.meta.indx = root.meta.indx
+      let node.meta.indx = 0
       let node.meta.type = flux#find(conf.lexis,list[0].data.keyw)
       let node.list = list
       let root.list = [node]+root.list[indx:]
