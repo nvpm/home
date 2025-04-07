@@ -4,6 +4,15 @@ if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- main functions --
+fu! line#line(...) "{
+
+  if g:line.mode
+    call line#hide()
+  else
+    call line#show()
+  endif
+
+endfu "}
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
@@ -115,15 +124,6 @@ fu! line#hide(...) "{
   "let &statusline = ' '
 
   let g:line.mode = 0
-
-endfu "}
-fu! line#swap(...) "{
-
-  if g:line.mode
-    call line#hide()
-  else
-    call line#show()
-  endif
 
 endfu "}
 
