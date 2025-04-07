@@ -37,7 +37,8 @@
   let ayucolor="light"  " for light version of theme
   let ayucolor="mirage" " for mirage version of theme
   let ayucolor="dark"   " for dark version of theme
-  colorscheme ayu
+
+  if has('nvim')|colorscheme ayu|else|syntax on|endif
 
   hi Pmenu      guibg=#1f252a guifg=#888888
   hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
@@ -54,6 +55,7 @@
   if !has('nvim')
     set hidden
   endif
+
   " nvpm user variables tree
   let g:nvpm_maketree = 1
   let g:nvpm_initload = 1
@@ -78,38 +80,38 @@
   hi fluxline guifg=#ffee00
   hi fluxsepr guifg=#ffffff gui=bold
 
-  nmap <silent><space>   :NVPMLoop + 3<cr>
-  nmap <silent>m<space>  :NVPMLoop - 3<cr>
-  nmap <silent><tab>     :NVPMLoop + 2<cr>
-  nmap <silent>m<tab>    :NVPMLoop - 2<cr>
-  nmap <silent><BS>      :NVPMLoop + 1<cr>
-  nmap <silent><del>     :NVPMLoop - 1<cr>
-  nmap <silent><c-n>     :NVPMLoop + 1<cr>
-  nmap <silent><c-p>     :NVPMLoop - 1<cr>
-  nmap <silent><c-space> :NVPMLoop + 0<cr>
-  nmap <silent>=         :NVPMLoop + -1<cr>
-  nmap <silent>-         :NVPMLoop - -1<cr>
+  nmap <silent><space>   :NvpmLoop + 3<cr>
+  nmap <silent>m<space>  :NvpmLoop - 3<cr>
+  nmap <silent><tab>     :NvpmLoop + 2<cr>
+  nmap <silent>m<tab>    :NvpmLoop - 2<cr>
+  nmap <silent><BS>      :NvpmLoop + 1<cr>
+  nmap <silent><del>     :NvpmLoop - 1<cr>
+  nmap <silent><c-n>     :NvpmLoop + 1<cr>
+  nmap <silent><c-p>     :NvpmLoop - 1<cr>
+  nmap <silent><c-space> :NvpmLoop + 0<cr>
+  nmap <silent>=         :NvpmLoop + -1<cr>
+  nmap <silent>-         :NvpmLoop - -1<cr>
 
-  nmap <F8> <esc>:NVPMLoad<space>
-  imap <F8> <esc>:NVPMLoad<space>
-  cmap <F8> <esc>:NVPMLoad<space>
+  nmap <F8> <esc>:NvpmLoad<space>
+  imap <F8> <esc>:NvpmLoad<space>
+  cmap <F8> <esc>:NvpmLoad<space>
 
-  nmap <F9> <esc>:NVPMLoad<space>
-  imap <F9> <esc>:NVPMLoad<space>
-  cmap <F9> <esc>:NVPMLoad<space>
+  nmap <F9> <esc>:NvpmLoad<space>
+  imap <F9> <esc>:NvpmLoad<space>
+  cmap <F9> <esc>:NvpmLoad<space>
 
-  nmap <F10> <esc>:NVPMMake<space>
-  imap <F10> <esc>:NVPMMake<space>
-  cmap <F10> <esc>:NVPMMake<space>
+  nmap <F10> <esc>:NvpmMake<space>
+  imap <F10> <esc>:NvpmMake<space>
+  cmap <F10> <esc>:NvpmMake<space>
 
-  nmap <F11> <esc>:wall<cr>:NVPMEdit<cr>
-  imap <F11> <esc>:wall<cr>:NVPMEdit<cr>
-  cmap <F11> <esc>:wall<cr>:NVPMEdit<cr>
-  nmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
-  imap <F12> <esc>:wall<cr>:NVPMEdit<cr>
-  cmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
+  nmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <F11> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
+  nmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <F12> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
 
-  nmap mt :NVPMTerm<cr>i
+  nmap mt :NvpmTerm<cr>i
 
 " }
 " line {
@@ -136,7 +138,10 @@
   hi LINECurr guifg=#ffffff guibg=bg
   hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
 
-  nmap <silent>ml :LINESwap<cr><c-l>
+  "hi def link TabLine     LINEFill
+  "hi def link TabLineFill TabLine
+
+  nmap <silent>ml :Line<cr><c-l>
 
 " }
 " zoom {
@@ -144,6 +149,7 @@
   set cmdheight=1
   let nvpmdevl = 0
   let zoom_autocmds = 1
+  let zoom_initload = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1
 
@@ -156,8 +162,8 @@
 " }
 " text {
 
-  nmap maj vip:TEXTFixs<cr>vip:TEXTJust 74<cr>{vapoj<vip>
-  vmap maj :'<,'>TEXTFixs<cr>:'<,'>TEXTJust 74<cr>
+  nmap maj vip:TextFixs<cr>vip:TextJust 74<cr>{vapoj<vip>
+  vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 74<cr>
 
 "}
 

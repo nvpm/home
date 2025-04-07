@@ -12,7 +12,7 @@ let __TEXTPLUG__ = 1
        command!
 \      -nargs=?
 \      -range
-\      TEXTJust
+\      TextJust
 \     <line1>,<line2>call text#just(<args>)
 
 " }
@@ -20,7 +20,7 @@ let __TEXTPLUG__ = 1
 
        command!
 \      -range
-\      TEXTFixs
+\      TextFixs
 \     <line1>,<line2>call text#fixs()
 
 " }

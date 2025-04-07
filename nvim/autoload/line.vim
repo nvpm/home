@@ -4,15 +4,6 @@ if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- main functions --
-fu! line#line(...) "{
-
-  if g:line.mode
-    call line#hide()
-  else
-    call line#show()
-  endif
-
-endfu "}
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
@@ -35,6 +26,15 @@ fu! line#init(...) "{
   let g:line.git  = ''
 
   if s:user.initload
+    call line#show()
+  endif
+
+endfu "}
+fu! line#line(...) "{
+
+  if g:line.mode
+    call line#hide()
+  else
     call line#show()
   endif
 
@@ -75,7 +75,6 @@ fu! line#topl(...) "{
     endif
   endif
 
-
   return line
 
 endfu "}
@@ -109,19 +108,19 @@ fu! line#show(...) "{
 
   let g:line.mode = 1
 
+  hi clear TabLine
+  hi clear StatusLine
+
 endfu "}
 fu! line#hide(...) "{
-
-  set showtabline=0
-  set laststatus=0
 
   if 1+g:line.timer
     call timer_stop(g:line.timer)
     let g:line.timer = -1
   endif
 
-  "let &tabline = ' '
-  "let &statusline = ' '
+  set showtabline=0
+  set laststatus=0
 
   let g:line.mode = 0
 

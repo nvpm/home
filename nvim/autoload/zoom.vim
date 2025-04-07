@@ -116,26 +116,49 @@ fu! zoom#show(...) "{
   call zoom#calc()
   call zoom#pads()
   call zoom#none()
+  call zoom#sets()
 
   let g:zoom.mode = 1
 
-  if exists('g:line.mode')|let g:line.mode=0|endif
-
 endfu "}
+fu! zoom#sets(...) "{
+
+  if !a:0
+    if exists('*line#hide')
+      call line#hide()
+    else
+      set showtabline=0
+      set laststatus=0
+    endif
+  else
+    let &cmdheight = s:cmdh
+    let &fillchars = s:fill
+    if exists('*line#show')
+      call line#show()
+    else
+      let &showtabline = s:topl
+      let &laststatus  = s:botl
+    endif
+  endif
+
+  if s:devl|return|endif
+  exe 'set fillchars=vert:\ '
+  exe 'set fillchars+=eob:\ '
+  if  s:nvim
+    exe 'set fillchars+=horiz:\ '
+    exe 'set fillchars+=horizdown:\ '
+  endif
+
+endfu " }
 fu! zoom#hide(...) "{
 
   silent! only
-
-  let &cmdheight   = s:cmdh
-  let &fillchars   = s:fill
-  let &showtabline = s:topl
-  let &laststatus  = s:botl
 
   exe ':silent! bdel '..g:zoom.buff
 
   let g:zoom.mode = 0
 
-  if exists('g:line.mode')|let g:line.mode=1|endif
+  call zoom#sets(1)
 
 endfu "}
 
@@ -159,15 +182,6 @@ fu! zoom#save(...) "{
   let s:fill = &fillchars
   let s:topl = &showtabline
   let s:botl = &laststatus
-
-  set showtabline=0
-  set laststatus=0
-
-  if s:devl|return|endif
-  exe 'set fillchars=vert:\ '
-  exe 'set fillchars+=horiz:\ '
-  exe 'set fillchars+=horizdown:\ '
-  exe 'set fillchars+=eob:\ '
 
 endfu "}
 fu! zoom#buff(...) "{

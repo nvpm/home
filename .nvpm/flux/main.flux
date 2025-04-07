@@ -19,8 +19,8 @@
     workspace line {
       tab code
         file auto : autoload/line.vim
-        -file plug : plugin/line.vim
-        file init = meta/init.vim
+        file plug : plugin/line.vim
+        -file init = meta/init.vim
     }
     workspace nvpm {
       tab code
@@ -31,7 +31,6 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
-    --
     workspace text {
       tab code
         file auto : autoload/text.vim
@@ -52,6 +51,7 @@
   project NVPM meta = meta {
     tab meta
       file conf.vim
+      ---
       file menu.vim
       file init.vim
     tab code=nvim

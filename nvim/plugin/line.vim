@@ -6,4 +6,4 @@ let __LINEPLUG__ = 1
 call line#init()
 
 "-- user commands --
-command! LINESwap call line#swap()
+command! Line call line#line()
