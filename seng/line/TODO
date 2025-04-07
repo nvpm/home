@@ -1,4 +1,12 @@
 
+
+
+
   ● print the name of the project onto the tabline in zoom mode ~
+
+
+
+
+  ● [done] include non-loaded usecase to line#list() ~
 
 vim: ft=help: tw=2

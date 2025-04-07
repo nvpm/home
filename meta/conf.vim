@@ -1,46 +1,3 @@
-" line {
-
-  " Line options for use with colors
-  "let g:line_closure       = 1
-  "let g:line_innerspace    = 0
-  "let g:line_projname      = 1
-  "let g:line_bottomright   = ''
-  "let g:line_bottomright   = '%y%m ⬤ %l,%c/%P'
-  "let g:line_bottomcenter  = ''
-  "let g:line_bottomcenter  = ' ⬤ %{line#file()}'
-  "let g:line_gitinfo       = 1
-  "let g:line_gitdelayms    = 5000
-
-  " Git Info Colors
-  hi LINEGitModified guifg=#aa4371 gui=bold
-  hi LINEGitStaged   guifg=#00ff00 gui=bold
-  hi LINEGitClean    guifg=#77aaaa gui=bold
-
-  " Line Colors
-  hi LINEFill guibg=bg
-  hi LINEItem guifg=#aaaaaa guibg=bg
-  hi LINECurr guifg=#ffffff guibg=bg
-  hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
-
-  nmap <silent>ml :LINESwap<cr><c-l>
-
-" }
-" zoom {
-
-  set cmdheight=1
-  let nvpmdevl = 0
-  let zoom_autocmds = 1
-  let zoom_initload = 1
-  let zoom_usefloat = 1
-  let zoom_useminus = 1
-
-  let zoom_height = -3
-  let zoom_width  = 80
-  let zoom_right  = 0
-
-  nmap <silent>mz :Zoom<cr>
-
-" }
 " devl {
 
   hi NVPMPassed  guifg=#009900 gui=bold
@@ -153,6 +110,48 @@
   cmap <F12> <esc>:wall<cr>:NVPMEdit<cr>
 
   nmap mt :NVPMTerm<cr>i
+
+" }
+" line {
+
+  " Line options for use with colors
+  "let g:line_closure       = 1
+  "let g:line_innerspace    = 0
+  "let g:line_projname      = 1
+  "let g:line_bottomright   = ''
+  "let g:line_bottomright   = '%y%m ⬤ %l,%c/%P'
+  "let g:line_bottomcenter  = ''
+  "let g:line_bottomcenter  = ' ⬤ %{line#file()}'
+  "let g:line_gitinfo       = 1
+  "let g:line_gitdelayms    = 5000
+
+  " Git Info Colors
+  hi LINEGitModified guifg=#aa4371 gui=bold
+  hi LINEGitStaged   guifg=#00ff00 gui=bold
+  hi LINEGitClean    guifg=#77aaaa gui=bold
+
+  " Line Colors
+  hi LINEFill guibg=bg
+  hi LINEItem guifg=#aaaaaa guibg=bg
+  hi LINECurr guifg=#ffffff guibg=bg
+  hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
+
+  nmap <silent>ml :LINESwap<cr><c-l>
+
+" }
+" zoom {
+
+  set cmdheight=1
+  let nvpmdevl = 0
+  let zoom_autocmds = 1
+  let zoom_usefloat = 1
+  let zoom_useminus = 1
+
+  let zoom_height = -3
+  let zoom_width  = 80
+  let zoom_right  = 0
+
+  nmap <silent>mz :Zoom<cr>
 
 " }
 " text {

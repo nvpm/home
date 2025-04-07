@@ -69,6 +69,26 @@ fu! s:test.line(...) "{
   so nvim/autoload/line.vim
   so nvim/plugin/line.vim
 
+    let names = []
+    let list = execute('ls')
+    let list = split(list,'\n')
+    let leng = len(list)
+    for item in list
+      "let item = split(item,'\s')
+      "call filter(item,"v:val!=''")
+      "let curr = item[1]
+      ""let file = item[2][1:-2]
+      "let iscurr = curr=~'%'
+      "let closure= iscurr&&leng>1
+      "let name   = ''
+      "let name  .= iscurr ? '%#LINECurr#' : '%#LINEItem#'
+      "let name  .= closure ? '[' : ' '
+      "let name  .= fnamemodify(file,':t')
+      "let name  .= closure ? ']' : ' '
+      "call add(names,name)
+      "ec name
+    endfor
+
 endfu "}
 "} 
 " test {
