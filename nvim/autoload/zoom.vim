@@ -15,6 +15,15 @@ fu! zoom#init(...) "{
   let g:zoom.carg = ''
 
 endfu "}
+fu! zoom#zoom(...) "{
+
+  if g:zoom.mode
+    call zoom#hide()
+  else
+    call zoom#show()
+  endif
+
+endfu "}
 fu! zoom#calc(...) "{
 
   let totalheight = &lines
@@ -74,8 +83,6 @@ fu! zoom#calc(...) "{
 endfu " }
 fu! zoom#pads(...) "{
 
-  let &cmdheight = s:bottom
-
   if s:left>1
     silent! exec string(s:left-1)..'vsplit '..g:zoom.buff
     call zoom#buff()
@@ -92,9 +99,9 @@ fu! zoom#pads(...) "{
     silent! wincmd p
   endif
 
+  let &cmdheight = s:bottom
+
   exe 'vert resize '..s:width
-  silent! setl winfixwidth
-  silent! setl winfixheight
 
 endfu " }
 fu! zoom#show(...) "{
@@ -105,7 +112,6 @@ fu! zoom#show(...) "{
 
   let g:zoom.mode = 0
 
-  call line#hide()
   call zoom#save()
   call zoom#calc()
   call zoom#pads()
@@ -113,32 +119,23 @@ fu! zoom#show(...) "{
 
   let g:zoom.mode = 1
 
-  if s:devl|return|endif
-  exe 'set fillchars=vert:\ '
-  exe 'set fillchars+=eob:\ '
+  if exists('g:line.mode')|let g:line.mode=0|endif
 
 endfu "}
 fu! zoom#hide(...) "{
 
   silent! only
 
-  call line#show()
-
-  let &cmdheight = s:cmdh
-  let &fillchars = s:fill
+  let &cmdheight   = s:cmdh
+  let &fillchars   = s:fill
+  let &showtabline = s:topl
+  let &laststatus  = s:botl
 
   exe ':silent! bdel '..g:zoom.buff
 
   let g:zoom.mode = 0
 
-endfu "}
-fu! zoom#zoom(...) "{
-
-  if g:zoom.mode
-    call zoom#hide()
-  else
-    call zoom#show()
-  endif
+  if exists('g:line.mode')|let g:line.mode=1|endif
 
 endfu "}
 
@@ -160,6 +157,17 @@ fu! zoom#save(...) "{
 
   let s:cmdh = &cmdheight
   let s:fill = &fillchars
+  let s:topl = &showtabline
+  let s:botl = &laststatus
+
+  set showtabline=0
+  set laststatus=0
+
+  if s:devl|return|endif
+  exe 'set fillchars=vert:\ '
+  exe 'set fillchars+=horiz:\ '
+  exe 'set fillchars+=horizdown:\ '
+  exe 'set fillchars+=eob:\ '
 
 endfu "}
 fu! zoom#buff(...) "{
@@ -171,8 +179,6 @@ fu! zoom#buff(...) "{
   silent! setl winfixwidth
   silent! setl winfixheight
 
-  if s:devl|return|endif
-  let &l:tabline    = ' '
   let &l:statusline = ' '
 
 endfu " }
