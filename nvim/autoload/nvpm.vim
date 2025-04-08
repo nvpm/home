@@ -50,11 +50,6 @@ fu! nvpm#init(...) "{
   let g:nvpm.tree.root = {}
   let g:nvpm.tree.file = ''
 
-  let g:nvpm.edit = {}
-  let g:nvpm.edit.line = 0
-  let g:nvpm.edit.mode = 0
-  let g:nvpm.edit.curr = ''
-
   let g:nvpm.term = {}
   let g:nvpm.term.buff = ''
 
@@ -87,7 +82,7 @@ fu! nvpm#load(...) "{
 
   let file = flux#argv(a:000)
 
-  if !g:nvpm.edit.mode
+  if g:nvpm.mode!=2
     let file = s:dirs.local..file
   endif
 
@@ -97,13 +92,13 @@ fu! nvpm#load(...) "{
   let root = flux#flux(g:nvpm.conf)
   let list = get(root,'list',[])
 
-  if empty(root)    |let g:nvpm.conf.file=''|return 2|endif
-  if empty(list)    |let g:nvpm.conf.file=''|return 3|endif
-  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 4|endif
+  if empty(root)    |let g:nvpm.conf.file=''|return 1|endif
+  if empty(list)    |let g:nvpm.conf.file=''|return 1|endif
+  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 1|endif
 
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
-  let g:nvpm.mode = 1
+  let g:nvpm.mode = 1+(g:nvpm.mode==2)
 
   if get(g:,'nvpm_loadline',1)
     if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
@@ -124,11 +119,11 @@ fu! nvpm#loop(...) "{
   let step = get(g:nvpm.loop,step,0)
 
   if type=='flux'||type=='-1' " flux files iteration {
-    if g:nvpm.edit.mode|return|endif
+    if g:nvpm.mode==2|return|endif
     call nvpm#flux()
     if g:nvpm.flux.leng
       let flux = g:nvpm.flux.list[0]
-      if g:nvpm.mode
+      if g:nvpm.mode==1
         call nvpm#indx(g:nvpm.flux,step)
         let flux = g:nvpm.flux.list[g:nvpm.flux.indx]
       endif
@@ -150,9 +145,9 @@ fu! nvpm#loop(...) "{
   if type<0||type>3|return 1|endif
 
   if g:nvpm.mode
-    if type == 2 && g:nvpm.edit.mode|call nvpm#edit()|endif
-    if type == 1 && g:nvpm.edit.mode|call nvpm#edit()|endif
-    if type == 0 && g:nvpm.edit.mode|call nvpm#edit()|endif
+    if type == 2 && g:nvpm.mode==2|call nvpm#edit()|endif
+    if type == 1 && g:nvpm.mode==2|call nvpm#edit()|endif
+    if type == 0 && g:nvpm.mode==2|call nvpm#edit()|endif
     let bufname = bufname()
     if bufname==g:nvpm.tree.curr 
       let node = flux#seek(tree,type)
@@ -182,8 +177,14 @@ fu! nvpm#edit(...) "{
 
   " loads bufname if in edit mode 
   " only leaves edit mode upon correct load
-  if g:nvpm.edit.mode
-    let g:nvpm.edit.mode = nvpm#load(bufname())
+  if g:nvpm.mode==2
+    if !nvpm#load(bufname())
+      let g:nvpm.mode = 1
+    else
+      echohl WarningMsg
+      echo 'NVPM: Invalid flux file. Is it empty?'
+      echohl None
+    endif
     return
   endif
 
@@ -214,7 +215,7 @@ fu! nvpm#edit(...) "{
   endif
 
   call writefile(body,s:dirs.edit)
-  let g:nvpm.edit.mode = 1
+  let g:nvpm.mode = 2
   call nvpm#load(s:dirs.edit)
 
 endfu "}

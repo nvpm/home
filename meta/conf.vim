@@ -99,12 +99,12 @@
   imap <F10> <esc>:NvpmMake<space>
   cmap <F10> <esc>:NvpmMake<space>
 
-  nmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <F11> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
-  nmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <F12> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
+  nmap <silent><F11> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <silent><F11> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <silent><F11> <esc>:wall<cr>:NvpmEdit<cr>
+  nmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
 
   nmap mt :NvpmTerm<cr>i
 
