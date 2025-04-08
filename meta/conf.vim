@@ -117,15 +117,19 @@
 " line {
 
   " Line options for use with colors
-  "let g:line_closure       = 1
-  "let g:line_innerspace    = 0
-  "let g:line_projname      = 1
-  "let g:line_bottomright   = ''
-  "let g:line_bottomright   = '%y%m ⬤ %l,%c/%P'
-  "let g:line_bottomcenter  = ''
-  "let g:line_bottomcenter  = ' ⬤ %{line#file()}'
-  "let g:line_gitinfo       = 1
-  "let g:line_gitdelayms    = 5000
+  let line_closure      = 1
+  let line_innerspace   = 0
+  let line_projname     = 1
+  let line_bottomright  = ''
+  let line_bottomright  = '%y%m ⬤ %l,%c/%P'
+  let line_bottomcenter = ''
+  let line_bottomcenter = ' ⬤ %{line#file()}'
+  let line_gitinfo      = 1
+  let line_gitdelayms   = 5000
+  let line_initload     = 0
+
+  hi clear TabLine
+  hi clear StatusLine
 
   " Git Info Colors
   hi LINEGitModified guifg=#aa4371 gui=bold

@@ -15,15 +15,6 @@ fu! zoom#init(...) "{
   let g:zoom.carg = ''
 
 endfu "}
-fu! zoom#zoom(...) "{
-
-  if g:zoom.mode
-    call zoom#hide()
-  else
-    call zoom#show()
-  endif
-
-endfu "}
 fu! zoom#calc(...) "{
 
   let totalheight = &lines
@@ -116,49 +107,48 @@ fu! zoom#show(...) "{
   call zoom#calc()
   call zoom#pads()
   call zoom#none()
-  call zoom#sets()
 
   let g:zoom.mode = 1
 
-endfu "}
-fu! zoom#sets(...) "{
-
-  if !a:0
-    if exists('*line#hide')
-      call line#hide()
-    else
-      set showtabline=0
-      set laststatus=0
-    endif
+  if exists('*line#hide')&&exists('g:line.mode')&&(1+g:line.mode)
+    call line#hide()
   else
-    let &cmdheight = s:cmdh
-    let &fillchars = s:fill
-    if exists('*line#show')
-      call line#show()
-    else
-      let &showtabline = s:topl
-      let &laststatus  = s:botl
-    endif
+    set showtabline=0
+    set laststatus=0
   endif
 
   if s:devl|return|endif
   exe 'set fillchars=vert:\ '
   exe 'set fillchars+=eob:\ '
-  if  s:nvim
+  if s:nvim
     exe 'set fillchars+=horiz:\ '
     exe 'set fillchars+=horizdown:\ '
   endif
 
-endfu " }
+endfu "}
 fu! zoom#hide(...) "{
 
   silent! only
-
   exe ':silent! bdel '..g:zoom.buff
-
   let g:zoom.mode = 0
 
-  call zoom#sets(1)
+  if exists('*line#show')&&exists('g:line.mode')&&(1+g:line.mode)
+    call line#show()
+  else
+    let &showtabline = s:topl
+    let &laststatus  = s:botl
+  endif
+  let &cmdheight   = s:cmdh
+  let &fillchars   = s:fill
+
+endfu "}
+fu! zoom#zoom(...) "{
+
+  if g:zoom.mode
+    call zoom#hide()
+  else
+    call zoom#show()
+  endif
 
 endfu "}
 

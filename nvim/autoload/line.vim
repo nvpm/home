@@ -21,7 +21,7 @@ fu! line#init(...) "{
   let s:user.initload     = get(g:,'line_initload'    , 1 )
 
   let g:line = {}
-  let g:line.mode = 1
+  let g:line.mode = -1
   let g:line.timer= -1
   let g:line.git  = ''
 
