@@ -68,12 +68,6 @@
   let nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
   let nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
-  "let nvpm_fluxconf.lexis = ''
-  "let nvpm_fluxconf.lexis.= '|project'
-  "let nvpm_fluxconf.lexis.= '|workspace'
-  "let nvpm_fluxconf.lexis.= '|tab'
-  "let nvpm_fluxconf.lexis.= '|file'
-
   hi fluxcomm guifg=#6c6776
   hi fluxkeyw guifg=#00ff00 gui=bold,italic
   hi fluxname guifg=#ffffff

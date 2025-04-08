@@ -3,5 +3,6 @@
   ● account for cmdheight, signcolumn, and others in zoom#calc ~
   ● effectively save & restore highlight of groups changed ~
   ● save & restore window layout (splits, sizes, and where each one were) ~
+  ● the resize problem w/ autocmd ~
 
 vim: ft=help: tw=2
