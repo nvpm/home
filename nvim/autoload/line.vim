@@ -22,17 +22,13 @@ fu! line#init(...) "{
 
   let g:line = {}
   let g:line.mode = -1
+  let g:line.tabnr= -1
   let g:line.timer= -1
   let g:line.git  = ''
 
   if s:user.initload
-    call line#show()
+    call line#show(1)
   endif
-
-endfu "}
-fu! line#keep(...) "{
-
-  if g:line.mode|call line#show()|endif
 
 endfu "}
 fu! line#topl(...) "{
@@ -88,14 +84,17 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
-  if s:user.gitinfo && g:line.timer==-1
-    let g:line.timer = timer_start(s:user.gitdelay,'line#time',{'repeat':-1})
+  if a:0||get(g:,'nvpm_loadline',1)&&exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+    if s:user.gitinfo && g:line.timer==-1
+      let g:line.timer = timer_start(s:user.gitdelay,'line#time',{'repeat':-1})
+    endif
+    set tabline=%!line#topl()
+    set statusline=%!line#botl()
+    set showtabline=2
+  else
+    let &showtabline = g:line.tabnr
   endif
 
-  set tabline=%!line#topl()
-  set statusline=%!line#botl()
-
-  set showtabline=2
   let &laststatus=2+s:nvim*(1-(exists('g:zoom.mode')&&g:zoom.mode))
 
   let g:line.mode = 1
@@ -109,6 +108,7 @@ fu! line#hide(...) "{
     let g:line.git   = ''
   endif
 
+  let g:line.tabnr = &showtabline
   set showtabline=0
   set laststatus=0
 

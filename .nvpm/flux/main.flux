@@ -1,5 +1,13 @@
-
   project NVPM devl : nvim {
+    workspace nvpm {
+      tab code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+       -file init = meta/init.vim
+      tab oldnvpm = ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+    }
     workspace zoom {
 
       -file Concepts = seng/zoom/Concepts
@@ -19,18 +27,10 @@
     workspace line {
       tab code
         file auto : autoload/line.vim
-        file plug : plugin/line.vim
         -file init = meta/init.vim
+        file plug : plugin/line.vim
     }
-    workspace nvpm {
-      tab code
-        file auto : autoload/nvpm.vim
-        file plug : plugin/nvpm.vim
-       -file init = meta/init.vim
-      tab oldnvpm = ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-    }
+    --
     workspace text {
       tab code
         file auto : autoload/text.vim

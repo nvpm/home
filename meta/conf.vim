@@ -126,7 +126,7 @@
   let line_bottomcenter = ' ⬤ %{line#file()}'
   let line_gitinfo      = 1
   let line_gitdelayms   = 5000
-  let line_initload     = 0
+  let line_initload     = 1
 
   hi clear TabLine
   hi clear StatusLine
@@ -141,9 +141,6 @@
   hi LINEItem guifg=#aaaaaa guibg=bg
   hi LINECurr guifg=#ffffff guibg=bg
   hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
-
-  "hi def link TabLine     LINEFill
-  "hi def link TabLineFill TabLine
 
   nmap <silent>ml :Line<cr><c-l>
 
