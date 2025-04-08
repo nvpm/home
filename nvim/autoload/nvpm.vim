@@ -44,11 +44,11 @@ fu! nvpm#init(...) "{
   call flux#conf(conf)
 
   let g:nvpm = {}
+  let g:nvpm.mode = 0
 
   let g:nvpm.tree = {}
   let g:nvpm.tree.root = {}
   let g:nvpm.tree.file = ''
-  let g:nvpm.tree.mode = 0
 
   let g:nvpm.edit = {}
   let g:nvpm.edit.line = 0
@@ -103,7 +103,7 @@ fu! nvpm#load(...) "{
 
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
-  let g:nvpm.tree.mode = 1
+  let g:nvpm.mode = 1
 
   if get(g:,'nvpm_loadline',1)
     if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
@@ -128,7 +128,7 @@ fu! nvpm#loop(...) "{
     call nvpm#flux()
     if g:nvpm.flux.leng
       let flux = g:nvpm.flux.list[0]
-      if g:nvpm.tree.mode
+      if g:nvpm.mode
         call nvpm#indx(g:nvpm.flux,step)
         let flux = g:nvpm.flux.list[g:nvpm.flux.indx]
       endif
@@ -149,7 +149,7 @@ fu! nvpm#loop(...) "{
 
   if type<0||type>3|return 1|endif
 
-  if g:nvpm.tree.mode
+  if g:nvpm.mode
     if type == 2 && g:nvpm.edit.mode|call nvpm#edit()|endif
     if type == 1 && g:nvpm.edit.mode|call nvpm#edit()|endif
     if type == 0 && g:nvpm.edit.mode|call nvpm#edit()|endif

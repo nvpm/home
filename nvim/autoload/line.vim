@@ -35,7 +35,7 @@ fu! line#topl(...) "{
   " middle of top line
   let line .= '%#LINEFill#'
 
-  if exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+  if exists('g:nvpm.mode')&&g:nvpm.mode
     let line .= line#list(2)
   else
     let line .= '%t'
@@ -43,7 +43,7 @@ fu! line#topl(...) "{
 
   let line .= '%='
 
-  if exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+  if exists('g:nvpm.mode')&&g:nvpm.mode
     let line.= line#list(1,1)
 
     if !s:user.projname|return line|endif
@@ -81,7 +81,7 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
-  if a:0||get(g:,'nvpm_loadline',1)&&exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+  if a:0||get(g:,'nvpm_loadline',1)&&exists('g:nvpm.mode')&&g:nvpm.mode
     let s:user.gitinfo = get(s:user,'gitinfo',get(g:,'line_gitinfo',1))
     if s:user.gitinfo && g:line.timer==-1
       let s:user.gitdelay = get(s:user,'gitdelay',get(g:,'line_gitdelay',5000))
@@ -131,7 +131,7 @@ fu! line#list(...) "{
   let type  = get(a:000,0,-1)
   let revs  = get(a:000,1)
 
-  if exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+  if exists('g:nvpm.mode')&&g:nvpm.mode
 
     let node = flux#seek(g:nvpm.tree.root,type)
 
