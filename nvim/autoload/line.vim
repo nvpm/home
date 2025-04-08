@@ -96,7 +96,7 @@ fu! line#show(...) "{
   set statusline=%!line#botl()
 
   set showtabline=2
-  let &laststatus=2+s:nvim
+  let &laststatus=2+s:nvim*(1-(exists('g:zoom.mode')&&g:zoom.mode))
 
   let g:line.mode = 1
 
