@@ -57,21 +57,22 @@
   endif
 
   " nvpm user variables tree
-  let g:nvpm_maketree = 1
-  let g:nvpm_initload = 1
+  let nvpm_maketree = 1
+  let nvpm_initload = 1
+  let nvpm_projname = 1
+  
+  let nvpm_fluxconf = {}
+  let nvpm_fluxconf.lexis = ''
+  let nvpm_fluxconf.lexis.= '|project proj scheme layout book'
+  let nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
+  let nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
+  let nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
-  let g:nvpm_fluxconf = {}
-  let g:nvpm_fluxconf.lexis = ''
-  let g:nvpm_fluxconf.lexis.= '|project proj scheme layout book'
-  let g:nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
-  let g:nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
-  let g:nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
-
-  "let g:nvpm_fluxconf.lexis = ''
-  "let g:nvpm_fluxconf.lexis.= '|project'
-  "let g:nvpm_fluxconf.lexis.= '|workspace'
-  "let g:nvpm_fluxconf.lexis.= '|tab'
-  "let g:nvpm_fluxconf.lexis.= '|file'
+  "let nvpm_fluxconf.lexis = ''
+  "let nvpm_fluxconf.lexis.= '|project'
+  "let nvpm_fluxconf.lexis.= '|workspace'
+  "let nvpm_fluxconf.lexis.= '|tab'
+  "let nvpm_fluxconf.lexis.= '|file'
 
   hi fluxcomm guifg=#6c6776
   hi fluxkeyw guifg=#00ff00 gui=bold,italic
@@ -119,14 +120,13 @@
   " Line options for use with colors
   let line_closure      = 1
   let line_innerspace   = 0
-  let line_projname     = 1
   let line_bottomright  = ''
   let line_bottomright  = '%y%m ⬤ %l,%c/%P'
   let line_bottomcenter = ''
   let line_bottomcenter = ' ⬤ %{line#file()}'
   let line_gitinfo      = 1
   let line_gitdelayms   = 5000
-  let line_initload     = 1
+  let line_activate     = 1
 
   hi clear TabLine
   hi clear StatusLine

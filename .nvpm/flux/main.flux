@@ -1,4 +1,10 @@
   project NVPM devl : nvim {
+    workspace line {
+      tab code
+        file auto : autoload/line.vim
+        -file init = meta/init.vim
+        file plug : plugin/line.vim
+    }
     workspace nvpm {
       tab code
         file auto : autoload/nvpm.vim
@@ -23,12 +29,6 @@
         file api.txt
         file usr_41.txt
 
-    }
-    workspace line {
-      tab code
-        file auto : autoload/line.vim
-        -file init = meta/init.vim
-        file plug : plugin/line.vim
     }
     --
     workspace text {

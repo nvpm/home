@@ -15,10 +15,7 @@ fu! line#init(...) "{
   let s:user.bottomcenter = get(g:,'line_bottomcenter'  , botc )
   let s:user.bottomright  = get(g:,'line_bottomright'   , botr )
   let s:user.closure      = get(g:,'line_closure'       , 1    )
-  let s:user.projname     = get(g:,'line_projname'      , 1    )
-  let s:user.gitinfo      = get(g:,'line_gitinfo'       , 1    )
-  let s:user.gitdelay     = get(g:,'line_gitdelay'    , 5000 )
-  let s:user.initload     = get(g:,'line_initload'    , 1 )
+  let s:user.projname     = get(g:,'nvpm_projname',1)
 
   let g:line = {}
   let g:line.mode = -1
@@ -26,7 +23,7 @@ fu! line#init(...) "{
   let g:line.timer= -1
   let g:line.git  = ''
 
-  if s:user.initload
+  if get(g:,'line_activate',1)
     call line#show(1)
   endif
 
@@ -85,7 +82,9 @@ endfu "}
 fu! line#show(...) "{
 
   if a:0||get(g:,'nvpm_loadline',1)&&exists('g:nvpm.tree.mode')&&g:nvpm.tree.mode
+    let s:user.gitinfo = get(s:user,'gitinfo',get(g:,'line_gitinfo',1))
     if s:user.gitinfo && g:line.timer==-1
+      let s:user.gitdelay = get(s:user,'gitdelay',get(g:,'line_gitdelay',5000))
       let g:line.timer = timer_start(s:user.gitdelay,'line#time',{'repeat':-1})
     endif
     set tabline=%!line#topl()
