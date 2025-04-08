@@ -105,7 +105,11 @@ fu! nvpm#load(...) "{
   let g:nvpm.tree.file = file
   let g:nvpm.tree.mode = 1
 
-  call line#keep()
+  if get(g:,'nvpm_loadline',1)
+    if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+      call line#show()
+    endif
+  endif
   call nvpm#save()
   call nvpm#rend()
 
