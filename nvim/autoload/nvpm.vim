@@ -158,7 +158,7 @@ fu! nvpm#loop(...) "{
     if type == 0 && g:nvpm.mode==2|call nvpm#edit()|endif
     let bufname = bufname()
     if bufname==g:nvpm.tree.curr 
-      let node = flux#seek(tree,type)
+      let node = nvpm#seek(tree,type)
       if empty(node)|return 1|endif
       call nvpm#indx(node.meta,step)
     endif
@@ -301,7 +301,7 @@ fu! nvpm#curr(...) "{
   if empty(root)|return 1|endif
   if empty(list)|return 2|endif
                                      
-  let node = flux#seek(root,3)
+  let node = nvpm#seek(root,3)
   if empty(node)|return 3|endif
   let curr = node.list[node.meta.indx].data.info
   if empty(curr)|return 4|endif
@@ -358,6 +358,25 @@ fu! nvpm#flux(...) "{
     let g:nvpm.flux.leng = len(g:nvpm.flux.list)
     let g:nvpm.flux.indx = 0
   endif
+
+endfu "}
+fu! nvpm#seek(...) "{
+
+  let root = get(a:000,0,{})
+  let type = get(a:000,1,-1)
+  let code = get(a:000,2,'node')
+  if !has_key(root,'meta')|return {}|endif
+  if !has_key(root,'list')|return {}|endif
+  if type==root.meta.type
+    if code=='node'|return root     |endif
+    if code=='list'|return root.list|endif
+  endif
+  if has_key(root,'list')&&root.meta.leng
+    let indx = root.meta.indx
+    let leng = root.meta.leng
+    return nvpm#seek(root.list[indx%leng],type,code)
+  endif
+  return {}
 
 endfu "}
 

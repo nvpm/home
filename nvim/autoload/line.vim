@@ -47,7 +47,7 @@ fu! line#topl(...) "{
     let line.= line#list(1,1)
 
     if !s:user.projname|return line|endif
-    let proj = flux#seek(g:nvpm.tree.root,0)
+    let proj = nvpm#seek(g:nvpm.tree.root,0)
 
     if empty(proj)||
       \proj.list[proj.meta.indx].data.name=='<unnamed>'||
@@ -133,7 +133,7 @@ fu! line#list(...) "{
 
   if exists('g:nvpm.mode')&&g:nvpm.mode
 
-    let node = flux#seek(g:nvpm.tree.root,type)
+    let node = nvpm#seek(g:nvpm.tree.root,type)
 
     if empty(node)|return ''|endif
 
