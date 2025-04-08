@@ -1,6 +1,9 @@
 
 |bugs|
   ● [bug] au WinResized removes visual & possibly other things ~
+  ● [bug] double help pagination w/ 'K' ~
+    ● the second call for the help file triggers the 'only'
+      instruction from the autocmd
   ● [fixed] still some help files are resizing buf when loaded ~
     ● still needs some pay attention to
 
