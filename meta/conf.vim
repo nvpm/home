@@ -60,6 +60,8 @@
   let nvpm_maketree = 1
   let nvpm_initload = 1
   let nvpm_projname = 1
+  let nvpm_buffhide = 1
+  let nvpm_buffkill = 1
   
   let nvpm_fluxconf = {}
   let nvpm_fluxconf.lexis = ''

@@ -105,6 +105,14 @@ fu! nvpm#load(...) "{
       call line#show()
     endif
   endif
+
+  if get(g:,'nvpm_buffhide',0)
+    silent! exe '%bdelete'
+  endif
+  if get(g:,'nvpm_buffkill',0)
+    silent! exe '%bwipeout'
+  endif
+
   call nvpm#save()
   call nvpm#rend()
 
