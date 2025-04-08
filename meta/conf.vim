@@ -60,8 +60,10 @@
   let nvpm_maketree = 1
   let nvpm_initload = 1
   let nvpm_projname = 1
-  let nvpm_buffhide = 1
-  let nvpm_buffkill = 1
+  let nvpm_brackets = 1
+  let nvpm_loadline = 1
+  let nvpm_gittimer = 1
+  let nvpm_gitdelay = 20000
   
   let nvpm_fluxconf = {}
   let nvpm_fluxconf.lexis = ''
@@ -76,6 +78,20 @@
   hi fluxvars guifg=#1177ff
   hi fluxline guifg=#ffee00
   hi fluxsepr guifg=#ffffff gui=bold
+
+  hi clear TabLine
+  hi clear StatusLine
+
+  " Line Colors
+  hi NVPMLINEFILL guibg=bg
+  hi NVPMLINEITEM guifg=#aaaaaa guibg=bg
+  hi NVPMLINECURR guifg=#000000 guibg=#aa7733
+  hi NVPMLINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
+
+  " Git Info Colors
+  hi NVPMLINEGITM guifg=#aa4371
+  hi NVPMLINEGITS guifg=#00ff00
+  hi NVPMLINEGITC guifg=#77aaaa
 
   nmap <silent><space>   :NvpmLoop + 3<cr>
   nmap <silent>m<space>  :NvpmLoop - 3<cr>
@@ -112,31 +128,6 @@
 
 " }
 " line {
-
-  " Line options for use with colors
-  let line_closure      = 1
-  let line_innerspace   = 0
-  let line_bottomright  = ''
-  let line_bottomright  = '%y%m ⬤ %l,%c/%P'
-  let line_bottomcenter = ''
-  let line_bottomcenter = ' ⬤ %{line#file()}'
-  let line_gitinfo      = 1
-  let line_gitdelayms   = 5000
-  let line_activate     = 1
-
-  hi clear TabLine
-  hi clear StatusLine
-
-  " Git Info Colors
-  hi LINEGitModified guifg=#aa4371 gui=bold
-  hi LINEGitStaged   guifg=#00ff00 gui=bold
-  hi LINEGitClean    guifg=#77aaaa gui=bold
-
-  " Line Colors
-  hi LINEFill guibg=bg
-  hi LINEItem guifg=#aaaaaa guibg=bg
-  hi LINECurr guifg=#ffffff guibg=bg
-  hi LINEProj guifg=#ffffff guibg=#5c5c5c gui=bold
 
   nmap <silent>ml :Line<cr><c-l>
 

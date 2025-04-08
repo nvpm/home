@@ -61,9 +61,16 @@ fu! nvpm#init(...) "{
   let g:nvpm.flux.leng = 0
   let g:nvpm.flux.indx = 0
 
-  let g:nvpm.zoom = {}
-  let g:nvpm.zoom.mode = 0
-  let g:nvpm.zoom.term = 0
+  let g:nvpm.git = {}
+  let g:nvpm.git.info = ''
+  let g:nvpm.git.timer= -1
+
+  let s:user = {}
+  let s:user.brackets = get(g:,'nvpm_brackets',1)
+  let s:user.projname = get(g:,'nvpm_projname',1)
+  let s:user.gittimer = get(g:,'nvpm_gittimer',1)
+  let s:user.gitdelay = get(g:,'nvpm_gitdelay',10000)
+
   if get(g:,'nvpm_initload',0) && !argc() 
     if !filereadable(s:dirs.save)
       call nvpm#edit()
@@ -100,19 +107,7 @@ fu! nvpm#load(...) "{
   let g:nvpm.tree.file = file
   let g:nvpm.mode = 1+(g:nvpm.mode==2)
 
-  if get(g:,'nvpm_loadline',1)
-    if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
-      call line#show()
-    endif
-  endif
-
-  if get(g:,'nvpm_buffhide',0)
-    silent! exe '%bdelete'
-  endif
-  if get(g:,'nvpm_buffkill',0)
-    silent! exe '%bwipeout'
-  endif
-
+  call nvpm#line()
   call nvpm#save()
   call nvpm#rend()
 
@@ -167,15 +162,15 @@ fu! nvpm#loop(...) "{
   else
     if type == g:nvpm.conf.leaftype
       if step < 0
-        :bprev
+        bprev
       else
-        :bnext
+        bnext
       endif
     elseif type == g:nvpm.conf.leaftype-1
       if step < 0
-        :tabprev
+        tabprev
       else
-        :tabnext
+        tabnext
       endif
     endif
   endif
@@ -293,6 +288,121 @@ fu! nvpm#make(...) "{
 endfu "}
 
 "-- auxy functions --
+fu! nvpm#line(...) "{
+
+  if !get(g:,'nvpm_loadline',1)&&!a:0|return|endif
+
+  if !a:0
+    call nvpm#line('timer')
+    set tabline=%!nvpm#line('top')
+    set statusline=%!nvpm#line('bot')
+    let &showtabline= 2
+    let &laststatus = 2+s:nvim*(1-(exists('g:zoom.mode')&&g:zoom.mode))
+  else
+    if     a:1=='top'   "{
+      let line = ''
+      let line.= nvpm#line('list',2)
+      let line.= '%#NVPMLINEFILL#'
+      let line.= '%='
+      let line.= nvpm#line('list',1,1)
+      if !s:user.projname|return line|endif
+      let proj = nvpm#seek(g:nvpm.tree.root,0)
+      if empty(proj)||
+        \proj.list[proj.meta.indx].data.name=='<unnamed>'||
+        \proj.list[proj.meta.indx].data.name==''
+        let proj = g:nvpm.tree.file
+        let proj = fnamemodify(proj,':t')
+      else
+        let proj = proj.list[proj.meta.indx].data.name
+      endif
+      let line .= '%#NVPMLINEPROJ#'..' '..proj..' '
+      return line
+    "}
+    elseif a:1=='bot'   "{
+      let line = ''
+      let line.= nvpm#line('list',3)
+      let line.= g:nvpm.git.info
+      let line.= '%#NVPMLINEFILL#'
+      let line.= ' ⬤ %{nvpm#line("file")}'
+      let line.= '%='
+      let line.= '%y%m ⬤ %l,%c/%P'
+      return line
+    "}
+    elseif a:1=='file'  "{
+      if !empty(matchstr(bufname(),'term://.*'))
+        return 'terminal'
+      endif
+      if &filetype == 'help' && !filereadable('./'.bufname())
+        return resolve(expand("%:t"))
+      else
+        let file = resolve(expand("%"))
+        if len(file)>25
+          let file = fnamemodify(file,':t')
+        endif
+        return file
+      endif
+    "}
+    elseif a:1=='list'  "{
+      let names = []
+      let type  = get(a:,2,-1)
+      let revs  = get(a:,3,0)
+      let node = nvpm#seek(g:nvpm.tree.root,type)
+      if empty(node)|return ''|endif
+      if !has_key(node,'list')|return ''|endif
+      if !has_key(node,'meta')|return ''|endif
+      let curr = node.list[node.meta.indx%node.meta.leng]
+
+      for item in node.list
+        let name = ''
+        if s:user.brackets
+          let name = '%#Normal#'
+          let space= node.meta.leng>1?' ':''
+          let name.= item is curr && node.meta.leng>1?'[':space
+          let name.= item.data.name
+          let name.= item is curr && node.meta.leng>1?']':space
+        else
+          let name.= item is curr?'%#NVPMLINECURR#':'%#NVPMLINEITEM#' 
+          let name.= ' '..item.data.name..' '
+        endif
+        call add(names,name)
+      endfor
+      let names = a:0==3?reverse(names):names
+      return join(names,'')
+    "}
+    elseif a:1=='timer' "{
+      if s:user.gittimer&&g:nvpm.git.timer==-1
+        let g:nvpm.git.timer = timer_start(s:user.gitdelay,'nvpm#igit',{'repeat':-1})
+      endif
+    "}
+    endif
+  endif
+
+endfu "}
+fu! nvpm#igit(...) "{
+
+  let info  = ''
+  let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
+  if empty(branch)|return ''|endif
+  let modified = !empty(trim(system('git diff HEAD --shortstat')))
+  let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+  let cr = ''
+  let char = ''
+  let s = ' '
+  if empty(matchstr(branch,'fatal: not a git repository'))
+    let cr   = '%#NVPMLINEGITC#'
+    if modified
+      let cr    = '%#NVPMLINEGITM#'
+      let char  = ' [M]'
+    endif
+    if staged
+      let cr   = '%#NVPMLINEGITS#'
+      let char = ' [S]'
+    endif
+    let info = cr .' ' . branch . char
+  endif
+  let g:nvpm.git.info = info
+
+endfu "}
 fu! nvpm#curr(...) "{
 
   let root = get(a:,1,g:nvpm.tree.root)
@@ -389,3 +499,4 @@ fu! nvpm#LOOP(...) "{
   return g:nvpm.loop.words
 endfu "}
 
+" vim: nowrap
