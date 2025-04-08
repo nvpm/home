@@ -8,13 +8,20 @@ fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
-  let s:brackets = get(g:,'nvpm_brackets',1)
+  let s:verbose  = get(g:,'line_verbose' ,2)
+  let s:brackets = get(g:,'line_brackets',1)
+  let s:projname = get(g:,'nvpm_projname',1)
+  let s:gitinfo  = get(g:,'line_gitinfo',1)
+  let s:delay    = get(g:,'line_gitdelay',2000)
 
   let g:line = {}
-  let g:line.mode = -1
-  let g:line.tabnr= &showtabline
+  let g:line.nvpm = 0
+  let g:line.mode = 0
   let g:line.timer= -1
   let g:line.git  = ''
+
+  let s:laststatus  = &laststatus
+  let s:showtabline = &showtabline
 
   if get(g:,'line_activate',1)
     call line#show()
@@ -25,8 +32,11 @@ fu! line#topl(...) "{
 
   let line  = ''
 
+  let line .= line#list(2)
   let line .= '%#LINEFill#'
-  let line .= '%t'
+  let line .= '%='
+  let line.= line#list(1,1)
+  let line.= line#proj()
 
   return line
 
@@ -36,11 +46,16 @@ fu! line#botl(...) "{
   let line  = ''
   let indx  = 0
 
-  let line .= line#list(3)
+  if g:line.nvpm||s:verbose>1
+    let line .= line#list(3)
+  elseif s:verbose==1
+    let line .= '%t'
+  endif
 
-  let line .= g:nvpm.git.info
+  let line .= g:line.git
   let line .= '%#LINEFill#'
-  let line .= ' ⬤ %{line#file()}'
+  let line .= s:verbose>0||g:line.nvpm?' ⬤ ':''
+  let line .= '%{line#file()}'
   let line .= '%='
   let line .= '%y%m ⬤ %l,%c/%P'
 
@@ -49,14 +64,26 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
-  if exists('g:nvpm.mode')&&g:nvpm.mode|call nvpm#line()|else
-    if exists('*nvpm#line')
-      call nvpm#line('timer')
-    endif
+  if s:verbose>0
+    call line#time()
+  endif
+  if g:line.nvpm
     set tabline=%!line#topl()
     set statusline=%!line#botl()
-    let &showtabline = g:line.tabnr
-    let &laststatus = 2+s:nvim*(1-(exists('g:zoom.mode')&&g:zoom.mode))
+    set showtabline=2
+    let &laststatus=2+s:nvim
+  else
+    if s:verbose==0
+      let &laststatus  = s:laststatus
+      let &showtabline = s:showtabline
+    endif
+    if s:verbose>0
+      set statusline=%!line#botl()
+      let &laststatus=2+s:nvim
+    endif
+    if s:verbose>2
+      set showtabline=2
+    endif
   endif
 
   let g:line.mode = 1
@@ -64,15 +91,13 @@ fu! line#show(...) "{
 endfu "}
 fu! line#hide(...) "{
 
-  if exists('g:nvpm.git.timer')&&1+g:nvpm.git.timer
-    call timer_stop(g:nvpm.git.timer)
-    let g:nvpm.git.timer = -1
-    let g:nvpm.git.info  = ''
-  endif
+  let s:laststatus  = &laststatus
+  let s:showtabline = &showtabline
 
-  let g:line.tabnr = &showtabline
   set showtabline=0
   set laststatus=0
+
+  call line#time(1)
 
   let g:line.mode = 0
 
@@ -88,37 +113,121 @@ fu! line#line(...) "{
 endfu "}
 
 "-- auxy functions --
+fu! line#proj(...) "{
+
+  let line = ''
+
+  if !s:projname|return line|endif
+  let proj = flux#seek(g:nvpm.tree.root,0)
+  if empty(proj)||
+    \proj.list[proj.meta.indx].data.name=='<unnamed>'||
+    \proj.list[proj.meta.indx].data.name==''
+    let proj = g:nvpm.tree.file
+    let proj = fnamemodify(proj,':t')
+  else
+    let proj = proj.list[proj.meta.indx].data.name
+  endif
+  let line .= '%#LINEProj#'..' '..proj..' '
+  return line
+
+endfu "}
+fu! line#time(...) "{
+
+  if a:0
+    if 1+g:line.timer
+      call timer_stop(g:line.timer)
+      let g:line.timer = -1
+      let g:line.git   = ''
+    endif
+  else
+    if s:gitinfo && g:line.timer==-1
+      let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
+    endif
+  endif
+
+endfu "}
 fu! line#list(...) "{
 
   let names = []
-  let list = execute('ls')
-  let list = split(list,'\n')
-  let leng = len(list)
-  for item in list
-    let file = matchstr(item,'".*"')
-    let file = substitute(file,'"','','g')
-    let file = fnamemodify(file,':t')
-    let file = substitute(file,'[','','g')
-    let file = substitute(file,']','','g')
-    let item = split(item,'\s')
-    call filter(item,"v:val!=''")
-    let curr = item[1]
-    let name   = ''
-    if s:brackets
-      let name = '%#Normal#'
-      let space= leng>1?' ':''
-      let name.= curr=~'%' && leng>1?'[':space
-      let name.= file
-      let name.= curr=~'%' && leng>1?']':space
-    else
-      let name.= curr=~'%'?'%#NVPMLINECURR#':'%#NVPMLINEITEM#' 
-      let name.= ' '..file..' '
-    endif
-    call add(names,name)
-  endfor
+  let type  = get(a:000,0,-1)
+  let revs  = get(a:000,1)
 
+  if g:line.nvpm
+
+    let node = flux#seek(g:nvpm.tree.root,type)
+
+    if empty(node)|return ''|endif
+
+    if !has_key(node,'list')|return ''|endif
+    if !has_key(node,'meta')|return ''|endif
+
+    let curr = node.list[node.meta.indx%node.meta.leng]
+
+    for item in node.list
+      let iscurr = item is curr
+      let closure= s:brackets&&iscurr&&node.meta.leng>1
+      let name   = ''
+      let name  .= iscurr ? '%#LINECurr#' : '%#LINEItem#'
+      let name  .= closure ? '[' : ' '
+      let name  .= item.data.name
+      let name  .= closure ? ']' : ' '
+      call add(names,name)
+    endfor
+
+  else
+
+    let list = execute('ls')
+    let list = split(list,'\n')
+    let leng = len(list)
+    for item in list
+      let file = matchstr(item,'".*"')
+      let file = substitute(file,'"','','g')
+      let file = fnamemodify(file,':t')
+      let file = substitute(file,'[','','g')
+      let file = substitute(file,']','','g')
+      let item = split(item,'\s')
+      call filter(item,"v:val!=''")
+      let curr = item[1]
+      let iscurr = curr=~'%'
+      let closure= s:brackets&&iscurr&&leng>1
+      let name   = ''
+      let name  .= iscurr ? '%#LINECurr#' : '%#LINEItem#'
+      let name  .= closure ? '[' : ' '
+      let name  .= file
+      let name  .= closure ? ']' : ' '
+      call add(names,name)
+    endfor
+
+  endif
+
+  let names = revs?reverse(names):names
   return join(names,'')
 
+endfu "}
+fu! line#giti(...) "{
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if empty(branch)|return ''|endif
+    let modified = !empty(trim(system('git diff HEAD --shortstat')))
+    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+    let cr = ''
+    let char = ''
+    let s = ' '
+    if empty(matchstr(branch,'fatal: not a git repository'))
+      let cr   = '%#LINEGitClean#'
+      if modified
+        let cr    = '%#LINEGitModified#'
+        let char  = ' [M]'
+      endif
+      if staged
+        let cr   = '%#LINEGitStaged#'
+        let char = ' [S]'
+      endif
+      let info = cr .' ' . branch . char
+    endif
+  endif
+  let g:line.git = info
 endfu "}
 fu! line#file(...) "{
   let termpatt = 'term://.*'
@@ -136,3 +245,4 @@ fu! line#file(...) "{
   endif
 endfu "}
 
+" vim: nowrap

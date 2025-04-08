@@ -44,11 +44,16 @@ fu! nvpm#init(...) "{
   call flux#conf(conf)
 
   let g:nvpm = {}
-  let g:nvpm.mode = 0
 
   let g:nvpm.tree = {}
   let g:nvpm.tree.root = {}
   let g:nvpm.tree.file = ''
+  let g:nvpm.tree.mode = 0
+
+  let g:nvpm.edit = {}
+  let g:nvpm.edit.line = 0
+  let g:nvpm.edit.mode = 0
+  let g:nvpm.edit.curr = ''
 
   let g:nvpm.term = {}
   let g:nvpm.term.buff = ''
@@ -61,15 +66,9 @@ fu! nvpm#init(...) "{
   let g:nvpm.flux.leng = 0
   let g:nvpm.flux.indx = 0
 
-  let g:nvpm.git = {}
-  let g:nvpm.git.info = ''
-  let g:nvpm.git.timer= -1
-
-  let s:user = {}
-  let s:user.brackets = get(g:,'nvpm_brackets',1)
-  let s:user.projname = get(g:,'nvpm_projname',1)
-  let s:user.gittimer = get(g:,'nvpm_gittimer',1)
-  let s:user.gitdelay = get(g:,'nvpm_gitdelay',10000)
+  let g:nvpm.zoom = {}
+  let g:nvpm.zoom.mode = 0
+  let g:nvpm.zoom.term = 0
 
   if get(g:,'nvpm_initload',0) && !argc() 
     if !filereadable(s:dirs.save)
@@ -89,7 +88,7 @@ fu! nvpm#load(...) "{
 
   let file = flux#argv(a:000)
 
-  if g:nvpm.mode!=2
+  if !g:nvpm.edit.mode
     let file = s:dirs.local..file
   endif
 
@@ -99,15 +98,20 @@ fu! nvpm#load(...) "{
   let root = flux#flux(g:nvpm.conf)
   let list = get(root,'list',[])
 
-  if empty(root)    |let g:nvpm.conf.file=''|return 1|endif
-  if empty(list)    |let g:nvpm.conf.file=''|return 1|endif
-  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 1|endif
+  if empty(root)    |let g:nvpm.conf.file=''|return 2|endif
+  if empty(list)    |let g:nvpm.conf.file=''|return 3|endif
+  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 4|endif
 
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
-  let g:nvpm.mode = 1+(g:nvpm.mode==2)
+  let g:nvpm.tree.mode = 1
 
-  call nvpm#line()
+  if get(g:,'nvpm_loadline',1)
+    if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+      let g:line.nvpm = 1
+      call line#show()
+    endif
+  endif
   call nvpm#save()
   call nvpm#rend()
 
@@ -122,11 +126,11 @@ fu! nvpm#loop(...) "{
   let step = get(g:nvpm.loop,step,0)
 
   if type=='flux'||type=='-1' " flux files iteration {
-    if g:nvpm.mode==2|return|endif
+    if g:nvpm.edit.mode|return|endif
     call nvpm#flux()
     if g:nvpm.flux.leng
       let flux = g:nvpm.flux.list[0]
-      if g:nvpm.mode==1
+      if g:nvpm.tree.mode
         call nvpm#indx(g:nvpm.flux,step)
         let flux = g:nvpm.flux.list[g:nvpm.flux.indx]
       endif
@@ -147,13 +151,13 @@ fu! nvpm#loop(...) "{
 
   if type<0||type>3|return 1|endif
 
-  if g:nvpm.mode
-    if type == 2 && g:nvpm.mode==2|call nvpm#edit()|endif
-    if type == 1 && g:nvpm.mode==2|call nvpm#edit()|endif
-    if type == 0 && g:nvpm.mode==2|call nvpm#edit()|endif
+  if g:nvpm.tree.mode
+    if type == 2 && g:nvpm.edit.mode|call nvpm#edit()|endif
+    if type == 1 && g:nvpm.edit.mode|call nvpm#edit()|endif
+    if type == 0 && g:nvpm.edit.mode|call nvpm#edit()|endif
     let bufname = bufname()
     if bufname==g:nvpm.tree.curr 
-      let node = nvpm#seek(tree,type)
+      let node = flux#seek(tree,type)
       if empty(node)|return 1|endif
       call nvpm#indx(node.meta,step)
     endif
@@ -162,15 +166,15 @@ fu! nvpm#loop(...) "{
   else
     if type == g:nvpm.conf.leaftype
       if step < 0
-        bprev
+        :bprev
       else
-        bnext
+        :bnext
       endif
     elseif type == g:nvpm.conf.leaftype-1
       if step < 0
-        tabprev
+        :tabprev
       else
-        tabnext
+        :tabnext
       endif
     endif
   endif
@@ -180,14 +184,8 @@ fu! nvpm#edit(...) "{
 
   " loads bufname if in edit mode 
   " only leaves edit mode upon correct load
-  if g:nvpm.mode==2
-    if !nvpm#load(bufname())
-      let g:nvpm.mode = 1
-    else
-      echohl WarningMsg
-      echo 'NVPM: Invalid flux file. Is it empty?'
-      echohl None
-    endif
+  if g:nvpm.edit.mode
+    let g:nvpm.edit.mode = nvpm#load(bufname())
     return
   endif
 
@@ -218,7 +216,7 @@ fu! nvpm#edit(...) "{
   endif
 
   call writefile(body,s:dirs.edit)
-  let g:nvpm.mode = 2
+  let g:nvpm.edit.mode = 1
   call nvpm#load(s:dirs.edit)
 
 endfu "}
@@ -288,121 +286,6 @@ fu! nvpm#make(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! nvpm#line(...) "{
-
-  if !get(g:,'nvpm_loadline',1)&&!a:0|return|endif
-
-  if !a:0
-    call nvpm#line('timer')
-    set tabline=%!nvpm#line('top')
-    set statusline=%!nvpm#line('bot')
-    let &showtabline= 2
-    let &laststatus = 2+s:nvim*(1-(exists('g:zoom.mode')&&g:zoom.mode))
-  else
-    if     a:1=='top'   "{
-      let line = ''
-      let line.= nvpm#line('list',2)
-      let line.= '%#NVPMLINEFILL#'
-      let line.= '%='
-      let line.= nvpm#line('list',1,1)
-      if !s:user.projname|return line|endif
-      let proj = nvpm#seek(g:nvpm.tree.root,0)
-      if empty(proj)||
-        \proj.list[proj.meta.indx].data.name=='<unnamed>'||
-        \proj.list[proj.meta.indx].data.name==''
-        let proj = g:nvpm.tree.file
-        let proj = fnamemodify(proj,':t')
-      else
-        let proj = proj.list[proj.meta.indx].data.name
-      endif
-      let line .= '%#NVPMLINEPROJ#'..' '..proj..' '
-      return line
-    "}
-    elseif a:1=='bot'   "{
-      let line = ''
-      let line.= nvpm#line('list',3)
-      let line.= g:nvpm.git.info
-      let line.= '%#NVPMLINEFILL#'
-      let line.= ' ⬤ %{nvpm#line("file")}'
-      let line.= '%='
-      let line.= '%y%m ⬤ %l,%c/%P'
-      return line
-    "}
-    elseif a:1=='file'  "{
-      if !empty(matchstr(bufname(),'term://.*'))
-        return 'terminal'
-      endif
-      if &filetype == 'help' && !filereadable('./'.bufname())
-        return resolve(expand("%:t"))
-      else
-        let file = resolve(expand("%"))
-        if len(file)>25
-          let file = fnamemodify(file,':t')
-        endif
-        return file
-      endif
-    "}
-    elseif a:1=='list'  "{
-      let names = []
-      let type  = get(a:,2,-1)
-      let revs  = get(a:,3,0)
-      let node = nvpm#seek(g:nvpm.tree.root,type)
-      if empty(node)|return ''|endif
-      if !has_key(node,'list')|return ''|endif
-      if !has_key(node,'meta')|return ''|endif
-      let curr = node.list[node.meta.indx%node.meta.leng]
-
-      for item in node.list
-        let name = ''
-        if s:user.brackets
-          let name = '%#Normal#'
-          let space= node.meta.leng>1?' ':''
-          let name.= item is curr && node.meta.leng>1?'[':space
-          let name.= item.data.name
-          let name.= item is curr && node.meta.leng>1?']':space
-        else
-          let name.= item is curr?'%#NVPMLINECURR#':'%#NVPMLINEITEM#' 
-          let name.= ' '..item.data.name..' '
-        endif
-        call add(names,name)
-      endfor
-      let names = a:0==3?reverse(names):names
-      return join(names,'')
-    "}
-    elseif a:1=='timer' "{
-      if s:user.gittimer&&g:nvpm.git.timer==-1
-        let g:nvpm.git.timer = timer_start(s:user.gitdelay,'nvpm#igit',{'repeat':-1})
-      endif
-    "}
-    endif
-  endif
-
-endfu "}
-fu! nvpm#igit(...) "{
-
-  let info  = ''
-  let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
-  if empty(branch)|return ''|endif
-  let modified = !empty(trim(system('git diff HEAD --shortstat')))
-  let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
-  let cr = ''
-  let char = ''
-  let s = ' '
-  if empty(matchstr(branch,'fatal: not a git repository'))
-    let cr   = '%#NVPMLINEGITC#'
-    if modified
-      let cr    = '%#NVPMLINEGITM#'
-      let char  = ' [M]'
-    endif
-    if staged
-      let cr   = '%#NVPMLINEGITS#'
-      let char = ' [S]'
-    endif
-    let info = cr .' ' . branch . char
-  endif
-  let g:nvpm.git.info = info
-
-endfu "}
 fu! nvpm#curr(...) "{
 
   let root = get(a:,1,g:nvpm.tree.root)
@@ -411,7 +294,7 @@ fu! nvpm#curr(...) "{
   if empty(root)|return 1|endif
   if empty(list)|return 2|endif
                                      
-  let node = nvpm#seek(root,3)
+  let node = flux#seek(root,3)
   if empty(node)|return 3|endif
   let curr = node.list[node.meta.indx].data.info
   if empty(curr)|return 4|endif
@@ -470,25 +353,6 @@ fu! nvpm#flux(...) "{
   endif
 
 endfu "}
-fu! nvpm#seek(...) "{
-
-  let root = get(a:000,0,{})
-  let type = get(a:000,1,-1)
-  let code = get(a:000,2,'node')
-  if !has_key(root,'meta')|return {}|endif
-  if !has_key(root,'list')|return {}|endif
-  if type==root.meta.type
-    if code=='node'|return root     |endif
-    if code=='list'|return root.list|endif
-  endif
-  if has_key(root,'list')&&root.meta.leng
-    let indx = root.meta.indx
-    let leng = root.meta.leng
-    return nvpm#seek(root.list[indx%leng],type,code)
-  endif
-  return {}
-
-endfu "}
 
 "-- user functions --
 fu! nvpm#DIRS(...) "{
@@ -498,5 +362,3 @@ endfu "}
 fu! nvpm#LOOP(...) "{
   return g:nvpm.loop.words
 endfu "}
-
-" vim: nowrap

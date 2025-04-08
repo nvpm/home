@@ -1,4 +1,5 @@
 
   ● print the name of the project onto the tabline in zoom mode ~
+  ● let &l:statusline when not in nvpm.mode & have splits save & restore ~
 
 vim: ft=help: tw=2

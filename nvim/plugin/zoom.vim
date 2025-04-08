@@ -15,6 +15,7 @@ if get(g:,'zoom_autocmds',1)
     exe 'au WinEnter '..g:zoom.buff..' if g:zoom.mode|wincmd p|endif'
     au QuitPre     * if g:zoom.mode|only|quit|endif
     au BufWinEnter * call zoom#help()
+    au BufWinLeave * let g:zoom.lastft = &filetype
     au ColorScheme * call zoom#show(1)
     if has('nvim')
       au TermClose   * call timer_start(20,{->zoom#term()})

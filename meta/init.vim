@@ -69,6 +69,9 @@ fu! s:test.line(...) "{
   so nvim/autoload/line.vim
   so nvim/plugin/line.vim
 
+"let buffers = filter(range(1, bufnr('$')), 'bufexists(v:val)')
+ec map(range(1, bufnr('$')),'bufname(v:val)')
+
 endfu "}
 "} 
 " test {
@@ -102,6 +105,6 @@ if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
 if 1|call s:test.zoom()|endif
-if 0|call s:test.line()|endif
+if 1|call s:test.line()|endif
 
 "}

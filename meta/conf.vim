@@ -37,15 +37,19 @@
   let ayucolor="light"  " for light version of theme
   let ayucolor="mirage" " for mirage version of theme
   let ayucolor="dark"   " for dark version of theme
+  colorscheme ayu
+  if !has('nvim')
+    syntax on
+    set bg=dark
+  endif
 
-  if has('nvim')|colorscheme ayu|else|syntax on|endif
+  "hi Pmenu      guibg=#1f252a guifg=#888888
+  "hi PmenuSel   guibg=#aa361b guifg=#ffffff
 
-  hi Pmenu      guibg=#1f252a guifg=#888888
-  hi PmenuSel   guibg=#2f361b guifg=#ffffff gui=bold
-
+  hi Comment     gui=italic
   hi Folded      guifg=#749984
-  hi DiffAdded   guifg=#00ff00              gui=bold
-  hi DiffRemoved guifg=#ff0000              gui=italic
+  hi DiffAdded   guifg=#00ff00 gui=bold
+  hi DiffRemoved guifg=#ff5555 gui=bold
   hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
   hi NonText     ctermfg=0 guifg=#000000
 
@@ -55,15 +59,13 @@
   if !has('nvim')
     set hidden
   endif
+  set encoding=utf-8
 
   " nvpm user variables tree
   let nvpm_maketree = 1
   let nvpm_initload = 1
-  let nvpm_projname = 1
-  let nvpm_brackets = 1
   let nvpm_loadline = 1
-  let nvpm_gittimer = 1
-  let nvpm_gitdelay = 20000
+  let nvpm_projname = 1
   
   let nvpm_fluxconf = {}
   let nvpm_fluxconf.lexis = ''
@@ -73,35 +75,35 @@
   let nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
   hi fluxcomm guifg=#6c6776
-  hi fluxkeyw guifg=#00ff00 gui=bold,italic
+  hi fluxkeyw guifg=#00ff00 gui=bold
   hi fluxname guifg=#ffffff
   hi fluxvars guifg=#1177ff
-  hi fluxline guifg=#ffee00
+  hi fluxline guifg=#ffee00 gui=italic
   hi fluxsepr guifg=#ffffff gui=bold
 
   hi clear TabLine
   hi clear StatusLine
 
   " Line Colors
-  hi NVPMLINEFILL guibg=bg
-  hi NVPMLINEITEM guifg=#aaaaaa guibg=bg
-  hi NVPMLINECURR guifg=#000000 guibg=#aa7733
-  hi NVPMLINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
+  hi LINEFILL guibg=bg
+  hi LINEITEM guifg=#aaaaaa guibg=bg
+  hi LINECURR guifg=#000000 guibg=#337777 gui=bold
+  hi LINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
 
   " Git Info Colors
-  hi NVPMLINEGITM guifg=#aa4371
-  hi NVPMLINEGITS guifg=#00ff00
-  hi NVPMLINEGITC guifg=#77aaaa
+  hi LINEGITM guifg=#aa4371
+  hi LINEGITS guifg=#00ff00
+  hi LINEGITC guifg=#77aaaa
 
   nmap <silent><space>   :NvpmLoop + 3<cr>
   nmap <silent>m<space>  :NvpmLoop - 3<cr>
   nmap <silent><tab>     :NvpmLoop + 2<cr>
   nmap <silent>m<tab>    :NvpmLoop - 2<cr>
   nmap <silent><BS>      :NvpmLoop + 1<cr>
-  nmap <silent><del>     :NvpmLoop - 1<cr>
-  nmap <silent><c-n>     :NvpmLoop + 1<cr>
-  nmap <silent><c-p>     :NvpmLoop - 1<cr>
-  nmap <silent><c-space> :NvpmLoop + 0<cr>
+  nmap <silent><DEL>     :NvpmLoop - 1<cr>
+  nmap <silent><C-n>     :NvpmLoop + 1<cr>
+  nmap <silent><C-p>     :NvpmLoop - 1<cr>
+  nmap <silent><C-Space> :NvpmLoop + 0<cr>
   nmap <silent>=         :NvpmLoop + -1<cr>
   nmap <silent>-         :NvpmLoop - -1<cr>
 
@@ -129,21 +131,21 @@
 " }
 " line {
 
+  let line_verbose = 3
   nmap <silent>ml :Line<cr><c-l>
 
 " }
 " zoom {
 
   set cmdheight=1
-  let nvpmdevl = 0
   let zoom_autocmds = 1
   let zoom_initload = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1
 
-  let zoom_height = -3
+  let zoom_height = -5
   let zoom_width  = 80
-  let zoom_right  = 0
+  "let zoom_right  = 0
 
   nmap <silent>mz :Zoom<cr>
 

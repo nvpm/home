@@ -1,5 +1,6 @@
 
   ● change lexis->lexicon ~
+  ● separate fluxconf into individual variables ~
   ● deal with conf/menu.vim  ~
   ● init gith plugin ~
   ● init seng plugin ~

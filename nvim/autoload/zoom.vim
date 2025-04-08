@@ -5,6 +5,7 @@ let __ZOOMAUTO__ = 1
 
 "-- main functions --
 fu! zoom#init(...) "{
+
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
   let s:devl = get(g:,'nvpmdevl')
@@ -13,6 +14,7 @@ fu! zoom#init(...) "{
   let g:zoom.mode = 0
   let g:zoom.buff = '.nvpm/zoom'
   let g:zoom.carg = ''
+  let g:zoom.lastft= ''
 
 endfu "}
 fu! zoom#calc(...) "{
@@ -218,7 +220,7 @@ fu! zoom#help(...) "{
 
   let bufname=bufname()
 
-  if &filetype == 'help'
+  if &filetype == 'help'&&g:zoom.lastft!='help'
     silent! helpclose
     exec 'edit '. bufname
   endif
@@ -239,7 +241,7 @@ fu! zoom#help(...) "{
 endfu "}
 fu! zoom#term(...) "{
 
-  if g:zoom.mode&&s:nvim
+  if g:zoom.mode
     only
     bdel
     call zoom#show()
