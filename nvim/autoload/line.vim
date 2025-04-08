@@ -30,21 +30,13 @@ fu! line#init(...) "{
   endif
 
 endfu "}
-fu! line#line(...) "{
-
-  if g:line.mode
-    call line#hide()
-  else
-    call line#show()
-  endif
-
-endfu "}
 fu! line#keep(...) "{
 
   if g:line.mode|call line#show()|endif
 
 endfu "}
 fu! line#topl(...) "{
+
   let line  = ''
 
   " middle of top line
@@ -108,21 +100,28 @@ fu! line#show(...) "{
 
   let g:line.mode = 1
 
-  hi clear TabLine
-  hi clear StatusLine
-
 endfu "}
 fu! line#hide(...) "{
 
   if 1+g:line.timer
     call timer_stop(g:line.timer)
     let g:line.timer = -1
+    let g:line.git   = ''
   endif
 
   set showtabline=0
   set laststatus=0
 
   let g:line.mode = 0
+
+endfu "}
+fu! line#line(...) "{
+
+  if g:line.mode
+    call line#hide()
+  else
+    call line#show()
+  endif
 
 endfu "}
 
