@@ -65,7 +65,6 @@
   let nvpm_maketree = 1
   let nvpm_initload = 1
   let nvpm_loadline = 1
-  let nvpm_projname = 1
   
   let nvpm_fluxconf = {}
   let nvpm_fluxconf.lexis = ''
@@ -80,20 +79,6 @@
   hi fluxvars guifg=#1177ff
   hi fluxline guifg=#ffee00 gui=italic
   hi fluxsepr guifg=#ffffff gui=bold
-
-  hi clear TabLine
-  hi clear StatusLine
-
-  " Line Colors
-  hi LINEFILL guibg=bg
-  hi LINEITEM guifg=#aaaaaa guibg=bg
-  hi LINECURR guifg=#000000 guibg=#337777 gui=bold
-  hi LINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
-
-  " Git Info Colors
-  hi LINEGITM guifg=#aa4371
-  hi LINEGITS guifg=#00ff00
-  hi LINEGITC guifg=#77aaaa
 
   nmap <silent><space>   :NvpmLoop + 3<cr>
   nmap <silent>m<space>  :NvpmLoop - 3<cr>
@@ -131,7 +116,30 @@
 " }
 " line {
 
-  let line_verbose = 3
+  "let __LINEAUTO__ = 0
+  "let __LINEPLUG__ = 0
+
+  let line_activate= 1
+  let line_verbose = 2
+  let line_brackets= 0
+  let line_projname= 1
+  let line_gitinfo = 1
+  let line_gitdelay= 10000
+
+  hi clear TabLine
+  hi clear StatusLine
+
+  " Line Colors
+  hi LINEFILL guibg=bg
+  hi LINEITEM guifg=#aaaaaa guibg=bg
+  hi LINECURR guifg=#000000 guibg=#337777 gui=bold
+  hi LINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
+
+  " Git Info Colors
+  hi LINEGITM guifg=#aa4371
+  hi LINEGITS guifg=#00ff00
+  hi LINEGITC guifg=#77aaaa
+
   nmap <silent>ml :Line<cr><c-l>
 
 " }

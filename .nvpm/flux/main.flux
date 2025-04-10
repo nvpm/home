@@ -1,4 +1,3 @@
-
   project NVPM devl : nvim {
     workspace line {
       tab code

@@ -8,11 +8,14 @@ fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
+  let s:activate = get(g:,'line_activate',1)
   let s:verbose  = get(g:,'line_verbose' ,2)
   let s:brackets = get(g:,'line_brackets',1)
-  let s:projname = get(g:,'nvpm_projname',1)
+  let s:projname = get(g:,'line_projname',0)
   let s:gitinfo  = get(g:,'line_gitinfo',1)
-  let s:delay    = get(g:,'line_gitdelay',2000)
+  let s:delay    = get(g:,'line_gitdelay',20000)
+  let limit      = s:delay>=2000
+  let s:delay    = limit*s:delay+!limit*2000
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -23,7 +26,7 @@ fu! line#init(...) "{
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
 
-  if get(g:,'line_activate',1)
+  if s:activate
     call line#show()
   endif
 
@@ -64,6 +67,7 @@ fu! line#botl(...) "{
 endfu "}
 fu! line#show(...) "{
 
+  if !s:activate|return|endif
   if s:verbose>0
     call line#time()
   endif
@@ -91,6 +95,7 @@ fu! line#show(...) "{
 endfu "}
 fu! line#hide(...) "{
 
+  if !s:activate|return|endif
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
 
@@ -115,9 +120,10 @@ endfu "}
 "-- auxy functions --
 fu! line#proj(...) "{
 
+  if !s:projname|return ''|endif
+
   let line = ''
 
-  if !s:projname|return line|endif
   let proj = flux#seek(g:nvpm.tree.root,0)
   if empty(proj)||
     \proj.list[proj.meta.indx].data.name=='<unnamed>'||
@@ -150,7 +156,6 @@ fu! line#list(...) "{
 
   let names = []
   let type  = get(a:000,0,-1)
-  let revs  = get(a:000,1)
 
   if g:line.nvpm
 
@@ -164,15 +169,20 @@ fu! line#list(...) "{
     let curr = node.list[node.meta.indx%node.meta.leng]
 
     for item in node.list
-      let iscurr = item is curr
-      let closure= s:brackets&&iscurr&&node.meta.leng>1
-      let name   = ''
-      let name  .= iscurr ? '%#LINECurr#' : '%#LINEItem#'
-      let name  .= closure ? '[' : ' '
-      let name  .= item.data.name
-      let name  .= closure ? ']' : ' '
+      let name = ''
+      if s:brackets
+        let name = '%#Normal#'
+        let space= node.meta.leng>1?' ':''
+        let name.= item is curr && node.meta.leng>1?'[':space
+        let name.= item.data.name
+        let name.= item is curr && node.meta.leng>1?']':space
+      else
+        let name.= item is curr?'%#LINECURR#':'%#LINEITEM#' 
+        let name.= ' '..item.data.name..' '
+      endif
       call add(names,name)
     endfor
+  let names = a:0==2?reverse(names):names
 
   else
 
@@ -191,16 +201,21 @@ fu! line#list(...) "{
       let iscurr = curr=~'%'
       let closure= s:brackets&&iscurr&&leng>1
       let name   = ''
-      let name  .= iscurr ? '%#LINECurr#' : '%#LINEItem#'
-      let name  .= closure ? '[' : ' '
-      let name  .= file
-      let name  .= closure ? ']' : ' '
+      if s:brackets
+        let name = '%#Normal#'
+        let space= leng>1?' ':''
+        let name.= curr=~'%' && leng>1?'[':space
+        let name.= file
+        let name.= curr=~'%' && leng>1?']':space
+      else
+        let name.= curr=~'%'?'%#LINECURR#':'%#LINEITEM#' 
+        let name.= ' '..file..' '
+      endif
       call add(names,name)
     endfor
 
   endif
 
-  let names = revs?reverse(names):names
   return join(names,'')
 
 endfu "}
@@ -215,16 +230,16 @@ fu! line#giti(...) "{
     let char = ''
     let s = ' '
     if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#LINEGitClean#'
+      let cr   = '%#LINEGITC#'
       if modified
-        let cr    = '%#LINEGitModified#'
+        let cr    = '%#LINEGITM#'
         let char  = ' [M]'
       endif
       if staged
-        let cr   = '%#LINEGitStaged#'
+        let cr   = '%#LINEGITS#'
         let char = ' [S]'
       endif
-      let info = cr .' ' . branch . char
+      let info = cr .'  ' . branch . char
     endif
   endif
   let g:line.git = info
@@ -244,5 +259,7 @@ fu! line#file(...) "{
     return file
   endif
 endfu "}
+
+"-- auto functions --
 
 " vim: nowrap
