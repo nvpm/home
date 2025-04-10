@@ -59,7 +59,6 @@
   if !has('nvim')
     set hidden
   endif
-  set encoding=utf-8
 
   " nvpm user variables tree
   let nvpm_maketree = 1
@@ -119,21 +118,30 @@
   "let __LINEAUTO__ = 0
   "let __LINEPLUG__ = 0
 
-  let line_activate= 1
-  let line_verbose = 2
-  let line_brackets= 0
-  let line_projname= 1
-  let line_gitinfo = 1
-  let line_gitdelay= 10000
+  let line_activate  = 1
+  let line_verbose   = 2
+  let line_brackets  = 0
+  let line_projname  = 1
+  let line_gitinfo   = 1
+  let line_gitdelay  = 10000
+  let line_powerline = 0xe0b0 " until 0xe0b3
+  let line_powerline = 0xe0b4 " until 0xe0b7
+  "let line_powerline = 0xe0b8 " until 0xe0bb
+  "let line_powerline = 0xe0bc " until 0xe0bf
+  "let line_powerline = 0xe0c0 " until 0xe0c3
 
   hi clear TabLine
   hi clear StatusLine
 
   " Line Colors
   hi LINEFILL guibg=bg
-  hi LINEITEM guifg=#aaaaaa guibg=bg
+  hi LINEITEM guifg=#337777 guibg=bg
   hi LINECURR guifg=#000000 guibg=#337777 gui=bold
   hi LINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
+
+  hi LINECHAREND  guifg=#337777 guibg=bg
+  hi LINECHARINIT guifg=bg      guibg=#337777
+  hi LINECHARINAC guifg=#002222 guibg=bg
 
   " Git Info Colors
   hi LINEGITM guifg=#aa4371

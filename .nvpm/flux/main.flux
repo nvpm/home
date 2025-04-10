@@ -2,8 +2,8 @@
     workspace line {
       tab code
         file auto : autoload/line.vim
-        -file init = meta/init.vim
-        file plug : plugin/line.vim
+        file init = meta/init.vim
+        -file plug : plugin/line.vim
     }
     workspace nvpm {
       tab code

@@ -69,8 +69,13 @@ fu! s:test.line(...) "{
   so nvim/autoload/line.vim
   so nvim/plugin/line.vim
 
+  let init = 0xe0b0
+  let end  = 0xe0cb
+  for i in range(init,end)
+    ec i nr2char(i)
+  endfor
 "let buffers = filter(range(1, bufnr('$')), 'bufexists(v:val)')
-ec map(range(1, bufnr('$')),'bufname(v:val)')
+"ec map(range(1, bufnr('$')),'bufname(v:val)')
 
 endfu "}
 "} 
@@ -104,7 +109,7 @@ endfu "}
 if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
-if 1|call s:test.zoom()|endif
+if 0|call s:test.zoom()|endif
 if 1|call s:test.line()|endif
 
 "}

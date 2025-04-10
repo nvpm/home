@@ -1,7 +1,7 @@
 
 home seng
 
-  file devl:todo     
+  -file devl:todo     
   loop plugin: nvpm flux line zoom text {
     workspace $(plugin):$(plugin) 
       tab misc {

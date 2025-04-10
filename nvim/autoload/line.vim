@@ -8,14 +8,22 @@ fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
-  let s:activate = get(g:,'line_activate',1)
-  let s:verbose  = get(g:,'line_verbose' ,2)
-  let s:brackets = get(g:,'line_brackets',1)
-  let s:projname = get(g:,'line_projname',0)
-  let s:gitinfo  = get(g:,'line_gitinfo',1)
-  let s:delay    = get(g:,'line_gitdelay',20000)
-  let limit      = s:delay>=2000
-  let s:delay    = limit*s:delay+!limit*2000
+  let s:powerline = get(g:,'line_powerline',-1)
+  let s:activate  = get(g:,'line_activate',1)
+  let s:verbose   = get(g:,'line_verbose' ,2)
+  let s:brackets  = get(g:,'line_brackets',1)
+  let s:projname  = get(g:,'line_projname',0)
+  let s:gitinfo   = get(g:,'line_gitinfo',1)
+  let s:delay     = get(g:,'line_gitdelay',20000)
+  let limit       = s:delay>=2000
+  let s:delay     = limit*s:delay+!limit*2000
+
+  if 1+s:powerline
+    let s:right = nr2char(s:powerline + 0)
+    let s:iright= nr2char(s:powerline + 1)
+    let s:left  = nr2char(s:powerline + 2)
+    let s:ileft = nr2char(s:powerline + 3)
+  endif
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -47,7 +55,6 @@ endfu "}
 fu! line#botl(...) "{
 
   let line  = ''
-  let indx  = 0
 
   if g:line.nvpm||s:verbose>1
     let line .= line#list(3)
@@ -155,7 +162,8 @@ endfu "}
 fu! line#list(...) "{
 
   let names = []
-  let type  = get(a:000,0,-1)
+  let type  = get(a:,1,-1)
+  let revs  = get(a:,2)
 
   if g:line.nvpm
 
@@ -167,22 +175,55 @@ fu! line#list(...) "{
     if !has_key(node,'meta')|return ''|endif
 
     let curr = node.list[node.meta.indx%node.meta.leng]
+    let last = node.meta.leng-1
 
-    for item in node.list
-      let name = ''
+    for i in range(node.meta.leng)
+      let item   = node.list[i]
+      let iscurr = item is curr
+      let name   = ''
+      let info   = item.data.name
       if s:brackets
         let name = '%#Normal#'
         let space= node.meta.leng>1?' ':''
-        let name.= item is curr && node.meta.leng>1?'[':space
-        let name.= item.data.name
-        let name.= item is curr && node.meta.leng>1?']':space
+        let name.= iscurr && node.meta.leng>1?'[':space
+        let name.= info
+        let name.= iscurr && node.meta.leng>1?']':space
       else
-        let name.= item is curr?'%#LINECURR#':'%#LINEITEM#' 
-        let name.= ' '..item.data.name..' '
+        if 1+s:powerline
+          if iscurr "{
+            let info = '%#LINECURR#'..info
+            if revs
+              let char = '%#LINECHAREND#'..s:left
+              let init = '%#LINECHARINIT#'..s:left
+              let end  = '%#LINECHAREND#' ..s:left
+              let name.= end..info..(i==0?' ':init)
+            else
+              let init = '%#LINECHARINIT#'..s:right
+              let end  = '%#LINECHAREND#' ..s:right
+              let name.= (i==0?'%#LINECHARINIT# ':init)..info..end
+            endif
+          "}
+          else      "{
+            let info = '%#LINEITEM#'..info
+            if revs
+              "let char = i==last||i==node.meta.indx-1?'':'%#LINECHARINAC#'..s:ileft
+              "let name.= char..' '..info..' '
+              let name.= ' '..info..' '
+            else
+              "let char = i==last||i==node.meta.indx-1?'':'%#LINECHARINAC#'..s:iright
+              "let name.= ' '..info..' '..char
+              let name.= ' '..info..' '
+            endif
+          endif "}
+        else
+          let name.= iscurr?'%#LINECURR#':'%#LINEITEM#' 
+          let name.= ' '..item.data.name..' '
+        endif
       endif
       call add(names,name)
     endfor
-  let names = a:0==2?reverse(names):names
+
+    let names = revs?reverse(names):names
 
   else
 
