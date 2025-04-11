@@ -119,7 +119,7 @@
   "let __LINEPLUG__ = 0
 
   let line_activate  = 1
-  let line_verbose   = 2
+  let line_verbose   = 1
   let line_brackets  = 1
   let line_projname  = 1
   let line_gitinfo   = 1

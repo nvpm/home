@@ -3,53 +3,6 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! line#draw(...) "{
-
-  let revs = get(a:,2)
-  let list = []
-
-  if g:line.nvpm
-    let type = get(a:,1,-1)
-    let node = flux#seek(g:nvpm.tree.root,type)
-    let curr = node.meta.indx
-    let leng = node.meta.leng
-    let list = line#list(node.list,curr,leng,revs)
-  else
-    let bufs = map(range(1,bufnr('$')),'bufname(v:val)')
-    let bufs = filter(bufs,'!empty(v:val)&&buflisted(v:val)')
-    let curr = match(bufs,bufname())
-    let leng = len(bufs)
-    let list = line#list(bufs,curr,leng,revs)
-  endif
-
-  let list = revs?reverse(list):list
-  return join(list,'')
-
-endfu "}
-fu! line#list(...) "{
-
-  let list = a:1
-  let curr = a:2
-  let leng = a:3
-  let revs = a:4
-  let names= []
-
-  for i in range(leng)
-    exe 'let info = list[i]'..(g:line.nvpm?'.data.name':'')
-    let iscurr = i==curr
-    let name = ''
-    if s:brackets
-      "let name = '%#Normal#'
-      let space= leng>1?' ':''
-      let name.= i==curr && leng>1 ? '[' : space
-      let name.= info
-      let name.= i==curr && leng>1 ? ']' : space
-    endif
-    call add(names,name)
-  endfor
-  return names
-
-endfu "}
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
@@ -66,10 +19,11 @@ fu! line#init(...) "{
   let s:delay     = limit*s:delay+!limit*2000
 
   if 1+s:powerline
-    let s:right = nr2char(s:powerline + 0)
-    let s:iright= nr2char(s:powerline + 1)
-    let s:left  = nr2char(s:powerline + 2)
-    let s:ileft = nr2char(s:powerline + 3)
+    let s:right    = nr2char(s:powerline + 0)
+    let s:iright   = nr2char(s:powerline + 1)
+    let s:left     = nr2char(s:powerline + 2)
+    let s:ileft    = nr2char(s:powerline + 3)
+    let s:brackets = 0
   endif
 
   let g:line = {}
@@ -103,13 +57,9 @@ fu! line#botl(...) "{
 
   let line  = ''
 
-  if g:line.nvpm||s:verbose>1
-  "if g:line.nvpm
+  "if g:line.nvpm||s:verbose>0
     let line .= line#draw(3)
-  elseif s:verbose==1
-  "elseif s:verbose>=1
-    let line .= '%t'
-  endif
+  "endif
 
   let line .= g:line.git
   let line .= '%#LINEFill#'
@@ -174,6 +124,88 @@ fu! line#line(...) "{
 endfu "}
 
 "-- auxy functions --
+fu! line#draw(...) "{
+
+  let list = []
+  let revs = get(a:,2)
+
+  if g:line.nvpm
+    let type = get(a:,1,-1)
+    let node = flux#seek(g:nvpm.tree.root,type)
+    if has_key(node,'meta')
+      let curr = node.meta.indx
+      let leng = node.meta.leng
+      let list = line#list(node.list,curr,leng,revs)
+    endif
+  else
+    if s:verbose>1
+      let bufs = map(range(1,bufnr('$')),'bufname(v:val)')
+      let bufs = filter(bufs,'!empty(v:val)&&buflisted(v:val)')
+      let curr = match(bufs,bufname())
+      let leng = len(bufs)
+      let list = line#list(bufs,curr,leng,revs)
+    elseif s:verbose==1
+      let list = line#list([bufname()],0,1,revs)
+    endif
+  endif
+
+  let list = revs?reverse(list):list
+  return join(list,'')
+
+endfu "}
+fu! line#list(...) "{
+
+  let list = a:1
+  let curr = a:2
+  let leng = a:3
+  let revs = a:4
+  let names= []
+
+  for i in range(leng)
+    let item = list[i]
+    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
+    let iscurr = i==curr
+    let name = ''
+    if s:brackets
+      let space= leng>1?' ':''
+      let name.= i==curr && leng>1 ? '[' : space
+      let name.= info
+      let name.= i==curr && leng>1 ? ']' : space
+    else
+      if 1+s:powerline
+        if iscurr "{
+          if revs
+            let info = '%#LINECURR#'..info
+            let init = '%#LINECHARINIT#'..s:left..'%#LINEITEM#'
+            let end  = '%#LINECHAREND#' ..s:left
+            let name.= end..info..' '..(i==0?'':init)
+            "let name.= end..info..' '..init
+          else
+            let info = '%#LINECURR#'..' '..info
+            let init = '%#LINECHARINIT#'..s:right
+            let end  = '%#LINECHAREND#' ..s:right
+            let name.= (i==0?'%#LINECHARINIT#':init)..info..end
+            "let name.= init..' '..info..end
+          endif
+        "}
+        else      "{
+          let info = '%#LINEITEM#'..info
+          if revs
+            let name.= ' '..info..' '..(i==0?'':' ')
+          else
+            let name.= (i==0?'':' ')..' '..info..' '
+          endif
+        endif "}
+      else
+        let name.= i==curr?'%#LINECURR#':'%#LINEITEM#' 
+        let name.= ' '..info..' '
+      endif
+    endif
+    call add(names,name)
+  endfor
+  return names
+
+endfu "}
 fu! line#proj(...) "{
 
   if !s:projname|return ''|endif
