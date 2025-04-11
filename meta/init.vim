@@ -69,11 +69,13 @@ fu! s:test.line(...) "{
   so nvim/autoload/line.vim
   so nvim/plugin/line.vim
 
-  let init = 0xe0b0
-  let end  = 0xe0cb
-  for i in range(init,end)
-    ec i nr2char(i)
-  endfor
+  "call line#list()
+
+    let bufs = map(range(1,bufnr('$')),'bufname(v:val)')
+    let bufs = filter(bufs,'!empty(v:val)&&buflisted(v:val)')
+    let curr = match(bufs,bufname())
+
+    ec curr bufs
 "let buffers = filter(range(1, bufnr('$')), 'bufexists(v:val)')
 "ec map(range(1, bufnr('$')),'bufname(v:val)')
 
