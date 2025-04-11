@@ -64,7 +64,7 @@
   let nvpm_maketree = 1
   let nvpm_initload = 1
   let nvpm_loadline = 1
-  
+
   let nvpm_fluxconf = {}
   let nvpm_fluxconf.lexis = ''
   let nvpm_fluxconf.lexis.= '|project proj scheme layout book'
@@ -115,17 +115,38 @@
 " }
 " line {
 
-  "let __LINEAUTO__ = 0
-  "let __LINEPLUG__ = 0
+  "let __LINEAUTO__ = 1
+  "let __LINEPLUG__ = 1
 
   let line_activate  = 1
   let line_verbose   = 1
-  let line_brackets  = 1
   let line_projname  = 1
   let line_gitinfo   = 1
   let line_gitdelay  = 10000
-  let line_powerline = 0xe0b0 " until 0xe0b3
-  let line_powerline = 0xe0b4 " until 0xe0b7
+  let line_modetype  = 0 " 0,1,2, and 3
+  let line_colors    = #{}
+  let line_colors.curr = #{guifg:'#000000',guibg:'#337777',gui:'bold'}
+  let line_colors.inac = #{guifg:'#337777',guibg:'bg'                }
+
+  "let line_colors    = #{n:{},i:{},v:{},c:{},t:{},e:{}}
+  "let line_colors.n.curr = #{gfg:'#000000' , gbg:'#337777'   , g:'bold'}
+  "let line_colors.i.curr = #{gfg:'#000000' , gbg:'#ff0000'   , g:'bold'}
+  "let line_colors.v.curr = #{gfg:'#000000' , gbg:'Visual.bg' , g:'bold'}
+  "let line_colors.c.curr = #{gfg:'#000000' , gbg:'#00ff00'   , g:'bold'}
+  "let line_colors.t.curr = g:line_colors.n.curr
+  "
+  "let line_colors.n.inac = #{gfg:'#337777',gbg:'bg'}
+  "let line_colors.i.inac = g:line_colors.n.inac
+  "let line_colors.v.inac = g:line_colors.n.inac
+  "let line_colors.c.inac = g:line_colors.n.inac
+  "let line_colors.t.inac = g:line_colors.n.inac
+  "
+  "let line_colors.n.mode = #{gfg:'#00ff00' , gbg:'#2c2c2c'}
+  "let line_colors.i.mode = #{gfg:'#00ffff' , gbg:'#2c2c2c'}
+  "let line_colors.v.mode = #{gfg:'#ffff00' , gbg:'#2c2c2c'}
+
+  "let line_powerline = 0xe0b0 " until 0xe0b3
+  "let line_powerline = 0xe0b4 " until 0xe0b7
   "let line_powerline = 0xe0b8 " until 0xe0bb
   "let line_powerline = 0xe0bc " until 0xe0bf
   "let line_powerline = 0xe0c0 " until 0xe0c3

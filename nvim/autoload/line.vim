@@ -1,30 +1,49 @@
 "-- auto/line.vim  --
 
-if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
+if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- main functions --
+fu! line#seth(...) "{
+
+  if empty(s:colors)
+    let s:modetype = 0
+    return
+  endif
+  if has_key(s:colors,'curr')
+    let curr = s:colors.curr
+  endif
+
+endfu "}
+fu! line#geth(...) "{
+
+  let group = a:1
+  let args = {}
+  if hlexists(group)
+    let info = execute('hi '.group)
+    let info = split(info,'\s\+')[2:]
+    let info = map(info,'split(v:val,"=")')
+    for arg in info
+      let args[arg[0]] = arg[1]
+    endfor
+  endif
+  return args
+
+endfu "}
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
-  let s:powerline = get(g:,'line_powerline',-1)
   let s:activate  = get(g:,'line_activate',1)
   let s:verbose   = get(g:,'line_verbose' ,2)
-  let s:brackets  = get(g:,'line_brackets',1)
   let s:projname  = get(g:,'line_projname',0)
   let s:gitinfo   = get(g:,'line_gitinfo',1)
   let s:delay     = get(g:,'line_gitdelay',20000)
   let limit       = s:delay>=2000
   let s:delay     = limit*s:delay+!limit*2000
 
-  if 1+s:powerline
-    let s:right    = nr2char(s:powerline + 0)
-    let s:iright   = nr2char(s:powerline + 1)
-    let s:left     = nr2char(s:powerline + 2)
-    let s:ileft    = nr2char(s:powerline + 3)
-    let s:brackets = 0
-  endif
+  let s:modetype  = get(g:,'line_modetype',1)
+  let s:colors    = get(g:,'line_colors' ,{})
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -150,7 +169,11 @@ fu! line#draw(...) "{
   endif
 
   let list = revs?reverse(list):list
-  return join(list,'')
+  let list = join(list,'')
+  if s:modetype==0
+    let list ='%#Normal#'..list
+  endif
+  return list
 
 endfu "}
 fu! line#list(...) "{
@@ -165,45 +188,42 @@ fu! line#list(...) "{
     let item = list[i]
     let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
     let iscurr = i==curr
-    let name = ''
-    if s:brackets
-      let space= leng>1?' ':''
-      let name.= i==curr && leng>1 ? '[' : space
-      let name.= info
-      let name.= i==curr && leng>1 ? ']' : space
+    if i==curr
+      let name = line#curr(info,leng)
     else
-      if 1+s:powerline
-        if iscurr "{
-          if revs
-            let info = '%#LINECURR#'..info
-            let init = '%#LINECHARINIT#'..s:left..'%#LINEITEM#'
-            let end  = '%#LINECHAREND#' ..s:left
-            let name.= end..info..' '..(i==0?'':init)
-            "let name.= end..info..' '..init
-          else
-            let info = '%#LINECURR#'..' '..info
-            let init = '%#LINECHARINIT#'..s:right
-            let end  = '%#LINECHAREND#' ..s:right
-            let name.= (i==0?'%#LINECHARINIT#':init)..info..end
-            "let name.= init..' '..info..end
-          endif
-        "}
-        else      "{
-          let info = '%#LINEITEM#'..info
-          if revs
-            let name.= ' '..info..' '..(i==0?'':' ')
-          else
-            let name.= (i==0?'':' ')..' '..info..' '
-          endif
-        endif "}
-      else
-        let name.= i==curr?'%#LINECURR#':'%#LINEITEM#' 
-        let name.= ' '..info..' '
-      endif
+      let name = line#inac(info,leng)
     endif
     call add(names,name)
   endfor
   return names
+
+endfu "}
+fu! line#curr(...) "{
+
+  let info = a:1
+  let leng = a:2
+  let elem = ''
+  if s:modetype==0 " brackets config
+    let elem = '['.info.']'
+  endif
+  if s:modetype==1 " highlight config
+    let elem = ' '.info
+  endif
+  return elem
+
+endfu "}
+fu! line#inac(...) "{
+
+  let info = a:1
+  let leng = a:2
+  let elem = ''
+  if s:modetype==0 " brackets config
+    let elem = ' '.info.' '
+  endif
+  if s:modetype==1 " highlight config
+    let elem = ' '.info
+  endif
+  return elem
 
 endfu "}
 fu! line#proj(...) "{
