@@ -3,6 +3,107 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#draw(...) "{
+
+  let names = []
+  let type  = get(a:,1,-1)
+  let revs  = get(a:,2)
+
+  if g:line.nvpm
+
+    let node = flux#seek(g:nvpm.tree.root,type)
+
+    if empty(node)|return ''|endif
+
+    if !has_key(node,'list')|return ''|endif
+    if !has_key(node,'meta')|return ''|endif
+
+    let curr = node.list[node.meta.indx%node.meta.leng]
+    let last = node.meta.leng-1
+
+    for i in range(node.meta.leng)
+      let item   = node.list[i]
+      let iscurr = item is curr
+      let name   = ''
+      let info   = item.data.name
+      if s:brackets
+        let name = '%#Normal#'
+        let space= node.meta.leng>1?' ':''
+        let name.= iscurr && node.meta.leng>1?'[':space
+        let name.= info
+        let name.= iscurr && node.meta.leng>1?']':space
+      else
+        if 1+s:powerline
+          if iscurr "{
+            if revs
+              let info = '%#LINECURR#'..info
+              let init = '%#LINECHARINIT#'..s:left..'%#LINEITEM#'
+              let end  = '%#LINECHAREND#' ..s:left
+              let name.= end..info..' '..(i==0?' ':init)
+              "let name.= end..info..' '..init
+            else
+              let info = '%#LINECURR#'..' '..info
+              let init = '%#LINECHARINIT#'..s:right
+              let end  = '%#LINECHAREND#' ..s:right
+              let name.= (i==0?'%#LINECHARINIT#':init)..info..end
+              "let name.= init..' '..info..end
+            endif
+          "}
+          else      "{
+            let info = '%#LINEITEM#'..info
+            if revs
+              let name.= ' '..info..' '..(i==0?'':' ')
+            else
+              let name.= (i==0?'':' ')..' '..info..' '
+            endif
+          endif "}
+        else
+          let name.= iscurr?'%#LINECURR#':'%#LINEITEM#' 
+          let name.= ' '..item.data.name..' '
+        endif
+      endif
+      call add(names,name)
+    endfor
+
+    let names = revs?reverse(names):names
+
+  else
+
+    let list = execute('ls')
+    let list = split(list,'\n')
+    let leng = len(list)
+    for item in list
+      let file = matchstr(item,'".*"')
+      let file = substitute(file,'"','','g')
+      let file = fnamemodify(file,':t')
+      let file = substitute(file,'[','','g')
+      let file = substitute(file,']','','g')
+      let item = split(item,'\s')
+      call filter(item,"v:val!=''")
+      let curr = item[1]
+      let iscurr = curr=~'%'
+      let closure= s:brackets&&iscurr&&leng>1
+      let name   = ''
+      if s:brackets
+        let name = '%#Normal#'
+        let space= leng>1?' ':''
+        let name.= curr=~'%' && leng>1?'[':space
+        let name.= file
+        let name.= curr=~'%' && leng>1?']':space
+      else
+        let name.= curr=~'%'?'%#LINECURR#':'%#LINEITEM#' 
+        let name.= ' '..file..' '
+      endif
+      call add(names,name)
+    endfor
+
+  endif
+
+  return join(names,'')
+
+endfu "}
+fu! line#list(...) "{
+endfu "}
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
@@ -43,10 +144,10 @@ fu! line#topl(...) "{
 
   let line  = ''
 
-  let line .= line#list(2)
+  let line .= line#draw(2)
   let line .= '%#LINEFill#'
   let line .= '%='
-  let line.= line#list(1,1)
+  let line.= line#draw(1,1)
   let line.= line#proj()
 
   return line
@@ -57,7 +158,7 @@ fu! line#botl(...) "{
   let line  = ''
 
   if g:line.nvpm||s:verbose>1
-    let line .= line#list(3)
+    let line .= line#draw(3)
   elseif s:verbose==1
     let line .= '%t'
   endif
@@ -157,107 +258,6 @@ fu! line#time(...) "{
       let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
     endif
   endif
-
-endfu "}
-fu! line#list(...) "{
-
-  let names = []
-  let type  = get(a:,1,-1)
-  let revs  = get(a:,2)
-
-  if g:line.nvpm
-
-    let node = flux#seek(g:nvpm.tree.root,type)
-
-    if empty(node)|return ''|endif
-
-    if !has_key(node,'list')|return ''|endif
-    if !has_key(node,'meta')|return ''|endif
-
-    let curr = node.list[node.meta.indx%node.meta.leng]
-    let last = node.meta.leng-1
-
-    for i in range(node.meta.leng)
-      let item   = node.list[i]
-      let iscurr = item is curr
-      let name   = ''
-      let info   = item.data.name
-      if s:brackets
-        let name = '%#Normal#'
-        let space= node.meta.leng>1?' ':''
-        let name.= iscurr && node.meta.leng>1?'[':space
-        let name.= info
-        let name.= iscurr && node.meta.leng>1?']':space
-      else
-        if 1+s:powerline
-          if iscurr "{
-            let info = '%#LINECURR#'..info
-            if revs
-              let char = '%#LINECHAREND#'..s:left
-              let init = '%#LINECHARINIT#'..s:left
-              let end  = '%#LINECHAREND#' ..s:left
-              let name.= end..info..(i==0?' ':init)
-            else
-              let init = '%#LINECHARINIT#'..s:right
-              let end  = '%#LINECHAREND#' ..s:right
-              let name.= (i==0?'%#LINECHARINIT# ':init)..info..end
-            endif
-          "}
-          else      "{
-            let info = '%#LINEITEM#'..info
-            if revs
-              "let char = i==last||i==node.meta.indx-1?'':'%#LINECHARINAC#'..s:ileft
-              "let name.= char..' '..info..' '
-              let name.= ' '..info..' '
-            else
-              "let char = i==last||i==node.meta.indx-1?'':'%#LINECHARINAC#'..s:iright
-              "let name.= ' '..info..' '..char
-              let name.= ' '..info..' '
-            endif
-          endif "}
-        else
-          let name.= iscurr?'%#LINECURR#':'%#LINEITEM#' 
-          let name.= ' '..item.data.name..' '
-        endif
-      endif
-      call add(names,name)
-    endfor
-
-    let names = revs?reverse(names):names
-
-  else
-
-    let list = execute('ls')
-    let list = split(list,'\n')
-    let leng = len(list)
-    for item in list
-      let file = matchstr(item,'".*"')
-      let file = substitute(file,'"','','g')
-      let file = fnamemodify(file,':t')
-      let file = substitute(file,'[','','g')
-      let file = substitute(file,']','','g')
-      let item = split(item,'\s')
-      call filter(item,"v:val!=''")
-      let curr = item[1]
-      let iscurr = curr=~'%'
-      let closure= s:brackets&&iscurr&&leng>1
-      let name   = ''
-      if s:brackets
-        let name = '%#Normal#'
-        let space= leng>1?' ':''
-        let name.= curr=~'%' && leng>1?'[':space
-        let name.= file
-        let name.= curr=~'%' && leng>1?']':space
-      else
-        let name.= curr=~'%'?'%#LINECURR#':'%#LINEITEM#' 
-        let name.= ' '..file..' '
-      endif
-      call add(names,name)
-    endfor
-
-  endif
-
-  return join(names,'')
 
 endfu "}
 fu! line#giti(...) "{
