@@ -21,6 +21,7 @@ fu! line#init(...) "{
 
   let g:line = {}
   let g:line.nvpm = 0
+  let g:line.zoom = 0
   let g:line.mode = 0
   let g:line.timer= -1
   let g:line.git  = ''
@@ -78,7 +79,7 @@ fu! line#show(...) "{
     set tabline=%!line#topl()
     set statusline=%!line#botl()
     set showtabline=2
-    let &laststatus=2+s:nvim
+    let &laststatus=2+s:nvim*(1-g:line.zoom)
   else
     if s:verbose==0
       let &laststatus  = s:laststatus
@@ -86,7 +87,7 @@ fu! line#show(...) "{
     endif
     if s:verbose>0
       set statusline=%!line#botl()
-      let &laststatus=2+s:nvim
+      let &laststatus=2+s:nvim*(1-g:line.zoom)
     endif
     if s:verbose>2
       set showtabline=2

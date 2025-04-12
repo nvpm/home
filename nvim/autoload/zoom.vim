@@ -114,6 +114,7 @@ fu! zoom#show(...) "{
 
   if exists('*line#hide')&&exists('g:line.mode')&&(1+g:line.mode)
     call line#hide()
+    let g:line.zoom = 1
   else
     set showtabline=0
     set laststatus=0
@@ -136,6 +137,7 @@ fu! zoom#hide(...) "{
 
   if exists('*line#show')&&exists('g:line.mode')&&(1+g:line.mode)
     call line#show()
+    let g:line.zoom = 0
   else
     let &showtabline = s:topl
     let &laststatus  = s:botl
