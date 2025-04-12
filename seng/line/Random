@@ -1,0 +1,18 @@
+
+  "let line_colors    = #{n:{},i:{},v:{},c:{},t:{},e:{}}
+  "let line_colors.n.curr = #{gfg:'#000000' , gbg:'#337777'   , g:'bold'}
+  "let line_colors.i.curr = #{gfg:'#000000' , gbg:'#ff0000'   , g:'bold'}
+  "let line_colors.v.curr = #{gfg:'#000000' , gbg:'Visual.bg' , g:'bold'}
+  "let line_colors.c.curr = #{gfg:'#000000' , gbg:'#00ff00'   , g:'bold'}
+  "let line_colors.t.curr = g:line_colors.n.curr
+  "
+  "let line_colors.n.inac = #{gfg:'#337777',gbg:'bg'}
+  "let line_colors.i.inac = g:line_colors.n.inac
+  "let line_colors.v.inac = g:line_colors.n.inac
+  "let line_colors.c.inac = g:line_colors.n.inac
+  "let line_colors.t.inac = g:line_colors.n.inac
+  "
+  "let line_colors.n.mode = #{gfg:'#00ff00' , gbg:'#2c2c2c'}
+  "let line_colors.i.mode = #{gfg:'#00ffff' , gbg:'#2c2c2c'}
+  "let line_colors.v.mode = #{gfg:'#ffff00' , gbg:'#2c2c2c'}
+

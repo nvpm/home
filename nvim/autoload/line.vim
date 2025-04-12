@@ -28,9 +28,13 @@ fu! line#init(...) "{
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
 
-  call line#seth()|delfunc line#seth|delfunc line#geth
+  call line#seth()
+  delfunc line#seth
+  delfunc line#geth
 
   if s:activate
+    hi clear TabLine
+    hi clear StatusLine
     call line#show()
   endif
 
@@ -40,7 +44,7 @@ fu! line#topl(...) "{
   let line  = ''
 
   let line .= line#draw(2)
-  let line .= '%#LINEFill#'
+  let line .= '%#nvpmlinefill#'
   let line .= '%='
   let line.= line#draw(1,1)
   let line.= line#proj()
@@ -52,12 +56,10 @@ fu! line#botl(...) "{
 
   let line  = ''
 
-  "if g:line.nvpm||s:verbose>0
-    let line .= line#draw(3)
-  "endif
+  let line .= line#draw(3)
 
   let line .= g:line.git
-  let line .= '%#LINEFill#'
+  let line .= '%#nvpmlinefill#'
   let line .= s:verbose>0||g:line.nvpm?' ⬤ ':''
   let line .= '%{line#file()}'
   let line .= '%='
@@ -121,13 +123,10 @@ endfu "}
 "-- auxy functions --
 fu! line#seth(...) "{
 
-  if s:modetype>0&&empty(s:colors)||!has_key(s:colors,'curr')
-    let s:modetype = 0
-    return
-  else
     let groups = {}
     for name in keys(s:colors) " loop over colors {
-      if type(s:colors[name])!=type({})||hlexists('nvpmline'..name)|continue|endif
+      if name=='curr'||name=='inac'&&s:modetype==0|continue|endif
+      if hlexists('nvpmline'..name)|continue|endif
       let fields = ''
       for field in keys(s:colors[name])
         if s:colors[name][field] =~ '^\w\+\.\w\+$'
@@ -137,7 +136,7 @@ fu! line#seth(...) "{
           endif
           let group = groups[group]
           if has_key(group,arg)
-            let fields.= arg..'='..group[arg]..' '
+            let fields.= field..'='..group[arg]..' '
           endif
         else
           let fields.= field..'='..s:colors[name][field]..' '
@@ -145,7 +144,6 @@ fu! line#seth(...) "{
       endfor
       exe 'hi nvpmline'..name..' '..fields
     endfor "}
-  endif
 
 endfu "}
 fu! line#geth(...) "{
@@ -226,10 +224,10 @@ fu! line#curr(...) "{
   let leng = a:2
   let elem = ''
   if s:modetype==0 " brackets config
-    let elem = '['.info.']'
+    let elem = '['..info..']'
   endif
   if s:modetype==1 " highlight config
-    let elem = ' '.info
+    let elem = '%#nvpmlinecurr# '..info..' '
   endif
   return elem
 
@@ -240,10 +238,10 @@ fu! line#inac(...) "{
   let leng = a:2
   let elem = ''
   if s:modetype==0 " brackets config
-    let elem = ' '.info.' '
+    let elem = ' '..info..' '
   endif
   if s:modetype==1 " highlight config
-    let elem = ' '.info
+    let elem = '%#nvpmlineinac# '..info..' '
   endif
   return elem
 
@@ -263,7 +261,7 @@ fu! line#proj(...) "{
   else
     let proj = proj.list[proj.meta.indx].data.name
   endif
-  let line .= '%#LINEProj#'..' '..proj..' '
+  let line .= '%#nvpmlineproj#'..' '..proj..' '
   return line
 
 endfu "}
@@ -293,13 +291,13 @@ fu! line#giti(...) "{
     let char = ''
     let s = ' '
     if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#LINEGITC#'
+      let cr   = '%#nvpmlinegitc#'
       if modified
-        let cr    = '%#LINEGITM#'
+        let cr    = '%#nvpmlinegitm#'
         let char  = ' [M]'
       endif
       if staged
-        let cr   = '%#LINEGITS#'
+        let cr   = '%#nvpmlinegits#'
         let char = ' [S]'
       endif
       let info = cr .'  ' . branch . char
