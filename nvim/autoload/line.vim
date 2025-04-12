@@ -4,52 +4,6 @@ if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- main functions --
-fu! line#seth(...) "{
-
-  if s:modetype>0&&empty(s:colors)||!has_key(s:colors,'curr')
-    let s:modetype = 0
-    return
-  else
-    let groups = {}
-    for name in keys(s:colors) " loop over colors {
-      if type(s:colors[name])!=type({})||hlexists('nvpmline'..name)|continue|endif
-      let fields = ''
-      for field in keys(s:colors[name])
-        if s:colors[name][field] =~ '^\w\+\.\w\+$'
-          let [group,arg] = split(s:colors[name][field],'\.')
-          if !has_key(groups,group)
-            let groups[group] = line#geth(group)
-          endif
-          let group = groups[group]
-          if has_key(group,arg)
-            let fields.= arg..'='..group[arg]..' '
-          endif
-        else
-          let fields.= field..'='..s:colors[name][field]..' '
-        endif
-      endfor
-      exe 'hi nvpmline'..name..' '..fields
-    endfor "}
-  endif
-
-endfu "}
-fu! line#geth(...) "{
-
-  let group = a:1
-  let field = get(a:,2,'no field')
-  let args = {}
-  if hlexists(group)
-    let info = execute('hi '.group)
-    let info = split(info,'\s\+')[2:]
-    let info = map(info,'split(v:val,"=")')
-    for arg in info
-      if arg[0]==field|return arg[1]|endif
-      let args[arg[0]] = arg[1]
-    endfor
-  endif
-  return args
-
-endfu "}
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
@@ -74,7 +28,7 @@ fu! line#init(...) "{
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
 
-  call line#seth()
+  call line#seth()|delfunc line#seth|delfunc line#geth
 
   if s:activate
     call line#show()
@@ -165,6 +119,52 @@ fu! line#line(...) "{
 endfu "}
 
 "-- auxy functions --
+fu! line#seth(...) "{
+
+  if s:modetype>0&&empty(s:colors)||!has_key(s:colors,'curr')
+    let s:modetype = 0
+    return
+  else
+    let groups = {}
+    for name in keys(s:colors) " loop over colors {
+      if type(s:colors[name])!=type({})||hlexists('nvpmline'..name)|continue|endif
+      let fields = ''
+      for field in keys(s:colors[name])
+        if s:colors[name][field] =~ '^\w\+\.\w\+$'
+          let [group,arg] = split(s:colors[name][field],'\.')
+          if !has_key(groups,group)
+            let groups[group] = line#geth(group)
+          endif
+          let group = groups[group]
+          if has_key(group,arg)
+            let fields.= arg..'='..group[arg]..' '
+          endif
+        else
+          let fields.= field..'='..s:colors[name][field]..' '
+        endif
+      endfor
+      exe 'hi nvpmline'..name..' '..fields
+    endfor "}
+  endif
+
+endfu "}
+fu! line#geth(...) "{
+
+  let group = a:1
+  let field = get(a:,2,'no field')
+  let args = {}
+  if hlexists(group)
+    let info = execute('hi '.group)
+    let info = split(info,'\s\+')[2:]
+    let info = map(info,'split(v:val,"=")')
+    for arg in info
+      if arg[0]==field|return arg[1]|endif
+      let args[arg[0]] = arg[1]
+    endfor
+  endif
+  return args
+
+endfu "}
 fu! line#draw(...) "{
 
   let list = []
