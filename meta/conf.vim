@@ -125,8 +125,8 @@
   let line_gitdelay  = 10000
   let line_modetype  = 0 " 0,1,2, and 3
   let line_colors    = #{}
-  let line_colors.curr = #{guifg:'#000000',guibg:'#337777',gui:'bold'}
-  let line_colors.inac = #{guifg:'#337777',guibg:'bg'                }
+  let line_colors.curr = #{guifg:'#000000',guibg:'Visual.guibg',gui:'bold'}
+  let line_colors.inac = #{guifg:'#337777'}
 
   "let line_colors    = #{n:{},i:{},v:{},c:{},t:{},e:{}}
   "let line_colors.n.curr = #{gfg:'#000000' , gbg:'#337777'   , g:'bold'}
@@ -159,10 +159,10 @@
   hi LINEITEM guifg=#337777 guibg=bg
   hi LINECURR guifg=#000000 guibg=#337777 gui=bold
   hi LINEPROJ guifg=#ffffff guibg=#5c5c5c gui=bold
-
-  hi LINECHAREND  guifg=#337777 guibg=bg
-  hi LINECHARINIT guifg=bg      guibg=#337777
-  hi LINECHARINAC guifg=#002222 guibg=bg
+  "
+  "hi LINECHAREND  guifg=#337777 guibg=bg
+  "hi LINECHARINIT guifg=bg      guibg=#337777
+  "hi LINECHARINAC guifg=#002222 guibg=bg
 
   " Git Info Colors
   hi LINEGITM guifg=#aa4371
