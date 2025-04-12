@@ -123,7 +123,7 @@
   let line_projname  = 1
   let line_gitinfo   = 1
   let line_gitdelay  = 10000
-  let line_modetype  = 0 " 0,1,2, and 3
+  let line_modetype  = 1 " 0,1,2, and 3
 
   let line_colors      = #{}
   let line_colors.curr = #{guifg:'#000000',guibg:'Visual.guibg',gui:'bold'}

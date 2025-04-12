@@ -125,7 +125,7 @@ fu! line#seth(...) "{
 
     let groups = {}
     for name in keys(s:colors) " loop over colors {
-      if name=='curr'||name=='inac'&&s:modetype==0|continue|endif
+      if s:modetype==0&&(name=='curr'||name=='inac')|continue|endif
       if hlexists('nvpmline'..name)|continue|endif
       let fields = ''
       for field in keys(s:colors[name])
