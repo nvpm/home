@@ -4,6 +4,68 @@ if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- main functions --
+fu! line#curr(...) "{
+
+  let info = a:1
+  let leng = a:2
+  let revs = a:3
+  let indx = a:4
+
+  let elem = ''
+  if s:modetype==0 " brackets config
+    let elem = '['..info..']'
+  endif
+  if s:modetype==1 " highlight config
+    let elem = '%#nvpmlinecurr# '..info..' '
+  endif
+  if 1+s:powerline " powerline config
+    if revs
+      let end  = '%#nvpmlinecharend#' ..s:left
+      let init = '%#nvpmlinecharinit#'..s:left
+      let elem = end..'%#nvpmlinecurr# '..info..' '..init
+    else
+      let end  = '%#nvpmlinecharend#' ..s:right
+      let init = '%#nvpmlinecharinit#'..s:right
+      let space= '%#nvpmlinecurr# '
+      let elem = init..space..info..' '..end
+    endif
+  endif
+  return elem
+
+endfu "}
+fu! line#inac(...) "{
+
+  let info = a:1
+  let leng = a:2
+  let revs = a:3
+  let indx = a:4
+  let elem = ''
+  if s:modetype==0 " brackets config
+    let elem = ' '..info..' '
+  endif
+  if s:modetype==1 " highlight config
+    let elem = '%#nvpmlineinac# '..info..' '
+  endif
+  if 1+s:powerline " powerline config
+    if revs
+      let elem = '%#nvpmlineinac#  '..info..'  '
+    else
+      let elem = '%#nvpmlineinac#  '..info..'  '
+    endif
+    "if revs
+    "  let end  = '%#nvpmlineinac#'..s:left
+    "  let init = '%#nvpmlineinac#'..s:left
+    "  let elem = end..'%#nvpmlineinac# '..info..' '..init
+    "else
+    "  let end  = '%#nvpmlineinac#' ..s:right
+    "  let init = '%#nvpmlineinac#'..s:right
+    "  let space= '%#nvpmlineinac# '
+    "  let elem = init..space..info..' '..end
+    "endif
+  endif
+  return elem
+
+endfu "}
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
@@ -18,6 +80,7 @@ fu! line#init(...) "{
 
   let s:modetype  = get(g:,'line_modetype',1)
   let s:colors    = get(g:,'line_colors' ,{})
+  let s:powerline = get(g:,'line_powerline',-1)
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -28,6 +91,61 @@ fu! line#init(...) "{
 
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
+
+  if 1+s:powerline
+    let s:right    = nr2char(s:powerline + 0)
+    let s:iright   = nr2char(s:powerline + 1)
+    let s:left     = nr2char(s:powerline + 2)
+    let s:ileft    = nr2char(s:powerline + 3)
+    let s:brackets = 0
+    if has_key(s:colors,'curr')&&has_key(s:colors,'inac')
+      if &termguicolors
+        let s:colors.charend = {} "{
+        if has_key(s:colors.curr,'guibg')
+          let s:colors.charend.guifg = s:colors.curr.guibg
+        endif
+        if has_key(s:colors.inac,'guibg')
+          let s:colors.charend.guibg = s:colors.inac.guibg
+        endif
+        if has_key(s:colors.curr,'gui')
+          let s:colors.charend.gui = s:colors.curr.gui
+        endif "}
+        let s:colors.charinit= {} "{
+        if has_key(s:colors.inac,'guibg')
+          let s:colors.charinit.guifg = s:colors.inac.guibg
+        endif
+        if has_key(s:colors.curr,'guibg')
+          let s:colors.charinit.guibg = s:colors.curr.guibg
+        endif
+        if has_key(s:colors.inac,'gui')
+          let s:colors.charinit.gui = s:colors.inac.gui
+        endif "}
+      else
+        let s:colors.charend = {} "{
+        if has_key(s:colors.curr,'ctermbg')
+          let s:colors.charend.ctermfg = s:colors.curr.ctermbg
+        endif
+        if has_key(s:colors.inac,'ctermbg')
+          let s:colors.charend.ctermbg = s:colors.inac.ctermbg
+        endif
+        if has_key(s:colors.curr,'cterm')
+          let s:colors.charend.cterm = s:colors.curr.cterm
+        endif "}
+        let s:colors.charinit= {} "{
+        if has_key(s:colors.inac,'ctermbg')
+          let s:colors.charinit.ctermfg = s:colors.inac.ctermbg
+        endif
+        if has_key(s:colors.curr,'ctermbg')
+          let s:colors.charinit.ctermbg = s:colors.curr.ctermbg
+        endif
+        if has_key(s:colors.inac,'cterm')
+          let s:colors.charinit.cterm = s:colors.inac.cterm
+        endif "}
+      endif
+    else
+      let s:modetype = 1
+    endif
+  endif
 
   call line#seth()
   delfunc line#seth
@@ -210,41 +328,13 @@ fu! line#list(...) "{
     let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
     let iscurr = i==curr
     if i==curr
-      let name = line#curr(info,leng)
+      let name = line#curr(info,leng,revs,i)
     else
-      let name = line#inac(info,leng)
+      let name = line#inac(info,leng,revs,i)
     endif
     call add(names,name)
   endfor
   return names
-
-endfu "}
-fu! line#curr(...) "{
-
-  let info = a:1
-  let leng = a:2
-  let elem = ''
-  if s:modetype==0 " brackets config
-    let elem = '['..info..']'
-  endif
-  if s:modetype==1 " highlight config
-    let elem = '%#nvpmlinecurr# '..info..' '
-  endif
-  return elem
-
-endfu "}
-fu! line#inac(...) "{
-
-  let info = a:1
-  let leng = a:2
-  let elem = ''
-  if s:modetype==0 " brackets config
-    let elem = ' '..info..' '
-  endif
-  if s:modetype==1 " highlight config
-    let elem = '%#nvpmlineinac# '..info..' '
-  endif
-  return elem
 
 endfu "}
 fu! line#proj(...) "{

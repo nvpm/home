@@ -123,11 +123,11 @@
   let line_projname  = 1
   let line_gitinfo   = 1
   let line_gitdelay  = 10000
-  let line_modetype  = 1 " 0,1,2, and 3
+  let line_modetype  = 1 " 0 and 1
 
   let line_colors      = #{}
   let line_colors.curr = #{guifg:'#000000',guibg:'Visual.guibg',gui:'bold'}
-  let line_colors.inac = #{guifg:'#337777',guibg:'bg'}
+  let line_colors.inac = #{guifg:'#777777',guibg:'#002222'}
 
   let line_colors.proj = #{guifg:'#ffffff',guibg:'#5c5c5c',gui:'bold'}
   let line_colors.fill = #{                guibg:'bg'}
@@ -135,7 +135,7 @@
   let line_colors.gits = #{guifg:'#00ff00'           }
   let line_colors.gitc = #{guifg:'#77aaaa'           }
 
-  "let line_powerline = 0xe0b0 " until 0xe0b3
+  let line_powerline = 0xe0b0 " until 0xe0b3
   "let line_powerline = 0xe0b4 " until 0xe0b7
   "let line_powerline = 0xe0b8 " until 0xe0bb
   "let line_powerline = 0xe0bc " until 0xe0bf
