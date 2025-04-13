@@ -2,8 +2,7 @@
     workspace line {
       tab code
         file auto : autoload/line.vim
-        file init = /home/iasj/.config/nvim/init.vim
-        -file plug : plugin/line.vim
+        file plug : plugin/line.vim
     }
     workspace zoom {
 

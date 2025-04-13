@@ -47,21 +47,15 @@ fu! line#inac(...) "{
     let elem = '%#nvpmlineinac# '..info..' '
   endif
   if 1+s:powerline " powerline config
+    let inac = '%#nvpmlineinac#'
+    let iend = '%#nvpmlinechariend#'
     if revs
-      let elem = '%#nvpmlineinac#  '..info..'  '
+      let end  = indx==leng-1?iend.s:left.inac.' ':inac.'  '
+      let elem = end..info..'  '
     else
-      let elem = '%#nvpmlineinac#  '..info..'  '
+      let end = ' '..iend..s:right
+      let elem = '%#nvpmlineinac#  '..info..(indx==leng-1?end:'  ')
     endif
-    "if revs
-    "  let end  = '%#nvpmlineinac#'..s:left
-    "  let init = '%#nvpmlineinac#'..s:left
-    "  let elem = end..'%#nvpmlineinac# '..info..' '..init
-    "else
-    "  let end  = '%#nvpmlineinac#' ..s:right
-    "  let init = '%#nvpmlineinac#'..s:right
-    "  let space= '%#nvpmlineinac# '
-    "  let elem = init..space..info..' '..end
-    "endif
   endif
   return elem
 
@@ -120,6 +114,16 @@ fu! line#init(...) "{
         if has_key(s:colors.inac,'gui')
           let s:colors.charinit.gui = s:colors.inac.gui
         endif "}
+        let s:colors.chariend= {} "{
+        if has_key(s:colors.inac,'guibg')
+          let s:colors.chariend.guifg = s:colors.inac.guibg
+        endif
+        if has_key(s:colors.curr,'guibg')
+          let s:colors.chariend.guibg = s:colors.fill.guibg
+        endif
+        if has_key(s:colors.inac,'gui')
+          let s:colors.chariend.gui = s:colors.inac.gui
+        endif "}
       else
         let s:colors.charend = {} "{
         if has_key(s:colors.curr,'ctermbg')
@@ -140,6 +144,16 @@ fu! line#init(...) "{
         endif
         if has_key(s:colors.inac,'cterm')
           let s:colors.charinit.cterm = s:colors.inac.cterm
+        endif "}
+        let s:colors.chariend= {} "{
+        if has_key(s:colors.inac,'ctermbg')
+          let s:colors.chariend.ctermfg = s:colors.inac.ctermbg
+        endif
+        if has_key(s:colors.curr,'ctermbg')
+          let s:colors.chariend.ctermbg = s:colors.fill.ctermbg
+        endif
+        if has_key(s:colors.inac,'cterm')
+          let s:colors.chariend.cterm = s:colors.inac.cterm
         endif "}
       endif
     else
