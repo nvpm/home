@@ -118,7 +118,7 @@
   let line_projname  = 1
   let line_gitinfo   = 1
   let line_gitdelay  = 1000
-  let line_atomtype  = 1
+  let line_atomtype  = 1 "0:bracks,1:hi,2:tabs,3:powerline
 
   hi linefill guibg=bg
   hi linespot guibg=#777733 guifg=Black   gui=bold
