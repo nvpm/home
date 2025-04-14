@@ -120,6 +120,15 @@
   let line_gitdelay  = 10000
   let line_modetype  = 0
 
+  hi linefill guibg=bg
+  hi linespot guibg=#777733 guifg=Black   gui=bold
+  hi linecurr guibg=#005f87 guifg=Black   gui=bold
+  hi lineinac guibg=bg      guifg=#005f87
+  hi def link linegits Title
+  hi def link linegitm WarningMsg
+  hi def link linegitc WildMenu 
+  hi def link linemode linespot
+
   nmap <silent>ml :Line<cr><c-l>
 
 " }
