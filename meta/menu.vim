@@ -61,7 +61,6 @@ fu! menu#push(...) "{
 
     let server = 'gitlab'
     let server = 'github'
-    let server = 'github-recv'
     let tfile  = $'/iasj/cryp/{server}'
     let token  = $'/iasj/cryp/{server}.gpg'
     let prefix = ['',"gitlab-cli-token:"][server=='gitlab']
