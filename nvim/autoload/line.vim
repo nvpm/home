@@ -118,60 +118,80 @@ fu! line#line(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! line#curr(...) "{
+fu! line#atom(...) "{
 
-  let info = a:1
-  let leng = a:2
+  let type = a:1
+  let info = a:2
   let revs = a:3
   let indx = a:4
-
-  let elem = ''
-  if s:atomtype==0 " brackets config
-    let elem = '['..info..']'
-  endif
-  if s:atomtype==1 " highlight config
-    let elem = '%#linecurr# '..info..' '
-  endif
-  if 1+s:powerline " powerline config
-    if revs
-      let end  = '%#linecharend#' ..s:left
-      let init = '%#linecharinit#'..s:left
-      let elem = end..'%#linecurr# '..info..' '..init
-    else
-      let end  = '%#linecharend#' ..s:right
-      let init = '%#linecharinit#'..s:right
-      let space= '%#linecurr# '
-      let elem = init..space..info..' '..end
-    endif
-  endif
-  return elem
+  let leng = a:5
+  let atom = ''
+  if type==0 " curr{
+    if s:atomtype==0 " brackets  config{
+      let atom = '['..info..']'
+    endif "}
+    if s:atomtype==1 " highlight config{
+      let atom = '%#linecurr# '..info..' '
+    endif "}
+    if s:atomtype==2 " tabs      config{
+    endif "}
+    if s:atomtype==3 " powerline config{
+      if revs
+        let end  = '%#linecharend#' ..s:left
+        let init = '%#linecharinit#'..s:left
+        let atom = end..'%#linecurr# '..info..' '..init
+      else
+        let end  = '%#linecharend#' ..s:right
+        let init = '%#linecharinit#'..s:right
+        let space= '%#linecurr# '
+        let atom = init..space..info..' '..end
+      endif
+    endif "}
+  endif "}
+  if type==1 " inac{
+    if s:atomtype==0 " brackets  config{
+      let atom = ' '..info..' '
+    endif "}
+    if s:atomtype==1 " highlight config{
+      let atom = '%#lineinac# '..info..' '
+    endif "}
+    if s:atomtype==2 " tabs      config{
+    endif "}
+    if s:atomtype==3 " powerline config{
+      let inac = '%#lineinac#'
+      let iend = '%#linechariend#'
+      if revs
+        let end  = indx==leng-1?iend.s:left.inac.' ':inac.'  '
+        let atom = end..info..'  '
+      else
+        let end = ' '..iend..s:right
+        let atom = '%#lineinac#  '..info..(indx==leng-1?end:'  ')
+      endif
+    endif "}
+  endif "}
+  return atom
 
 endfu "}
-fu! line#inac(...) "{
+fu! line#list(...) "{
 
-  let info = a:1
-  let leng = a:2
-  let revs = a:3
-  let indx = a:4
-  let elem = ''
-  if s:atomtype==0 " brackets config
-    let elem = ' '..info..' '
-  endif
-  if s:atomtype==1 " highlight config
-    let elem = '%#lineinac# '..info..' '
-  endif
-  if 1+s:powerline " powerline config
-    let inac = '%#lineinac#'
-    let iend = '%#linechariend#'
-    if revs
-      let end  = indx==leng-1?iend.s:left.inac.' ':inac.'  '
-      let elem = end..info..'  '
+  let list = a:1
+  let curr = a:2
+  let leng = a:3
+  let revs = a:4
+  let names= []
+
+  for indx in range(leng)
+    let item = list[indx]
+    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
+    let iscurr = indx==curr
+    if indx==curr
+      let name = line#atom(0,info,revs,indx,leng)
     else
-      let end = ' '..iend..s:right
-      let elem = '%#lineinac#  '..info..(indx==leng-1?end:'  ')
+      let name = line#atom(1,info,revs,indx,leng)
     endif
-  endif
-  return elem
+    call add(names,name)
+  endfor
+  return names
 
 endfu "}
 fu! line#draw(...) "{
@@ -205,28 +225,6 @@ fu! line#draw(...) "{
     let list ='%#Normal#'..list
   endif
   return list
-
-endfu "}
-fu! line#list(...) "{
-
-  let list = a:1
-  let curr = a:2
-  let leng = a:3
-  let revs = a:4
-  let names= []
-
-  for i in range(leng)
-    let item = list[i]
-    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
-    let iscurr = i==curr
-    if i==curr
-      let name = line#curr(info,leng,revs,i)
-    else
-      let name = line#inac(info,leng,revs,i)
-    endif
-    call add(names,name)
-  endfor
-  return names
 
 endfu "}
 fu! line#proj(...) "{
