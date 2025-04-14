@@ -9,7 +9,7 @@ fu! s:test.flux(...) "{
 
   so nvim/autoload/flux.vim
   so nvim/syntax/flux.vim
-  
+
   let conf = {}
 
   let conf.file = 'test/flux/case.case'
@@ -33,7 +33,7 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.nvpm(...) "{
 
-  so nvim/autoload/flux.vim                        
+  so nvim/autoload/flux.vim
   so nvim/syntax/flux.vim
   so nvim/autoload/nvpm.vim
   so nvim/plugin/nvpm.vim
@@ -45,7 +45,7 @@ fu! s:test.zoom(...) "{
   so nvim/plugin/zoom.vim
 
   ec '     h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
-  
+
   return
 
   let conf = {}
@@ -69,11 +69,24 @@ fu! s:test.line(...) "{
   so nvim/autoload/line.vim
   so nvim/plugin/line.vim
 
-  fu! Geth(...) "{
-  endfu "}
+  fu! Showcterm()
+    let term = &termguicolors
+    set notermguicolors
+    ec repeat("\n",3)
+    for i in range(256)
+      let name = 'nvpmtestcolor'.i
+      exe 'hi '..name..' ctermbg='..i..' ctermfg='..(i%8==0||(i>=233&&i<=239)?255:8)
+      exe 'echohl '..name
+      echon ' '..i..' '
+      "exe 'hi clear '..name
+    endfor
+    ec repeat("\n",2)
+    let &termguicolors = term
+  endfu
+  call Showcterm()|delfunc Showcterm
 
 endfu "}
-"} 
+"}
 " test {
 fu! s:test.eval(...) "{"
   let file = a:1

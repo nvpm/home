@@ -1,8 +1,48 @@
+● intro  {
 
-The LINE plugin will have a flux file as well. It's going to be used to generate highlight instructions for the coloring of both the statusline and the tabline. Also, maybe the layout structure of the elements will be defined in this file as well.
+  The  LINE  plugin  will  have  a flux file as well. It's going to be used to
+  generate highlight instructions  for the coloring of both the statusline and
+  the tabline.
 
+  The  syntax  will follow the same idea of the one used in the NVPM plugin.
+  Although the flux#vars feature is  yet  to  be implemented, it's going to be
+  used  to  define  color  variables and use them throughout  the  flux  file.
 
+  Those files will carry the extention *.iris, which foretells the future iris
+  plugin.
 
+}
+● syntax {
 
+The following is an example of a flux file made for the LINE plugin:
 
-vim: ft=help: tw=2
+--------------- ayu.iris -----------------------------
+  file ~/.nvpm/line/ayu.vim
+
+  background dark {
+    group LineFill = *Normal
+    group LineProj = 0x000 *Title.guifg
+    group LineGitS = *DiffAdded
+    group LineGitM = *SpellBad
+    group LineGitC = *Normal
+    group LineMode = *WildMenu
+    group linecurr {
+      mode normal   = 0x000 0x0f0
+      mode insert   = 0x000 0xf00
+      mode replace  = 0x000 0xf00
+      mode visual   = *Visual.guibg
+      mode cmdline  = 0x000 *Title.guibg
+      mode terminal = 0x000 *Operator.guibg
+    }
+    group lineinac {
+      mode normal   = *linecurrmoden.guibg *linefill.guibg
+      mode insert   = *linecurrmodei.guibg *linefill.guibg
+      mode replace  = *linecurrmoder.guibg *linefill.guibg
+      mode visual   = *linecurrmodev.guibg *linefill.guibg
+      mode cmdline  = *linecurrmodec.guibg *linefill.guibg
+      mode terminal = *linecurrmodet.guibg *linefill.guibg
+    }
+  }
+------------------------------------------------------
+
+}

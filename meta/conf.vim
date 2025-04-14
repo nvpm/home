@@ -73,14 +73,15 @@
   let nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
   let nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
+  hi fluxvars guifg=#00ff00 gui=bold
+
   nmap <silent><space>   :NvpmLoop + 3<cr>
   nmap <silent>m<space>  :NvpmLoop - 3<cr>
   nmap <silent><tab>     :NvpmLoop + 2<cr>
   nmap <silent>m<tab>    :NvpmLoop - 2<cr>
   nmap <silent><BS>      :NvpmLoop + 1<cr>
   nmap <silent><DEL>     :NvpmLoop - 1<cr>
-  nmap <silent><C-n>     :NvpmLoop + 1<cr>
-  nmap <silent><C-p>     :NvpmLoop - 1<cr>
+  nmap <silent><C-p>     :NvpmLoop + 1<cr>
   nmap <silent><C-Space> :NvpmLoop + 0<cr>
   nmap <silent>=         :NvpmLoop + -1<cr>
   nmap <silent>-         :NvpmLoop - -1<cr>
@@ -119,23 +120,6 @@
   let line_gitdelay  = 10000
   let line_modetype  = 0
 
-  let line_colors      = #{}
-  "let line_colors.curr = #{guifg:'#000000',guibg:'Visual.guibg',gui:'bold'}
-  "
-  "hi def link nvpmlineinac Normal
-  "
-  let line_colors.proj = #{guifg:'#ffffff',guibg:'#5c5c5c',gui:'bold'}
-  let line_colors.fill = #{                guibg:'bg'}
-  let line_colors.gitm = #{guifg:'#aa4371'           }
-  let line_colors.gits = #{guifg:'#00ff00'           }
-  let line_colors.gitc = #{guifg:'#77aaaa'           }
-
-  "let line_powerline = 0xe0b0 " until 0xe0b3
-  "let line_powerline = 0xe0b4 " until 0xe0b7
-  "let line_powerline = 0xe0b8 " until 0xe0bb
-  "let line_powerline = 0xe0bc " until 0xe0bf
-  "let line_powerline = 0xe0c0 " until 0xe0c3
-
   nmap <silent>ml :Line<cr><c-l>
 
 " }
@@ -147,7 +131,7 @@
   let zoom_usefloat = 1
   let zoom_useminus = 1
 
-  let zoom_height = -5
+  let zoom_height = 0.80
   let zoom_width  = 80
   "let zoom_right  = 0
 
@@ -156,8 +140,8 @@
 " }
 " text {
 
-  nmap maj vip:TextFixs<cr>vip:TextJust 72<cr>{vapoj<vip>
-  vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 72<cr>
+  nmap maj vip:TextFixs<cr>vip:TextJust 76<cr>{vapoj<vip>
+  vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 76<cr>
 
 "}
 
