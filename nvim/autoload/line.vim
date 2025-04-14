@@ -16,7 +16,7 @@ fu! line#init(...) "{
   let limit       = s:delay>=2000
   let s:delay     = limit*s:delay+!limit*2000
 
-  let s:modetype  = get(g:,'line_modetype',1)
+  let s:showmode  = get(g:,'line_showmode',1)
   let s:powerline = get(g:,'line_powerline',-1)
 
   let g:line = {}
@@ -126,10 +126,10 @@ fu! line#curr(...) "{
   let indx = a:4
 
   let elem = ''
-  if s:modetype==0 " brackets config
+  if s:showmode==0 " brackets config
     let elem = '['..info..']'
   endif
-  if s:modetype==1 " highlight config
+  if s:showmode==1 " highlight config
     let elem = '%#linecurr# '..info..' '
   endif
   if 1+s:powerline " powerline config
@@ -154,10 +154,10 @@ fu! line#inac(...) "{
   let revs = a:3
   let indx = a:4
   let elem = ''
-  if s:modetype==0 " brackets config
+  if s:showmode==0 " brackets config
     let elem = ' '..info..' '
   endif
-  if s:modetype==1 " highlight config
+  if s:showmode==1 " highlight config
     let elem = '%#lineinac# '..info..' '
   endif
   if 1+s:powerline " powerline config
@@ -201,7 +201,7 @@ fu! line#draw(...) "{
 
   let list = revs?reverse(list):list
   let list = join(list,'')
-  if s:modetype==0
+  if s:showmode==0
     let list ='%#Normal#'..list
   endif
   return list

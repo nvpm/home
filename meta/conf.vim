@@ -117,8 +117,8 @@
   let line_verbose   = 1
   let line_projname  = 1
   let line_gitinfo   = 1
-  let line_gitdelay  = 10000
-  let line_modetype  = 0
+  let line_gitdelay  = 1000
+  let line_showmode  = 1
 
   hi linefill guibg=bg
   hi linespot guibg=#777733 guifg=Black   gui=bold
