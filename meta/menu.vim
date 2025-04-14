@@ -61,6 +61,7 @@ fu! menu#push(...) "{
 
     let server = 'gitlab'
     let server = 'github'
+    let server = 'github-recv'
     let tfile  = $'/iasj/cryp/{server}'
     let token  = $'/iasj/cryp/{server}.gpg'
     let prefix = ['',"gitlab-cli-token:"][server=='gitlab']
@@ -80,22 +81,22 @@ fu! menu#push(...) "{
     endif
 
   " }
-  " push w/ token {
-
-    if filereadable(tfile)
-      let token = readfile(tfile)[0]
-      call delete(tfile)
-      let url = $'https://{prefix}{token}@{server}.com/nvpm/{root}'
-      let flag = '--force '.url.' main --tags'
-      ec "\n"
-      ec repeat('-',&columns)
-      echohl NVPMPassed
-      ec system('git -C '..menu#fixd(root)..' push '.flag)
-      echohl None
-      ec repeat('-',&columns)
-    endif
-
-  " }
+  "" push w/ token {
+  "
+  "  if filereadable(tfile)
+  "    let token = readfile(tfile)[0]
+  "    call delete(tfile)
+  "    let url = $'https://{prefix}{token}@{server}.com/nvpm/{root}'
+  "    let flag = '--force '.url.' main --tags'
+  "    ec "\n"
+  "    ec repeat('-',&columns)
+  "    echohl NVPMPassed
+  "    ec system('git -C '..menu#fixd(root)..' push '.flag)
+  "    echohl None
+  "    ec repeat('-',&columns)
+  "  endif
+  "
+  "" }
 
 endfu "}
 fu! menu#save(...) "{

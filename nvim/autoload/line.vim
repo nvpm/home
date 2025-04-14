@@ -104,10 +104,10 @@ fu! line#init(...) "{
         if has_key(s:colors.curr,'gui')
           let s:colors.charend.gui = s:colors.curr.gui
         endif "}
-        let s:colors.charinit= {} "{
-        if has_key(s:colors.inac,'guibg')
-          let s:colors.charinit.guifg = s:colors.inac.guibg
-        endif
+        let s:colors.charinit= {} "{ 
+        if has_key(s:colors.inac,'guibg') 
+          let s:colors.charinit.guifg = s:colors.inac.guibg 
+        endif 
         if has_key(s:colors.curr,'guibg')
           let s:colors.charinit.guibg = s:colors.curr.guibg
         endif
@@ -256,27 +256,27 @@ endfu "}
 "-- auxy functions --
 fu! line#seth(...) "{
 
-    let groups = {}
-    for name in keys(s:colors) " loop over colors {
-      if s:modetype==0&&(name=='curr'||name=='inac')|continue|endif
-      if hlexists('nvpmline'..name)|continue|endif
-      let fields = ''
-      for field in keys(s:colors[name])
-        if s:colors[name][field] =~ '^\w\+\.\w\+$'
-          let [group,arg] = split(s:colors[name][field],'\.')
-          if !has_key(groups,group)
-            let groups[group] = line#geth(group)
-          endif
-          let group = groups[group]
-          if has_key(group,arg)
-            let fields.= field..'='..group[arg]..' '
-          endif
-        else
-          let fields.= field..'='..s:colors[name][field]..' '
+  let groups = {}
+  for name in keys(s:colors) " loop over colors {
+    if s:modetype==0&&(name=='curr'||name=='inac')|continue|endif
+    if hlexists('nvpmline'..name)|continue|endif
+    let fields = ''
+    for field in keys(s:colors[name])
+      if s:colors[name][field] =~ '^\w\+\.\w\+$'
+        let [group,arg] = split(s:colors[name][field],'\.')
+        if !has_key(groups,group)
+          let groups[group] = line#geth(group)
         endif
-      endfor
-      exe 'hi nvpmline'..name..' '..fields
-    endfor "}
+        let group = groups[group]
+        if has_key(group,arg)
+          let fields.= field..'='..group[arg]..' '
+        endif
+      else
+        let fields.= field..'='..s:colors[name][field]..' '
+      endif
+    endfor
+    exe 'hi nvpmline'..name..' '..fields
+  endfor "}
 
 endfu "}
 fu! line#geth(...) "{

@@ -1,0 +1,8 @@
+
+The LINE plugin will have a flux file as well. It's going to be used to generate highlight instructions for the coloring of both the statusline and the tabline. Also, maybe the layout structure of the elements will be defined in this file as well.
+
+
+
+
+
+vim: ft=help: tw=2

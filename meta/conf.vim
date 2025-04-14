@@ -37,6 +37,7 @@
   let ayucolor="light"  " for light version of theme
   let ayucolor="mirage" " for mirage version of theme
   let ayucolor="dark"   " for dark version of theme
+  "colorscheme github
   colorscheme ayu
   if !has('nvim')
     syntax on
@@ -72,13 +73,6 @@
   let nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
   let nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
 
-  hi fluxcomm guifg=#6c6776
-  hi fluxkeyw guifg=#00ff00 gui=bold
-  hi fluxname guifg=#ffffff
-  hi fluxvars guifg=#1177ff
-  hi fluxline guifg=#ffee00 gui=italic
-  hi fluxsepr guifg=#ffffff gui=bold
-
   nmap <silent><space>   :NvpmLoop + 3<cr>
   nmap <silent>m<space>  :NvpmLoop - 3<cr>
   nmap <silent><tab>     :NvpmLoop + 2<cr>
@@ -103,12 +97,12 @@
   imap <F10> <esc>:NvpmMake<space>
   cmap <F10> <esc>:NvpmMake<space>
 
-  nmap <silent><F11> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <silent><F11> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <silent><F11> <esc>:wall<cr>:NvpmEdit<cr>
-  nmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
+  nmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <F11> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
+  nmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <F12> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
 
   nmap mt :NvpmTerm<cr>i
 
@@ -123,19 +117,20 @@
   let line_projname  = 1
   let line_gitinfo   = 1
   let line_gitdelay  = 10000
-  let line_modetype  = 1 " 0 and 1
+  let line_modetype  = 0
 
   let line_colors      = #{}
-  let line_colors.curr = #{guifg:'#000000',guibg:'Visual.guibg',gui:'bold'}
-  let line_colors.inac = #{guifg:'#777777',guibg:'#002222'}
-
+  "let line_colors.curr = #{guifg:'#000000',guibg:'Visual.guibg',gui:'bold'}
+  "
+  "hi def link nvpmlineinac Normal
+  "
   let line_colors.proj = #{guifg:'#ffffff',guibg:'#5c5c5c',gui:'bold'}
   let line_colors.fill = #{                guibg:'bg'}
   let line_colors.gitm = #{guifg:'#aa4371'           }
   let line_colors.gits = #{guifg:'#00ff00'           }
   let line_colors.gitc = #{guifg:'#77aaaa'           }
 
-  let line_powerline = 0xe0b0 " until 0xe0b3
+  "let line_powerline = 0xe0b0 " until 0xe0b3
   "let line_powerline = 0xe0b4 " until 0xe0b7
   "let line_powerline = 0xe0b8 " until 0xe0bb
   "let line_powerline = 0xe0bc " until 0xe0bf
@@ -161,8 +156,8 @@
 " }
 " text {
 
-  nmap maj vip:TextFixs<cr>vip:TextJust 74<cr>{vapoj<vip>
-  vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 74<cr>
+  nmap maj vip:TextFixs<cr>vip:TextJust 72<cr>{vapoj<vip>
+  vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 72<cr>
 
 "}
 
