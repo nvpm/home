@@ -41,7 +41,7 @@ fu! line#topl(...) "{
   let line  = ''
 
   let line .= line#draw(2)
-  let line .= '%#nvpmlinefill#'
+  let line .= '%#linefill#'
   let line .= '%='
   let line.= line#draw(1,1)
   let line.= line#proj()
@@ -56,7 +56,7 @@ fu! line#botl(...) "{
   let line .= line#draw(3)
 
   let line .= g:line.git
-  let line .= '%#nvpmlinefill#'
+  let line .= '%#linefill#'
   let line .= s:verbose>0||g:line.nvpm?' ⬤ ':''
   let line .= '%{line#file()}'
   let line .= '%='
@@ -130,17 +130,17 @@ fu! line#curr(...) "{
     let elem = '['..info..']'
   endif
   if s:modetype==1 " highlight config
-    let elem = '%#nvpmlinecurr# '..info..' '
+    let elem = '%#linecurr# '..info..' '
   endif
   if 1+s:powerline " powerline config
     if revs
-      let end  = '%#nvpmlinecharend#' ..s:left
-      let init = '%#nvpmlinecharinit#'..s:left
-      let elem = end..'%#nvpmlinecurr# '..info..' '..init
+      let end  = '%#linecharend#' ..s:left
+      let init = '%#linecharinit#'..s:left
+      let elem = end..'%#linecurr# '..info..' '..init
     else
-      let end  = '%#nvpmlinecharend#' ..s:right
-      let init = '%#nvpmlinecharinit#'..s:right
-      let space= '%#nvpmlinecurr# '
+      let end  = '%#linecharend#' ..s:right
+      let init = '%#linecharinit#'..s:right
+      let space= '%#linecurr# '
       let elem = init..space..info..' '..end
     endif
   endif
@@ -158,17 +158,17 @@ fu! line#inac(...) "{
     let elem = ' '..info..' '
   endif
   if s:modetype==1 " highlight config
-    let elem = '%#nvpmlineinac# '..info..' '
+    let elem = '%mlineinac# '..info..' '
   endif
   if 1+s:powerline " powerline config
-    let inac = '%#nvpmlineinac#'
-    let iend = '%#nvpmlinechariend#'
+    let inac = '%#lineinac#'
+    let iend = '%#linechariend#'
     if revs
       let end  = indx==leng-1?iend.s:left.inac.' ':inac.'  '
       let elem = end..info..'  '
     else
       let end = ' '..iend..s:right
-      let elem = '%#nvpmlineinac#  '..info..(indx==leng-1?end:'  ')
+      let elem = '%#lineinac#  '..info..(indx==leng-1?end:'  ')
     endif
   endif
   return elem
@@ -244,7 +244,7 @@ fu! line#proj(...) "{
   else
     let proj = proj.list[proj.meta.indx].data.name
   endif
-  let line .= '%#nvpmlineproj#'..' '..proj..' '
+  let line .= '%#lineproj#'..' '..proj..' '
   return line
 
 endfu "}
@@ -274,13 +274,13 @@ fu! line#giti(...) "{
     let char = ''
     let s = ' '
     if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#nvpmlinegitc#'
+      let cr   = '%#linegitc#'
       if modified
-        let cr    = '%#nvpmlinegitm#'
+        let cr    = '%#linegitm#'
         let char  = ' [M]'
       endif
       if staged
-        let cr   = '%#nvpmlinegits#'
+        let cr   = '%#linegits#'
         let char = ' [S]'
       endif
       let info = cr .'  ' . branch . char
