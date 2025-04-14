@@ -4,11 +4,11 @@ home seng
   loop plugin: line flux -- nvpm zoom - text {
     workspace $(plugin):$(plugin) 
       tab code {
+        file Random   
         file Syntax
         file File     
         --
         file Data     
-        file Random   
       }
       tab misc {
         file TODO     

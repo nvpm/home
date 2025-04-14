@@ -1,18 +1,154 @@
+fu! line#init(...) "{
+  if exists('s:init')|return|else|let s:init=1|endif
+  let s:nvim = has('nvim')
 
-  "let line_colors    = #{n:{},i:{},v:{},c:{},t:{},e:{}}
-  "let line_colors.n.curr = #{gfg:'#000000' , gbg:'#337777'   , g:'bold'}
-  "let line_colors.i.curr = #{gfg:'#000000' , gbg:'#ff0000'   , g:'bold'}
-  "let line_colors.v.curr = #{gfg:'#000000' , gbg:'Visual.bg' , g:'bold'}
-  "let line_colors.c.curr = #{gfg:'#000000' , gbg:'#00ff00'   , g:'bold'}
-  "let line_colors.t.curr = g:line_colors.n.curr
-  "
-  "let line_colors.n.inac = #{gfg:'#337777',gbg:'bg'}
-  "let line_colors.i.inac = g:line_colors.n.inac
-  "let line_colors.v.inac = g:line_colors.n.inac
-  "let line_colors.c.inac = g:line_colors.n.inac
-  "let line_colors.t.inac = g:line_colors.n.inac
-  "
-  "let line_colors.n.mode = #{gfg:'#00ff00' , gbg:'#2c2c2c'}
-  "let line_colors.i.mode = #{gfg:'#00ffff' , gbg:'#2c2c2c'}
-  "let line_colors.v.mode = #{gfg:'#ffff00' , gbg:'#2c2c2c'}
+  let s:activate  = get(g:,'line_activate',1)
+  let s:verbose   = get(g:,'line_verbose' ,2)
+  let s:projname  = get(g:,'line_projname',0)
+  let s:gitinfo   = get(g:,'line_gitinfo',1)
+  let s:delay     = get(g:,'line_gitdelay',20000)
+  let limit       = s:delay>=2000
+  let s:delay     = limit*s:delay+!limit*2000
 
+  let s:modetype  = get(g:,'line_modetype',1)
+  let s:colors    = get(g:,'line_colors' ,{})
+  let s:powerline = get(g:,'line_powerline',-1)
+
+  let g:line = {}
+  let g:line.nvpm = 0
+  let g:line.zoom = 0
+  let g:line.mode = 0
+  let g:line.timer= -1
+  let g:line.git  = ''
+
+  let s:laststatus  = &laststatus
+  let s:showtabline = &showtabline
+
+  if 1+s:powerline
+    let s:right    = nr2char(s:powerline + 0)
+    let s:iright   = nr2char(s:powerline + 1)
+    let s:left     = nr2char(s:powerline + 2)
+    let s:ileft    = nr2char(s:powerline + 3)
+    let s:brackets = 0
+    if has_key(s:colors,'curr')&&has_key(s:colors,'inac')
+      if &termguicolors
+        let s:colors.charend = {} "{
+        if has_key(s:colors.curr,'guibg')
+          let s:colors.charend.guifg = s:colors.curr.guibg
+        endif
+        if has_key(s:colors.inac,'guibg')
+          let s:colors.charend.guibg = s:colors.inac.guibg
+        endif
+        if has_key(s:colors.curr,'gui')
+          let s:colors.charend.gui = s:colors.curr.gui
+        endif "}
+        let s:colors.charinit= {} "{ 
+        if has_key(s:colors.inac,'guibg') 
+          let s:colors.charinit.guifg = s:colors.inac.guibg 
+        endif 
+        if has_key(s:colors.curr,'guibg')
+          let s:colors.charinit.guibg = s:colors.curr.guibg
+        endif
+        if has_key(s:colors.inac,'gui')
+          let s:colors.charinit.gui = s:colors.inac.gui
+        endif "}
+        let s:colors.chariend= {} "{
+        if has_key(s:colors.inac,'guibg')
+          let s:colors.chariend.guifg = s:colors.inac.guibg
+        endif
+        if has_key(s:colors.curr,'guibg')
+          let s:colors.chariend.guibg = s:colors.fill.guibg
+        endif
+        if has_key(s:colors.inac,'gui')
+          let s:colors.chariend.gui = s:colors.inac.gui
+        endif "}
+      else
+        let s:colors.charend = {} "{
+        if has_key(s:colors.curr,'ctermbg')
+          let s:colors.charend.ctermfg = s:colors.curr.ctermbg
+        endif
+        if has_key(s:colors.inac,'ctermbg')
+          let s:colors.charend.ctermbg = s:colors.inac.ctermbg
+        endif
+        if has_key(s:colors.curr,'cterm')
+          let s:colors.charend.cterm = s:colors.curr.cterm
+        endif "}
+        let s:colors.charinit= {} "{
+        if has_key(s:colors.inac,'ctermbg')
+          let s:colors.charinit.ctermfg = s:colors.inac.ctermbg
+        endif
+        if has_key(s:colors.curr,'ctermbg')
+          let s:colors.charinit.ctermbg = s:colors.curr.ctermbg
+        endif
+        if has_key(s:colors.inac,'cterm')
+          let s:colors.charinit.cterm = s:colors.inac.cterm
+        endif "}
+        let s:colors.chariend= {} "{
+        if has_key(s:colors.inac,'ctermbg')
+          let s:colors.chariend.ctermfg = s:colors.inac.ctermbg
+        endif
+        if has_key(s:colors.curr,'ctermbg')
+          let s:colors.chariend.ctermbg = s:colors.fill.ctermbg
+        endif
+        if has_key(s:colors.inac,'cterm')
+          let s:colors.chariend.cterm = s:colors.inac.cterm
+        endif "}
+      endif
+    else
+      let s:modetype = 1
+    endif
+  endif
+
+  call line#seth()
+  delfunc line#seth
+  delfunc line#geth
+
+  if s:activate
+    hi clear TabLine
+    hi clear StatusLine
+    call line#show()
+  endif
+
+endfu "}
+fu! line#seth(...) "{
+
+  let groups = {}
+  for name in keys(s:colors) " loop over colors {
+    if s:modetype==0&&(name=='curr'||name=='inac')|continue|endif
+    if hlexists('nvpmline'..name)|continue|endif
+    let fields = ''
+    for field in keys(s:colors[name])
+      if s:colors[name][field] =~ '^\w\+\.\w\+$'
+        let [group,arg] = split(s:colors[name][field],'\.')
+        if !has_key(groups,group)
+          let groups[group] = line#geth(group)
+        endif
+        let group = groups[group]
+        if has_key(group,arg)
+          let fields.= field..'='..group[arg]..' '
+        endif
+      else
+        let fields.= field..'='..s:colors[name][field]..' '
+      endif
+    endfor
+    exe 'hi nvpmline'..name..' '..fields
+  endfor "}
+
+endfu "}
+fu! line#geth(...) "{
+
+  let group = a:1
+  let field = get(a:,2,'no field')
+  let args = {}
+  if hlexists(group)
+    let info = execute('hi '.group)
+    let info = split(info,'\s\+')[2:]
+    let info = map(info,'split(v:val,"=")')
+    for arg in info
+      if arg[0]==field|return arg[1]|endif
+      let args[arg[0]] = arg[1]
+    endfor
+  endif
+  return args
+
+endfu "}
