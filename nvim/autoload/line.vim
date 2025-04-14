@@ -158,7 +158,7 @@ fu! line#inac(...) "{
     let elem = ' '..info..' '
   endif
   if s:modetype==1 " highlight config
-    let elem = '%mlineinac# '..info..' '
+    let elem = '%#lineinac# '..info..' '
   endif
   if 1+s:powerline " powerline config
     let inac = '%#lineinac#'
@@ -244,7 +244,7 @@ fu! line#proj(...) "{
   else
     let proj = proj.list[proj.meta.indx].data.name
   endif
-  let line .= '%#lineproj#'..' '..proj..' '
+  let line .= '%#linespot#'..' '..proj..' '
   return line
 
 endfu "}
