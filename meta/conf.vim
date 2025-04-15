@@ -113,21 +113,33 @@
   "let __LINEAUTO__ = 0
   "let __LINEPLUG__ = 0
 
+  set nowrap
   let line_activate  = 1
   let line_verbose   = 1
   let line_projname  = 1
   let line_gitinfo   = 1
-  let line_gitdelay  = 1000
+  let line_gitdelay  = 20000
   let line_atomtype  = 1 "0:bracks,1:hi,2:tabs,3:powerline
 
-  hi linefill guibg=bg
-  hi linespot guibg=#777733 guifg=Black   gui=bold
-  hi linecurr guibg=#005f87 guifg=Black   gui=bold
-  hi lineinac guibg=bg      guifg=#005f87
-  hi def link linegits Title
-  hi def link linegitm WarningMsg
-  hi def link linegitc WildMenu 
-  hi def link linemode linespot
+  let s:c      = {}
+  let s:c.fill = ['bg']
+  let s:c.spot = ['#777700','Black','bold']
+  let s:c.curr = ['#005f87','Black','bold']
+  let s:c.inac = ['bg'     ,s:c.curr[0]]
+  let s:c.gits = ['Yellow' ,'bg']
+  let s:c.gitm = ['Red'    ,'bg']
+  let s:c.gitc = ['Blue'   ,'bg']
+  let s:c.mode = s:c.spot
+  let line_colors = s:c | unlet s:c
+
+  "hi linefill guibg=bg
+  "hi linespot guibg=#777733 guifg=Black   gui=bold
+  "hi linecurr guibg=#005f87 guifg=Black   gui=bold
+  "hi lineinac guibg=bg      guifg=#005f87
+  "hi def link linegits Title
+  "hi def link linegitm WarningMsg
+  "hi def link linegitc WildMenu 
+  "hi def link linemode linespot
 
   nmap <silent>ml :Line<cr><c-l>
 
@@ -142,6 +154,7 @@
 
   let zoom_height = 0.80
   let zoom_width  = 80
+  "let zoom_width  = 0.90
   "let zoom_right  = 0
 
   nmap <silent>mz :Zoom<cr>
