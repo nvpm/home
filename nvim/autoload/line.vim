@@ -3,6 +3,111 @@
 if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#atom(...) "{
+
+  let type = a:1
+  let info = a:2
+  let revs = a:3
+  let indx = a:4
+  let leng = a:5
+  let elem = ''
+  if type==0 " curr{
+    if s:atomtype==0 " brackets  config{
+      let info = '['..info..']'
+    endif "}
+    if s:atomtype==1 " highlight config{
+      let elem = '%#linecurr# '..info..' '
+    endif "}
+    if s:atomtype==3 " powerline config{
+      if revs
+        let end  = '%#linecharend#' ..s:left
+        let init = '%#linecharinit#'..s:left
+        let elem = end..'%#linecurr# '..info..' '..init
+      else
+        let end  = '%#linecharend#' ..s:right
+        let init = '%#linecharinit#'..s:right
+        let space= '%#linecurr# '
+        let elem = init..space..info..' '..end
+      endif
+    endif "}
+  endif "}
+  if type==1 " inac{
+    if s:atomtype==0 " brackets  config{
+      let elem = ' '..info..' '
+    endif "}
+    if s:atomtype==1 " highlight config{
+      let elem = '%#lineinac# '..info..' '
+    endif "}
+    if s:atomtype==3 " powerline config{
+      let inac = '%#lineinac#'
+      let iend = '%#linechariend#'
+      if revs
+        let end  = indx==leng-1?iend.s:left.inac.' ':inac.'  '
+        let elem = end..info..'  '
+      else
+        let end = ' '..iend..s:right
+        let elem = '%#lineinac#  '..info..(indx==leng-1?end:'  ')
+      endif
+    endif "}
+  endif "}
+  return elem
+
+endfu "}
+fu! line#list(...) "{
+
+  let curr = a:2
+  let leng = a:3
+  let revs = a:4
+  let list = []
+
+  for indx in range(leng)
+    let item = a:1[indx]
+    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
+    let iscurr = indx==curr
+    if indx==curr
+      let elem = line#atom(0,info,revs,indx,leng)
+    else
+      let elem = line#atom(1,info,revs,indx,leng)
+    endif
+    call add(list,elem)
+  endfor
+  if s:atomtype==2
+  endif
+  return list
+
+endfu "}
+fu! line#draw(...) "{
+
+  let list = []
+  let revs = get(a:,2)
+
+  if g:line.nvpm
+    let node = flux#seek(g:nvpm.tree.root,get(a:,1,-1))
+    if has_key(node,'meta')
+      let curr = node.meta.indx
+      let leng = node.meta.leng
+      let list = line#list(node.list,curr,leng,revs)
+    endif
+  else
+    if s:verbose>1
+      let bufs = map(range(1,bufnr('$')),'bufname(v:val)')
+      let bufs = filter(bufs,'!empty(v:val)&&buflisted(v:val)')
+      let curr = match(bufs,bufname())
+      let leng = len(bufs)
+      let list = line#list(bufs,curr,leng,revs)
+    elseif s:verbose==1
+      let list = line#list([bufname()],0,1,revs)
+    endif
+  endif
+
+  let list = revs?reverse(list):list
+  let list = join(list,'')
+  if s:atomtype==0
+    let list ='%#Normal#'..list
+  endif
+  return list
+
+endfu "}
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
@@ -118,115 +223,6 @@ fu! line#line(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! line#atom(...) "{
-
-  let type = a:1
-  let info = a:2
-  let revs = a:3
-  let indx = a:4
-  let leng = a:5
-  let atom = ''
-  if type==0 " curr{
-    if s:atomtype==0 " brackets  config{
-      let atom = '['..info..']'
-    endif "}
-    if s:atomtype==1 " highlight config{
-      let atom = '%#linecurr# '..info..' '
-    endif "}
-    if s:atomtype==2 " tabs      config{
-    endif "}
-    if s:atomtype==3 " powerline config{
-      if revs
-        let end  = '%#linecharend#' ..s:left
-        let init = '%#linecharinit#'..s:left
-        let atom = end..'%#linecurr# '..info..' '..init
-      else
-        let end  = '%#linecharend#' ..s:right
-        let init = '%#linecharinit#'..s:right
-        let space= '%#linecurr# '
-        let atom = init..space..info..' '..end
-      endif
-    endif "}
-  endif "}
-  if type==1 " inac{
-    if s:atomtype==0 " brackets  config{
-      let atom = ' '..info..' '
-    endif "}
-    if s:atomtype==1 " highlight config{
-      let atom = '%#lineinac# '..info..' '
-    endif "}
-    if s:atomtype==2 " tabs      config{
-    endif "}
-    if s:atomtype==3 " powerline config{
-      let inac = '%#lineinac#'
-      let iend = '%#linechariend#'
-      if revs
-        let end  = indx==leng-1?iend.s:left.inac.' ':inac.'  '
-        let atom = end..info..'  '
-      else
-        let end = ' '..iend..s:right
-        let atom = '%#lineinac#  '..info..(indx==leng-1?end:'  ')
-      endif
-    endif "}
-  endif "}
-  return atom
-
-endfu "}
-fu! line#list(...) "{
-
-  let list = a:1
-  let curr = a:2
-  let leng = a:3
-  let revs = a:4
-  let names= []
-
-  for indx in range(leng)
-    let item = list[indx]
-    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
-    let iscurr = indx==curr
-    if indx==curr
-      let name = line#atom(0,info,revs,indx,leng)
-    else
-      let name = line#atom(1,info,revs,indx,leng)
-    endif
-    call add(names,name)
-  endfor
-  return names
-
-endfu "}
-fu! line#draw(...) "{
-
-  let list = []
-  let revs = get(a:,2)
-
-  if g:line.nvpm
-    let type = get(a:,1,-1)
-    let node = flux#seek(g:nvpm.tree.root,type)
-    if has_key(node,'meta')
-      let curr = node.meta.indx
-      let leng = node.meta.leng
-      let list = line#list(node.list,curr,leng,revs)
-    endif
-  else
-    if s:verbose>1
-      let bufs = map(range(1,bufnr('$')),'bufname(v:val)')
-      let bufs = filter(bufs,'!empty(v:val)&&buflisted(v:val)')
-      let curr = match(bufs,bufname())
-      let leng = len(bufs)
-      let list = line#list(bufs,curr,leng,revs)
-    elseif s:verbose==1
-      let list = line#list([bufname()],0,1,revs)
-    endif
-  endif
-
-  let list = revs?reverse(list):list
-  let list = join(list,'')
-  if s:atomtype==0
-    let list ='%#Normal#'..list
-  endif
-  return list
-
-endfu "}
 fu! line#proj(...) "{
 
   if !s:projname|return ''|endif
