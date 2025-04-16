@@ -1,3 +1,4 @@
+    home nvim
     workspace line {
       tab code
         file auto : autoload/line.vim

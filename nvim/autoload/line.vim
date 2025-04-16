@@ -114,7 +114,7 @@ fu! line#giti(...) "{
         let cr   = '%#linegits#'
         let char = ' [S]'
       endif
-      let info = cr .'  ' . branch . char
+      let info = cr .'  ' . branch . char . ' '
     endif
   endif
   let g:line.git = info
