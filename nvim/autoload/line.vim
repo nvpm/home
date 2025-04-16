@@ -94,7 +94,7 @@ fu! line#time(...) "{
   endif
 
 endfu "}
-fu! line#agit(...) "{
+fu! line#giti(...) "{
   let info  = ''
   if s:gitinfo && executable('git')
     let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
