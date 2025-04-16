@@ -117,7 +117,7 @@
   let line_activate = 1
   let line_verbose  = 1
   let line_projname = 1
-  let line_gitinfo  = 0
+  let line_gitinfo  = 1
   let line_gitdelay = 5000
   let line_edgekind = 0 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
