@@ -120,7 +120,7 @@
   let line_gitinfo  = 0
   let line_gitdelay = 5000
   let line_edgekind = 0 "0:bracks,1:hi,2:tabs,3:powerline
-  let line_floating = 0
+  let line_floating = 1
 
   hi def link linefill Normal
   hi linespot  guibg=#aaaa33 guifg=Black

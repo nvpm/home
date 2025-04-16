@@ -37,11 +37,15 @@ fu! line#list(...) "{
     let iscurr = indx==curr
     let elem = ''
     if s:edgekind==0 " brackets  config{
-      "let elem = '%#linefill#'
       if indx==curr
         let elem.= '['..info..']'
       else
         let elem.= ' '..info..' '
+      endif
+    endif "}
+    if s:edgekind==1 " highlight config{
+      if indx==curr
+      else
       endif
     endif "}
     call add(list,elem)
@@ -109,16 +113,13 @@ fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
-  let s:activate   = get(g:,'line_activate',1)
-  let s:verbose    = get(g:,'line_verbose' ,2)
-  let s:projname   = get(g:,'line_projname',0)
-  let s:gitinfo    = get(g:,'line_gitinfo',1)
-  let s:delay      = get(g:,'line_gitdelay',20000)
-  let limit        = s:delay>=2000
-  let s:delay      = limit*s:delay+!limit*2000
-  let s:edgekind   = get(g:,'line_edgekind',1)
-  let s:currmode   = ''
-  let s:innerspace = s:edgekind==0?'%#linefill# ':''
+  let s:activate = get(g:,'line_activate',1)
+  let s:verbose  = get(g:,'line_verbose' ,2)
+  let s:projname = get(g:,'line_projname',0)
+  let s:gitinfo  = get(g:,'line_gitinfo',1)
+  let s:delay    = get(g:,'line_gitdelay',20000)
+  let s:edgekind = get(g:,'line_edgekind',1)
+  let s:currmode = ''
 
   let g:line = {}
   let g:line.nvpm = 0
