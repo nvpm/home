@@ -83,7 +83,8 @@ fu! s:test.line(...) "{
     ec repeat("\n",2)
     let &termguicolors = term
   endfu
-  call Showcterm()|delfunc Showcterm
+  "call Showcterm()|delfunc Showcterm
+  ec line#foot()
 
 endfu "}
 "}
@@ -118,6 +119,6 @@ if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
 if 1|call s:test.zoom()|endif
-if 0|call s:test.line()|endif
+if 1|call s:test.line()|endif
 
 "}

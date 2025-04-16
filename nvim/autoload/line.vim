@@ -3,37 +3,89 @@
 if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-"-- auxy functions --
+fu! line#pack(...) "{
+
+  let type = match(['p','w','t','b'],a:1)
+  let revs = a:2
+  let line = ''
+
+  if g:line.nvpm
+    let node = flux#seek(g:nvpm.tree.root,type)
+    if has_key(node,'meta')
+      let list = line#list(node.list,node.meta.indx,node.meta.leng,revs)
+      let line = join(list,'')
+    endif
+  else
+  endif
+  if s:edgekind==0
+    let line = '%#linefill#'..line
+  endif
+
+  return line
+
+endfu "}
+fu! line#list(...) "{
+
+  let curr = a:2
+  let leng = a:3
+  let revs = a:4
+  let list = []
+
+  for indx in range(leng) "loop over given list {
+    let item = a:1[indx]
+    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
+    let iscurr = indx==curr
+    let elem = ''
+    if s:edgekind==0 " brackets  config{
+      "let elem = '%#linefill#'
+      if indx==curr
+        let elem.= '['..info..']'
+      else
+        let elem.= ' '..info..' '
+      endif
+    endif "}
+    call add(list,elem)
+  endfor "}
+
+  return list
+
+endfu "}
+fu! line#curr(...) "{
+
+  return 'curr'
+
+endfu "}
 fu! line#bone(...) "{
 
   let s:currmode = mode()
-  let line = ''
+  let list = []
   for bone in a:1
     if type(bone)==type([])
+      let item = ''
       if bone[0]=~'\(git\|branch\)'
-        let line.= g:line.git
+        let item = g:line.git
       elseif bone[0]=~'\(file\|mode\)'
-        let line.= line#{bone[0]}()
-      elseif bone[0]=~'\(list\|curr\)'
-        let line.= line#{bone[0]}(get(bone,1))
+        let item = line#{bone[0]}()
+      elseif bone[0]=~'\(pack\|curr\)'
+        let item = line#{bone[0]}(get(bone,1),a:2)
       endif
+      if !empty(item)|call add(list,item)|endif
     endif
   endfor
-  return line
+  return join(list,s:innerspace)
 
 endfu "}
 fu! line#skel(...) "{
 
   let s:skel = #{head:{},foot:{}}
-  let s:skel.head.l=[['list','t']]
-  let s:skel.head.r=[['list','w'],['curr','p']]
-  let s:skel.foot.l=[['mode'],['list','b'],['git'],['file']]
+  let s:skel.head.l=[['pack','t']]
+  let s:skel.head.r=[['pack','w'],['curr','p']]
+  let s:skel.foot.l=[['mode'],['pack','b'],['git'],['file']]
   let s:skel.foot.r=[]
 
 endfu "}
 fu! line#mode(...) "{
 
-  if s:edgekind==0|return ''|endif
   let line = ''
   if     s:currmode=='i'
     let line.= '%#linemodei# insert '
@@ -52,106 +104,22 @@ fu! line#mode(...) "{
   return line
 
 endfu "}
-fu! line#curr(...) "{
-
-  return 'curr'
-
-endfu "}
-fu! line#list(...) "{
-
-  return 'list'
-
-endfu "}
-fu! line#seth(...) "{
-
-  if hlexists('linemode')
-    if !hlexists('linemodei')|hi def link linemodei linemode|endif
-    if !hlexists('linemodev')|hi def link linemodev linemode|endif
-    if !hlexists('linemodec')|hi def link linemodec linemode|endif
-    if !hlexists('linemodet')|hi def link linemodet linemode|endif
-    if !hlexists('linemoder')|hi def link linemoder linemode|endif
-  endif
-  
-endfu "}
-fu! line#save(...) "{
-
-  let s:laststatus  = &laststatus
-  let s:showtabline = &showtabline
-
-endfu "}
-fu! line#time(...) "{
-
-  if a:0
-    if 1+g:line.timer
-      call timer_stop(g:line.timer)
-      let g:line.timer = -1
-      let g:line.git   = ''
-    endif
-  else
-    if s:gitinfo && g:line.timer==-1
-      let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
-    endif
-  endif
-
-endfu "}
-fu! line#giti(...) "{
-  let info  = ''
-  if s:gitinfo && executable('git')
-    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if empty(branch)|return ''|endif
-    let modified = !empty(trim(system('git diff HEAD --shortstat')))
-    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
-    let cr = ''
-    let char = ''
-    let s = ' '
-    if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#linegitc#'
-      if modified
-        let cr    = '%#linegitm#'
-        let char  = ' [M]'
-      endif
-      if staged
-        let cr   = '%#linegits#'
-        let char = ' [S]'
-      endif
-      let info = cr .'  ' . branch . char . ' '
-    endif
-  endif
-  let g:line.git = info
-endfu "}
-fu! line#file(...) "{
-
-  let name = '%#linefill#'
-  if !empty(matchstr(bufname(),'term://.*'))
-    let name.= 'terminal'
-  endif
-  if &filetype == 'help' && !filereadable('./'.bufname())
-    let name.= resolve(expand("%:t"))
-  else
-    let file = resolve(expand("%"))
-    if len(file)>25
-      let file = fnamemodify(file,':t')
-    endif
-    let name.= file
-  endif
-  return name
-
-endfu "}
-
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
-  let s:activate  = get(g:,'line_activate',1)
-  let s:verbose   = get(g:,'line_verbose' ,2)
-  let s:projname  = get(g:,'line_projname',0)
-  let s:gitinfo   = get(g:,'line_gitinfo',1)
-  let s:delay     = get(g:,'line_gitdelay',20000)
-  let limit       = s:delay>=2000
-  let s:delay     = limit*s:delay+!limit*2000
-
-  let s:edgekind  = get(g:,'line_edgekind',1)
+  let s:activate   = get(g:,'line_activate',1)
+  let s:verbose    = get(g:,'line_verbose' ,2)
+  let s:projname   = get(g:,'line_projname',0)
+  let s:gitinfo    = get(g:,'line_gitinfo',1)
+  let s:delay      = get(g:,'line_gitdelay',20000)
+  let limit        = s:delay>=2000
+  let s:delay      = limit*s:delay+!limit*2000
+  let s:edgekind   = get(g:,'line_edgekind',1)
+  let s:currmode   = ''
+  let s:innerspace = s:edgekind==0?'%#linefill# ':''
+  let s:innerspace = s:edgekind==0?'%#Error# ':''
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -164,7 +132,6 @@ fu! line#init(...) "{
   call line#skel()
   call line#seth()
 
-  let s:currmode = ''
   if s:activate
     hi clear TabLine
     hi clear StatusLine
@@ -177,9 +144,9 @@ fu! line#head(...) "{
   let line = ''
 
   let s:currmode = mode()
-  let line.= line#bone(s:skel.head.l)
+  let line.= line#bone(s:skel.head.l,0)
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skel.head.r)
+  let line.= line#bone(s:skel.head.r,1)
 
   return line
 
@@ -188,9 +155,9 @@ fu! line#foot(...) "{
 
   let line = ''
 
-  let line.= line#bone(s:skel.foot.l)
+  let line.= line#bone(s:skel.foot.l,0)
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skel.foot.r)
+  let line.= line#bone(s:skel.foot.r,1)
 
   return line
 
@@ -244,6 +211,77 @@ fu! line#line(...) "{
   else
     call line#show()
   endif
+
+endfu "}
+
+"-- auxy functions --
+fu! line#seth(...) "{
+
+  if hlexists('linemode')
+    if !hlexists('linemodei')|hi def link linemodei linemode|endif
+    if !hlexists('linemodev')|hi def link linemodev linemode|endif
+    if !hlexists('linemodec')|hi def link linemodec linemode|endif
+    if !hlexists('linemodet')|hi def link linemodet linemode|endif
+    if !hlexists('linemoder')|hi def link linemoder linemode|endif
+  endif
+  
+endfu "}
+fu! line#save(...) "{
+
+  let s:laststatus  = &laststatus
+  let s:showtabline = &showtabline
+
+endfu "}
+fu! line#time(...) "{
+
+  if a:0
+    if 1+g:line.timer
+      call timer_stop(g:line.timer)
+      let g:line.timer = -1
+      let g:line.git   = ''
+    endif
+  else
+    if s:gitinfo && g:line.timer==-1
+      let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
+    endif
+  endif
+
+endfu "}
+fu! line#giti(...) "{
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if empty(branch)|return ''|endif
+    let modified = !empty(trim(system('git diff HEAD --shortstat')))
+    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+    let cr = ''
+    let char = ''
+    let s = ' '
+    if empty(matchstr(branch,'fatal: not a git repository'))
+      let cr   = '%#linegitc#'
+      if modified
+        let cr    = '%#linegitm#'
+        let char  = ' [M]'
+      endif
+      if staged
+        let cr   = '%#linegits#'
+        let char = ' [S]'
+      endif
+      let info = cr .' ' . branch . char
+    endif
+  endif
+  let g:line.git = info
+endfu "}
+fu! line#file(...) "{
+
+  if !empty(matchstr(bufname(),'term://.*'))
+    let name = 'terminal'
+  elseif &filetype == 'help' && !filereadable('./'.bufname())
+    let name = 'help: '..resolve(expand("%:t"))
+  else
+    let name = resolve(expand("%"))
+  endif
+  return '%#linefill#'..name
 
 endfu "}
 
