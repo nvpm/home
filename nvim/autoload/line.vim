@@ -26,17 +26,17 @@ fu! line#info(...) "{
 endfu "}
 fu! line#mode(...) "{
 
-  let mode = mode()
+  if s:edgekind==0|return ''|endif
   let line = ''
-  if     mode=='i'
+  if     s:currmode=='i'
     let line.= '%#linemodei# insert '
-  elseif mode=~'\(v\|V\|\|s\|S\|\)'
+  elseif s:currmode=~'\(v\|V\|\|s\|S\|\)'
     let line.= '%#linemodev# visual '
-  elseif mode=='R'
+  elseif s:currmode=='R'
     let line.= '%#linemoder# replace'
-  elseif mode=~'\(c\|r\|!\)'
+  elseif s:currmode=~'\(c\|r\|!\)'
     let line.= '%#linemodec# cmdline'
-  elseif mode=='t'
+  elseif s:currmode=='t'
     let line.= '%#linemodet#terminal'
   else
     let line.= '%#linemode# normal '
@@ -91,6 +91,7 @@ fu! line#init(...) "{
   call line#skel()
   call line#seth()
 
+  let s:currmode = ''
   if s:activate
     hi clear TabLine
     hi clear StatusLine
@@ -102,16 +103,15 @@ fu! line#head(...) "{
 
   let line = ''
 
+  let s:currmode = mode()
   for bone in s:skel.head.l
     let line.= line#{bone[0]}(bone[1])
-    let line.= '%#linefill#'
   endfor
 
-  let line.= '%='
+  let line.= '%#linefill#%='
 
   for bone in s:skel.head.r
     let line.= line#{bone[0]}(bone[1])
-    let line.= '%#linefill#'
   endfor
 
   return line
@@ -121,16 +121,15 @@ fu! line#foot(...) "{
 
   let line = ''
 
+  let s:currmode = mode()
   for bone in s:skel.foot.l
     let line.= line#{bone[0]}(bone[1])
-    let line.= '%#linefill#'
   endfor
 
-  let line.= '%='
+  let line.= '%#linefill#%='
 
   for bone in s:skel.foot.r
     let line.= line#{bone[0]}(bone[1])
-    let line.= '%#linefill#'
   endfor
 
   return line
