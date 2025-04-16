@@ -119,7 +119,10 @@ fu! line#init(...) "{
   let s:gitinfo  = get(g:,'line_gitinfo',1)
   let s:delay    = get(g:,'line_gitdelay',20000)
   let s:edgekind = get(g:,'line_edgekind',1)
-  let s:currmode = ''
+  let s:floating = get(g:,'line_floating',0)
+
+  let s:currmode   = ''
+  let s:innerspace = s:edgekind==0?'%#linefill# ':''
 
   let g:line = {}
   let g:line.nvpm = 0
