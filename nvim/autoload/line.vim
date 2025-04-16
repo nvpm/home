@@ -23,8 +23,8 @@ fu! line#skel(...) "{
   let s:skel = #{head:{},foot:{}}
   let s:skel.head.l=[['list','t']]
   let s:skel.head.r=[['list','w'],['curr','p']]
-  let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','fn']]
-  let s:skel.foot.r=[['info','ft'],['info','lc']]
+  let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','file']]
+  let s:skel.foot.r=[['info','lc']]
 
 endfu "}
 fu! line#info(...) "{
@@ -33,8 +33,9 @@ fu! line#info(...) "{
 
   if     a:1=='mode'
     let info = line#mode()
-  elseif a:1=='fn'
+  elseif a:1=='file'
     let info = line#file()
+  elseif a:1=='list'
   endif
 
   return info
