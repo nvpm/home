@@ -4,23 +4,6 @@ if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- auxy functions --
-fu! line#bone(...) "{
-
-  let line = ''
-  for bone in a:1
-    if     bone[0]=='info'  "{
-      let line.= 'info'
-    "}
-    elseif bone[0]=='curr'  "{
-      let line.= 'curr'
-    "}
-    elseif bone[0]=='list'  "{
-      let line.= 'list'
-    endif "}
-  endfor
-  return line
-
-endfu "}
 fu! line#skel(...) "{
 
   let s:skel = #{head:{},foot:{}}
@@ -28,6 +11,21 @@ fu! line#skel(...) "{
   let s:skel.head.r=[['list','w'],['curr','p']]
   let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','fn']]
   let s:skel.foot.r=[['info','ft'],['info','lc']]
+
+endfu "}
+fu! line#info(...) "{
+
+  return 'info'
+
+endfu "}
+fu! line#curr(...) "{
+
+  return 'curr'
+
+endfu "}
+fu! line#list(...) "{
+
+  return 'list'
 
 endfu "}
 
@@ -65,9 +63,15 @@ fu! line#head(...) "{
 
   let line = ''
 
-  let line.= line#bone(s:skel.head.l)
+  for bone in s:skel.head.l
+    let line.= line#{bone[0]}(bone[1])
+  endfor
+
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skel.head.r)
+
+  for bone in s:skel.head.r
+    let line.= line#{bone[0]}(bone[1])
+  endfor
 
   return line
 
@@ -76,9 +80,15 @@ fu! line#foot(...) "{
 
   let line = ''
 
-  let line.= line#bone(s:skel.foot.l)
+  for bone in s:skel.foot.l
+    let line.= line#{bone[0]}(bone[1])
+  endfor
+
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skel.foot.r)
+
+  for bone in s:skel.foot.r
+    let line.= line#{bone[0]}(bone[1])
+  endfor
 
   return line
 
