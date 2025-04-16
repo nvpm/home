@@ -4,10 +4,30 @@ if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- auxy functions --
-fu! line#atom(...) "{
+fu! line#bone(...) "{
+
+  let line = ''
+  for bone in a:1
+    if     bone[0]=='info'  "{
+      let line.= 'info'
+    "}
+    elseif bone[0]=='curr'  "{
+      let line.= 'curr'
+    "}
+    elseif bone[0]=='list'  "{
+      let line.= 'list'
+    endif "}
+  endfor
+  return line
 
 endfu "}
-fu! line#spot(...) "{
+fu! line#skel(...) "{
+
+  let s:skel = #{head:{},foot:{}}
+  let s:skel.head.l=[['list','t']]
+  let s:skel.head.r=[['list','w'],['curr','p']]
+  let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','fn']]
+  let s:skel.foot.r=[['info','ft'],['info','lc']]
 
 endfu "}
 
@@ -24,7 +44,7 @@ fu! line#init(...) "{
   let limit       = s:delay>=2000
   let s:delay     = limit*s:delay+!limit*2000
 
-  let s:spotkind  = get(g:,'line_spotkind',1)
+  let s:edgekind  = get(g:,'line_edgekind',1)
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -32,6 +52,7 @@ fu! line#init(...) "{
   let g:line.mode = 0
 
   call line#save()
+  call line#skel()
 
   if s:activate
     hi clear TabLine
@@ -40,16 +61,24 @@ fu! line#init(...) "{
   endif
 
 endfu "}
-fu! line#topl(...) "{
+fu! line#head(...) "{
 
-  let line  = ''
+  let line = ''
+
+  let line.= line#bone(s:skel.head.l)
+  let line.= '%#linefill#%='
+  let line.= line#bone(s:skel.head.r)
 
   return line
 
 endfu "}
-fu! line#botl(...) "{
+fu! line#foot(...) "{
 
-  let line  = ''
+  let line = ''
+
+  let line.= line#bone(s:skel.foot.l)
+  let line.= '%#linefill#%='
+  let line.= line#bone(s:skel.foot.r)
 
   return line
 
@@ -61,8 +90,8 @@ fu! line#show(...) "{
     "call line#time()
   endif
   if g:line.nvpm
-    set tabline=%!line#topl()
-    set statusline=%!line#botl()
+    set tabline=%!line#head()
+    set statusline=%!line#foot()
     set showtabline=2
     let &laststatus=2+s:nvim*(1-g:line.zoom)
   else
@@ -71,7 +100,7 @@ fu! line#show(...) "{
       let &showtabline = s:showtabline
     endif
     if s:verbose>0
-      set statusline=%!line#botl()
+      set statusline=%!line#foot()
       let &laststatus=2+s:nvim*(1-g:line.zoom)
     endif
     if s:verbose>2
