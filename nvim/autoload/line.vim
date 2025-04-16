@@ -23,7 +23,7 @@ fu! line#skel(...) "{
   let s:skel = #{head:{},foot:{}}
   let s:skel.head.l=[['list','t']]
   let s:skel.head.r=[['list','w'],['curr','p']]
-  let s:skel.foot.l=[['info','mode'],['info','git'],['list','b'],['info','fn']]
+  let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','fn']]
   let s:skel.foot.r=[['info','ft'],['info','lc']]
 
 endfu "}
@@ -33,6 +33,8 @@ fu! line#info(...) "{
 
   if     a:1=='mode'
     let info = line#mode()
+  elseif a:1=='fn'
+    let info = line#file()
   endif
 
   return info
@@ -125,6 +127,24 @@ fu! line#giti(...) "{
     endif
   endif
   let g:line.git = info
+endfu "}
+fu! line#file(...) "{
+
+  let name = '%#linefill#'
+  if !empty(matchstr(bufname(),'term://.*'))
+    let name.= 'terminal'
+  endif
+  if &filetype == 'help' && !filereadable('./'.bufname())
+    let name.= resolve(expand("%:t"))
+  else
+    let file = resolve(expand("%"))
+    if len(file)>25
+      let file = fnamemodify(file,':t')
+    endif
+    let name.= file
+  endif
+  return name
+
 endfu "}
 
 "-- main functions --
