@@ -10,9 +10,11 @@ fu! line#bone(...) "{
   let line = ''
   for bone in a:1
     if type(bone)==type([])
-      if bone[0]=~'\(git\|agit\)'
+      if bone[0]=~'\(git\|branch\)'
         let line.= g:line.git
-      else
+      elseif bone[0]=~'\(file\|mode\)'
+        let line.= line#{bone[0]}()
+      elseif bone[0]=~'\(list\|curr\)'
         let line.= line#{bone[0]}(get(bone,1))
       endif
     endif
