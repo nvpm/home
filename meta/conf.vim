@@ -136,7 +136,7 @@
 
   hi def link linegits Title
   hi def link linegitm WarningMsg
-  hi def link linegitc WildMenu 
+  hi def link linegitc DiffAdded
 
   nmap <silent>ml :Line<cr><c-l>
 
