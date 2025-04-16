@@ -19,17 +19,13 @@ fu! line#init(...) "{
   let s:delay     = limit*s:delay+!limit*2000
 
   let s:atomtype  = get(g:,'line_atomtype',1)
-  let s:powerline = get(g:,'line_powerline',-1)
 
   let g:line = {}
   let g:line.nvpm = 0
   let g:line.zoom = 0
   let g:line.mode = 0
-  let g:line.timer= -1
-  let g:line.git  = ''
 
-  let s:laststatus  = &laststatus
-  let s:showtabline = &showtabline
+  call line#save()
 
   if s:activate
     hi clear TabLine
@@ -42,27 +38,12 @@ fu! line#topl(...) "{
 
   let line  = ''
 
-  "let line .= line#draw(2)
-  "let line .= '%#linefill#'
-  "let line .= '%='
-  "let line.= line#draw(1,1)
-  "let line.= line#proj()
-
   return line
 
 endfu "}
 fu! line#botl(...) "{
 
   let line  = ''
-
-  "let line .= line#draw(3)
-  "
-  "let line .= g:line.git
-  "let line .= '%#linefill#'
-  "let line .= s:verbose>0||g:line.nvpm?' ⬤ ':''
-  "let line .= '%{line#file()}'
-  "let line .= '%='
-  "let line .= '%y%m ⬤ %l,%c/%P'
 
   return line
 
@@ -98,8 +79,8 @@ endfu "}
 fu! line#hide(...) "{
 
   if !s:activate|return|endif
-  let s:laststatus  = &laststatus
-  let s:showtabline = &showtabline
+
+  call line#save()
 
   set showtabline=0
   set laststatus=0
@@ -116,6 +97,12 @@ fu! line#line(...) "{
   else
     call line#show()
   endif
+
+endfu "}
+fu! line#save(...) "{
+
+  let s:laststatus  = &laststatus
+  let s:showtabline = &showtabline
 
 endfu "}
 
