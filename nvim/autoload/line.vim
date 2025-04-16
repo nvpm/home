@@ -47,7 +47,7 @@ fu! line#list(...) "{
     call add(list,elem)
   endfor "}
 
-  return list
+  return revs?reverse(list):list
 
 endfu "}
 fu! line#curr(...) "{
@@ -119,7 +119,6 @@ fu! line#init(...) "{
   let s:edgekind   = get(g:,'line_edgekind',1)
   let s:currmode   = ''
   let s:innerspace = s:edgekind==0?'%#linefill# ':''
-  let s:innerspace = s:edgekind==0?'%#Error# ':''
 
   let g:line = {}
   let g:line.nvpm = 0
