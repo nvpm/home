@@ -18,23 +18,31 @@ fu! line#info(...) "{
   let info = ''
 
   if a:1=='mode'
-    let mode = mode()
-    if     mode=='i'
-      let info = ' insert '
-    elseif mode=~'\(v\|V\|\|s\|S\|\)'
-      let info = ' visual '
-    elseif mode=='R'
-      let info = ' replace'
-    elseif mode=~'\(c\|r\|!\)'
-      let info = ' cmdline'
-    elseif mode=='t'
-      let info = 'terminal'
-    else
-      let info = ' normal '
-    endif
+    let info = line#mode()
   endif
 
   return info
+
+endfu "}
+fu! line#mode(...) "{
+
+  let mode = mode()
+  let line = ''
+  if     mode=='i'
+    let line.= '%#linemodei# insert '
+  elseif mode=~'\(v\|V\|\|s\|S\|\)'
+    let line.= '%#linemodev# visual '
+  elseif mode=='R'
+    let line.= '%#linemoder# replace'
+  elseif mode=~'\(c\|r\|!\)'
+    let line.= '%#linemodec# cmdline'
+  elseif mode=='t'
+    let line.= '%#linemodet#terminal'
+  else
+    let line.= '%#linemode# normal '
+  endif
+
+  return line
 
 endfu "}
 fu! line#curr(...) "{
@@ -46,6 +54,17 @@ fu! line#list(...) "{
 
   return 'list'
 
+endfu "}
+fu! line#seth(...) "{
+
+  if hlexists('linemode')
+    if !hlexists('linemodei')|hi def link linemodei linemode|endif
+    if !hlexists('linemodev')|hi def link linemodev linemode|endif
+    if !hlexists('linemodec')|hi def link linemodec linemode|endif
+    if !hlexists('linemodet')|hi def link linemodet linemode|endif
+    if !hlexists('linemoder')|hi def link linemoder linemode|endif
+  endif
+  
 endfu "}
 
 "-- main functions --
@@ -70,6 +89,7 @@ fu! line#init(...) "{
 
   call line#save()
   call line#skel()
+  call line#seth()
 
   if s:activate
     hi clear TabLine
@@ -84,12 +104,14 @@ fu! line#head(...) "{
 
   for bone in s:skel.head.l
     let line.= line#{bone[0]}(bone[1])
+    let line.= '%#linefill#'
   endfor
 
-  let line.= '%#linefill#%='
+  let line.= '%='
 
   for bone in s:skel.head.r
     let line.= line#{bone[0]}(bone[1])
+    let line.= '%#linefill#'
   endfor
 
   return line
@@ -101,12 +123,14 @@ fu! line#foot(...) "{
 
   for bone in s:skel.foot.l
     let line.= line#{bone[0]}(bone[1])
+    let line.= '%#linefill#'
   endfor
 
-  let line.= '%#linefill#%='
+  let line.= '%='
 
   for bone in s:skel.foot.r
     let line.= line#{bone[0]}(bone[1])
+    let line.= '%#linefill#'
   endfor
 
   return line

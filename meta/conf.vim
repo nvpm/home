@@ -121,14 +121,21 @@
   let line_gitdelay  = 20000
   let line_edgekind  = 0 "0:bracks,1:hi,2:tabs,3:powerline
 
-  hi linefill guibg=bg
-  hi linespot guibg=#777733 guifg=Black   gui=bold
-  hi linecurr guibg=#005f87 guifg=Black   gui=bold
-  hi lineinac guibg=bg      guifg=#005f87
+  hi linefill  guibg=bg
+  hi linespot  guibg=#aaaa33 guifg=Black
+  hi linecurr  guibg=#005f87 guifg=Black
+  hi lineinac  guibg=bg      guifg=#005f87
+
+  hi def link linemode linespot
+  hi linemodev guibg=#005f87 guifg=Black
+  hi linemoder guibg=#05f087 guifg=Black
+  hi linemodec guibg=#333333 guifg=White
+  hi def link linemodet linemodec
+  hi def link linemodei Error
+
   hi def link linegits Title
   hi def link linegitm WarningMsg
   hi def link linegitc WildMenu 
-  hi def link linemode linespot
 
   nmap <silent>ml :Line<cr><c-l>
 
