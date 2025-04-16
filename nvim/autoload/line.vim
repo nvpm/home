@@ -15,7 +15,26 @@ fu! line#skel(...) "{
 endfu "}
 fu! line#info(...) "{
 
-  return 'info'
+  let info = ''
+
+  if a:1=='mode'
+    let mode = mode()
+    if     mode=='i'
+      let info = ' insert '
+    elseif mode=~'\(v\|V\|\|s\|S\|\)'
+      let info = ' visual '
+    elseif mode=='R'
+      let info = ' replace'
+    elseif mode=~'\(c\|r\|!\)'
+      let info = ' cmdline'
+    elseif mode=='t'
+      let info = 'terminal'
+    else
+      let info = ' normal '
+    endif
+  endif
+
+  return info
 
 endfu "}
 fu! line#curr(...) "{
