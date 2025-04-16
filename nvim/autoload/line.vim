@@ -4,6 +4,12 @@ if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- auxy functions --
+fu! line#atom(...) "{
+
+endfu "}
+fu! line#spot(...) "{
+
+endfu "}
 
 "-- main functions --
 fu! line#init(...) "{
@@ -18,7 +24,7 @@ fu! line#init(...) "{
   let limit       = s:delay>=2000
   let s:delay     = limit*s:delay+!limit*2000
 
-  let s:atomtype  = get(g:,'line_atomtype',1)
+  let s:spotkind  = get(g:,'line_spotkind',1)
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -105,7 +111,5 @@ fu! line#save(...) "{
   let s:showtabline = &showtabline
 
 endfu "}
-
-"-- auto functions --
 
 " vim: nowrap
