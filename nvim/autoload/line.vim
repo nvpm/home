@@ -109,30 +109,6 @@ fu! line#draw(...) "{
   return list
 
 endfu "}
-fu! line#seth(...) "{
-
-  let data = get(a:,1,s:colors)
-
-  for atom in keys(data)
-    let name = 'line'.atom
-    let atom = data[atom]
-    if type(atom)==type([])&&!hlexists(name)
-      let gbg = get(atom,0,'')|let gbg=['guibg='..  gbg,''][empty(gbg)]
-      let gfg = get(atom,1,'')|let gfg=['guifg='..  gfg,''][empty(gfg)]
-      let gui = get(atom,2,'')|let gui=['gui='  ..  gui,''][empty(gui)]
-      let cbg = get(atom,3,'')|let cbg=['ctermbg='..cbg,''][empty(cbg)]
-      let cfg = get(atom,4,'')|let cfg=['ctermfg='..cfg,''][empty(cfg)]
-      let ctm = get(atom,5,'')|let ctm=['cterm='  ..ctm,''][empty(ctm)]
-      let arg = gbg.' '.gfg.' '.gui.' '
-      let arg.= cbg.' '.cfg.' '.ctm
-      if !empty(arg)
-        exe 'hi '..name..' '..arg
-      endif
-    elseif type(atom)==type({})
-    endif
-  endfor
-
-endfu "}
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
@@ -148,7 +124,6 @@ fu! line#init(...) "{
 
   let s:atomtype  = get(g:,'line_atomtype',1)
   let s:powerline = get(g:,'line_powerline',-1)
-  let s:colors    = get(g:,'line_colors',{})
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -159,10 +134,6 @@ fu! line#init(...) "{
 
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
-
-  if !empty(s:colors)
-    call line#seth()
-  endif
 
   if s:activate
     hi clear TabLine

@@ -121,25 +121,14 @@
   let line_gitdelay  = 20000
   let line_atomtype  = 1 "0:bracks,1:hi,2:tabs,3:powerline
 
-  let s:c      = {}
-  let s:c.fill = ['bg']
-  let s:c.spot = ['#777700','Black','bold']
-  let s:c.curr = ['#005f87','Black','bold']
-  let s:c.inac = ['bg'     ,s:c.curr[0]]
-  let s:c.gits = ['Yellow' ,'bg']
-  let s:c.gitm = ['Red'    ,'bg']
-  let s:c.gitc = ['Blue'   ,'bg']
-  let s:c.mode = s:c.spot
-  let line_colors = s:c | unlet s:c
-
-  "hi linefill guibg=bg
-  "hi linespot guibg=#777733 guifg=Black   gui=bold
-  "hi linecurr guibg=#005f87 guifg=Black   gui=bold
-  "hi lineinac guibg=bg      guifg=#005f87
-  "hi def link linegits Title
-  "hi def link linegitm WarningMsg
-  "hi def link linegitc WildMenu 
-  "hi def link linemode linespot
+  hi linefill guibg=bg
+  hi linespot guibg=#777733 guifg=Black   gui=bold
+  hi linecurr guibg=#005f87 guifg=Black   gui=bold
+  hi lineinac guibg=bg      guifg=#005f87
+  hi def link linegits Title
+  hi def link linegitm WarningMsg
+  hi def link linegitc WildMenu 
+  hi def link linemode linespot
 
   nmap <silent>ml :Line<cr><c-l>
 

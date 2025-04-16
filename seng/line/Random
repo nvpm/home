@@ -10,9 +10,9 @@ fu! line#init(...) "{
   let limit       = s:delay>=2000
   let s:delay     = limit*s:delay+!limit*2000
 
-  let s:modetype  = get(g:,'line_modetype',1)
-  let s:colors    = get(g:,'line_colors' ,{})
+  let s:atomtype  = get(g:,'line_atomtype',1)
   let s:powerline = get(g:,'line_powerline',-1)
+  let s:colors    = get(g:,'line_colors',{})
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -24,84 +24,9 @@ fu! line#init(...) "{
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
 
-  if 1+s:powerline
-    let s:right    = nr2char(s:powerline + 0)
-    let s:iright   = nr2char(s:powerline + 1)
-    let s:left     = nr2char(s:powerline + 2)
-    let s:ileft    = nr2char(s:powerline + 3)
-    let s:brackets = 0
-    if has_key(s:colors,'curr')&&has_key(s:colors,'inac')
-      if &termguicolors
-        let s:colors.charend = {} "{
-        if has_key(s:colors.curr,'guibg')
-          let s:colors.charend.guifg = s:colors.curr.guibg
-        endif
-        if has_key(s:colors.inac,'guibg')
-          let s:colors.charend.guibg = s:colors.inac.guibg
-        endif
-        if has_key(s:colors.curr,'gui')
-          let s:colors.charend.gui = s:colors.curr.gui
-        endif "}
-        let s:colors.charinit= {} "{ 
-        if has_key(s:colors.inac,'guibg') 
-          let s:colors.charinit.guifg = s:colors.inac.guibg 
-        endif 
-        if has_key(s:colors.curr,'guibg')
-          let s:colors.charinit.guibg = s:colors.curr.guibg
-        endif
-        if has_key(s:colors.inac,'gui')
-          let s:colors.charinit.gui = s:colors.inac.gui
-        endif "}
-        let s:colors.chariend= {} "{
-        if has_key(s:colors.inac,'guibg')
-          let s:colors.chariend.guifg = s:colors.inac.guibg
-        endif
-        if has_key(s:colors.curr,'guibg')
-          let s:colors.chariend.guibg = s:colors.fill.guibg
-        endif
-        if has_key(s:colors.inac,'gui')
-          let s:colors.chariend.gui = s:colors.inac.gui
-        endif "}
-      else
-        let s:colors.charend = {} "{
-        if has_key(s:colors.curr,'ctermbg')
-          let s:colors.charend.ctermfg = s:colors.curr.ctermbg
-        endif
-        if has_key(s:colors.inac,'ctermbg')
-          let s:colors.charend.ctermbg = s:colors.inac.ctermbg
-        endif
-        if has_key(s:colors.curr,'cterm')
-          let s:colors.charend.cterm = s:colors.curr.cterm
-        endif "}
-        let s:colors.charinit= {} "{
-        if has_key(s:colors.inac,'ctermbg')
-          let s:colors.charinit.ctermfg = s:colors.inac.ctermbg
-        endif
-        if has_key(s:colors.curr,'ctermbg')
-          let s:colors.charinit.ctermbg = s:colors.curr.ctermbg
-        endif
-        if has_key(s:colors.inac,'cterm')
-          let s:colors.charinit.cterm = s:colors.inac.cterm
-        endif "}
-        let s:colors.chariend= {} "{
-        if has_key(s:colors.inac,'ctermbg')
-          let s:colors.chariend.ctermfg = s:colors.inac.ctermbg
-        endif
-        if has_key(s:colors.curr,'ctermbg')
-          let s:colors.chariend.ctermbg = s:colors.fill.ctermbg
-        endif
-        if has_key(s:colors.inac,'cterm')
-          let s:colors.chariend.cterm = s:colors.inac.cterm
-        endif "}
-      endif
-    else
-      let s:modetype = 1
-    endif
+  if !empty(s:colors)
+    call line#seth()
   endif
-
-  call line#seth()
-  delfunc line#seth
-  delfunc line#geth
 
   if s:activate
     hi clear TabLine
@@ -127,3 +52,28 @@ fu! line#geth(...) "{
   return args
 
 endfu "}
+fu! line#seth(...) "{
+
+  let data = get(a:,1,s:colors)
+
+  for atom in keys(data)
+    let name = 'line'.atom
+    let atom = data[atom]
+    if type(atom)==type([])&&!hlexists(name)
+      let gbg = get(atom,0,'')|let gbg=['guibg='..  gbg,''][empty(gbg)]
+      let gfg = get(atom,1,'')|let gfg=['guifg='..  gfg,''][empty(gfg)]
+      let gui = get(atom,2,'')|let gui=['gui='  ..  gui,''][empty(gui)]
+      let cbg = get(atom,3,'')|let cbg=['ctermbg='..cbg,''][empty(cbg)]
+      let cfg = get(atom,4,'')|let cfg=['ctermfg='..cfg,''][empty(cfg)]
+      let ctm = get(atom,5,'')|let ctm=['cterm='  ..ctm,''][empty(ctm)]
+      let arg = gbg.' '.gfg.' '.gui.' '
+      let arg.= cbg.' '.cfg.' '.ctm
+      if !empty(arg)
+        exe 'hi '..name..' '..arg
+      endif
+    elseif type(atom)==type({})
+    endif
+  endfor
+
+endfu "}
+
