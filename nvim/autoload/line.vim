@@ -9,10 +9,12 @@ fu! line#bone(...) "{
   let s:currmode = mode()
   let line = ''
   for bone in a:1
-    if bone[1]=='git'
-      let line.= g:line.git
-    else
-      let line.= line#{bone[0]}(bone[1])
+    if type(bone)==type([])
+      if bone[0]=~'\(git\|agit\)'
+        let line.= g:line.git
+      else
+        let line.= line#{bone[0]}(get(bone,1))
+      endif
     endif
   endfor
   return line
@@ -23,22 +25,8 @@ fu! line#skel(...) "{
   let s:skel = #{head:{},foot:{}}
   let s:skel.head.l=[['list','t']]
   let s:skel.head.r=[['list','w'],['curr','p']]
-  let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','file']]
-  let s:skel.foot.r=[['info','lc']]
-
-endfu "}
-fu! line#info(...) "{
-
-  let info = ''
-
-  if     a:1=='mode'
-    let info = line#mode()
-  elseif a:1=='file'
-    let info = line#file()
-  elseif a:1=='list'
-  endif
-
-  return info
+  let s:skel.foot.l=[['mode'],['list','b'],['git'],['file']]
+  let s:skel.foot.r=[]
 
 endfu "}
 fu! line#mode(...) "{
@@ -104,7 +92,7 @@ fu! line#time(...) "{
   endif
 
 endfu "}
-fu! line#giti(...) "{
+fu! line#agit(...) "{
   let info  = ''
   if s:gitinfo && executable('git')
     let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
