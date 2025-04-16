@@ -4,12 +4,26 @@ if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
 "-- auxy functions --
+fu! line#bone(...) "{
+
+  let s:currmode = mode()
+  let line = ''
+  for bone in a:1
+    if bone[1]=='git'
+      let line.= g:line.git
+    else
+      let line.= line#{bone[0]}(bone[1])
+    endif
+  endfor
+  return line
+
+endfu "}
 fu! line#skel(...) "{
 
   let s:skel = #{head:{},foot:{}}
   let s:skel.head.l=[['list','t']]
   let s:skel.head.r=[['list','w'],['curr','p']]
-  let s:skel.foot.l=[['info','mode'],['list','b'],['info','git'],['info','fn']]
+  let s:skel.foot.l=[['info','mode'],['info','git'],['list','b'],['info','fn']]
   let s:skel.foot.r=[['info','ft'],['info','lc']]
 
 endfu "}
@@ -17,7 +31,7 @@ fu! line#info(...) "{
 
   let info = ''
 
-  if a:1=='mode'
+  if     a:1=='mode'
     let info = line#mode()
   endif
 
@@ -66,6 +80,52 @@ fu! line#seth(...) "{
   endif
   
 endfu "}
+fu! line#save(...) "{
+
+  let s:laststatus  = &laststatus
+  let s:showtabline = &showtabline
+
+endfu "}
+fu! line#time(...) "{
+
+  if a:0
+    if 1+g:line.timer
+      call timer_stop(g:line.timer)
+      let g:line.timer = -1
+      let g:line.git   = ''
+    endif
+  else
+    if s:gitinfo && g:line.timer==-1
+      let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
+    endif
+  endif
+
+endfu "}
+fu! line#giti(...) "{
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if empty(branch)|return ''|endif
+    let modified = !empty(trim(system('git diff HEAD --shortstat')))
+    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+    let cr = ''
+    let char = ''
+    let s = ' '
+    if empty(matchstr(branch,'fatal: not a git repository'))
+      let cr   = '%#linegitc#'
+      if modified
+        let cr    = '%#linegitm#'
+        let char  = ' [M]'
+      endif
+      if staged
+        let cr   = '%#linegits#'
+        let char = ' [S]'
+      endif
+      let info = cr .'  ' . branch . char
+    endif
+  endif
+  let g:line.git = info
+endfu "}
 
 "-- main functions --
 fu! line#init(...) "{
@@ -86,6 +146,8 @@ fu! line#init(...) "{
   let g:line.nvpm = 0
   let g:line.zoom = 0
   let g:line.mode = 0
+  let g:line.timer= -1
+  let g:line.git  = ''
 
   call line#save()
   call line#skel()
@@ -104,15 +166,9 @@ fu! line#head(...) "{
   let line = ''
 
   let s:currmode = mode()
-  for bone in s:skel.head.l
-    let line.= line#{bone[0]}(bone[1])
-  endfor
-
+  let line.= line#bone(s:skel.head.l)
   let line.= '%#linefill#%='
-
-  for bone in s:skel.head.r
-    let line.= line#{bone[0]}(bone[1])
-  endfor
+  let line.= line#bone(s:skel.head.r)
 
   return line
 
@@ -121,16 +177,9 @@ fu! line#foot(...) "{
 
   let line = ''
 
-  let s:currmode = mode()
-  for bone in s:skel.foot.l
-    let line.= line#{bone[0]}(bone[1])
-  endfor
-
+  let line.= line#bone(s:skel.foot.l)
   let line.= '%#linefill#%='
-
-  for bone in s:skel.foot.r
-    let line.= line#{bone[0]}(bone[1])
-  endfor
+  let line.= line#bone(s:skel.foot.r)
 
   return line
 
@@ -139,7 +188,7 @@ fu! line#show(...) "{
 
   if !s:activate|return|endif
   if s:verbose>0
-    "call line#time()
+    call line#time()
   endif
   if g:line.nvpm
     set tabline=%!line#head()
@@ -172,7 +221,7 @@ fu! line#hide(...) "{
   set showtabline=0
   set laststatus=0
 
-  "call line#time(1)
+  call line#time(1)
 
   let g:line.mode = 0
 
@@ -184,12 +233,6 @@ fu! line#line(...) "{
   else
     call line#show()
   endif
-
-endfu "}
-fu! line#save(...) "{
-
-  let s:laststatus  = &laststatus
-  let s:showtabline = &showtabline
 
 endfu "}
 
