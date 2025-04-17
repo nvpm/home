@@ -12,5 +12,6 @@ command! Line call line#line()
 augroup LINE
   au!
   au ModeChanged,BufEnter * if g:line.mode|call line#draw()|endif
-  au BufWrite * if g:line.mode|redraws|redrawt|endif
+  au BufWrite * if g:line.mode|call line#giti()|call line#draw()|endif
 augroup END
+
