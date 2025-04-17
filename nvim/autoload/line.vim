@@ -127,14 +127,14 @@ fu! line#init(...) "{
   let s:edgekind = get(g:,'line_edgekind',1)
   let s:floating = get(g:,'line_floating',0)
 
-  let s:innerspace = s:edgekind<2?'%#linefill# ':''
-
   let g:line = {}
   let g:line.nvpm = 0
   let g:line.zoom = 0
   let g:line.mode = 0
   let g:line.timer= -1
   let g:line.git  = ''
+
+  let s:innerspace = s:edgekind<2?'%#linefill# ':''
 
   call line#save()
   call line#skel()
@@ -178,6 +178,8 @@ fu! line#show(...) "{
   if g:line.nvpm
     set tabline=%!line#head()
     set statusline=%!line#foot()
+    "set tabline=%{%line#head()%}
+    "set statusline=%{%line#foot()%}
     set showtabline=2
     let &laststatus=2+s:nvim*(1-g:line.zoom)
   else

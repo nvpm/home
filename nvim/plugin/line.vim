@@ -9,9 +9,11 @@ call line#init()
 command! Line call line#line()
 
 "-- auto commands --
-augroup LINE
-  au!
-  au ModeChanged * if g:line.mode|redrawtabline|endif
-augroup END
+if get(g:,'line_autocmds',0)
+  augroup LINE
+    au!
+    au ModeChanged * if g:line.mode|redrawtabline|endif
+  augroup END
+endif
 
 

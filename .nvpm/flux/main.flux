@@ -4,7 +4,6 @@
         file auto : autoload/line.vim
         file plug : plugin/line.vim
         file conf = meta/conf.vim
-        -file init = meta/init.vim
     }
     workspace zoom {
 
