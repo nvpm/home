@@ -128,6 +128,8 @@ fu! line#init(...) "{
   let s:floating = get(g:,'line_floating',0)
 
   let g:line = {}
+  let g:line.head = ''
+  let g:line.foot = ''
   let g:line.nvpm = 0
   let g:line.zoom = 0
   let g:line.mode = 0
@@ -155,7 +157,7 @@ fu! line#head(...) "{
   let line.= '%#linefill#%='
   let line.= line#bone(s:skel.head.r,1)
 
-  return line
+  let &tabline = line
 
 endfu "}
 fu! line#foot(...) "{
@@ -166,20 +168,21 @@ fu! line#foot(...) "{
   let line.= '%#linefill#%='
   let line.= line#bone(s:skel.foot.r,1)
 
-  return line
+  let &statusline = line
 
+endfu "}
+fu! line#draw(...) "{
+  call line#head()
+  call line#foot()
 endfu "}
 fu! line#show(...) "{
 
   if !s:activate|return|endif
-  if s:verbose>0
+  if s:verbose>0&&s:gitinfo
     call line#time()
   endif
   if g:line.nvpm
-    set tabline=%!line#head()
-    set statusline=%!line#foot()
-    "set tabline=%{%line#head()%}
-    "set statusline=%{%line#foot()%}
+    call line#draw()
     set showtabline=2
     let &laststatus=2+s:nvim*(1-g:line.zoom)
   else
@@ -188,7 +191,7 @@ fu! line#show(...) "{
       let &showtabline = s:showtabline
     endif
     if s:verbose>0
-      set statusline=%!line#foot()
+      call line#foot()
       let &laststatus=2+s:nvim*(1-g:line.zoom)
     endif
     if s:verbose>2
@@ -247,7 +250,7 @@ fu! line#seth(...) "{
     if !hlexists('lineinact')|hi def link lineinact lineinac|endif
     if !hlexists('lineinacr')|hi def link lineinacr lineinac|endif
   endif
-  
+
 endfu "}
 fu! line#save(...) "{
 

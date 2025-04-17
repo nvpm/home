@@ -3,7 +3,7 @@
       tab code
         file auto : autoload/line.vim
         file plug : plugin/line.vim
-        file conf = meta/conf.vim
+        #file conf = meta/conf.vim
     }
     workspace zoom {
 
