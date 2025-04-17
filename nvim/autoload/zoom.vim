@@ -243,11 +243,11 @@ fu! zoom#help(...) abort "{
 endfu "}
 fu! zoom#term(...) abort "{
 
-  let line = 0
-  if exists('g:line.mode')
-    let line = g:line.mode
-  endif
   if g:zoom.mode
+    let line = 0
+    if exists('g:line.mode')
+      let line = g:line.mode
+    endif
     only
     bdel
     call zoom#show()
