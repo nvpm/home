@@ -66,10 +66,6 @@ fu! nvpm#init(...) abort "{
   let g:nvpm.flux.leng = 0
   let g:nvpm.flux.indx = 0
 
-  let g:nvpm.zoom = {}
-  let g:nvpm.zoom.mode = 0
-  let g:nvpm.zoom.term = 0
-
   if get(g:,'nvpm_initload',0) && !argc() 
     if !filereadable(s:dirs.save)
       call nvpm#edit()
