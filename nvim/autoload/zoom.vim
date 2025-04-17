@@ -4,7 +4,7 @@ if !NVPMTEST&&exists('__ZOOMAUTO__')|finish|endif
 let __ZOOMAUTO__ = 1
 
 "-- main functions --
-fu! zoom#init(...) "{
+fu! zoom#init(...) abort "{
 
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
@@ -17,7 +17,7 @@ fu! zoom#init(...) "{
   let g:zoom.lastft= ''
 
 endfu "}
-fu! zoom#calc(...) "{
+fu! zoom#calc(...) abort "{
 
   let totalheight = &lines
   let totalwidth  = &columns
@@ -74,7 +74,7 @@ fu! zoom#calc(...) "{
   endif
 
 endfu " }
-fu! zoom#pads(...) "{
+fu! zoom#pads(...) abort "{
 
   if s:left>1
     silent! exec string(s:left-1)..'vsplit '..g:zoom.buff
@@ -97,7 +97,7 @@ fu! zoom#pads(...) "{
   exe 'vert resize '..s:width
 
 endfu " }
-fu! zoom#show(...) "{
+fu! zoom#show(...) abort "{
 
   if a:0&&!g:zoom.mode|return|endif
 
@@ -129,7 +129,7 @@ fu! zoom#show(...) "{
   endif
 
 endfu "}
-fu! zoom#hide(...) "{
+fu! zoom#hide(...) abort "{
 
   silent! only
   exe ':silent! bdel '..g:zoom.buff
@@ -146,7 +146,7 @@ fu! zoom#hide(...) "{
   let &fillchars   = s:fill
 
 endfu "}
-fu! zoom#zoom(...) "{
+fu! zoom#zoom(...) abort "{
 
   if g:zoom.mode
     call zoom#hide()
@@ -157,7 +157,7 @@ fu! zoom#zoom(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! zoom#save(...) "{
+fu! zoom#save(...) abort "{
 
   if !s:nvim
     let normal = execute('hi Normal')
@@ -178,7 +178,7 @@ fu! zoom#save(...) "{
   let s:botl = &laststatus
 
 endfu "}
-fu! zoom#buff(...) "{
+fu! zoom#buff(...) abort "{
 
   silent! setl nomodifiable
   silent! setl nonumber
@@ -190,7 +190,7 @@ fu! zoom#buff(...) "{
   let &l:statusline = ' '
 
 endfu " }
-fu! zoom#none(...) "{
+fu! zoom#none(...) abort "{
 
   if s:devl|return|endif
   if s:nvim
@@ -218,7 +218,7 @@ fu! zoom#none(...) "{
 endfu " }
 
 "-- auto functions --
-fu! zoom#help(...) "{
+fu! zoom#help(...) abort "{
 
   let bufname=bufname()
 
@@ -241,7 +241,7 @@ fu! zoom#help(...) "{
   endif
 
 endfu "}
-fu! zoom#term(...) "{
+fu! zoom#term(...) abort "{
 
   if g:zoom.mode
     only

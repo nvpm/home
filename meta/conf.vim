@@ -80,7 +80,8 @@
   nmap <silent>m<tab>    :NvpmLoop - 2<cr>
   nmap <silent><BS>      :NvpmLoop + 1<cr>
   nmap <silent><DEL>     :NvpmLoop - 1<cr>
-  nmap <silent><C-p>     :NvpmLoop + 1<cr>
+  nmap <silent><C-p>     :NvpmLoop - 1<cr>
+  nmap <silent><C-n>     :NvpmLoop + 1<cr>
   nmap <silent><C-Space> :NvpmLoop + 0<cr>
   nmap <silent>=         :NvpmLoop + -1<cr>
   nmap <silent>-         :NvpmLoop - -1<cr>

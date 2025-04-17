@@ -4,7 +4,7 @@ if !NVPMTEST&&exists('__NVPMAUTO__')|finish|endif
 let __NVPMAUTO__ = 1
 
 "-- main functions --
-fu! nvpm#init(...) "{ 
+fu! nvpm#init(...) abort "{ 
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
@@ -84,7 +84,7 @@ fu! nvpm#init(...) "{
   endif
 
 endfu "}
-fu! nvpm#load(...) "{
+fu! nvpm#load(...) abort "{
 
   let file = flux#argv(a:000)
 
@@ -116,7 +116,7 @@ fu! nvpm#load(...) "{
   call nvpm#rend()
 
 endfu "}
-fu! nvpm#loop(...) "{
+fu! nvpm#loop(...) abort "{
 
   if !a:0|return 1|endif
 
@@ -180,7 +180,7 @@ fu! nvpm#loop(...) "{
   endif
 
 endfu "}
-fu! nvpm#edit(...) "{
+fu! nvpm#edit(...) abort "{
 
   " loads bufname if in edit mode 
   " only leaves edit mode upon correct load
@@ -220,14 +220,14 @@ fu! nvpm#edit(...) "{
   call nvpm#load(s:dirs.edit)
 
 endfu "}
-fu! nvpm#save(...) "{
+fu! nvpm#save(...) abort "{
 
   if g:nvpm.tree.file != s:dirs.edit
     call writefile([fnamemodify(g:nvpm.tree.file,':t')],s:dirs.save)
   endif
 
 endfu "}
-fu! nvpm#term(...) "{
+fu! nvpm#term(...) abort "{
 
   if !bufexists(g:nvpm.term.buff)
     exec 'buffer|terminal'
@@ -239,7 +239,7 @@ fu! nvpm#term(...) "{
   endif
 
 endfu "}
-fu! nvpm#make(...) "{
+fu! nvpm#make(...) abort "{
 
 
   let name = get(a:000,0,'')
@@ -286,7 +286,7 @@ fu! nvpm#make(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! nvpm#curr(...) "{
+fu! nvpm#curr(...) abort "{
 
   let root = get(a:,1,g:nvpm.tree.root)
   let list = get(root,'list',[])
@@ -302,7 +302,7 @@ fu! nvpm#curr(...) "{
   let g:nvpm.tree.curr = curr
 
 endfu "}
-fu! nvpm#rend(...) "{
+fu! nvpm#rend(...) abort "{
 
   let curr = simplify(g:nvpm.tree.curr)
   let head = fnamemodify(curr,':h')..'/'
@@ -331,7 +331,7 @@ fu! nvpm#rend(...) "{
   endif
 
 endfu "}
-fu! nvpm#indx(...) "{
+fu! nvpm#indx(...) abort "{
 
   let meta = a:1
   let step = a:2
@@ -340,12 +340,12 @@ fu! nvpm#indx(...) "{
   let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
 
 endfu "}
-fu! nvpm#show(...) "{
+fu! nvpm#show(...) abort "{
 
   call flux#show(get(a:,1,g:nvpm.tree.root))
 
 endfu "}
-fu! nvpm#flux(...) "{
+fu! nvpm#flux(...) abort "{
 
   if isdirectory(s:dirs.local)&&empty(g:nvpm.flux.list)
     let g:nvpm.flux.list = readdir(s:dirs.local)
@@ -356,10 +356,10 @@ fu! nvpm#flux(...) "{
 endfu "}
 
 "-- user functions --
-fu! nvpm#DIRS(...) "{
+fu! nvpm#DIRS(...) abort "{
   let files = readdir(s:dirs.local)
   return files
 endfu "}
-fu! nvpm#LOOP(...) "{
+fu! nvpm#LOOP(...) abort "{
   return g:nvpm.loop.words
 endfu "}

@@ -180,9 +180,9 @@ fu! line#head(...) abort "{
 
   let line = ''
 
-  let line.= line#bone(s:skel.head.l,0)
+  let line.= line#bone(s:skeleton.head.l,0)
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skel.head.r,1)
+  let line.= line#bone(s:skeleton.head.r,1)
 
   let &tabline = line
 
@@ -191,9 +191,9 @@ fu! line#foot(...) abort "{
 
   let line = ''
 
-  let line.= line#bone(s:skel.foot.l,0)
+  let line.= line#bone(s:skeleton.foot.l,0)
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skel.foot.r,1)
+  let line.= line#bone(s:skeleton.foot.r,1)
 
   let &statusline = line
 

@@ -1,11 +1,7 @@
 " auto/text.vim
-" once {
 
 if !NVPMTEST&&exists('__TEXTAUTO__')|finish|endif
 let __TEXTAUTO__ = 1
-
-" end-once}
-" func {
 
 fu! text#fixs(...) range "{
   let init = get(a:000,0,a:firstline)
@@ -51,5 +47,3 @@ fu! text#just(...) range "{
   endif
   call text#fixs(a:lastline,a:lastline)
 endfu " }
-
-" end-func }

@@ -30,7 +30,6 @@
         file usr_41.txt
 
     }
-    --
     workspace flux {
       tab code
         file auto : autoload/flux.vim
@@ -49,7 +48,7 @@
     }
   }
   project NVPM meta = meta {
-    tab meta 
+    tab meta
       file conf.vim
       file menu.vim
      -file init.vim

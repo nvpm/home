@@ -1,14 +1,10 @@
 " auto/flux.vim
-" once {
 
 if !NVPMTEST&&exists('__FLUXAUTO__')|finish|endif
 let __FLUXAUTO__=1
 
-" end-once }
-" func {
-
 "-- main functions --
-fu! flux#flux(...) "{
+fu! flux#flux(...) abort "{
 
   if !a:0|return {}|else|let s:conf=flux#argv(a:000)|endif
 
@@ -23,7 +19,7 @@ fu! flux#flux(...) "{
   retu flux#data()
 
 endfu "}
-fu! flux#data(...) "{
+fu! flux#data(...) abort "{
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
@@ -45,7 +41,7 @@ fu! flux#data(...) "{
   return tree
 
 endfu "}
-fu! flux#fixt(...) "{
+fu! flux#fixt(...) abort "{
 
   let root = get(a:000,0,{})
   let conf = get(a:000,1,{})
@@ -93,7 +89,7 @@ fu! flux#fixt(...) "{
   endif
 
 endfu "}
-fu! flux#tree(...) "{
+fu! flux#tree(...) abort "{
 
   let list = get(a:000,0,[])
   let leng = get(a:000,1,len(list))
@@ -169,11 +165,11 @@ fu! flux#tree(...) "{
   return tree
 
 endfu "}
-fu! flux#skel(...) "{
+fu! flux#skel(...) abort "{
 endfu "}
 
 "-- conf functions --
-fu! flux#conf(...) "{
+fu! flux#conf(...) abort "{
 
   if !a:0|return flux#conf(s:conf)|else|let conf=a:1|endif
   if !has_key(conf,'lexis')|let conf.lexis=''|endif
@@ -189,7 +185,7 @@ fu! flux#conf(...) "{
   let conf.leaftype = len(conf.lexis)-1
 
 endfu "}
-fu! flux#read(...) "{
+fu! flux#read(...) abort "{
 
   if !has_key(s:conf,'file')|return|endif
   if !empty(s:conf.file)
@@ -206,7 +202,7 @@ fu! flux#read(...) "{
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! flux#trim(...) "{
+fu! flux#trim(...) abort "{
 
   if has_key(s:conf,'body')
     let comm = '\c\s*[#{}].*'
@@ -223,7 +219,7 @@ fu! flux#trim(...) "{
   endif
 
 endfu "}
-fu! flux#endl(...) "{
+fu! flux#endl(...) abort "{
 
   if has_key(s:conf,'body')
     let endl = '\m\s*,\s*'
@@ -240,7 +236,7 @@ fu! flux#endl(...) "{
   endif
 
 endfu "}
-fu! flux#list(...) "{
+fu! flux#list(...) abort "{
 
   let objc = get(a:,1,s:conf)
 
@@ -261,7 +257,7 @@ fu! flux#list(...) "{
   endif
 
 endfu "}
-fu! flux#cuts(...) "{
+fu! flux#cuts(...) abort "{
 
   let objc = get(a:,1,s:conf)
 
@@ -294,7 +290,7 @@ fu! flux#cuts(...) "{
   endif
 
 endfu "}
-fu! flux#loop(...) "{
+fu! flux#loop(...) abort "{
 
   if has_key(s:conf,'list')
     let indx = 0
@@ -349,7 +345,7 @@ fu! flux#loop(...) "{
   endif
 
 endfu "}
-fu! flux#home(...) "{
+fu! flux#home(...) abort "{
 
   if has_key(s:conf,'list')&&get(s:conf,'home')
     let indx = 0
@@ -370,12 +366,12 @@ fu! flux#home(...) "{
   endif
 
 endfu "}
-fu! flux#vars(...) "{
+fu! flux#vars(...) abort "{
 
 endfu "}
 
 "-- auxy functions --
-fu! flux#node(...) "{
+fu! flux#node(...) abort "{
 
   let line = get(a:000,0,'')
   let line = ['',line][type(line)==type('')]
@@ -414,7 +410,7 @@ fu! flux#node(...) "{
   return node
 
 endfu "}
-fu! flux#find(...) "{
+fu! flux#find(...) abort "{
 
   if !exists('a:1')|return -1|endif
   if !exists('a:2')|return -1|endif
@@ -468,7 +464,7 @@ fu! flux#find(...) "{
   return -1
 
 endfu "}
-fu! flux#show(...) "{
+fu! flux#show(...) abort "{
 
   let root = get(a:000,0,{})
   let step = get(a:000,1, 0)
@@ -500,7 +496,7 @@ fu! flux#show(...) "{
   endfor
 
 endfu "}
-fu! flux#argv(...) "{
+fu! flux#argv(...) abort "{
   let argv = get(a:000,0,{})
   if type(argv)==type([])
     if len(argv)>1
@@ -510,7 +506,7 @@ fu! flux#argv(...) "{
   endif
   return argv
 endfu "}
-fu! flux#seek(...) "{
+fu! flux#seek(...) abort "{
 
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
@@ -530,4 +526,3 @@ fu! flux#seek(...) "{
 
 endfu "}
 
-" end-func }
