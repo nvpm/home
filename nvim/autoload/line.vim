@@ -34,7 +34,7 @@ fu! line#curr(...) "{
     let node = flux#seek(g:nvpm.tree.root,type)
     if has_key(node,'meta')
       let name = node.list[node.meta.indx].data.name
-      if empty(name)||name=='<unnamed>'
+      if (empty(name)||name=='<unnamed>')&&type==0
         let name = fnamemodify(g:nvpm.tree.file,':t')
       endif
     endif
@@ -100,6 +100,8 @@ fu! line#list(...) "{
       else
         let elem.= line#mode('inac',' '..info..' ')
       endif
+    endif "}
+    if s:edgekind==2 " tabs      config{
     endif "}
     call add(list,elem)
   endfor "}
@@ -321,6 +323,7 @@ fu! line#giti(...) "{
       endif
       let info = cr .space.' ' . branch . char
     endif
+    call line#foot()
   endif
   let g:line.git = info
 endfu "}

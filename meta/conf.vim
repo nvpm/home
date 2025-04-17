@@ -118,7 +118,7 @@
   let line_activate = 1
   let line_verbose  = 1
   let line_gitinfo  = 1
-  let line_gitdelay = 2000
+  let line_gitdelay = 5000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
 
@@ -138,8 +138,8 @@
   hi def link lineinac  Normal
   hi def link linecurri Error
   hi def link linecurrv Visual
-  hi def link linecurrc Title
-  hi def link linecurrt Title
+  hi def link linecurrc SpellBad
+  hi def link linecurrt PmenuSel
   hi def link linecurrr WildMenu
 
   "hi lineinac guibg=bg      guifg=#005f87
