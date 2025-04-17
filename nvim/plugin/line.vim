@@ -13,5 +13,3 @@ augroup LINE
   au!
   au ModeChanged,BufEnter * if g:line.mode|call line#draw()|endif
 augroup END
-
-

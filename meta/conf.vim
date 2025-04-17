@@ -116,7 +116,7 @@
   set nowrap
   let line_autocmds = 1
   let line_activate = 1
-  let line_verbose  = 1
+  let line_verbose  = 3
   let line_gitinfo  = 1
   let line_gitdelay = 5000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
@@ -154,7 +154,7 @@
   " Skeleton {
 
     let s:hl=[['pack','t','linetabs']]
-    let s:hr=[['pack','w','linewksp']]
+    let s:hr=[['pack','w','linewksp'],['curr','p','lineproj']]
     let s:fl=[['pack','b'],['git'],['file',' ⬤ ']]
     let s:fr=[['user','%Y%m ⬤ %l,%c/%P']]
 

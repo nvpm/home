@@ -199,8 +199,8 @@ fu! line#foot(...) abort "{
 
 endfu "}
 fu! line#draw(...) abort "{
-  call line#head()
-  call line#foot()
+  if &showtabline|call line#head()|endif
+  if &laststatus |call line#foot()|endif
 endfu "}
 fu! line#show(...) abort "{
 
@@ -209,7 +209,6 @@ fu! line#show(...) abort "{
     call line#time()
   endif
   if g:line.nvpm
-    call line#draw()
     set showtabline=2
     let &laststatus=2+s:nvim*(1-g:line.zoom)
   else
@@ -218,7 +217,6 @@ fu! line#show(...) abort "{
       let &showtabline = s:showtabline
     endif
     if s:verbose>0
-      call line#foot()
       let &laststatus=2+s:nvim*(1-g:line.zoom)
     endif
     if s:verbose>2

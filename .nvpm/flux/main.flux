@@ -1,4 +1,4 @@
-  project NVPM = nvim {
+  project NVPM Devl = nvim {
     workspace line {
       tab code
         file auto : autoload/line.vim
@@ -14,6 +14,7 @@
         file plug : plugin/nvpm.vim
         file synx : syntax/nvpm.vim
     }
+    --
     workspace zoom {
 
       -file Concepts = seng/zoom/Concepts
