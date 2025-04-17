@@ -112,7 +112,7 @@ fu! zoom#show(...) abort "{
 
   let g:zoom.mode = 1
 
-  if exists('*line#hide')&&exists('g:line.mode')&&(1+g:line.mode)
+  if exists('*line#hide')&&g:line.mode
     call line#hide()
     let g:line.zoom = 1
   else
@@ -135,7 +135,7 @@ fu! zoom#hide(...) abort "{
   exe ':silent! bdel '..g:zoom.buff
   let g:zoom.mode = 0
 
-  if exists('*line#show')&&exists('g:line.mode')&&(1+g:line.mode)
+  if exists('*line#show')&&g:line.mode
     call line#show()
     let g:line.zoom = 0
   else
@@ -243,10 +243,15 @@ fu! zoom#help(...) abort "{
 endfu "}
 fu! zoom#term(...) abort "{
 
+  let line = 0
+  if exists('g:line.mode')
+    let line = g:line.mode
+  endif
   if g:zoom.mode
     only
     bdel
     call zoom#show()
+    if line|call line#show()|endif
   endif
 
 endfu "}
