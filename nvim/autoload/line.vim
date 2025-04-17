@@ -45,7 +45,9 @@ fu! line#list(...) "{
     endif "}
     if s:edgekind==1 " highlight config{
       if indx==curr
+        let elem.= line#mode('curr',' '..info..' ')
       else
+        let elem.= line#mode('inac',' '..info..' ')
       endif
     endif "}
     call add(list,elem)
@@ -61,7 +63,6 @@ fu! line#curr(...) "{
 endfu "}
 fu! line#bone(...) "{
 
-  let s:currmode = mode()
   let list = []
   for bone in a:1
     if type(bone)==type([])
@@ -86,24 +87,24 @@ fu! line#skel(...) "{
   let s:skel = #{head:{},foot:{}}
   let s:skel.head.l=[['pack','t']]
   let s:skel.head.r=[['pack','w'],['curr','p']]
-  let s:skel.foot.l=[['mode'],['pack','b'],['git'],['file']]
+  let s:skel.foot.l=[['pack','b'],['git'],['file']]
   let s:skel.foot.r=[]
 
 endfu "}
 fu! line#mode(...) "{
 
   let name = a:1
-
+  let mode = mode()
   let line = ''
-  if     s:currmode=='i'
+  if     mode=='i'
     let line.= '%#line'..name..'i#'..(a:0==1?'insert':a:2)
-  elseif s:currmode=~'\(v\|V\|\|s\|S\|\)'
+  elseif mode=~'\(v\|V\|\|s\|S\|\)'
     let line.= '%#line'..name..'v#'..(a:0==1?'visual':a:2)
-  elseif s:currmode=='R'
+  elseif mode=='R'
     let line.= '%#line'..name..'r#'..(a:0==1?'replace':a:2)
-  elseif s:currmode=~'\(c\|r\|!\)'
+  elseif mode=~'\(c\|r\|!\)'
     let line.= '%#line'..name..'c#'..(a:0==1?'cmdline':a:2)
-  elseif s:currmode=='t'
+  elseif mode=='t'
     let line.= '%#line'..name..'t#'..(a:0==1?'terminal':a:2)
   else
     let line.= '%#line'..name..'#' ..(a:0==1?'normal':a:2)
@@ -112,6 +113,7 @@ fu! line#mode(...) "{
   return line
 
 endfu "}
+
 "-- main functions --
 fu! line#init(...) "{
   if exists('s:init')|return|else|let s:init=1|endif
@@ -125,8 +127,7 @@ fu! line#init(...) "{
   let s:edgekind = get(g:,'line_edgekind',1)
   let s:floating = get(g:,'line_floating',0)
 
-  let s:currmode   = ''
-  let s:innerspace = s:edgekind==0?'%#linefill# ':''
+  let s:innerspace = s:edgekind<2?'%#linefill# ':''
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -150,7 +151,6 @@ fu! line#head(...) "{
 
   let line = ''
 
-  let s:currmode = mode()
   let line.= line#bone(s:skel.head.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skel.head.r,1)
@@ -224,12 +224,26 @@ endfu "}
 "-- auxy functions --
 fu! line#seth(...) "{
 
-  if hlexists('linemode')
+  if    hlexists('linemode')
     if !hlexists('linemodei')|hi def link linemodei linemode|endif
     if !hlexists('linemodev')|hi def link linemodev linemode|endif
     if !hlexists('linemodec')|hi def link linemodec linemode|endif
     if !hlexists('linemodet')|hi def link linemodet linemode|endif
     if !hlexists('linemoder')|hi def link linemoder linemode|endif
+  endif
+  if    hlexists('linecurr')
+    if !hlexists('linecurri')|hi def link linecurri linecurr|endif
+    if !hlexists('linecurrv')|hi def link linecurrv linecurr|endif
+    if !hlexists('linecurrc')|hi def link linecurrc linecurr|endif
+    if !hlexists('linecurrt')|hi def link linecurrt linecurr|endif
+    if !hlexists('linecurrr')|hi def link linecurrr linecurr|endif
+  endif
+  if    hlexists('lineinac')
+    if !hlexists('lineinaci')|hi def link lineinaci lineinac|endif
+    if !hlexists('lineinacv')|hi def link lineinacv lineinac|endif
+    if !hlexists('lineinacc')|hi def link lineinacc lineinac|endif
+    if !hlexists('lineinact')|hi def link lineinact lineinac|endif
+    if !hlexists('lineinacr')|hi def link lineinacr lineinac|endif
   endif
   
 endfu "}
