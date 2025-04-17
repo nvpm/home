@@ -114,7 +114,7 @@
   "let __LINEPLUG__ = 0
 
   set nowrap
-  let line_autocmds = 0
+  let line_autocmds = 1
   let line_activate = 1
   let line_verbose  = 1
   let line_projname = 1

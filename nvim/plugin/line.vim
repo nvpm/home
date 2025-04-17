@@ -12,7 +12,7 @@ command! Line call line#line()
 if get(g:,'line_autocmds',0)
   augroup LINE
     au!
-    au ModeChanged * if g:line.mode|redrawtabline|endif
+    au ModeChanged * if g:line.mode|redrawtabline|redrawstatus|endif
   augroup END
 endif
 
