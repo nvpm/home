@@ -5,6 +5,15 @@
         file plug : plugin/line.vim
         #file conf = meta/conf.vim
     }
+    workspace nvpm {
+      tab code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+        -file init = meta/init.vim
+      tab oldnvpm = ../nvpm
+        file plug : plugin/nvpm.vim
+        file synx : syntax/nvpm.vim
+    }
     workspace zoom {
 
       -file Concepts = seng/zoom/Concepts
@@ -22,15 +31,6 @@
 
     }
     --
-    workspace nvpm {
-      tab code
-        file auto : autoload/nvpm.vim
-        file plug : plugin/nvpm.vim
-        -file init = meta/init.vim
-      tab oldnvpm = ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
-    }
     workspace flux {
       tab code
         file auto : autoload/flux.vim

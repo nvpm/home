@@ -117,14 +117,15 @@
   let line_autocmds = 1
   let line_activate = 1
   let line_verbose  = 1
-  let line_projname = 1
   let line_gitinfo  = 1
   let line_gitdelay = 2000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
 
   hi def link linefill Normal
+  hi def link linefile linefill
   hi linespot guibg=#aaaa33 guifg=Black
+  hi lineproj guibg=#777777 guifg=Black
 
   hi def link linemode linespot
   hi linemodev guibg=#005f87 guifg=Black

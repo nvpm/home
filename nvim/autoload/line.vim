@@ -24,6 +24,64 @@ fu! line#pack(...) "{
   return line
 
 endfu "}
+fu! line#curr(...) "{
+
+  let type = match(['p','w','t','b'],a:1)
+  let revs = a:2
+  let name = ''
+
+  if g:line.nvpm
+    let node = flux#seek(g:nvpm.tree.root,type)
+    if has_key(node,'meta')
+      let name = node.list[node.meta.indx].data.name
+      if empty(name)||name=='<unnamed>'
+        let name = fnamemodify(g:nvpm.tree.file,':t')
+      endif
+    endif
+  elseif type==3
+    let name = bufname()
+  endif
+  if s:edgekind==0
+    let name = '['..name..']'
+  endif
+  if s:edgekind==1
+    let name = '%#'.a:3.'# '..name..' '
+  endif
+  return name
+
+endfu "}
+fu! line#bone(...) "{
+
+  let list = []
+  for bone in a:1
+    if type(bone)==type([])
+      let item = ''
+      if bone[0]=~'\(git\|branch\)'
+        let item = g:line.git
+      elseif bone[0]=='file'
+        let item = line#file(get(bone,1,' '),get(bone,2,''))
+      elseif bone[0]=='mode'
+        let item = line#mode('mode')
+      elseif bone[0]=='curr'
+        let item = line#{bone[0]}(get(bone,1),a:2,get(bone,2,'linespot'))
+      elseif bone[0]=='pack'
+        let item = line#{bone[0]}(get(bone,1),a:2)
+      endif
+      if !empty(item)|call add(list,item)|endif
+    endif
+  endfor
+  return join(list,'')
+
+endfu "}
+fu! line#skel(...) "{
+
+  let s:skel = #{head:{},foot:{}}
+  let s:skel.head.l=[['pack','t']]
+  let s:skel.head.r=[['pack','w'],['curr','p','lineproj']]
+  let s:skel.foot.l=[['mode'],['pack','b'],['git'],['file']]
+  let s:skel.foot.r=[]
+
+endfu "}
 fu! line#list(...) "{
 
   let curr = a:2
@@ -56,41 +114,6 @@ fu! line#list(...) "{
   return revs?reverse(list):list
 
 endfu "}
-fu! line#curr(...) "{
-
-  return 'curr'
-
-endfu "}
-fu! line#bone(...) "{
-
-  let list = []
-  for bone in a:1
-    if type(bone)==type([])
-      let item = ''
-      if bone[0]=~'\(git\|branch\)'
-        let item = g:line.git
-      elseif bone[0]=='file'
-        let item = line#file()
-      elseif bone[0]=='mode'
-        let item = line#mode('mode')
-      elseif bone[0]=~'\(pack\|curr\)'
-        let item = line#{bone[0]}(get(bone,1),a:2)
-      endif
-      if !empty(item)|call add(list,item)|endif
-    endif
-  endfor
-  return join(list,s:innerspace)
-
-endfu "}
-fu! line#skel(...) "{
-
-  let s:skel = #{head:{},foot:{}}
-  let s:skel.head.l=[['pack','t']]
-  let s:skel.head.r=[['pack','w'],['curr','p']]
-  let s:skel.foot.l=[['pack','b'],['git'],['file']]
-  let s:skel.foot.r=[]
-
-endfu "}
 fu! line#mode(...) "{
 
   let name = a:1
@@ -121,7 +144,6 @@ fu! line#init(...) "{
 
   let s:activate = get(g:,'line_activate',1)
   let s:verbose  = get(g:,'line_verbose' ,2)
-  let s:projname = get(g:,'line_projname',0)
   let s:gitinfo  = get(g:,'line_gitinfo',1)
   let s:delay    = get(g:,'line_gitdelay',20000)
   let s:edgekind = get(g:,'line_edgekind',1)
@@ -135,8 +157,6 @@ fu! line#init(...) "{
   let g:line.mode = 0
   let g:line.timer= -1
   let g:line.git  = ''
-
-  let s:innerspace = s:edgekind<2?'%#linefill# ':''
 
   call line#save()
   call line#skel()
@@ -293,7 +313,12 @@ fu! line#giti(...) "{
         let cr   = '%#linegits#'
         let char = ' [S]'
       endif
-      let info = cr .' ' . branch . char
+      if s:edgekind<2
+        let space = ' '
+      else
+        let space = ''
+      endif
+      let info = cr .space.' ' . branch . char
     endif
   endif
   let g:line.git = info
@@ -307,7 +332,8 @@ fu! line#file(...) "{
   else
     let name = resolve(expand("%"))
   endif
-  return '%#linefill#'..name
+  let name = '%#linefile#'..a:1.name..a:2
+  return name
 
 endfu "}
 
