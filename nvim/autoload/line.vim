@@ -157,8 +157,6 @@ fu! line#init(...) abort "{
   let s:skeleton = get(g:,'line_skeleton',{})
 
   let g:line = {}
-  let g:line.head = ''
-  let g:line.foot = ''
   let g:line.nvpm = 0
   let g:line.zoom = 0
   let g:line.mode = 0
