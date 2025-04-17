@@ -335,8 +335,9 @@ fu! nvpm#indx(...) "{
 
   let meta = a:1
   let step = a:2
-  let meta.indx+= step
-  let meta.indx%= meta.leng
+  let meta.indx+= step                    " steps forwards or backwards
+  let meta.indx%= meta.leng               " limits range inside length
+  let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
 
 endfu "}
 fu! nvpm#show(...) "{

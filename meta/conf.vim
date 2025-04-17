@@ -47,7 +47,6 @@
   "hi Pmenu      guibg=#1f252a guifg=#888888
   "hi PmenuSel   guibg=#aa361b guifg=#ffffff
 
-  hi Comment     gui=italic
   hi Folded      guifg=#749984
   hi DiffAdded   guifg=#00ff00 gui=bold
   hi DiffRemoved guifg=#ff5555 gui=bold
