@@ -68,8 +68,10 @@ fu! line#bone(...) "{
       let item = ''
       if bone[0]=~'\(git\|branch\)'
         let item = g:line.git
-      elseif bone[0]=~'\(file\|mode\)'
-        let item = line#{bone[0]}()
+      elseif bone[0]=='file'
+        let item = line#file()
+      elseif bone[0]=='mode'
+        let item = line#mode('mode')
       elseif bone[0]=~'\(pack\|curr\)'
         let item = line#{bone[0]}(get(bone,1),a:2)
       endif
@@ -90,19 +92,21 @@ fu! line#skel(...) "{
 endfu "}
 fu! line#mode(...) "{
 
+  let name = a:1
+
   let line = ''
   if     s:currmode=='i'
-    let line.= '%#linemodei# insert '
+    let line.= '%#line'..name..'i#'..(a:0==1?'insert':a:2)
   elseif s:currmode=~'\(v\|V\|\|s\|S\|\)'
-    let line.= '%#linemodev# visual '
+    let line.= '%#line'..name..'v#'..(a:0==1?'visual':a:2)
   elseif s:currmode=='R'
-    let line.= '%#linemoder# replace'
+    let line.= '%#line'..name..'r#'..(a:0==1?'replace':a:2)
   elseif s:currmode=~'\(c\|r\|!\)'
-    let line.= '%#linemodec# cmdline'
+    let line.= '%#line'..name..'c#'..(a:0==1?'cmdline':a:2)
   elseif s:currmode=='t'
-    let line.= '%#linemodet#terminal'
+    let line.= '%#line'..name..'t#'..(a:0==1?'terminal':a:2)
   else
-    let line.= '%#linemode# normal '
+    let line.= '%#line'..name..'#' ..(a:0==1?'normal':a:2)
   endif
 
   return line
