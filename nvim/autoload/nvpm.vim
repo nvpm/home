@@ -5,66 +5,68 @@ let __NVPMAUTO__ = 1
 
 "-- main functions --
 fu! nvpm#init(...) abort "{ 
-  if exists('s:init')|return|else|let s:init=1|endif
-  let s:nvim = has('nvim')
 
-  let s:dirs = {}
-  let s:dirs.local  = '.nvpm/flux/'
-  let s:dirs.global = '~/nvim/flux/'
-  let s:dirs.edit = '.nvpm/edit'
-  let s:dirs.save = '.nvpm/save'
+  " s:init {
 
-  let s:dirs.global = resolve    (s:dirs.global)
-  let s:dirs.global = expand     (s:dirs.global)
-  let s:dirs.global = fnamemodify(s:dirs.global,':p')
+    if exists('s:init')|return|else|let s:init=1|endif
 
-  let words = [
-        \'next',
-        \'prev',
-        \'project',
-        \'workspace',
-        \'tab',
-        \'file',
-  \]
+  " }
+  " s:loop {
 
-  let loop = {'+':1,'-':-1,'words':words,'next':+1,'prev':-1}
+    let s:loop = {'+':1,'-':-1,'next':+1,'prev':-1}
 
-  let conf = {}
-  let conf.lexis = ''
-  let conf.lexis.= '|project proj scheme layout book'
-  let conf.lexis.= '|workspace arch archive architecture section'
-  let conf.lexis.= '|tab folder fold shelf package pack chapter'
-  let conf.lexis.= '|file buff buffer path entry node leaf page'
+  "}
+  " s:dirs {
+  
+    let s:dirs = {}
+    let s:dirs.local  = '.nvpm/flux/'
+    let s:dirs.global = '~/nvim/flux/'
+    let s:dirs.edit = '.nvpm/edit'
+    let s:dirs.save = '.nvpm/save'
 
-  call extend(conf,get(g:,'nvpm_fluxconf',{}))
+    let s:dirs.global = resolve    (s:dirs.global)
+    let s:dirs.global = expand     (s:dirs.global)
+    let s:dirs.global = fnamemodify(s:dirs.global,':p')
 
-  let conf.fixt = get(conf,'fixt',1)
-  let conf.home = 1 " mandatory!
+  " }
+  " s:conf {
+  
+    let s:conf = get(g:,'nvpm_fluxconf',{})
+    if empty(s:conf)
+      let s:conf.lexis = ''
+      let s:conf.lexis.= '|project proj scheme layout book'
+      let s:conf.lexis.= '|workspace arch archive architecture section'
+      let s:conf.lexis.= '|tab folder fold shelf package pack chapter'
+      let s:conf.lexis.= '|file buff buffer path entry node leaf page'
+    endif
+    let s:conf.fixt = 1
+    let s:conf.home = 1
+    call flux#conf(s:conf)
 
-  call flux#conf(conf)
+  " }
+  " g:nvpm {
 
-  let g:nvpm = {}
+    let g:nvpm = {}
 
-  let g:nvpm.tree = {}
-  let g:nvpm.tree.root = {}
-  let g:nvpm.tree.file = ''
-  let g:nvpm.tree.mode = 0
+    let g:nvpm.tree = {}
+    let g:nvpm.tree.root = {}
+    let g:nvpm.tree.file = ''
+    let g:nvpm.tree.mode = 0
 
-  let g:nvpm.edit = {}
-  let g:nvpm.edit.line = 0
-  let g:nvpm.edit.mode = 0
-  let g:nvpm.edit.curr = ''
+    let g:nvpm.edit = {}
+    let g:nvpm.edit.line = 0
+    let g:nvpm.edit.mode = 0
+    let g:nvpm.edit.curr = ''
 
-  let g:nvpm.term = {}
-  let g:nvpm.term.buff = ''
+    let g:nvpm.term = {}
+    let g:nvpm.term.buff = ''
 
-  let g:nvpm.conf = conf
-  let g:nvpm.loop = loop
+    let g:nvpm.flux = {}
+    let g:nvpm.flux.list = []
+    let g:nvpm.flux.leng = 0
+    let g:nvpm.flux.indx = 0
 
-  let g:nvpm.flux = {}
-  let g:nvpm.flux.list = []
-  let g:nvpm.flux.leng = 0
-  let g:nvpm.flux.indx = 0
+  " }
 
   if get(g:,'nvpm_initload',0) && !argc() 
     if !filereadable(s:dirs.save)
@@ -90,13 +92,13 @@ fu! nvpm#load(...) abort "{
 
   if !filereadable(file)|return 1|endif
 
-  let g:nvpm.conf.file = file
-  let root = flux#flux(g:nvpm.conf)
+  let s:conf.file = file
+  let root = flux#flux(s:conf)
   let list = get(root,'list',[])
 
-  if empty(root)    |let g:nvpm.conf.file=''|return 2|endif
-  if empty(list)    |let g:nvpm.conf.file=''|return 3|endif
-  if nvpm#curr(root)|let g:nvpm.conf.file=''|return 4|endif
+  if empty(root)    |let s:conf.file=''|return 2|endif
+  if empty(list)    |let s:conf.file=''|return 3|endif
+  if nvpm#curr(root)|let s:conf.file=''|return 4|endif
 
   let g:nvpm.tree.root = root
   let g:nvpm.tree.file = file
@@ -119,7 +121,7 @@ fu! nvpm#loop(...) abort "{
   let user = split(a:1,' ')
   let step = get(user,0, 0)
   let type = get(user,1,-1)
-  let step = get(g:nvpm.loop,step,0)
+  let step = get(s:loop,step,0)
 
   if type=='flux'||type=='-1' " flux files iteration {
     if g:nvpm.edit.mode|return|endif
@@ -140,7 +142,7 @@ fu! nvpm#loop(...) abort "{
   let tree = g:nvpm.tree.root
 
   if type!='0'&&type!='1'&&type!='2'&&type!='3'
-    let type = flux#find(g:nvpm.conf.lexis,type)
+    let type = flux#find(s:conf.lexis,type)
   else
     let type = str2nr(type)
   endif
@@ -160,13 +162,13 @@ fu! nvpm#loop(...) abort "{
     call nvpm#curr()
     call nvpm#rend()
   else
-    if type == g:nvpm.conf.leaftype
+    if type == s:conf.leaftype
       if step < 0
         :bprev
       else
         :bnext
       endif
-    elseif type == g:nvpm.conf.leaftype-1
+    elseif type == s:conf.leaftype-1
       if step < 0
         :tabprev
       else
@@ -357,5 +359,14 @@ fu! nvpm#DIRS(...) abort "{
   return files
 endfu "}
 fu! nvpm#LOOP(...) abort "{
-  return g:nvpm.loop.words
+  let words = [
+        \'next',
+        \'prev',
+        \'project',
+        \'workspace',
+        \'tab',
+        \'file',
+  \]
+
+  return words
 endfu "}
