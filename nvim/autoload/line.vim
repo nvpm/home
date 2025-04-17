@@ -3,7 +3,7 @@
 if exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! line#pack(...) "{
+fu! line#pack(...) abort "{
 
   let type = match(['p','w','t','b'],a:1)
   let revs = a:2
@@ -24,7 +24,7 @@ fu! line#pack(...) "{
   return line
 
 endfu "}
-fu! line#curr(...) "{
+fu! line#curr(...) abort "{
 
   let type = match(['p','w','t','b'],a:1)
   let revs = a:2
@@ -50,7 +50,7 @@ fu! line#curr(...) "{
   return name
 
 endfu "}
-fu! line#bone(...) "{
+fu! line#bone(...) abort "{
 
   let list = []
   for bone in a:1
@@ -58,7 +58,7 @@ fu! line#bone(...) "{
       let item = ''
       if bone[0]=~'\(git\|branch\)'
         let item = g:line.git
-      elseif bone[0]=='user'
+      elseif bone[0]=='user' " include possibly given hi group
         let item = get(bone,1,'')
       elseif bone[0]=='file'
         let item = line#file(get(bone,1,' '),get(bone,2,''))
@@ -75,7 +75,7 @@ fu! line#bone(...) "{
   return join(list,'')
 
 endfu "}
-fu! line#list(...) "{
+fu! line#list(...) abort "{
 
   let curr = a:2
   let leng = a:3
@@ -109,7 +109,7 @@ fu! line#list(...) "{
   return revs?reverse(list):list
 
 endfu "}
-fu! line#mode(...) "{
+fu! line#mode(...) abort "{
 
   let name = a:1
   let mode = mode()
@@ -131,9 +131,20 @@ fu! line#mode(...) "{
   return line
 
 endfu "}
+fu! line#skel(...) abort "{
+
+  if empty(s:skeleton)
+    let s:skeleton = #{head:{},foot:{}}
+    let s:skeleton.head.l=[['pack','t']]
+    let s:skeleton.head.r=[['pack','w'],['curr','p','lineproj']]
+    let s:skeleton.foot.l=[['pack','b'],['git'],['file',' ⬤ ']]
+    let s:skeleton.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
+  endif
+
+endfu "}
 
 "-- main functions --
-fu! line#init(...) "{
+fu! line#init(...) abort "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
@@ -143,7 +154,7 @@ fu! line#init(...) "{
   let s:delay    = get(g:,'line_gitdelay',20000)
   let s:edgekind = get(g:,'line_edgekind',1)
   let s:floating = get(g:,'line_floating',0)
-  let s:skel     = get(g:,'line_skeleton',{})
+  let s:skeleton = get(g:,'line_skeleton',{})
 
   let g:line = {}
   let g:line.head = ''
@@ -156,14 +167,7 @@ fu! line#init(...) "{
 
   call line#save()
   call line#seth()
-  
-  if empty(s:skel)
-    let s:skel = #{head:{},foot:{}}
-    let s:skel.head.l=[['pack','t']]
-    let s:skel.head.r=[['pack','w'],['curr','p','lineproj']]
-    let s:skel.foot.l=[['pack','b'],['git'],['file',' ⬤ ']]
-    let s:skel.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
-  endif
+  call line#skel()
 
   if s:activate
     hi clear TabLine
@@ -172,7 +176,7 @@ fu! line#init(...) "{
   endif
 
 endfu "}
-fu! line#head(...) "{
+fu! line#head(...) abort "{
 
   let line = ''
 
@@ -183,7 +187,7 @@ fu! line#head(...) "{
   let &tabline = line
 
 endfu "}
-fu! line#foot(...) "{
+fu! line#foot(...) abort "{
 
   let line = ''
 
@@ -194,11 +198,11 @@ fu! line#foot(...) "{
   let &statusline = line
 
 endfu "}
-fu! line#draw(...) "{
+fu! line#draw(...) abort "{
   call line#head()
   call line#foot()
 endfu "}
-fu! line#show(...) "{
+fu! line#show(...) abort "{
 
   if !s:activate|return|endif
   if s:verbose>0&&s:gitinfo
@@ -225,7 +229,7 @@ fu! line#show(...) "{
   let g:line.mode = 1
 
 endfu "}
-fu! line#hide(...) "{
+fu! line#hide(...) abort "{
 
   if !s:activate|return|endif
 
@@ -239,7 +243,7 @@ fu! line#hide(...) "{
   let g:line.mode = 0
 
 endfu "}
-fu! line#line(...) "{
+fu! line#line(...) abort "{
 
   if g:line.mode
     call line#hide()
@@ -250,7 +254,7 @@ fu! line#line(...) "{
 endfu "}
 
 "-- auxy functions --
-fu! line#seth(...) "{
+fu! line#seth(...) abort "{
 
   if    hlexists('linemode')
     if !hlexists('linemodei')|hi def link linemodei linemode|endif
@@ -275,13 +279,13 @@ fu! line#seth(...) "{
   endif
 
 endfu "}
-fu! line#save(...) "{
+fu! line#save(...) abort "{
 
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
 
 endfu "}
-fu! line#time(...) "{
+fu! line#time(...) abort "{
 
   if a:0
     if 1+g:line.timer
@@ -296,7 +300,7 @@ fu! line#time(...) "{
   endif
 
 endfu "}
-fu! line#giti(...) "{
+fu! line#giti(...) abort "{
   let info  = ''
   if s:gitinfo && executable('git')
     let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
@@ -327,7 +331,7 @@ fu! line#giti(...) "{
   endif
   let g:line.git = info
 endfu "}
-fu! line#file(...) "{
+fu! line#file(...) abort "{
 
   if !empty(matchstr(bufname(),'term://.*'))
     let name = 'terminal'

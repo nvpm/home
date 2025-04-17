@@ -121,31 +121,46 @@
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
 
-  hi def link linefill Normal
-  hi def link linefile linefill
-  hi linespot guibg=#aaaa33 guifg=Black
-  hi lineproj guibg=#777777 guifg=Black
+  " Colors   {
 
-  hi def link linemode linespot
-  hi linemodev guibg=#005f87 guifg=Black
-  hi linemoder guibg=#05f087 guifg=Black
-  hi def link linemodec Title
-  hi def link linemodet linemodec
-  hi def link linemodei Error
+    hi def link linefill Normal
+    hi def link linefile linefill
+    hi linespot guibg=#aaaa33 guifg=Black
+    hi lineproj guibg=#777777 guifg=Black
 
-  hi def link linecurr  linemode
-  hi def link lineinac  Normal
-  hi def link linecurri Error
-  hi def link linecurrv Visual
-  hi def link linecurrc SpellBad
-  hi def link linecurrt PmenuSel
-  hi def link linecurrr WildMenu
+    hi def link linemode linespot
+    hi linemodev guibg=#005f87 guifg=Black
+    hi linemoder guibg=#05f087 guifg=Black
+    hi def link linemodec Title
+    hi def link linemodet linemodec
+    hi def link linemodei Error
 
-  "hi lineinac guibg=bg      guifg=#005f87
+    hi def link linecurr  linemode
+    hi def link lineinac  Normal
+    hi def link linecurri Error
+    hi def link linecurrv Visual
+    hi def link linecurrc SpellBad
+    hi def link linecurrt PmenuSel
+    hi def link linecurrr WildMenu
 
-  hi def link linegits Title
-  hi def link linegitm WarningMsg
-  hi def link linegitc DiffAdded
+    "hi lineinac guibg=bg      guifg=#005f87
+
+    hi def link linegits Title
+    hi def link linegitm WarningMsg
+    hi def link linegitc DiffAdded
+
+  "}
+  " Skeleton {
+
+    let s:hl=[['pack','t','linetabs']]
+    let s:hr=[['pack','w','linewksp']]
+    let s:fl=[['pack','b'],['git'],['file',' ⬤ ']]
+    let s:fr=[['user','%Y%m ⬤ %l,%c/%P']]
+
+    let line_skeleton=#{head:#{l:s:hl,r:s:hr},foot:#{l:s:fl,r:s:fr}}
+    unlet s:hl s:hr s:fl s:fr
+
+  " "}
 
   nmap <silent>ml :Line<cr><c-l>
 
