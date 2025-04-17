@@ -58,28 +58,21 @@ fu! line#bone(...) "{
       let item = ''
       if bone[0]=~'\(git\|branch\)'
         let item = g:line.git
+      elseif bone[0]=='user'
+        let item = get(bone,1,'')
       elseif bone[0]=='file'
         let item = line#file(get(bone,1,' '),get(bone,2,''))
       elseif bone[0]=='mode'
         let item = line#mode('mode')
       elseif bone[0]=='curr'
-        let item = line#{bone[0]}(get(bone,1),a:2,get(bone,2,'linespot'))
+        let item = line#curr(get(bone,1),a:2,get(bone,2,'linespot'))
       elseif bone[0]=='pack'
-        let item = line#{bone[0]}(get(bone,1),a:2)
+        let item = line#pack(get(bone,1),a:2)
       endif
       if !empty(item)|call add(list,item)|endif
     endif
   endfor
   return join(list,'')
-
-endfu "}
-fu! line#skel(...) "{
-
-  let s:skel = #{head:{},foot:{}}
-  let s:skel.head.l=[['pack','t']]
-  let s:skel.head.r=[['pack','w'],['curr','p','lineproj']]
-  let s:skel.foot.l=[['mode'],['pack','b'],['git'],['file']]
-  let s:skel.foot.r=[]
 
 endfu "}
 fu! line#list(...) "{
@@ -120,17 +113,17 @@ fu! line#mode(...) "{
   let mode = mode()
   let line = ''
   if     mode=='i'
-    let line.= '%#line'..name..'i#'..(a:0==1?'insert':a:2)
+    let line.= '%#line'..name..'i#'..(a:0==1?' insert ':a:2)
   elseif mode=~'\(v\|V\|\|s\|S\|\)'
-    let line.= '%#line'..name..'v#'..(a:0==1?'visual':a:2)
+    let line.= '%#line'..name..'v#'..(a:0==1?' visual ':a:2)
   elseif mode=='R'
-    let line.= '%#line'..name..'r#'..(a:0==1?'replace':a:2)
+    let line.= '%#line'..name..'r#'..(a:0==1?' replace ':a:2)
   elseif mode=~'\(c\|r\|!\)'
-    let line.= '%#line'..name..'c#'..(a:0==1?'cmdline':a:2)
+    let line.= '%#line'..name..'c#'..(a:0==1?' cmdline ':a:2)
   elseif mode=='t'
-    let line.= '%#line'..name..'t#'..(a:0==1?'terminal':a:2)
+    let line.= '%#line'..name..'t#'..(a:0==1?' terminal ':a:2)
   else
-    let line.= '%#line'..name..'#' ..(a:0==1?'normal':a:2)
+    let line.= '%#line'..name..'#' ..(a:0==1?' normal ':a:2)
   endif
 
   return line
@@ -148,6 +141,7 @@ fu! line#init(...) "{
   let s:delay    = get(g:,'line_gitdelay',20000)
   let s:edgekind = get(g:,'line_edgekind',1)
   let s:floating = get(g:,'line_floating',0)
+  let s:skel     = get(g:,'line_skeleton',{})
 
   let g:line = {}
   let g:line.head = ''
@@ -159,8 +153,15 @@ fu! line#init(...) "{
   let g:line.git  = ''
 
   call line#save()
-  call line#skel()
   call line#seth()
+  
+  if empty(s:skel)
+    let s:skel = #{head:{},foot:{}}
+    let s:skel.head.l=[['pack','t']]
+    let s:skel.head.r=[['pack','w'],['curr','p','lineproj']]
+    let s:skel.foot.l=[['pack','b'],['git'],['file',' ⬤ ']]
+    let s:skel.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
+  endif
 
   if s:activate
     hi clear TabLine
