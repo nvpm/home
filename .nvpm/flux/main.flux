@@ -1,9 +1,12 @@
-  project NVPM Devl = plug {
+
+              
+
+  project   = plug {    
     workspace line : line {
       tab code
         file auto : autoload/line.vim
         file plug : plugin/line.vim
-        -file init = meta/init.vim
+        file init = meta/init.vim
       -tab meta
         file help : doc/line.txt
         file read : README.md
@@ -57,15 +60,12 @@
         file vers : version
     }
   }
-  project NVPM meta = meta {
+  project  = meta {
     tab meta
       file conf.vim
       file menu.vim
-     -file init.vim
-    tab root =
-      file README.md
-      file LICENSE
-    tab code=nvim
-      file version
-      file README.md
+      file init.vim
+    tab docs = /usr/share/nvim/runtime/doc
+      file intro.txt
+      ---
   }

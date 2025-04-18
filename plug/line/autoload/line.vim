@@ -5,19 +5,30 @@ let __LINEAUTO__ = 1
 
 fu! line#pack(...) abort "{
 
-  let type = match(['p','w','t','b'],a:1)
+  let type = a:1
   let revs = a:2
-  let line = ''
+  let list = []
 
   if g:line.nvpm
-    let node = flux#seek(g:nvpm.tree.root,type)
+    let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
     if has_key(node,'meta')
       let list = line#list(node.list,node.meta.indx,node.meta.leng,revs)
-      let line = join(list,'')
     endif
-  else
+  elseif type=='b'
+    if s:verbose==1
+      let list = [bufname()]
+      let curr = 0
+      let leng = 1
+    elseif s:verbose>1
+      let list = map(range(1,bufnr('$')),'bufname(v:val)')
+      let list = filter(list,'!empty(v:val)&&buflisted(v:val)')
+      let curr = match(list,bufname())
+      let leng = len(list)
+    endif
+    let list = line#list(list,curr,leng,revs)
   endif
-  if s:edgekind==0
+  let line = join(list,'')
+  if s:edgekind==0&&!empty(line)
     let line = '%#linefill#'..line
   endif
 
@@ -26,27 +37,28 @@ fu! line#pack(...) abort "{
 endfu "}
 fu! line#curr(...) abort "{
 
-  let type = match(['p','w','t','b'],a:1)
+  let type = a:1
   let revs = a:2
   let name = ''
 
   if g:line.nvpm
-    let node = flux#seek(g:nvpm.tree.root,type)
+    let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
     if has_key(node,'meta')
       let name = node.list[node.meta.indx].data.name
       if (empty(name)||name=='<unnamed>')&&type==0
         let name = fnamemodify(g:nvpm.tree.file,':t')
       endif
     endif
-  elseif type==3
-    let name = bufname()
+  elseif type=='b'
+    let name = fnamemodify(expand('%'),':t')
   endif
-  if s:edgekind==0
-    let name = '['..name..']'
-  endif
-  if s:edgekind==1
+  if empty(name)|return ''|endif
+  "if s:edgekind==0
+  "  let name = '['..name..']'
+  "endif
+  "if s:edgekind==1
     let name = '%#'.a:3.'# '..name..' '
-  endif
+  "endif
   return name
 
 endfu "}
@@ -84,7 +96,7 @@ fu! line#list(...) abort "{
 
   for indx in range(leng) "loop over given list {
     let item = a:1[indx]
-    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t')
+    let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     let elem = ''
     if s:edgekind==0 " brackets  config{

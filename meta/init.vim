@@ -7,8 +7,8 @@ let s:test = {}
 " plug {
 fu! s:test.flux(...) "{
 
-  so nvim/autoload/flux.vim
-  so nvim/syntax/flux.vim
+  so plug/flux/autoload/flux.vim
+  so plug/flux/syntax/flux.vim
 
   let conf = {}
 
@@ -33,16 +33,16 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.nvpm(...) "{
 
-  so nvim/autoload/flux.vim
-  so nvim/syntax/flux.vim
-  so nvim/autoload/nvpm.vim
-  so nvim/plugin/nvpm.vim
+  so plug/flux/autoload/flux.vim
+  so plug/flux/syntax/flux.vim
+  so plug/nvpm/autoload/nvpm.vim
+  so plug/nvpm/plugin/nvpm.vim
 
 endfu "}
 fu! s:test.zoom(...) "{
 
-  so nvim/autoload/zoom.vim
-  so nvim/plugin/zoom.vim
+  so plug/zoom/autoload/zoom.vim
+  so plug/zoom/plugin/zoom.vim
 
   ec '     h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
 
@@ -66,25 +66,30 @@ fu! s:test.zoom(...) "{
 endfu "}
 fu! s:test.line(...) "{
 
-  so nvim/autoload/line.vim
-  so nvim/plugin/line.vim
+  so plug/line/autoload/line.vim
+  so plug/line/plugin/line.vim
 
-  fu! Showcterm()
-    let term = &termguicolors
-    set notermguicolors
-    ec repeat("\n",3)
-    for i in range(256)
-      let name = 'nvpmtestcolor'.i
-      exe 'hi '..name..' ctermbg='..i..' ctermfg='..(i%8==0||(i>=233&&i<=239)?255:8)
-      exe 'echohl '..name
-      echon ' '..i..' '
-      "exe 'hi clear '..name
-    endfor
-    ec repeat("\n",2)
-    let &termguicolors = term
-  endfu
-  "call Showcterm()|delfunc Showcterm
-  ec line#foot()
+  for i in range(0xe0b0,0xf000)
+    echon nr2char(i)..' '
+  endfor
+
+  return
+  "fu! Showcterm()
+  "  let term = &termguicolors
+  "  set notermguicolors
+  "  ec repeat("\n",3)
+  "  for i in range(256)
+  "    let name = 'nvpmtestcolor'.i
+  "    exe 'hi '..name..' ctermbg='..i..' ctermfg='..(i%8==0||(i>=233&&i<=239)?255:8)
+  "    exe 'echohl '..name
+  "    echon ' '..i..' '
+  "    "exe 'hi clear '..name
+  "  endfor
+  "  ec repeat("\n",2)
+  "  let &termguicolors = term
+  "endfu
+  ""call Showcterm()|delfunc Showcterm
+  "ec line#foot()
 
 endfu "}
 "}

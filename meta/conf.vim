@@ -116,26 +116,23 @@
   set nowrap
   let line_autocmds = 1
   let line_activate = 1
-  let line_verbose  = 2
+  let line_verbose  = 3
   let line_gitinfo  = 1
   let line_gitdelay = 7000
-  let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
+  let line_edgekind = 0 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
 
   " Colors   {
-
+  
     hi def link linefill Normal
     hi def link linefile linefill
     hi linespot guibg=#aaaa33 guifg=Black
     hi lineproj guibg=#777777 guifg=Black
-
+ 
     hi def link linemode  linespot
     hi def link linemodec Title
-    hi def link linemodet linemodec
-    hi def link linemodei Error
-    hi          linemodev guibg=#005f87 guifg=Black
     hi          linemoder guibg=#05f087 guifg=Black
-
+ 
     hi def link linecurr  linemode
     hi def link lineinac  Normal
     hi def link linecurri linemodei
@@ -143,20 +140,58 @@
     hi def link linecurrc linemodec
     hi def link linecurrt linemodet
     hi def link linecurrr linemoder
-
+ 
     "hi lineinac guibg=bg      guifg=#005f87
-
+ 
     hi def link linegits Title
     hi def link linegitm WarningMsg
     hi def link linegitc DiffAdded
 
+    "hi linefill guibg=#1c1c1c guifg=#c1c1c1
+    "hi def link linefile linefill
+    "hi linespot guibg=#747430 guifg=Black
+    "hi lineproj guibg=#474747 guifg=White
+    "
+    "hi def link linemode  linespot
+    "hi def link linemodec Title
+    "hi def link linemodet linemodec
+    "hi def link linemodei Error
+    "hi          linemodev guibg=#005f87 guifg=Black
+    "hi          linemoder guibg=#05f087 guifg=Black
+    "
+    "hi def link linecurr  linemode
+    "hi def link linecurri linemodei
+    "hi def link linecurrv linemodev
+    "hi def link linecurrc linemodec
+    "hi def link linecurrt linemodet
+    "hi def link linecurrr linemoder
+    "
+    "hi lineinac guibg=#1c1c1c guifg=Grey
+    "
+    ""hi lineinac guibg=bg      guifg=#005f87
+    "
+    "hi linegits guibg=#1c1c1c guifg=#0000ff
+    "hi linegitm guibg=#1c1c1c guifg=#ff0000
+    "hi linegitc guibg=#1c1c1c guifg=fg
+
   "}
   " Skeleton {
 
-    let s:hl=[['pack','t','linetabs']]
-    let s:hr=[['pack','w','linewksp'],['curr','p','lineproj']]
-    let s:fl=[['pack','b'],['git'],['file',' ⬤ ']]
-    let s:fr=[['user','%Y%m ⬤ %l,%c/%P']]
+    let s:hl = []|let s:hr = []|let s:fl = []|let s:fr = [] 
+
+    call add(s:hl,['pack','t','linetabs'])
+
+    call add(s:hr,['pack','w','linewksp'])
+    call add(s:hr,['curr','p','linefill'])
+    call add(s:hr,['user',' '])
+    "call add(s:hr,['user','%#Error#|'])
+
+    call add(s:fl,['user',' ','lineproj'])
+    call add(s:fl,['pack','b'])
+    call add(s:fl,['git'])
+    call add(s:fl,['file',' ⬤ '])
+
+    call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])
 
     let line_skeleton=#{head:#{l:s:hl,r:s:hr},foot:#{l:s:fl,r:s:fr}}
     unlet s:hl s:hr s:fl s:fr

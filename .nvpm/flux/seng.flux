@@ -1,7 +1,7 @@
 
 home seng
 
-  loop plugin: line flux -- nvpm zoom - text {
+  loop plugin: nvpm line flux zoom text {
     workspace $(plugin):$(plugin) 
       tab code {
         file Random   
@@ -22,7 +22,7 @@ home seng
         file read = seng/read
       }
   endl}
-  project NVPM meta = meta {
+  project  = meta { 
     tab meta
       file conf.vim
       file menu.vim
