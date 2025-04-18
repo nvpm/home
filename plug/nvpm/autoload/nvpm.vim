@@ -195,7 +195,7 @@ fu! nvpm#edit(...) abort "{
   let body   = []
   for file in fluxes
     let file = s:dirs.local..file
-    let line = 'file '..fnamemodify(file,':t')..':'..file
+    let line = 'file '..fnamemodify(file,':t:r')..':'..file
     if file == g:nvpm.tree.file
       let body = [line]+body
       continue
