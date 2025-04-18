@@ -102,8 +102,8 @@ fu! line#list(...) abort "{
     if s:edgekind==0 " brackets  config{
       if indx==curr&&leng>1
         let elem.= '['..info..']'
-      elseif leng==1
-        let elem.= (revs?' ':'')..info..(!revs?' ':'')
+      "elseif leng==1
+      "  let elem.= (revs?' ':'')..info..(!revs?' ':'')
       else
         let elem.= ' '..info..' '
       endif
