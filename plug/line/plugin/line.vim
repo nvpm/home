@@ -12,5 +12,6 @@ command! Line call line#line()
 augroup LINE
   au!
   au ModeChanged,BufEnter * if g:line.mode|call line#draw()|endif
+  au BufWritePost * call line#giti()
 augroup END
 
