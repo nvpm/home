@@ -1,51 +1,60 @@
-  project NVPM Devl = nvim {
-    workspace line {
+  project NVPM Devl = plug {
+    workspace line : line {
       tab code
         file auto : autoload/line.vim
         file plug : plugin/line.vim
-        #file conf = meta/conf.vim
+        -file init = meta/init.vim
+      -tab meta
+        file help : doc/line.txt
+        file read : README.md
+        file vers : version
     }
-    workspace nvpm {
+    workspace nvpm : nvpm {
       tab code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
         -file init = meta/init.vim
-      tab oldnvpm = ../nvpm
-        file plug : plugin/nvpm.vim
-        file synx : syntax/nvpm.vim
+      -tab meta
+        file help : doc/nvpm.txt
+        file read : README.md
+        file vers : version
     }
     --
-    workspace zoom {
-
-      -file Concepts = seng/zoom/Concepts
+    workspace zoom : zoom {
       tab code
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
-
-      -tab nvimdocs = /usr/share/nvim/runtime/doc
-        file windows.txt
-        file options.txt
-        --
-        file eval.txt
-        file api.txt
-        file usr_41.txt
+        -file init = meta/init.vim
+      -tab meta
+        file help : doc/zoom.txt
+        file read : README.md
+        file vers : version
 
     }
-    workspace flux {
+    workspace flux : flux {
       tab code
         file auto : autoload/flux.vim
-        file init = meta/init.vim
+        file synx :   syntax/flux.vim
+        -file init = meta/init.vim
       tab test = test/flux
         file case : case.case
         file expt : case.expt
+      -tab meta
+        file help : doc/flux.txt
+        file read : README.md
+        file vers : version
     }
-    workspace text {
+    workspace text : text {
       tab code
         file auto : autoload/text.vim
         file plug : plugin/text.vim
       tab test = test/text
         file case : case.case
         file expt : case.expt
+      -tab meta
+        file help : doc/text.txt
+        file read : README.md
+        file vers : version
     }
   }
   project NVPM meta = meta {

@@ -129,20 +129,20 @@
     hi linespot guibg=#aaaa33 guifg=Black
     hi lineproj guibg=#777777 guifg=Black
 
-    hi def link linemode linespot
-    hi linemodev guibg=#005f87 guifg=Black
-    hi linemoder guibg=#05f087 guifg=Black
+    hi def link linemode  linespot
     hi def link linemodec Title
     hi def link linemodet linemodec
     hi def link linemodei Error
+    hi          linemodev guibg=#005f87 guifg=Black
+    hi          linemoder guibg=#05f087 guifg=Black
 
     hi def link linecurr  linemode
     hi def link lineinac  Normal
-    hi def link linecurri Error
-    hi def link linecurrv Visual
-    hi def link linecurrc SpellBad
-    hi def link linecurrt PmenuSel
-    hi def link linecurrr WildMenu
+    hi def link linecurri linemodei
+    hi def link linecurrv linemodev
+    hi def link linecurrc linemodec
+    hi def link linecurrt linemodet
+    hi def link linecurrr linemoder
 
     "hi lineinac guibg=bg      guifg=#005f87
 
