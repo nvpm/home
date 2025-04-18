@@ -1,6 +1,4 @@
 
-                    ✅ 
-
   project   devl = plug {
     workspace 🭹 line : line {
       tab  code
@@ -13,6 +11,18 @@
         file read : README.md
         file vers : version
     }
+    workspace ▣ zoom : zoom {
+      tab  code
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
+        -file init = meta/init.vim
+      tab  meta
+        file help : doc/zoom.txt
+        file read : README.md
+        file vers : version
+
+    }
+    --
     workspace Ⲅ text : text {
       tab  code
         file auto : autoload/text.vim
@@ -35,17 +45,6 @@
         file help : doc/nvpm.txt
         file read : README.md
         file vers : version
-    }
-    workspace ▣ zoom : zoom {
-      tab  code
-        file auto : autoload/zoom.vim
-        file plug : plugin/zoom.vim
-        -file init = meta/init.vim
-      tab  meta
-        file help : doc/zoom.txt
-        file read : README.md
-        file vers : version
-
     }
     workspace Ⲫ flux : flux {
       tab  code
@@ -70,3 +69,6 @@
       file intro.txt
       ---
   }
+
+                    ✅ 
+
