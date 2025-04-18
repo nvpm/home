@@ -1,20 +1,14 @@
 
-home nvim/syntax
+home plug/flux/syntax
 
 project Syntax CODE {
 
   tab flux
     file flux : flux.vim
-    file file = test/case.flux
+    file test = test/flux/synx.flux
 
   tab meta = meta
     file conf.vim
-
-  -
-  tab code = nvim/autoload
-    file nvpm.vim
-    file flux.vim
-    file line.vim
 
 }
 project NVIM runtime= /usr/share/nvim/runtime {
@@ -32,15 +26,3 @@ project NVIM runtime= /usr/share/nvim/runtime {
 
 }
 --
-project NVPM meta = meta {
-  tab meta 
-    file conf.vim
-    file menu.vim
-   -file init.vim
-  tab root =
-    file README.md
-    file LICENSE
-  tab code=nvim
-    file version
-    file README.md
-}
