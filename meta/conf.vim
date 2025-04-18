@@ -184,7 +184,6 @@
     call add(s:hr,['pack','w','linewksp'])
     call add(s:hr,['user',' '])
     call add(s:hr,['curr','p','linefill'])
-    call add(s:hr,['user',' '])
     "call add(s:hr,['user','%#Error#|'])
 
     call add(s:fl,['pack','b'])
@@ -206,13 +205,13 @@
   set cmdheight=1
   let zoom_autocmds = 1
   let zoom_initload = 1
+  let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1
 
-  let zoom_height = 0.80
+  let zoom_height = -4
   let zoom_width  = 80
-  "let zoom_width  = 0.90
-  "let zoom_right  = 0
+  "let zoom_right  = -5
 
   nmap <silent>mz :Zoom<cr>
 

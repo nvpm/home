@@ -113,8 +113,12 @@ fu! zoom#show(...) abort "{
   let g:zoom.mode = 1
 
   if exists('*line#hide')&&g:line.mode
-    call line#hide()
-    let g:line.zoom = 1
+    let g:line.zoom = #{mode:1,left:s:left,right:s:right}
+    if !get(g:,'zoom_keepline')
+      call line#hide()
+    else
+      call line#draw()
+    endif
   else
     set showtabline=0
     set laststatus=0
@@ -135,9 +139,10 @@ fu! zoom#hide(...) abort "{
   exe ':silent! bdel '..g:zoom.buff
   let g:zoom.mode = 0
 
-  if exists('*line#show')&&g:line.mode
+  if exists('*line#show')
+    let g:line.zoom = #{mode:0,left:0,right:0}
     call line#show()
-    let g:line.zoom = 0
+    call line#draw()
   else
     let &showtabline = s:topl
     let &laststatus  = s:botl

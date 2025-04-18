@@ -173,7 +173,7 @@ fu! line#init(...) abort "{
 
   let g:line = {}
   let g:line.nvpm = 0
-  let g:line.zoom = 0
+  let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
   let g:line.timer= -1
   let g:line.git  = ''
@@ -192,10 +192,17 @@ endfu "}
 fu! line#head(...) abort "{
 
   let line = ''
+  if g:line.zoom.mode
+    let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+  endif
 
   let line.= line#bone(s:skeleton.head.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skeleton.head.r,1)
+
+  if g:line.zoom.mode
+    let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+  endif
 
   let &tabline = line
 
@@ -203,10 +210,17 @@ endfu "}
 fu! line#foot(...) abort "{
 
   let line = ''
+  if g:line.zoom.mode
+    let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+  endif
 
   let line.= line#bone(s:skeleton.foot.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skeleton.foot.r,1)
+
+  if g:line.zoom.mode
+    let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+  endif
 
   let &statusline = line
 
@@ -218,19 +232,19 @@ endfu "}
 fu! line#show(...) abort "{
 
   if !s:activate|return|endif
-  if s:verbose>0&&s:gitinfo
+  if s:verbose>0&&s:gitinfo&&!g:line.zoom.mode
     call line#time()
   endif
   if g:line.nvpm
     set showtabline=2
-    let &laststatus=2+s:nvim*(1-g:line.zoom)
+    let &laststatus=2+s:nvim
   else
     if s:verbose==0
       let &laststatus  = s:laststatus
       let &showtabline = s:showtabline
     endif
     if s:verbose>0
-      let &laststatus=2+s:nvim*(1-g:line.zoom)
+      let &laststatus=2+s:nvim
     endif
     if s:verbose>2
       set showtabline=2
@@ -260,6 +274,7 @@ fu! line#line(...) abort "{
     call line#hide()
   else
     call line#show()
+    call line#draw()
   endif
 
 endfu "}
