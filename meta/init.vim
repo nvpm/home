@@ -69,9 +69,21 @@ fu! s:test.line(...) "{
   so plug/line/autoload/line.vim
   so plug/line/plugin/line.vim
 
-  for i in range(0xe0b0,0xf000)
-    echon nr2char(i)..' '
+  let init = 0xffff
+  let end  = 0xfffff
+  let body = []
+  let line = ''
+  for i in range(init,end)
+    let char = nr2char(i)
+    if i%30==0
+      call add(body,line)
+      let line = ''
+    elseif char=~'\p'
+      let line.= char.' '
+    endif
   endfor
+
+  call writefile(body,'seng/char')
 
   return
   "fu! Showcterm()

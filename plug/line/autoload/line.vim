@@ -100,7 +100,10 @@ fu! line#list(...) abort "{
     let iscurr = indx==curr
     let elem = ''
     if s:edgekind==0 " brackets  config{
-      if indx==curr
+      " ⦃ ⦄ ⦅ ⦆ ⦇ ⦈ ⦉ ⦊ ⦋ ⦌⦑ ⦒⦗ ⦘
+      " ❨ ❩ ❪ ❫ ❬ ❭ ❮ ❯ ❰ ❱ ❲ ❳ ❴ ❵
+      " ⟦ ⟧ ⟨ ⟩ ⟪ ⟫ ⟬ ⟭ ⟮ ⟯
+      if indx==curr&&leng>1
         let elem.= '['..info..']'
       else
         let elem.= ' '..info..' '

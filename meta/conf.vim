@@ -182,11 +182,11 @@
     call add(s:hl,['pack','t','linetabs'])
 
     call add(s:hr,['pack','w','linewksp'])
+    call add(s:hr,['user',' '])
     call add(s:hr,['curr','p','linefill'])
     call add(s:hr,['user',' '])
     "call add(s:hr,['user','%#Error#|'])
 
-    call add(s:fl,['user',' ','lineproj'])
     call add(s:fl,['pack','b'])
     call add(s:fl,['git'])
     call add(s:fl,['file',' ⬤ '])
