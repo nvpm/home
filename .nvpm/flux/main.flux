@@ -2,9 +2,9 @@
   project   devl = plug {
     workspace 🭹 line : line {
       tab  code
-        file auto : autoload/line.vim
-        file plug : plugin/line.vim
-        -file init = meta/init.vim
+        file  auto : autoload/line.vim
+        file  plug : plugin/line.vim
+        -file  init = meta/init.vim
       --
       tab  meta
         file help : doc/line.txt

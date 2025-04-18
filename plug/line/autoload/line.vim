@@ -94,15 +94,12 @@ fu! line#list(...) abort "{
   let revs = a:4
   let list = []
 
-  for indx in range(leng) "loop over given list {
+  for indx in range(leng)
     let item = a:1[indx]
     let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     let elem = ''
     if s:edgekind==0 " brackets  config{
-      " ⦃ ⦄ ⦅ ⦆ ⦇ ⦈ ⦉ ⦊ ⦋ ⦌⦑ ⦒⦗ ⦘
-      " ❨ ❩ ❪ ❫ ❬ ❭ ❮ ❯ ❰ ❱ ❲ ❳ ❴ ❵
-      " ⟦ ⟧ ⟨ ⟩ ⟪ ⟫ ⟬ ⟭ ⟮ ⟯
       if indx==curr&&leng>1
         let elem.= '['..info..']'
       else
@@ -119,7 +116,7 @@ fu! line#list(...) abort "{
     if s:edgekind==2 " tabs      config{
     endif "}
     call add(list,elem)
-  endfor "}
+  endfor
 
   return revs?reverse(list):list
 
@@ -161,7 +158,6 @@ endfu "}
 "-- main functions --
 fu! line#init(...) abort "{
   if exists('s:init')|return|else|let s:init=1|endif
-  let s:nvim = has('nvim')
 
   let s:activate = get(g:,'line_activate',1)
   let s:verbose  = get(g:,'line_verbose' ,2)
@@ -210,17 +206,17 @@ endfu "}
 fu! line#foot(...) abort "{
 
   let line = ''
-  if g:line.zoom.mode
-    let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
-  endif
+  "if g:line.zoom.mode
+  "  let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+  "endif
 
   let line.= line#bone(s:skeleton.foot.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skeleton.foot.r,1)
 
-  if g:line.zoom.mode
-    let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
-  endif
+  "if g:line.zoom.mode
+  "  let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+  "endif
 
   let &statusline = line
 
@@ -237,14 +233,14 @@ fu! line#show(...) abort "{
   endif
   if g:line.nvpm
     set showtabline=2
-    let &laststatus=2+s:nvim
+    let &laststatus=2
   else
     if s:verbose==0
       let &laststatus  = s:laststatus
       let &showtabline = s:showtabline
     endif
     if s:verbose>0
-      let &laststatus=2+s:nvim
+      let &laststatus=2
     endif
     if s:verbose>2
       set showtabline=2
