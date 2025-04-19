@@ -120,16 +120,15 @@
   let line_gitinfo  = 1
   let line_gitdelay = 3000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
+  let line_brackets = '[]'
   let line_floating = 1
 
   " Colors   {
   
     let s:yellow = '#777733'
     let s:blue   = '#002a57' " 005f87"
-    hi def link linefill Normal
-    hi def link linefile linefill
     exe $'hi linecurr guibg={s:yellow} guifg=Black gui=Bold'
-    exe $'hi lineproj guibg=bg         guifg={s:yellow}'
+    exe $'hi linefill guibg=bg         guifg={s:yellow}'
     hi lineinac guibg=bg      guifg=Grey
     hi def link linecurri error
     exe $'hi linecurrv guibg={s:blue} guifg=White'
@@ -141,55 +140,22 @@
     hi def link linegitm WarningMsg
     hi def link linegitc DiffAdded
 
-    "hi linefill guibg=#1c1c1c guifg=#c1c1c1
-    "hi def link linefile linefill
-    "hi linespot guibg=#747430 guifg=Black
-    "hi lineproj guibg=#474747 guifg=White
-    "
-    "hi def link linemode  linespot
-    "hi def link linemodec Title
-    "hi def link linemodet linemodec
-    "hi def link linemodei Error
-    "hi          linemodev guibg=#005f87 guifg=Black
-    "hi          linemoder guibg=#05f087 guifg=Black
-    "
-    "hi def link linecurr  linemode
-    "hi def link linecurri linemodei
-    "hi def link linecurrv linemodev
-    "hi def link linecurrc linemodec
-    "hi def link linecurrt linemodet
-    "hi def link linecurrr linemoder
-    "
-    "hi lineinac guibg=#1c1c1c guifg=Grey
-    "
-    ""hi lineinac guibg=bg      guifg=#005f87
-    "
-    "hi linegits guibg=#1c1c1c guifg=#0000ff
-    "hi linegitm guibg=#1c1c1c guifg=#ff0000
-    "hi linegitc guibg=#1c1c1c guifg=fg
-
   "}
   " Skeleton {
 
     let s:hl = []|let s:hr = []|let s:fl = []|let s:fr = [] 
 
-    call add(s:hl,['pack','t','linetabs'])
-
-    call add(s:hr,['pack','w','linewksp'])
-    call add(s:hr,['user',' '])
-    call add(s:hr,['curr','p','lineproj'])
-    "call add(s:hr,['user','%#Error#|'])
- 
-    call add(s:fl,['pack','b'])
-    call add(s:fl,['user','%#linefill# '])
-    call add(s:fl,['git'])
-    call add(s:fl,['user','%#linefill# '])
+    "call add(s:hl,['pack','t'])
+    "call add(s:hr,['pack','w'])
+    "call add(s:hr,['curr','p'])
+    "
+    "call add(s:fl,['pack','b'])
+    "call add(s:fl,['git'])
     call add(s:fl,['file'])
- 
-    call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])
- 
 
-    let line_skeleton=#{head:#{l:s:hl,r:s:hr},foot:#{l:s:fl,r:s:fr}}
+    "call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])
+
+    let line_skeleton = #{head:#{l:s:hl,r:s:hr},foot:#{l:s:fl,r:s:fr}}
     unlet s:hl s:hr s:fl s:fr
 
   " "}
@@ -201,7 +167,7 @@
 
   set cmdheight=1
   let zoom_autocmds = 1
-  let zoom_initload = 1
+  let zoom_initload = 1000
   let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1

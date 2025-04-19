@@ -1,8 +1,104 @@
 "-- auto/line.vim  --
 
-if exists('__LINEAUTO__')|finish|endif
+if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#giti(...) abort "{
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if empty(branch)|let g:line.git = ''|return ''|endif
+    let modified = !empty(trim(system('git diff HEAD --shortstat')))
+    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+    let cr = ''
+    let char = ''
+    if empty(matchstr(branch,'fatal: not a git repository'))
+      let cr   = '%#linegitc#'
+      if modified
+        let cr    = '%#linegitm#'
+        let char  = '[M]'
+      endif
+      if staged
+        let cr   = '%#linegits#'
+        let char = '[S]'
+      endif
+      let info = cr .' '.branch . char
+    endif
+  endif
+  let g:line.git = info
+endfu "}
+fu! line#test(...) abort "{
+  ec s:skeleton.foot.l
+  ec string(line#bone(s:skeleton.foot.l,0))
+endfu "}
+fu! line#bone(...) abort "{
+
+  let bones= a:1
+  let revs = a:2
+  let list = []
+
+  for bone in bones
+    if type(bone)==type([])&&!empty(bone)
+      let func = bone[0]
+      let item = ''
+      if func=='file'
+        let item = line#file(bone[1:])
+      endif
+      if func=='user'
+        let item = line#user(bone[1:])
+      endif
+      if !empty(item)|call add(list,item)|endif
+    endif
+    "  let func = remove(bone,0) 
+    "  let item = ''
+    "  if     func=='git'
+    "    let item = g:line.git
+    "  elseif func=='user'
+    "    let item = line#user(bone)
+    "  elseif func=='file'
+    "    let item = line#file(bone)
+    "  "elseif func=='mode'
+    "  "  let item = line#mode('mode',bone)
+    "  "elseif func=='curr'
+    "  "  let item = line#curr(bone,a:2)
+    "  "elseif func=='pack'
+    "  "  let item = line#pack(bone,a:2)
+    "  endif
+    "  if !empty(item)|call add(list,item)|endif
+    "endif
+  endfor
+  return join(list,'')
+
+endfu "}
+fu! line#file(...) abort "{
+
+  let name = bufname()
+  if name=~ '^term://.*'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = 'terminal'
+  elseif name =~ $VIMRUNTIME..'/doc/'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = fnamemodify(name,':t')
+  elseif &filetype == 'help'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = fnamemodify(name,':~')
+  else
+    let hi   = get(a:1,0,'linefill')
+    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi 
+    let hi   = '%#'.hi.'#'
+    let char = ' '
+    let name = fnamemodify(name,':~')
+  endif
+  let name = hi..char..' '..name
+  return name
+
+endfu "}
+fu! line#user(...) abort "{
+
+endfu "}
 fu! line#pack(...) abort "{
 
   let type = a:1
@@ -50,41 +146,11 @@ fu! line#curr(...) abort "{
       endif
     endif
   elseif type=='b'
-    let name = fnamemodify(expand('%'),':t')
+    let name = expand('%:t')
   endif
   if empty(name)|return ''|endif
-  "if s:edgekind==0
-  "  let name = '['..name..']'
-  "endif
-  "if s:edgekind==1
-    let name = '%#'.a:3.'# '..name..' '
-  "endif
+  let name = '%#'.a:3.'# '..name..' '
   return name
-
-endfu "}
-fu! line#bone(...) abort "{
-
-  let list = []
-  for bone in a:1
-    if type(bone)==type([])
-      let item = ''
-      if bone[0]=~'\(git\|branch\)'
-        let item = g:line.git
-      elseif bone[0]=='user' " include possibly given hi group
-        let item = get(bone,1,'')
-      elseif bone[0]=='file'
-        let item = line#file(get(bone,1,' '),get(bone,2,''))
-      elseif bone[0]=='mode'
-        let item = line#mode('mode')
-      elseif bone[0]=='curr'
-        let item = line#curr(get(bone,1),a:2,get(bone,2,'linespot'))
-      elseif bone[0]=='pack'
-        let item = line#pack(get(bone,1),a:2)
-      endif
-      if !empty(item)|call add(list,item)|endif
-    endif
-  endfor
-  return join(list,'')
 
 endfu "}
 fu! line#list(...) abort "{
@@ -193,11 +259,9 @@ fu! line#head(...) abort "{
   if g:line.zoom.mode
     let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
   endif
-
   let line.= line#bone(s:skeleton.head.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skeleton.head.r,1)
-
   if g:line.zoom.mode
     let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
   endif
@@ -208,17 +272,9 @@ endfu "}
 fu! line#foot(...) abort "{
 
   let line = ''
-  "if g:line.zoom.mode
-  "  let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
-  "endif
-
   let line.= line#bone(s:skeleton.foot.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skeleton.foot.r,1)
-
-  "if g:line.zoom.mode
-  "  let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
-  "endif
 
   let &statusline = line
 
@@ -324,53 +380,4 @@ fu! line#time(...) abort "{
   endif
 
 endfu "}
-fu! line#giti(...) abort "{
-  let info  = ''
-  if s:gitinfo && executable('git')
-    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if empty(branch)|let g:line.git = ''|return ''|endif
-    let modified = !empty(trim(system('git diff HEAD --shortstat')))
-    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
-    let cr = ''
-    let char = ''
-    if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#linegitc#'
-      if modified
-        let cr    = '%#linegitm#'
-        let char  = '[M]'
-      endif
-      if staged
-        let cr   = '%#linegits#'
-        let char = '[S]'
-      endif
-      let info = cr .' '.branch . char
-    endif
-  endif
-  let g:line.git = info
-endfu "}
-fu! line#file(...) abort "{
 
-  let name = bufname()
-  if name=~ '^term://.*'
-    let hi   = '%#Title#'
-    let char = ' '
-    let name = 'terminal'
-  elseif name =~ $VIMRUNTIME..'/doc/'
-    let hi   = '%#Title#'
-    let char = ' '
-    let name = fnamemodify(name,':t')
-  elseif &filetype == 'help'
-    let hi   = '%#Title#'
-    let char = ' '
-    let name = fnamemodify(name,':~')
-  else
-    let hi   = '%#linefile#'
-    let char = ' '
-    let name = fnamemodify(name,':~')
-  endif
-  let name = hi..char..' '..name
-  return name
-
-endfu "}
-
-" vim: nowrap

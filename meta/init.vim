@@ -10,6 +10,9 @@ fu! s:test.line(...) "{
   so plug/line/autoload/line.vim
   so plug/line/plugin/line.vim
 
+  call line#test()
+
+  return
   let file = 'char/char.gen'
   let body = []
   let line = ''
