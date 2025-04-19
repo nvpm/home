@@ -28,6 +28,7 @@ fu! line#skel(...) abort "{
     call add(s:skeleton.feet.l,['pack','b'])
     call add(s:skeleton.feet.l,['user',' '])
     call add(s:skeleton.feet.l,['file'])
+    call add(s:skeleton.feet.r,['user','%y%m  %l,%c/%P'])
     let g:line_skeleton = s:skeleton
   endif
 
@@ -327,7 +328,7 @@ fu! line#user(...) abort "{
 
   let body = get(a:1,0,'')
   let colr = get(a:1,1)
-  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr 
+  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr
   let colr = '%#'.colr.'#'
   return colr..body
 
@@ -349,7 +350,7 @@ fu! line#file(...) abort "{
     let name = fnamemodify(name,':~')
   else
     let hi   = get(a:1,0,'linefill')
-    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi 
+    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi
     let hi   = '%#'.hi.'#'
     let char = ''
     let name = fnamemodify(name,':~')
