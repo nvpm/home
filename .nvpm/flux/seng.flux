@@ -1,23 +1,23 @@
 
   project 🯅 seng = seng{
-      workspace root
+      -workspace root
         file init = meta/init.vim
         file char = char/char.txt
         file gen  = char/char.gen
     loop plugin: nvpm line flux zoom text {
       workspace $(plugin):$(plugin) 
+        tab misc {
+          file TODO     
+          file Issues   
+          file Concepts 
+          file Features 
+        }
         tab code {
           file Random   
           file Syntax
           file File     
           --
           file Data     
-        }
-        tab misc {
-          file TODO     
-          file Issues   
-          file Concepts 
-          file Features 
         }
         tab seng {
           file Usecases 

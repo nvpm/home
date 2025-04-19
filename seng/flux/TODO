@@ -1,4 +1,14 @@
 
+  ● added a current markers for node ~
+    ● if for example a list of files like
+
+    ----------- example.flux ---------------
+      file a.txt
+     >file b.txt # will be shown 1st
+      file c.txt
+      file d.txt
+    ----------------------------------------
+
   ● make flux remember flux file structure ~
     ● save comments, block-brackets,tabs, and the
       positions of the blank lines.
