@@ -352,16 +352,23 @@ fu! line#file(...) abort "{
 
   let name = bufname()
   if name=~ '^term://.*'
-    let hi   = '%#WarningMsg#'
-    let name = '  terminal'
-  elseif &buftype == 'help'
-    let hi   = '%#WarningMsg#'
-    let name = '  '.. fnamemodify(name,':t')
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = 'terminal'
+  elseif name =~ $VIMRUNTIME..'/doc/'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = fnamemodify(name,':t')
+  elseif &filetype == 'help'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = fnamemodify(name,':~')
   else
     let hi   = '%#linefile#'
-    let name = '  '.. fnamemodify(name,':~')
+    let char = ' '
+    let name = fnamemodify(name,':~')
   endif
-  let name = hi..name
+  let name = hi..char..' '..name
   return name
 
 endfu "}
