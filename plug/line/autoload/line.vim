@@ -230,7 +230,7 @@ endfu "}
 fu! line#show(...) abort "{
 
   if !s:activate|return|endif
-  if s:verbose>0&&s:gitinfo&&!g:line.zoom.mode
+  if s:verbose>0&&s:gitinfo
     call line#time()
   endif
   if g:line.nvpm
