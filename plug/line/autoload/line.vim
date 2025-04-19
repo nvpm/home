@@ -41,11 +41,8 @@ fu! line#bone(...) abort "{
     if type(bone)==type([])&&!empty(bone)
       let func = bone[0]
       let item = ''
-      if func=='file'
-        let item = line#file(bone[1:])
-      endif
-      if func=='user'
-        let item = line#user(bone[1:])
+      if func =~ '\(file\|user\)'
+        let item = line#{func}(bone[1:],revs)
       endif
       if !empty(item)|call add(list,item)|endif
     endif
@@ -68,6 +65,15 @@ fu! line#bone(...) abort "{
     "endif
   endfor
   return join(list,'')
+
+endfu "}
+fu! line#user(...) abort "{
+
+  let body = get(a:1,0,'')
+  let colr = get(a:1,1)
+  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr 
+  let colr = '%#'.colr.'#'
+  return colr..body
 
 endfu "}
 fu! line#file(...) abort "{
@@ -94,9 +100,6 @@ fu! line#file(...) abort "{
   endif
   let name = hi..char..' '..name
   return name
-
-endfu "}
-fu! line#user(...) abort "{
 
 endfu "}
 fu! line#pack(...) abort "{
