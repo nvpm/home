@@ -16,6 +16,10 @@ fu! zoom#init(...) abort "{
   let g:zoom.carg = ''
   let g:zoom.lastft= ''
 
+  if get(g:,'zoom_initload')
+    call timer_start(200,{->zoom#show()})
+  endif
+
 endfu "}
 fu! zoom#calc(...) abort "{
 

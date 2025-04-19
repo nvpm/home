@@ -1,16 +1,5 @@
 
   project   devl = plug {
-    workspace 🭹 line : line {
-      tab  code
-        file  auto : autoload/line.vim
-        file  plug : plugin/line.vim
-        -file  init = meta/init.vim
-      --
-      tab  meta
-        file  help : doc/line.txt
-        file read : README.md
-        file vers : version
-    }
     workspace ▣ zoom : zoom {
       tab  code
         file auto : autoload/zoom.vim
@@ -21,6 +10,17 @@
         file read : README.md
         file vers : version
 
+    }
+    workspace 🭹 line : line {
+      tab  code
+        file  auto : autoload/line.vim
+        file  plug : plugin/line.vim
+        -file  init = meta/init.vim
+      --
+      tab  meta
+        file  help : doc/line.txt
+        file read : README.md
+        file vers : version
     }
     workspace Ⲅ text : text {
       tab  code
