@@ -191,19 +191,19 @@ fu! line#head(...) abort "{
   let &tabline = line
 
 endfu "}
-fu! line#foot(...) abort "{
+fu! line#feet(...) abort "{
 
   let line = ''
-  let line.= line#bone(s:skeleton.foot.l,0)
+  let line.= line#bone(s:skeleton.feet.l,0)
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skeleton.foot.r,1)
+  let line.= line#bone(s:skeleton.feet.r,1)
 
   let &statusline = line
 
 endfu "}
 fu! line#draw(...) abort "{
   if &showtabline|call line#head()|endif
-  if &laststatus |call line#foot()|endif
+  if &laststatus |call line#feet()|endif
 endfu "}
 fu! line#show(...) abort "{
 
@@ -364,15 +364,15 @@ endfu "}
 fu! line#skel(...) abort "{
 
   if empty(s:skeleton)
-    let s:skeleton = #{head:{},foot:{}}
+    let s:skeleton = #{head:{},feet:{}}
     let s:skeleton.head.l=[['pack','t']]
     let s:skeleton.head.r=[['pack','w'],['curr','p']]
-    let s:skeleton.foot.l=[['pack','b'],['git'],['file']]
-    let s:skeleton.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
+    let s:skeleton.feet.l=[['pack','b'],['git'],['file']]
+    let s:skeleton.feet.r=[['user','%Y%m ⬤ %l,%c/%P']]
   endif
 
   if !has_key(s:skeleton,'head')|let s:skeleton.head = #{l:[],r:[]}|endif
-  if !has_key(s:skeleton,'foot')|let s:skeleton.foot = #{l:[],r:[]}|endif
+  if !has_key(s:skeleton,'feet')|let s:skeleton.feet = #{l:[],r:[]}|endif
   "for part in items(s:skeleton)
   "  if !has_key(part,'l')|let part.l = []|endif
   "  if !has_key(part,'r')|let part.r = []|endif

@@ -153,16 +153,16 @@
     call add(s:hr,['user',' '])
     call add(s:hr,['curr','p',' '])
     
-    "call add(s:fl,['pack','b'])
-    "call add(s:fl,['user',' '])
-    "call add(s:fl,['git'])
-    "call add(s:fl,['user',' '])
-    "call add(s:fl,['file'])
+    call add(s:fl,['pack','b'])
+    call add(s:fl,['user',' '])
+    call add(s:fl,['git'])
+    call add(s:fl,['user',' '])
+    call add(s:fl,['file'])
 
-    "call add(s:fr,['user','%y%m  %l,%c/%P'])
+    call add(s:fr,['user','%y%m  %l,%c/%P'])
 
-    "let line_skeleton = #{head:#{l:s:hl,r:s:hr},foot:#{l:s:fl,r:s:fr}}
-    let line_skeleton = #{head:#{l:s:hl,r:s:hr}}
+    let line_skeleton = #{head:#{l:s:hl,r:s:hr},feet:#{l:s:fl,r:s:fr}}
+    "let line_skeleton = #{head:#{l:s:hl,r:s:hr}}
     unlet s:hl s:hr s:fl s:fr
 
   " "}
@@ -172,7 +172,7 @@
 
   set cmdheight=1
   let zoom_autocmds = 1
-  let zoom_initload = 1000
+  let zoom_initload = 1
   let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1
