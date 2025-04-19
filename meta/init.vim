@@ -5,6 +5,55 @@ let s:test = {}
 
 "}
 " plug {
+fu! s:test.line(...) "{
+
+  so plug/line/autoload/line.vim
+  so plug/line/plugin/line.vim
+
+  let file = 'char/char.gen'
+  let body = []
+  let line = ''
+  let size = float2nr(pow(2,7))
+  let shift= 0
+  for n in range(10000)
+    let init = (n+0)*size + shift
+    let end  = (n+1)*size + shift
+    call add(body,'{ '..init.' - '.end)
+    call add(body,'')
+    for i in range(init,end)
+      let char = nr2char(i).. ' '
+      if i%30==0
+        call add(body,line)
+        let line = ''
+      elseif char=~'\p'
+        let line.= char
+      endif
+    endfor
+    call add(body,'')
+    call add(body,'}')
+  endfor
+  call writefile(body,file)
+  ec 'finished'
+
+  return
+  "fu! Showcterm()
+  "  let term = &termguicolors
+  "  set notermguicolors
+  "  ec repeat("\n",3)
+  "  for i in range(256)
+  "    let name = 'nvpmtestcolor'.i
+  "    exe 'hi '..name..' ctermbg='..i..' ctermfg='..(i%8==0||(i>=233&&i<=239)?255:8)
+  "    exe 'echohl '..name
+  "    echon ' '..i..' '
+  "    "exe 'hi clear '..name
+  "  endfor
+  "  ec repeat("\n",2)
+  "  let &termguicolors = term
+  "endfu
+  ""call Showcterm()|delfunc Showcterm
+  "ec line#foot()
+
+endfu "}
 fu! s:test.flux(...) "{
 
   so plug/flux/autoload/flux.vim
@@ -64,46 +113,6 @@ fu! s:test.zoom(...) "{
   ec nvim_win_get_config(0)
 
 endfu "}
-fu! s:test.line(...) "{
-
-  so plug/line/autoload/line.vim
-  so plug/line/plugin/line.vim
-
-  let init = 0xffff
-  let end  = 0xfffff
-  let body = []
-  let line = ''
-  for i in range(init,end)
-    let char = nr2char(i)
-    if i%30==0
-      call add(body,line)
-      let line = ''
-    elseif char=~'\p'
-      let line.= char.' '
-    endif
-  endfor
-
-  call writefile(body,'seng/char')
-
-  return
-  "fu! Showcterm()
-  "  let term = &termguicolors
-  "  set notermguicolors
-  "  ec repeat("\n",3)
-  "  for i in range(256)
-  "    let name = 'nvpmtestcolor'.i
-  "    exe 'hi '..name..' ctermbg='..i..' ctermfg='..(i%8==0||(i>=233&&i<=239)?255:8)
-  "    exe 'echohl '..name
-  "    echon ' '..i..' '
-  "    "exe 'hi clear '..name
-  "  endfor
-  "  ec repeat("\n",2)
-  "  let &termguicolors = term
-  "endfu
-  ""call Showcterm()|delfunc Showcterm
-  "ec line#foot()
-
-endfu "}
 "}
 " test {
 fu! s:test.eval(...) "{"
@@ -135,7 +144,7 @@ endfu "}
 if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
-if 1|call s:test.zoom()|endif
+if 0|call s:test.zoom()|endif
 if 1|call s:test.line()|endif
 
 "}

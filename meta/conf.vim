@@ -82,6 +82,8 @@
   nmap <silent><DEL>     :NvpmLoop - 1<cr>
   nmap <silent><C-p>     :NvpmLoop - 1<cr>
   nmap <silent><C-n>     :NvpmLoop + 1<cr>
+  nmap <silent><C-i>     :NvpmLoop - 0<cr>
+  nmap <silent><C-o>     :NvpmLoop - 0<cr>
   nmap <silent><C-Space> :NvpmLoop + 0<cr>
   nmap <silent>=         :NvpmLoop + -1<cr>
   nmap <silent>-         :NvpmLoop - -1<cr>
@@ -116,7 +118,7 @@
   let line_activate = 1
   let line_verbose  = 3
   let line_gitinfo  = 1
-  let line_gitdelay = 50000
+  let line_gitdelay = 7000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
 
@@ -126,7 +128,7 @@
     let s:blue   = '#002a57' " 005f87"
     hi def link linefill Normal
     hi def link linefile linefill
-    exe $'hi linecurr guibg={s:yellow} guifg=Black'
+    exe $'hi linecurr guibg={s:yellow} guifg=Black gui=Bold'
     exe $'hi lineproj guibg=bg         guifg={s:yellow}'
     hi lineinac guibg=bg      guifg=Grey
     hi def link linecurri error
@@ -173,14 +175,14 @@
 
     call add(s:hl,['pack','t','linetabs'])
 
-    call add(s:hr,['git'])
     call add(s:hr,['pack','w','linewksp'])
     call add(s:hr,['user',' '])
     call add(s:hr,['curr','p','lineproj'])
     "call add(s:hr,['user','%#Error#|'])
  
     call add(s:fl,['pack','b'])
-    call add(s:fl,['file',' ⬤ '])
+    call add(s:fl,['git'])
+    call add(s:fl,['file'])
  
     call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])
  
@@ -197,7 +199,6 @@
 
   set cmdheight=1
   let zoom_autocmds = 1
-  let zoom_initload = 1
   let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1

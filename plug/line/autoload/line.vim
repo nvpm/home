@@ -328,12 +328,11 @@ fu! line#giti(...) abort "{
   let info  = ''
   if s:gitinfo && executable('git')
     let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if empty(branch)|return ''|endif
+    if empty(branch)|let g:line.git = ''|return ''|endif
     let modified = !empty(trim(system('git diff HEAD --shortstat')))
     let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
     let cr = ''
     let char = ''
-    let s = ' '
     if empty(matchstr(branch,'fatal: not a git repository'))
       let cr   = '%#linegitc#'
       if modified
@@ -349,22 +348,25 @@ fu! line#giti(...) abort "{
       else
         let space = ''
       endif
-      let info = cr .space.' ' . branch . char
+      let info = cr .space.' '.branch . char
     endif
-    call line#foot()
   endif
   let g:line.git = info
 endfu "}
 fu! line#file(...) abort "{
 
-  if !empty(matchstr(bufname(),'term://.*'))
-    let name = 'terminal'
-  elseif &filetype == 'help' && !filereadable('./'.bufname())
-    let name = 'help: '..resolve(expand("%:t"))
+  let name = bufname()
+  if name=~ '^term://.*'
+    let hi   = '%#WarningMsg#'
+    let name = '   terminal'
+  elseif &buftype == 'help'
+    let hi   = '%#WarningMsg#'
+    let name = '   '.. fnamemodify(name,':t')
   else
-    let name = resolve(expand("%"))
+    let hi   = '%#linefile#'
+    let name = '   '.. fnamemodify(name,':~')
   endif
-  let name = '%#linefile#'..a:1.name..a:2
+  let name = hi..name
   return name
 
 endfu "}

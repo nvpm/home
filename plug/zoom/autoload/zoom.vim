@@ -227,12 +227,12 @@ fu! zoom#help(...) abort "{
 
   let bufname=bufname()
 
-  if &filetype == 'help'&&g:zoom.lastft!='help'
+  if &ft == 'help'&&g:zoom.lastft!='help'
     silent! helpclose
     exec 'edit '. bufname
   endif
 
-  if &filetype == 'man'
+  if &ft == 'man'
     if g:zoom.mode
       only
       let g:zoom.mode = 0

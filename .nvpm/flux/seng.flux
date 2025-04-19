@@ -1,5 +1,9 @@
 
-  project  seng = seng{
+  project 🯅 seng = seng{
+      workspace root
+        file init = meta/init.vim
+        file char = char/char.txt
+        file gen  = char/char.gen
     loop plugin: nvpm line flux zoom text {
       workspace $(plugin):$(plugin) 
         tab code {
@@ -22,16 +26,12 @@
         }
     endl}
   }
-  project  meta = meta {
-    tab meta
+  project   meta = meta {
+    tab  meta
       file conf.vim
+      file init.vim
       file menu.vim
-    tab docs = /usr/share/nvim/runtime/doc
+    tab  help = /usr/share/nvim/runtime/doc
       file intro.txt
       ---
-      file init.vim
-    tab code=nvim
-      file version
-      file README.md
-      file LICENSE
   }

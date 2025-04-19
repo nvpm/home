@@ -6,8 +6,8 @@
         file  plug : plugin/line.vim
         -file  init = meta/init.vim
       --
-      tab  meta
-        file help : doc/line.txt
+      tab  meta
+        file  help : doc/line.txt
         file read : README.md
         file vers : version
     }
@@ -16,13 +16,12 @@
         file auto : autoload/zoom.vim
         file plug : plugin/zoom.vim
         -file init = meta/init.vim
-      tab  meta
+      tab  meta
         file help : doc/zoom.txt
         file read : README.md
         file vers : version
 
     }
-    --
     workspace Ⲅ text : text {
       tab  code
         file auto : autoload/text.vim
@@ -31,22 +30,22 @@
       tab  test = test/text
         file case : case.case
         file expt : case.expt
-      tab  meta
+      tab  meta
         file help : doc/text.txt
         file read : README.md
         file vers : version
     }
-    workspace ⸫ nvpm : nvpm {
+    workspace  nvpm : nvpm {
       tab  code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
         -file init = meta/init.vim
-      tab  meta
+      tab  meta
         file help : doc/nvpm.txt
         file read : README.md
         file vers : version
     }
-    workspace Ⲫ flux : flux {
+    workspace ɸ flux : flux {
       tab  code
         file auto : autoload/flux.vim
         file synx :   syntax/flux.vim
@@ -54,14 +53,15 @@
       tab  test = test/flux
         file case : case.flux
         file expt : case.expt
-      tab  meta
+      tab  meta
+        file help : doc/nvpm.txt
         file help : doc/flux.txt
         file read : README.md
         file vers : version
     }
   }
   project   meta = meta {
-    tab  meta
+    tab  meta
       file conf.vim
       file init.vim
       file menu.vim
@@ -70,5 +70,5 @@
       ---
   }
 
-                    ✅ 
-
+                     ✅ 
+ 
