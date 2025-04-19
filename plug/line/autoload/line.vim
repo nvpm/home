@@ -371,5 +371,14 @@ fu! line#skel(...) abort "{
     let s:skeleton.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
   endif
 
+  if !has_key(s:skeleton,'head')|let s:skeleton.head = #{l:[],r:[]}|endif
+  if !has_key(s:skeleton,'foot')|let s:skeleton.foot = #{l:[],r:[]}|endif
+  "for part in items(s:skeleton)
+  "  if !has_key(part,'l')|let part.l = []|endif
+  "  if !has_key(part,'r')|let part.r = []|endif
+  "  for side in items(part)
+  "  endfor
+  "endfor
+
 endfu "}
 
