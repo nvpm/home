@@ -127,36 +127,35 @@
 
   " Colors   {
 
-    let s:yellow = '#777733'
-    let s:blue   = '#002a57' " 005f87"
-    exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
-    exe $'hi linefill guibg=bg         guifg={s:yellow}'
-    hi lineinac guibg=bg      guifg=Grey
-    hi def link linecurri error
-    exe $'hi linecurrv guibg={s:blue} guifg=White'
-    hi def link linecurrc termcursor
-    hi def link linecurrt termcursor
-    hi def link linecurrr wildmenu
-
-    hi def link linegits Title
-    hi def link linegitc DiffAdded
-    hi linegitm guifg=#ff0000
+    "let s:yellow = '#777733'
+    "let s:blue   = '#002a57' " 005f87
+    "exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
+    "exe $'hi linefill guibg=bg         guifg={s:yellow}'
+    "hi lineinac guibg=bg      guifg=Grey
+    "hi def link linecurri error
+    "exe $'hi linecurrv guibg={s:blue} guifg=White'
+    "hi def link linecurrc termcursor
+    "hi def link linecurrt termcursor
+    "hi def link linecurrr wildmenu
+    "
+    "hi def link linegits Title
+    "hi def link linegitc DiffAdded
+    "hi linegitm guifg=#ff0000
 
   "}
   " Skeleton {
 
-    call line#skel('head.l',['pack','t','Title'])
-    call line#skel('head.r','<wksp>')
-    call line#skel('head.r',' ')
-    call line#skel('head.r','<PROJ>')
-
-    call line#skel('feet.l','<bufs>')
-    call line#skel('feet.l',' ')
-    call line#skel('feet.l','<git>')
-    call line#skel('feet.l',' ')
-    call line#skel('feet.l','<file>')
-
-    call line#skel('feet.r','%y%m  %l,%c/%P')
+    "call line#skel('head.l','pack','t','visual')
+    "call line#skel('head.r','pack','w','visual')
+    "call line#skel('head.r','user',' ')
+    "call line#skel('head.r','curr','p')
+    "call line#skel('feet.l','mode')
+    "call line#skel('feet.l','pack','b','visual')
+    "call line#skel('feet.l','user',' ')
+    "call line#skel('feet.l','git')
+    "call line#skel('feet.l','user',' ')
+    "call line#skel('feet.l','file')
+    "call line#skel('feet.r','user','%y%m  %l,%c/%P')
 
   " "}
 

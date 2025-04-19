@@ -3,6 +3,35 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#skel(...) abort "{
+
+  if a:0
+    if !exists('a:2')|return|endif
+    if !exists('g:line_skeleton')
+      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    endif
+    if type(a:1)==type(0)|return|endif
+    let name = a:1
+    let body = a:000[1:]
+
+    if exists('g:line_skeleton.'..name)
+      let [part,side] = split(name,'\.')
+      call add(g:line_skeleton[part][side],body)
+    endif
+
+  elseif empty(s:skeleton)
+    let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    call add(s:skeleton.head.l,['pack','t'])
+    call add(s:skeleton.head.r,['pack','w'])
+    call add(s:skeleton.head.r,['user',' '])
+    call add(s:skeleton.head.r,['curr','p'])
+    call add(s:skeleton.feet.l,['pack','b'])
+    call add(s:skeleton.feet.l,['user',' '])
+    call add(s:skeleton.feet.l,['file'])
+    let g:line_skeleton = s:skeleton
+  endif
+
+endfu "}
 fu! line#bone(...) abort "{
 
   let bones= a:1
@@ -17,11 +46,35 @@ fu! line#bone(...) abort "{
         let item = line#{func}(bone[1:],revs)
       elseif func == 'git'
         let item = g:line.git
+      elseif func == 'mode'
+        let item = line#mode('linemode')
       endif
       if !empty(item)|call add(list,item)|endif
     endif
   endfor
   return join(list,'')
+
+endfu "}
+fu! line#mode(...) abort "{
+
+  let name = a:1
+  let mode = mode()
+  let line = ''
+  if     mode=='i'
+    let line.= '%#'..name..'i#'..(a:0==1?' insert ':a:2)
+  elseif mode=~'\(v\|V\|\|s\|S\|\)'
+    let line.= '%#'..name..'v#'..(a:0==1?' visual ':a:2)
+  elseif mode=='R'
+    let line.= '%#'..name..'r#'..(a:0==1?' replace ':a:2)
+  elseif mode=~'\(c\|r\|!\)'
+    let line.= '%#'..name..'c#'..(a:0==1?' cmdline ':a:2)
+  elseif mode=='t'
+    let line.= '%#'..name..'t#'..(a:0==1?' terminal ':a:2)
+  else
+    let line.= '%#'..name..'#' ..(a:0==1?' normal ':a:2)
+  endif
+
+  return line
 
 endfu "}
 fu! line#pack(...) abort "{
@@ -107,7 +160,7 @@ fu! line#list(...) abort "{
     if s:edgekind==1 " highlight config{
       let info = ' '..info..' '
       if indx==curr
-        if colr=='linecurr' " include check for hi linecurr exists
+        if colr=='linecurr'
           let elem.= line#mode(colr,info)
         else
           let elem.= '%#'.colr.'#'.info
@@ -120,28 +173,6 @@ fu! line#list(...) abort "{
   endfor
 
   return revs?reverse(list):list
-
-endfu "}
-fu! line#mode(...) abort "{
-
-  let name = a:1
-  let mode = mode()
-  let line = ''
-  if     mode=='i'
-    let line.= '%#'..name..'i#'..(a:0==1?' insert ':a:2)
-  elseif mode=~'\(v\|V\|\|s\|S\|\)'
-    let line.= '%#'..name..'v#'..(a:0==1?' visual ':a:2)
-  elseif mode=='R'
-    let line.= '%#'..name..'r#'..(a:0==1?' replace ':a:2)
-  elseif mode=~'\(c\|r\|!\)'
-    let line.= '%#'..name..'c#'..(a:0==1?' cmdline ':a:2)
-  elseif mode=='t'
-    let line.= '%#'..name..'t#'..(a:0==1?' terminal ':a:2)
-  else
-    let line.= '%#'..name..'#' ..(a:0==1?' normal ':a:2)
-  endif
-
-  return line
 
 endfu "}
 
@@ -258,26 +289,16 @@ endfu "}
 "-- auxy functions --
 fu! line#seth(...) abort "{
 
-  if    hlexists('linemode')
-    if !hlexists('linemodei')|hi def link linemodei linemode|endif
-    if !hlexists('linemodev')|hi def link linemodev linemode|endif
-    if !hlexists('linemodec')|hi def link linemodec linemode|endif
-    if !hlexists('linemodet')|hi def link linemodet linemode|endif
-    if !hlexists('linemoder')|hi def link linemoder linemode|endif
-  endif
-  if    hlexists('linecurr')
-    if !hlexists('linecurri')|hi def link linecurri linecurr|endif
-    if !hlexists('linecurrv')|hi def link linecurrv linecurr|endif
-    if !hlexists('linecurrc')|hi def link linecurrc linecurr|endif
-    if !hlexists('linecurrt')|hi def link linecurrt linecurr|endif
-    if !hlexists('linecurrr')|hi def link linecurrr linecurr|endif
-  endif
-  if    hlexists('lineinac')
-    if !hlexists('lineinaci')|hi def link lineinaci lineinac|endif
-    if !hlexists('lineinacv')|hi def link lineinacv lineinac|endif
-    if !hlexists('lineinacc')|hi def link lineinacc lineinac|endif
-    if !hlexists('lineinact')|hi def link lineinact lineinac|endif
-    if !hlexists('lineinacr')|hi def link lineinacr lineinac|endif
+  if s:edgekind==0|return|endif
+
+  if !hlexists('lineinac')|hi def link lineinac normal|endif
+  if !hlexists('linecurr')
+    hi def link linecurr  error
+    hi def link linecurri error
+    hi def link linecurrv error
+    hi def link linecurrr error
+    hi def link linecurrc error
+    hi def link linecurrt error
   endif
 
 endfu "}
@@ -360,73 +381,5 @@ fu! line#giti(...) abort "{
     endif
   endif
   let g:line.git = info
-endfu "}
-fu! line#skel(...) abort "{
-
-  if a:0
-    if !exists('a:2')|return|endif
-    if !exists('g:line_skeleton')
-      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    endif
-    let name = a:1
-    let body = a:2
-
-    if exists('g:line_skeleton.'..name)
-      "let body = type(body)==type('') ? string(body) : body
-      let [part,side] = split(name,'\.')
-
-      call add(g:line_skeleton[part][side],body)
-      "call eval('call add('..part..','..body..')')
-    endif
-
-  else "{
-    if empty(s:skeleton)
-      let s:skeleton = #{head:{},feet:{}}
-      let s:skeleton.head.l=[['pack','t']]
-      let s:skeleton.head.r=[['pack','w'],['curr','p']]
-      let s:skeleton.feet.l=[['pack','b'],['git'],['file']]
-      let s:skeleton.feet.r=[['user','%Y%m ⬤ %l,%c/%P']]
-      return
-    endif
-    if !has_key(s:skeleton,'head')|let s:skeleton.head = #{l:[],r:[]}|endif
-    if !has_key(s:skeleton,'feet')|let s:skeleton.feet = #{l:[],r:[]}|endif
-    for part in values(s:skeleton)
-      if !has_key(part,'l')|let part.l = []|endif
-      if !has_key(part,'r')|let part.r = []|endif
-      for side in values(part)
-        for i in range(len(side))
-          let bone = side[i]
-
-          if type(bone)==type([])
-            if get(bone,0,'')==#'bufs'|let side[i]=['pack','b',bode[1:]]|endif
-            if get(bone,0,'')==#'tabs'|let side[i]=['pack','t',bode[1:]]|endif
-            if get(bone,0,'')==#'wksp'|let side[i]=['pack','w',bode[1:]]|endif
-            if get(bone,0,'')==#'proj'|let side[i]=['pack','p',bode[1:]]|endif
-            if get(bone,0,'')==#'BUFS'|let side[i]=['curr','b',bode[1:]]|endif
-            if get(bone,0,'')==#'TABS'|let side[i]=['curr','t',bode[1:]]|endif
-            if get(bone,0,'')==#'WKSP'|let side[i]=['curr','w',bode[1:]]|endif
-            if get(bone,0,'')==#'PROJ'|let side[i]=['curr','p',bode[1:]]|endif
-          endif
-          if type(bone)==type('')
-            if bone==#'<mode>'|let side[i] = ['mode']    |continue|endif
-            if bone==#'<file>'|let side[i] = ['file']    |continue|endif
-            if bone==#'<git>' |let side[i] = ['git']     |continue|endif
-
-            if bone==#'<bufs>'|let side[i] = ['pack','b']|continue|endif
-            if bone==#'<tabs>'|let side[i] = ['pack','t']|continue|endif
-            if bone==#'<wksp>'|let side[i] = ['pack','w']|continue|endif
-            if bone==#'<proj>'|let side[i] = ['pack','p']|continue|endif
-
-            if bone==#'<BUFS>'|let side[i] = ['curr','b']|continue|endif
-            if bone==#'<TABS>'|let side[i] = ['curr','t']|continue|endif
-            if bone==#'<WKSP>'|let side[i] = ['curr','w']|continue|endif
-            if bone==#'<PROJ>'|let side[i] = ['curr','p']|continue|endif
-            let side[i] = ['user',bone]
-          endif
-        endfor
-      endfor
-    endfor
-  endif "}
-
 endfu "}
 
