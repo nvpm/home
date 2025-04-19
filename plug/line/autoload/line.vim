@@ -41,30 +41,70 @@ fu! line#bone(...) abort "{
     if type(bone)==type([])&&!empty(bone)
       let func = bone[0]
       let item = ''
-      if func =~ '\(file\|user\)'
+      if func =~ '\(file\|user\|pack\)'
         let item = line#{func}(bone[1:],revs)
+      elseif func == 'git'
+        let item = g:line.git
       endif
       if !empty(item)|call add(list,item)|endif
     endif
-    "  let func = remove(bone,0) 
-    "  let item = ''
-    "  if     func=='git'
-    "    let item = g:line.git
-    "  elseif func=='user'
-    "    let item = line#user(bone)
-    "  elseif func=='file'
-    "    let item = line#file(bone)
-    "  "elseif func=='mode'
-    "  "  let item = line#mode('mode',bone)
-    "  "elseif func=='curr'
-    "  "  let item = line#curr(bone,a:2)
-    "  "elseif func=='pack'
-    "  "  let item = line#pack(bone,a:2)
-    "  endif
-    "  if !empty(item)|call add(list,item)|endif
-    "endif
   endfor
   return join(list,'')
+
+endfu "}
+fu! line#pack(...) abort "{
+
+  let type = get(a:1,0)
+  let revs = a:2
+  let list = []
+
+  if g:line.nvpm "{
+    let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
+    if has_key(node,'meta')
+      let list = line#list(node.list,node.meta.indx,node.meta.leng,revs)
+    endif
+  "}
+  elseif type=='b' "{
+    if s:verbose==1
+      let list = [bufname()]
+      let curr = 0
+      let leng = 1
+    elseif s:verbose>1
+      let list = map(range(1,bufnr('$')),'bufname(v:val)')
+      let list = filter(list,'!empty(v:val)&&buflisted(v:val)')
+      let curr = match(list,bufname())
+      let leng = len(list)
+    endif
+    let list = line#list(list,curr,leng,revs)
+  endif "}
+  let line = join(list,'')
+  if s:edgekind==0&&!empty(line)
+    let line = '%#linefill#'..line
+  endif
+
+  return line
+
+endfu "}
+fu! line#curr(...) abort "{
+
+  let type = a:1
+  let revs = a:2
+  let name = ''
+
+  if g:line.nvpm
+    let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
+    if has_key(node,'meta')
+      let name = node.list[node.meta.indx].data.name
+      if (empty(name)||name=='<unnamed>')&&type==0
+        let name = fnamemodify(g:nvpm.tree.file,':t')
+      endif
+    endif
+  elseif type=='b'
+    let name = expand('%:t')
+  endif
+  if empty(name)|return ''|endif
+  let name = '%#'.a:3.'# '..name..' '
+  return name
 
 endfu "}
 fu! line#user(...) abort "{
@@ -99,60 +139,6 @@ fu! line#file(...) abort "{
     let name = fnamemodify(name,':~')
   endif
   let name = hi..char..' '..name
-  return name
-
-endfu "}
-fu! line#pack(...) abort "{
-
-  let type = a:1
-  let revs = a:2
-  let list = []
-
-  if g:line.nvpm
-    let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
-    if has_key(node,'meta')
-      let list = line#list(node.list,node.meta.indx,node.meta.leng,revs)
-    endif
-  elseif type=='b'
-    if s:verbose==1
-      let list = [bufname()]
-      let curr = 0
-      let leng = 1
-    elseif s:verbose>1
-      let list = map(range(1,bufnr('$')),'bufname(v:val)')
-      let list = filter(list,'!empty(v:val)&&buflisted(v:val)')
-      let curr = match(list,bufname())
-      let leng = len(list)
-    endif
-    let list = line#list(list,curr,leng,revs)
-  endif
-  let line = join(list,'')
-  if s:edgekind==0&&!empty(line)
-    let line = '%#linefill#'..line
-  endif
-
-  return line
-
-endfu "}
-fu! line#curr(...) abort "{
-
-  let type = a:1
-  let revs = a:2
-  let name = ''
-
-  if g:line.nvpm
-    let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
-    if has_key(node,'meta')
-      let name = node.list[node.meta.indx].data.name
-      if (empty(name)||name=='<unnamed>')&&type==0
-        let name = fnamemodify(g:nvpm.tree.file,':t')
-      endif
-    endif
-  elseif type=='b'
-    let name = expand('%:t')
-  endif
-  if empty(name)|return ''|endif
-  let name = '%#'.a:3.'# '..name..' '
   return name
 
 endfu "}

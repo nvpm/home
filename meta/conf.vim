@@ -145,11 +145,11 @@
 
     let s:hl = []|let s:hr = []|let s:fl = []|let s:fr = [] 
 
-    "call add(s:hl,['pack','t'])
-    "call add(s:hr,['pack','w'])
-    "call add(s:hr,['curr','p'])
-    "
-    "call add(s:fl,['pack','b'])
+    call add(s:hl,['pack','t'])
+    call add(s:hr,['pack','w'])
+    call add(s:hr,['curr','p'])
+    
+    call add(s:fl,['pack','b'])
     "call add(s:fl,['git'])
     call add(s:fl,['file'])
     call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])
