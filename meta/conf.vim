@@ -119,7 +119,7 @@
   let line_verbose  = 3
   let line_gitinfo  = 1
   let line_gitdelay = 5000
-  let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
+  let line_edgekind = 0 "0:bracks,1:hi,2:tabs,3:powerline
   let line_brackets = '[]'
   let line_floating = 1
 
@@ -127,30 +127,39 @@
 
   " Colors   {
 
-    "let s:yellow = '#777733'
-    "let s:blue   = '#002a57' " 005f87
-    "exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
-    "exe $'hi linefill guibg=bg         guifg={s:yellow}'
-    "hi lineinac guibg=bg      guifg=Grey
-    "hi def link linecurri error
-    "exe $'hi linecurrv guibg={s:blue} guifg=White'
-    "hi def link linecurrc termcursor
-    "hi def link linecurrt termcursor
-    "hi def link linecurrr wildmenu
-    "
-    "hi def link linegits Title
-    "hi def link linegitc DiffAdded
-    "hi linegitm guifg=#ff0000
+    let s:yellow = '#777733'
+    let s:blue   = '#002a57' " 005f87
+    exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
+    exe $'hi linefill guibg=bg         guifg={s:yellow}'
+    hi lineinac guibg=bg      guifg=Grey
+    hi def link linecurri error
+    exe $'hi linecurrv guibg={s:blue} guifg=White'
+    hi def link linecurrc title
+    hi def link linecurrt title
+    hi def link linecurrr wildmenu
+
+    hi def link linegits Title
+    hi def link linegitc DiffAdded
+    hi linegitm guifg=#ff0000
 
   "}
   " Skeleton {
 
-    "call line#skel('head.l','pack','t','visual')
-    "call line#skel('head.r','pack','w','visual')
+    call line#skel(1)
+    call add(g:line_skeleton.head.l,['pack','t'])
+    call add(g:line_skeleton.head.r,['pack','w'])
+    call add(g:line_skeleton.head.r,' ')
+    call add(g:line_skeleton.head.r,['curr','p'])
+    call add(g:line_skeleton.feet.l,['pack','b'])
+    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,'git')
+    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,'file')
+    call add(g:line_skeleton.feet.r,'%y%m  %l,%c/%P')
+    "call line#skel('head.r','pack','w')
     "call line#skel('head.r','user',' ')
     "call line#skel('head.r','curr','p')
-    "call line#skel('feet.l','mode')
-    "call line#skel('feet.l','pack','b','visual')
+    "call line#skel('feet.l','pack','b')
     "call line#skel('feet.l','user',' ')
     "call line#skel('feet.l','git')
     "call line#skel('feet.l','user',' ')

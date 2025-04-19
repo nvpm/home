@@ -6,31 +6,22 @@ let __LINEAUTO__ = 1
 fu! line#skel(...) abort "{
 
   if a:0
-    if !exists('a:2')|return|endif
     if !exists('g:line_skeleton')
       let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
     endif
-    if type(a:1)==type(0)|return|endif
-    let name = a:1
-    let body = a:000[1:]
-
-    if exists('g:line_skeleton.'..name)
-      let [part,side] = split(name,'\.')
-      call add(g:line_skeleton[part][side],body)
-    endif
-
   elseif empty(s:skeleton)
     let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
     call add(s:skeleton.head.l,['pack','t'])
     call add(s:skeleton.head.r,['pack','w'])
-    call add(s:skeleton.head.r,['user',' '])
+    call add(s:skeleton.head.r,' ')
     call add(s:skeleton.head.r,['curr','p'])
     call add(s:skeleton.feet.l,['pack','b'])
     call add(s:skeleton.feet.l,['user',' '])
-    call add(s:skeleton.feet.l,['git'])
-    call add(s:skeleton.feet.l,['user',' '])
-    call add(s:skeleton.feet.l,['file'])
-    call add(s:skeleton.feet.r,['user','%y%m  %l,%c/%P'])
+    call add(s:skeleton.feet.l,'git')
+    call add(s:skeleton.feet.l,' ')
+    "call add(s:skeleton.feet.l,['file'])
+    call add(s:skeleton.feet.l,'file')
+    call add(s:skeleton.feet.r,'%y%m  %l,%c/%P')
     let g:line_skeleton = s:skeleton
   endif
 
@@ -42,6 +33,13 @@ fu! line#bone(...) abort "{
   let list = []
 
   for bone in bones
+    if type(bone)==type('')
+      if bone =~ '\(file\|git\)'
+        let bone = [bone]
+      else
+        let bone = ['user',bone]
+      endif
+    endif
     if type(bone)==type([])&&!empty(bone)
       let func = bone[0]
       let item = ''
