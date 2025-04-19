@@ -118,7 +118,7 @@
   let line_activate = 1
   let line_verbose  = 3
   let line_gitinfo  = 1
-  let line_gitdelay = 7000
+  let line_gitdelay = 2000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
   let line_floating = 1
 
@@ -181,7 +181,9 @@
     "call add(s:hr,['user','%#Error#|'])
  
     call add(s:fl,['pack','b'])
+    call add(s:fl,['user','%#linefill# '])
     call add(s:fl,['git'])
+    call add(s:fl,['user','%#linefill# '])
     call add(s:fl,['file'])
  
     call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])

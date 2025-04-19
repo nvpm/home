@@ -337,18 +337,13 @@ fu! line#giti(...) abort "{
       let cr   = '%#linegitc#'
       if modified
         let cr    = '%#linegitm#'
-        let char  = ' [M]'
+        let char  = '[M]'
       endif
       if staged
         let cr   = '%#linegits#'
-        let char = ' [S]'
+        let char = '[S]'
       endif
-      if s:edgekind<2
-        let space = ' '
-      else
-        let space = ''
-      endif
-      let info = cr .space.' '.branch . char
+      let info = cr .' '.branch . char
     endif
   endif
   let g:line.git = info
@@ -358,13 +353,13 @@ fu! line#file(...) abort "{
   let name = bufname()
   if name=~ '^term://.*'
     let hi   = '%#WarningMsg#'
-    let name = '   terminal'
+    let name = '  terminal'
   elseif &buftype == 'help'
     let hi   = '%#WarningMsg#'
-    let name = '   '.. fnamemodify(name,':t')
+    let name = '  '.. fnamemodify(name,':t')
   else
     let hi   = '%#linefile#'
-    let name = '   '.. fnamemodify(name,':~')
+    let name = '  '.. fnamemodify(name,':~')
   endif
   let name = hi..name
   return name
