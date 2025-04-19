@@ -130,11 +130,6 @@ fu! zoom#show(...) abort "{
   endif
 
   exe 'set fillchars=vert:\ '
-  exe 'set fillchars+=eob:\ '
-  if s:nvim
-    exe 'set fillchars+=horiz:\ '
-    exe 'set fillchars+=horizdown:\ '
-  endif
 
 endfu "}
 fu! zoom#hide(...) abort "{
@@ -197,6 +192,12 @@ fu! zoom#buff(...) abort "{
   silent! setl winfixheight
 
   let &l:statusline = ' '
+  exe 'setl fillchars=vert:\ '
+  exe 'setl fillchars+=eob:\ '
+  if s:nvim
+    exe 'setl fillchars+=horiz:\ '
+    exe 'setl fillchars+=horizdown:\ '
+  endif
 
 endfu " }
 fu! zoom#none(...) abort "{
