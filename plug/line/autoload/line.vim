@@ -363,42 +363,70 @@ fu! line#giti(...) abort "{
 endfu "}
 fu! line#skel(...) abort "{
 
-  if empty(s:skeleton)
-    let s:skeleton = #{head:{},feet:{}}
-    let s:skeleton.head.l=[['pack','t']]
-    let s:skeleton.head.r=[['pack','w'],['curr','p']]
-    let s:skeleton.feet.l=[['pack','b'],['git'],['file']]
-    let s:skeleton.feet.r=[['user','%Y%m ⬤ %l,%c/%P']]
-  endif
+  if a:0
+    if !exists('a:2')|return|endif
+    if !exists('g:line_skeleton')
+      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    endif
+    let name = a:1
+    let body = a:2
 
-  if !has_key(s:skeleton,'head')|let s:skeleton.head = #{l:[],r:[]}|endif
-  if !has_key(s:skeleton,'feet')|let s:skeleton.feet = #{l:[],r:[]}|endif
+    if exists('g:line_skeleton.'..name)
+      "let body = type(body)==type('') ? string(body) : body
+      let [part,side] = split(name,'\.')
 
-  for part in values(s:skeleton)
-    if !has_key(part,'l')|let part.l = []|endif
-    if !has_key(part,'r')|let part.r = []|endif
-    for side in values(part)
-      for i in range(len(side))
-        let bone = side[i]
-        if type(bone)==type('')
-          if bone==#'<mode>'|let side[i] = ['mode']    |continue|endif
-          if bone==#'<file>'|let side[i] = ['file']    |continue|endif
-          if bone==#'<git>' |let side[i] = ['git']     |continue|endif
+      call add(g:line_skeleton[part][side],body)
+      "call eval('call add('..part..','..body..')')
+    endif
 
-          if bone==#'<bufs>'|let side[i] = ['pack','b']|continue|endif
-          if bone==#'<tabs>'|let side[i] = ['pack','t']|continue|endif
-          if bone==#'<wksp>'|let side[i] = ['pack','w']|continue|endif
-          if bone==#'<proj>'|let side[i] = ['pack','p']|continue|endif
+  else "{
+    if empty(s:skeleton)
+      let s:skeleton = #{head:{},feet:{}}
+      let s:skeleton.head.l=[['pack','t']]
+      let s:skeleton.head.r=[['pack','w'],['curr','p']]
+      let s:skeleton.feet.l=[['pack','b'],['git'],['file']]
+      let s:skeleton.feet.r=[['user','%Y%m ⬤ %l,%c/%P']]
+      return
+    endif
+    if !has_key(s:skeleton,'head')|let s:skeleton.head = #{l:[],r:[]}|endif
+    if !has_key(s:skeleton,'feet')|let s:skeleton.feet = #{l:[],r:[]}|endif
+    for part in values(s:skeleton)
+      if !has_key(part,'l')|let part.l = []|endif
+      if !has_key(part,'r')|let part.r = []|endif
+      for side in values(part)
+        for i in range(len(side))
+          let bone = side[i]
 
-          if bone==#'<BUFS>'|let side[i] = ['curr','b']|continue|endif
-          if bone==#'<TABS>'|let side[i] = ['curr','t']|continue|endif
-          if bone==#'<WKSP>'|let side[i] = ['curr','w']|continue|endif
-          if bone==#'<PROJ>'|let side[i] = ['curr','p']|continue|endif
-          let side[i] = ['user',bone]
-        endif
+          if type(bone)==type([])
+            if get(bone,0,'')==#'bufs'|let side[i]=['pack','b',bode[1:]]|endif
+            if get(bone,0,'')==#'tabs'|let side[i]=['pack','t',bode[1:]]|endif
+            if get(bone,0,'')==#'wksp'|let side[i]=['pack','w',bode[1:]]|endif
+            if get(bone,0,'')==#'proj'|let side[i]=['pack','p',bode[1:]]|endif
+            if get(bone,0,'')==#'BUFS'|let side[i]=['curr','b',bode[1:]]|endif
+            if get(bone,0,'')==#'TABS'|let side[i]=['curr','t',bode[1:]]|endif
+            if get(bone,0,'')==#'WKSP'|let side[i]=['curr','w',bode[1:]]|endif
+            if get(bone,0,'')==#'PROJ'|let side[i]=['curr','p',bode[1:]]|endif
+          endif
+          if type(bone)==type('')
+            if bone==#'<mode>'|let side[i] = ['mode']    |continue|endif
+            if bone==#'<file>'|let side[i] = ['file']    |continue|endif
+            if bone==#'<git>' |let side[i] = ['git']     |continue|endif
+
+            if bone==#'<bufs>'|let side[i] = ['pack','b']|continue|endif
+            if bone==#'<tabs>'|let side[i] = ['pack','t']|continue|endif
+            if bone==#'<wksp>'|let side[i] = ['pack','w']|continue|endif
+            if bone==#'<proj>'|let side[i] = ['pack','p']|continue|endif
+
+            if bone==#'<BUFS>'|let side[i] = ['curr','b']|continue|endif
+            if bone==#'<TABS>'|let side[i] = ['curr','t']|continue|endif
+            if bone==#'<WKSP>'|let side[i] = ['curr','w']|continue|endif
+            if bone==#'<PROJ>'|let side[i] = ['curr','p']|continue|endif
+            let side[i] = ['user',bone]
+          endif
+        endfor
       endfor
     endfor
-  endfor
+  endif "}
 
 endfu "}
 

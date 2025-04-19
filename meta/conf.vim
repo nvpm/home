@@ -145,25 +145,18 @@
   "}
   " Skeleton {
 
-    let s:hl = []|let s:hr = []
-    let s:fl = []|let s:fr = [] 
+    call line#skel('head.l',['pack','t','Title'])
+    call line#skel('head.r','<wksp>')
+    call line#skel('head.r',' ')
+    call line#skel('head.r','<PROJ>')
 
-    call add(s:hl,'<tabs>')
-    call add(s:hr,'<wksp>')
-    call add(s:hr,' ')
-    call add(s:hr,'<PROJ>')
-    
-    call add(s:fl,'<bufs>')
-    call add(s:fl,' ')
-    call add(s:fl,'<git>')
-    call add(s:fl,' ')
-    call add(s:fl,'<file>')
+    call line#skel('feet.l','<bufs>')
+    call line#skel('feet.l',' ')
+    call line#skel('feet.l','<git>')
+    call line#skel('feet.l',' ')
+    call line#skel('feet.l','<file>')
 
-    call add(s:fr,'%y%m  %l,%c/%P')
-
-    let line_skeleton = #{head:#{l:s:hl,r:s:hr},feet:#{l:s:fl,r:s:fr}}
-    "let line_skeleton = #{head:#{l:s:hl,r:s:hr}}
-    unlet s:hl s:hr s:fl s:fr
+    call line#skel('feet.r','%y%m  %l,%c/%P')
 
   " "}
 
