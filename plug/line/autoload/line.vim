@@ -27,6 +27,8 @@ fu! line#skel(...) abort "{
     call add(s:skeleton.head.r,['curr','p'])
     call add(s:skeleton.feet.l,['pack','b'])
     call add(s:skeleton.feet.l,['user',' '])
+    call add(s:skeleton.feet.l,['git'])
+    call add(s:skeleton.feet.l,['user',' '])
     call add(s:skeleton.feet.l,['file'])
     call add(s:skeleton.feet.r,['user','%y%m  %l,%c/%P'])
     let g:line_skeleton = s:skeleton
@@ -240,7 +242,8 @@ endfu "}
 fu! line#show(...) abort "{
 
   if !s:activate|return|endif
-  if s:verbose>0&&s:gitinfo
+  if s:verbose>0&&s:gitinfo&&line#find('git')
+    call line#giti()
     call line#time()
   endif
   if g:line.nvpm
@@ -286,6 +289,15 @@ fu! line#line(...) abort "{
   endif
 
 endfu "}
+fu! line#find(...) abort "{
+
+  let name = a:1
+  if 1+match(s:skeleton.feet.l,name)|return 1|endif
+  if 1+match(s:skeleton.feet.r,name)|return 1|endif
+  if 1+match(s:skeleton.head.l,name)|return 1|endif
+  if 1+match(s:skeleton.head.r,name)|return 1|endif
+
+endfu "}
 
 "-- auxy functions --
 fu! line#seth(...) abort "{
@@ -301,6 +313,9 @@ fu! line#seth(...) abort "{
     hi def link linecurrc error
     hi def link linecurrt error
   endif
+  if !hlexists('linegits')|hi def link linegits visual    |endif
+  if !hlexists('linegitm')|hi def link linegitm warningmsg|endif
+  if !hlexists('linegitc')|hi def link linegitc normal    |endif
 
 endfu "}
 fu! line#save(...) abort "{
