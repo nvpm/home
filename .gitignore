@@ -1,4 +1,4 @@
 .nvpm/edit
 .nvpm/save
 .nvpm/flux
-.nvpm/flux/*
+# .nvpm/flux/*
