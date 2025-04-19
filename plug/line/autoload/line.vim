@@ -373,12 +373,32 @@ fu! line#skel(...) abort "{
 
   if !has_key(s:skeleton,'head')|let s:skeleton.head = #{l:[],r:[]}|endif
   if !has_key(s:skeleton,'feet')|let s:skeleton.feet = #{l:[],r:[]}|endif
-  "for part in items(s:skeleton)
-  "  if !has_key(part,'l')|let part.l = []|endif
-  "  if !has_key(part,'r')|let part.r = []|endif
-  "  for side in items(part)
-  "  endfor
-  "endfor
+
+  for part in values(s:skeleton)
+    if !has_key(part,'l')|let part.l = []|endif
+    if !has_key(part,'r')|let part.r = []|endif
+    for side in values(part)
+      for i in range(len(side))
+        let bone = side[i]
+        if type(bone)==type('')
+          if bone==#'<mode>'|let side[i] = ['mode']    |continue|endif
+          if bone==#'<file>'|let side[i] = ['file']    |continue|endif
+          if bone==#'<git>' |let side[i] = ['git']     |continue|endif
+
+          if bone==#'<bufs>'|let side[i] = ['pack','b']|continue|endif
+          if bone==#'<tabs>'|let side[i] = ['pack','t']|continue|endif
+          if bone==#'<wksp>'|let side[i] = ['pack','w']|continue|endif
+          if bone==#'<proj>'|let side[i] = ['pack','p']|continue|endif
+
+          if bone==#'<BUFS>'|let side[i] = ['curr','b']|continue|endif
+          if bone==#'<TABS>'|let side[i] = ['curr','t']|continue|endif
+          if bone==#'<WKSP>'|let side[i] = ['curr','w']|continue|endif
+          if bone==#'<PROJ>'|let side[i] = ['curr','p']|continue|endif
+          let side[i] = ['user',bone]
+        endif
+      endfor
+    endfor
+  endfor
 
 endfu "}
 

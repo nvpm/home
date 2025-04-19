@@ -148,18 +148,18 @@
     let s:hl = []|let s:hr = []
     let s:fl = []|let s:fr = [] 
 
-    call add(s:hl,['pack','t',''])
-    call add(s:hr,['pack','w'])
-    call add(s:hr,['user',' '])
-    call add(s:hr,['curr','p',' '])
+    call add(s:hl,'<tabs>')
+    call add(s:hr,'<wksp>')
+    call add(s:hr,' ')
+    call add(s:hr,'<PROJ>')
     
-    call add(s:fl,['pack','b'])
-    call add(s:fl,['user',' '])
-    call add(s:fl,['git'])
-    call add(s:fl,['user',' '])
-    call add(s:fl,['file'])
+    call add(s:fl,'<bufs>')
+    call add(s:fl,' ')
+    call add(s:fl,'<git>')
+    call add(s:fl,' ')
+    call add(s:fl,'<file>')
 
-    call add(s:fr,['user','%y%m  %l,%c/%P'])
+    call add(s:fr,'%y%m  %l,%c/%P')
 
     let line_skeleton = #{head:#{l:s:hl,r:s:hr},feet:#{l:s:fl,r:s:fr}}
     "let line_skeleton = #{head:#{l:s:hl,r:s:hr}}
