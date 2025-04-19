@@ -118,48 +118,52 @@
   let line_activate = 1
   let line_verbose  = 3
   let line_gitinfo  = 1
-  let line_gitdelay = 3000
+  let line_gitdelay = 5000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
   let line_brackets = '[]'
   let line_floating = 1
 
-  " Colors   {
-  
-    let s:yellow = '#777733'
-    let s:blue   = '#002a57' " 005f87"
-    exe $'hi linecurr guibg={s:yellow} guifg=Black gui=Bold'
-    exe $'hi linefill guibg=bg         guifg={s:yellow}'
-    hi lineinac guibg=bg      guifg=Grey
-    hi def link linecurri error
-    exe $'hi linecurrv guibg={s:blue} guifg=White'
-    hi def link linecurrc termcursor
-    hi def link linecurrt termcursor
-    hi def link linecurrr wildmenu
- 
-    hi def link linegits Title
-    hi def link linegitm WarningMsg
-    hi def link linegitc DiffAdded
+  nmap <silent>ml :Line<cr><c-l>
 
-  "}
+  "" Colors   {
+  "
+  "  let s:yellow = '#777733'
+  "  let s:blue   = '#002a57' " 005f87"
+  "  exe $'hi linecurr guibg={s:yellow} guifg=Black gui=Bold'
+  "  exe $'hi linefill guibg=bg         guifg={s:yellow}'
+  "  hi lineinac guibg=bg      guifg=Grey
+  "  hi def link linecurri error
+  "  exe $'hi linecurrv guibg={s:blue} guifg=White'
+  "  hi def link linecurrc termcursor
+  "  hi def link linecurrt termcursor
+  "  hi def link linecurrr wildmenu
+  "
+  "  hi def link linegits Title
+  "  hi def link linegitm WarningMsg
+  "  hi def link linegitc DiffAdded
+  "
+  ""}
   " Skeleton {
 
     let s:hl = []|let s:hr = []|let s:fl = []|let s:fr = [] 
 
-    call add(s:hl,['pack','t'])
-    call add(s:hr,['pack','w'])
-    call add(s:hr,['curr','p'])
+    call add(s:hl,['pack','t','Title'])
+    call add(s:hr,['pack','w','WildMenu'])
+    call add(s:hr,['user',' '])
+    call add(s:hr,['curr','p','Normal'])
     
-    call add(s:fl,['pack','b'])
-    "call add(s:fl,['git'])
+    call add(s:fl,['pack','b','Visual'])
+    call add(s:fl,['user',' '])
+    call add(s:fl,['git'])
+    call add(s:fl,['user',' '])
     call add(s:fl,['file'])
-    call add(s:fr,['user','%Y%m ⬤ %l,%c/%P'])
+
+    call add(s:fr,['user','%y%m  %l,%c/%P'])
 
     let line_skeleton = #{head:#{l:s:hl,r:s:hr},foot:#{l:s:fl,r:s:fr}}
     unlet s:hl s:hr s:fl s:fr
 
   " "}
-
-  nmap <silent>ml :Line<cr><c-l>
 
 " }
 " zoom {

@@ -8,7 +8,6 @@ fu! zoom#init(...) abort "{
 
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
-  let s:devl = get(g:,'nvpmdevl')
 
   let g:zoom = {}
   let g:zoom.mode = 0
@@ -130,7 +129,6 @@ fu! zoom#show(...) abort "{
     set laststatus=0
   endif
 
-  if s:devl|return|endif
   exe 'set fillchars=vert:\ '
   exe 'set fillchars+=eob:\ '
   if s:nvim
@@ -203,7 +201,6 @@ fu! zoom#buff(...) abort "{
 endfu " }
 fu! zoom#none(...) abort "{
 
-  if s:devl|return|endif
   if s:nvim
     hi TabLineFill  ctermbg=none guibg=none
     hi TabLineSell  ctermbg=none guibg=none

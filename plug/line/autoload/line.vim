@@ -3,34 +3,6 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! line#giti(...) abort "{
-  let info  = ''
-  if s:gitinfo && executable('git')
-    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if empty(branch)|let g:line.git = ''|return ''|endif
-    let modified = !empty(trim(system('git diff HEAD --shortstat')))
-    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
-    let cr = ''
-    let char = ''
-    if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#linegitc#'
-      if modified
-        let cr    = '%#linegitm#'
-        let char  = '[M]'
-      endif
-      if staged
-        let cr   = '%#linegits#'
-        let char = '[S]'
-      endif
-      let info = cr .' '.branch . char
-    endif
-  endif
-  let g:line.git = info
-endfu "}
-fu! line#test(...) abort "{
-  ec s:skeleton.foot.l
-  ec string(line#bone(s:skeleton.foot.l,0))
-endfu "}
 fu! line#bone(...) abort "{
 
   let bones= a:1
@@ -41,7 +13,7 @@ fu! line#bone(...) abort "{
     if type(bone)==type([])&&!empty(bone)
       let func = bone[0]
       let item = ''
-      if func =~ '\(file\|user\|pack\)'
+      if func =~ '\(file\|user\|pack\|curr\)'
         let item = line#{func}(bone[1:],revs)
       elseif func == 'git'
         let item = g:line.git
@@ -55,13 +27,15 @@ endfu "}
 fu! line#pack(...) abort "{
 
   let type = get(a:1,0)
+  let colr = get(a:1,1)
+  let colr = type(colr)==type('')&&!empty(colr) ? colr : 'linecurr'
   let revs = a:2
   let list = []
 
   if g:line.nvpm "{
     let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
     if has_key(node,'meta')
-      let list = line#list(node.list,node.meta.indx,node.meta.leng,revs)
+      let list = line#list(node.list,node.meta.indx,node.meta.leng,revs,colr)
     endif
   "}
   elseif type=='b' "{
@@ -75,7 +49,7 @@ fu! line#pack(...) abort "{
       let curr = match(list,bufname())
       let leng = len(list)
     endif
-    let list = line#list(list,curr,leng,revs)
+    let list = line#list(list,curr,leng,revs,colr)
   endif "}
   let line = join(list,'')
   if s:edgekind==0&&!empty(line)
@@ -87,11 +61,13 @@ fu! line#pack(...) abort "{
 endfu "}
 fu! line#curr(...) abort "{
 
-  let type = a:1
+  let type = get(a:1,0)
+  let colr = get(a:1,1)
+  let colr = type(colr)==type('')&&!empty(colr) ? colr : 'linefill'
   let revs = a:2
   let name = ''
 
-  if g:line.nvpm
+  if g:line.nvpm   "{
     let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
     if has_key(node,'meta')
       let name = node.list[node.meta.indx].data.name
@@ -99,46 +75,12 @@ fu! line#curr(...) abort "{
         let name = fnamemodify(g:nvpm.tree.file,':t')
       endif
     endif
-  elseif type=='b'
+  "}
+  elseif type=='b' "{
     let name = expand('%:t')
-  endif
+  endif "}
   if empty(name)|return ''|endif
-  let name = '%#'.a:3.'# '..name..' '
-  return name
-
-endfu "}
-fu! line#user(...) abort "{
-
-  let body = get(a:1,0,'')
-  let colr = get(a:1,1)
-  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr 
-  let colr = '%#'.colr.'#'
-  return colr..body
-
-endfu "}
-fu! line#file(...) abort "{
-
-  let name = bufname()
-  if name=~ '^term://.*'
-    let hi   = '%#Title#'
-    let char = ' '
-    let name = 'terminal'
-  elseif name =~ $VIMRUNTIME..'/doc/'
-    let hi   = '%#Title#'
-    let char = ' '
-    let name = fnamemodify(name,':t')
-  elseif &filetype == 'help'
-    let hi   = '%#Title#'
-    let char = ' '
-    let name = fnamemodify(name,':~')
-  else
-    let hi   = get(a:1,0,'linefill')
-    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi 
-    let hi   = '%#'.hi.'#'
-    let char = ' '
-    let name = fnamemodify(name,':~')
-  endif
-  let name = hi..char..' '..name
+  let name = '%#'.colr.'#'..name
   return name
 
 endfu "}
@@ -147,6 +89,7 @@ fu! line#list(...) abort "{
   let curr = a:2
   let leng = a:3
   let revs = a:4
+  let colr = a:5
   let list = []
 
   for indx in range(leng)
@@ -157,20 +100,21 @@ fu! line#list(...) abort "{
     if s:edgekind==0 " brackets  config{
       if indx==curr&&leng>1
         let elem.= '['..info..']'
-      "elseif leng==1
-      "  let elem.= (revs?' ':'')..info..(!revs?' ':'')
       else
         let elem.= ' '..info..' '
       endif
     endif "}
     if s:edgekind==1 " highlight config{
+      let info = ' '..info..' '
       if indx==curr
-        let elem.= line#mode('curr',' '..info..' ')
+        if colr=='linecurr' " include check for hi linecurr exists
+          let elem.= line#mode(colr,info)
+        else
+          let elem.= '%#'.colr.'#'.info
+        endif
       else
-        let elem.= line#mode('inac',' '..info..' ')
+        let elem.= line#mode('lineinac',info)
       endif
-    endif "}
-    if s:edgekind==2 " tabs      config{
     endif "}
     call add(list,elem)
   endfor
@@ -184,31 +128,20 @@ fu! line#mode(...) abort "{
   let mode = mode()
   let line = ''
   if     mode=='i'
-    let line.= '%#line'..name..'i#'..(a:0==1?' insert ':a:2)
+    let line.= '%#'..name..'i#'..(a:0==1?' insert ':a:2)
   elseif mode=~'\(v\|V\|\|s\|S\|\)'
-    let line.= '%#line'..name..'v#'..(a:0==1?' visual ':a:2)
+    let line.= '%#'..name..'v#'..(a:0==1?' visual ':a:2)
   elseif mode=='R'
-    let line.= '%#line'..name..'r#'..(a:0==1?' replace ':a:2)
+    let line.= '%#'..name..'r#'..(a:0==1?' replace ':a:2)
   elseif mode=~'\(c\|r\|!\)'
-    let line.= '%#line'..name..'c#'..(a:0==1?' cmdline ':a:2)
+    let line.= '%#'..name..'c#'..(a:0==1?' cmdline ':a:2)
   elseif mode=='t'
-    let line.= '%#line'..name..'t#'..(a:0==1?' terminal ':a:2)
+    let line.= '%#'..name..'t#'..(a:0==1?' terminal ':a:2)
   else
-    let line.= '%#line'..name..'#' ..(a:0==1?' normal ':a:2)
+    let line.= '%#'..name..'#' ..(a:0==1?' normal ':a:2)
   endif
 
   return line
-
-endfu "}
-fu! line#skel(...) abort "{
-
-  if empty(s:skeleton)
-    let s:skeleton = #{head:{},foot:{}}
-    let s:skeleton.head.l=[['pack','t']]
-    let s:skeleton.head.r=[['pack','w'],['curr','p','lineproj']]
-    let s:skeleton.foot.l=[['pack','b'],['git'],['file',' ⬤ ']]
-    let s:skeleton.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
-  endif
 
 endfu "}
 
@@ -366,6 +299,76 @@ fu! line#time(...) abort "{
     if s:gitinfo && g:line.timer==-1
       let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
     endif
+  endif
+
+endfu "}
+fu! line#user(...) abort "{
+
+  let body = get(a:1,0,'')
+  let colr = get(a:1,1)
+  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr 
+  let colr = '%#'.colr.'#'
+  return colr..body
+
+endfu "}
+fu! line#file(...) abort "{
+
+  let name = bufname()
+  if name=~ '^term://.*'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = 'terminal'
+  elseif name =~ $VIMRUNTIME..'/doc/'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = fnamemodify(name,':t')
+  elseif &filetype == 'help'
+    let hi   = '%#Title#'
+    let char = ' '
+    let name = fnamemodify(name,':~')
+  else
+    let hi   = get(a:1,0,'linefill')
+    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi 
+    let hi   = '%#'.hi.'#'
+    let char = ' '
+    let name = fnamemodify(name,':~')
+  endif
+  let name = hi..char..' '..name
+  return name
+
+endfu "}
+fu! line#giti(...) abort "{
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if empty(branch)|let g:line.git = ''|return ''|endif
+    let modified = !empty(trim(system('git diff HEAD --shortstat')))
+    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+    let cr = ''
+    let char = ''
+    if empty(matchstr(branch,'fatal: not a git repository'))
+      let cr   = '%#linegitc#'
+      if modified
+        let cr    = '%#linegitm#'
+        let char  = '[M]'
+      endif
+      if staged
+        let cr   = '%#linegits#'
+        let char = '[S]'
+      endif
+      let info = cr .' '.branch . char
+    endif
+  endif
+  let g:line.git = info
+endfu "}
+fu! line#skel(...) abort "{
+
+  if empty(s:skeleton)
+    let s:skeleton = #{head:{},foot:{}}
+    let s:skeleton.head.l=[['pack','t']]
+    let s:skeleton.head.r=[['pack','w'],['curr','p']]
+    let s:skeleton.foot.l=[['pack','b'],['git'],['file']]
+    let s:skeleton.foot.r=[['user','%Y%m ⬤ %l,%c/%P']]
   endif
 
 endfu "}
