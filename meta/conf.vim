@@ -139,18 +139,18 @@
     hi def link linecurrr wildmenu
 
     hi def link linegits Title
-    hi def link linegitm WarningMsg
     hi def link linegitc DiffAdded
+    hi linegitm guifg=#ff0000
 
   "}
   " Skeleton {
 
     let s:hl = []|let s:hr = []|let s:fl = []|let s:fr = [] 
 
-    call add(s:hl,['pack','t'])
+    call add(s:hl,['pack','t',''])
     call add(s:hr,['pack','w'])
     call add(s:hr,['user',' '])
-    call add(s:hr,['curr','p'])
+    call add(s:hr,['curr','p',' '])
     
     call add(s:fl,['pack','b'])
     call add(s:fl,['user',' '])
