@@ -396,8 +396,11 @@ endfu "}
 fu! line#giti(...) abort "{
   let info  = ''
   if s:gitinfo && executable('git')
-    let branch   = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if empty(branch)|let g:line.git = ''|return ''|endif
+    let branch = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if 1+match(branch,'^fatal:.*')
+      let g:line.git = '%#WarningMsg#gitless'
+      return
+    endif
     let modified = !empty(trim(system('git diff HEAD --shortstat')))
     let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
     let cr = ''
