@@ -38,7 +38,7 @@ fu! line#bone(...) abort "{
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
-        let item = g:line.git
+        let item = g:line.giti
       else
         let item = line#atom(func,args,revs)
       endif
@@ -240,6 +240,33 @@ fu! line#list(...) abort "{
   return revs?reverse(list):list
 
 endfu "}
+fu! line#giti(...) abort "{
+
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch = trim(system(g:line.gitb))
+    if 1+match(branch,'^fatal:.*')
+      let info = '%#WarningMsg#gitless'
+    else
+      let modified = !empty(trim(system(g:line.gitm)))
+      let staged   = !empty(trim(system(g:line.gits)))
+      let char = ''
+      let colr = '%#linegitc#'
+      if modified
+        let colr = '%#linegitm#'
+        let char = '[M]'
+      endif
+      if staged
+        let colr = '%#linegits#'
+        let char = '[S]'
+      endif
+      let info = colr .' '.branch . char
+    endif
+
+  endif
+  let g:line.giti = info
+
+endfu "}
 
 "-- main functions --
 fu! line#init(...) abort "{
@@ -257,7 +284,10 @@ fu! line#init(...) abort "{
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
   let g:line.timer= -1
-  let g:line.git  = ''
+  let g:line.giti = ''
+  let g:line.gits = 'git diff --no-ext-diff --cached --shortstat'
+  let g:line.gitm = 'git diff HEAD --shortstat'
+  let g:line.gitb = 'git rev-parse --abbrev-ref HEAD'
 
   call line#save()
   call line#seth()
@@ -388,42 +418,13 @@ fu! line#time(...) abort "{
     if 1+g:line.timer
       call timer_stop(g:line.timer)
       let g:line.timer = -1
-      let g:line.git   = ''
+      let g:line.giti   = ''
     endif
   else
     if s:gitinfo && g:line.timer==-1
       let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
     endif
   endif
-
-endfu "}
-fu! line#giti(...) abort "{
-
-  let info  = ''
-  if s:gitinfo && executable('git')
-    let branch = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if 1+match(branch,'^fatal:.*')
-      let g:line.git = '%#WarningMsg#gitless'
-      return
-    endif
-    let modified = !empty(trim(system('git diff HEAD --shortstat')))
-    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
-    let cr = ''
-    let char = ''
-    if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#linegitc#'
-      if modified
-        let cr    = '%#linegitm#'
-        let char  = '[M]'
-      endif
-      if staged
-        let cr   = '%#linegits#'
-        let char = '[S]'
-      endif
-      let info = cr .' '.branch . char
-    endif
-  endif
-  let g:line.git = info
 
 endfu "}
 
