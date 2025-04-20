@@ -170,7 +170,8 @@
 
       hi linegits guibg=#005500|hi LineGitsEdge guifg=#005500
       hi linegitc guibg=#333300|hi LineGitcEdge guifg=#333300
-      hi linegitm guibg=#770000|hi LineGitmEdge guifg=#770000
+      hi linegitm guibg=#440000|hi LineGitmEdge guifg=#440000
+      hi linegitl guibg=#440000|hi LineGitlEdge guifg=#440000
 
     endif "}
 

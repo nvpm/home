@@ -245,24 +245,33 @@ fu! line#giti(...) abort "{
   let info  = ''
   if s:gitinfo && executable('git')
     let branch = trim(system(s:gitb))
-    if 1+match(branch,'^fatal:.*')
-      let info = '%#WarningMsg#gitless'
+    if 1+match(branch,'^fatal:.*') "{
+      let info = '%#LineGitl#gitless'
+      if s:edgekind==2
+        let info = '%#LineGitlEdge#'..info..'%#LineGitlEdge#'
+      endif
     else
-      let modified = !empty(trim(system(s:gitm)))
-      let staged   = !empty(trim(system(s:gits)))
       let char = ''
       let colr = '%#linegitc#'
-      if modified
+      let edgel= ''
+      let edger= ''
+      if !empty(trim(system(s:gitm)))
+        if s:edgekind==2
+          let edgel = '%#linegitmedge#'
+          let edger = '%#linegitmedge#'
+        endif
         let colr = '%#linegitm#'
         let char = '[M]'
-      endif
-      if staged
+      elseif !empty(trim(system(s:gits)))
+        if s:edgekind==2
+          let edgel = '%#linegitsedge#'
+          let edger = '%#linegitsedge#'
+        endif
         let colr = '%#linegits#'
         let char = '[S]'
       endif
-      let info = colr .' '.branch . char
-    endif
-
+      let info = edgel..colr ..' '..branch .. char .. edger
+    endif "}
   endif
   let s:giti = info
 
