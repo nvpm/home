@@ -102,32 +102,56 @@ fu! line#pack(...) abort "{
   let colr = get(a:1,1)
   let colr = type(colr)==type('')&&!empty(colr) ? colr : 'linecurr'
   let revs = a:2
+  let line = ''
   let list = []
+  let leng = 0
+  let indx = 0
 
   if g:line.nvpm "{
     let node = flux#seek(g:nvpm.tree.root,match(['p','w','t','b'],type))
     if has_key(node,'meta')
-      let list = line#list(node.list,node.meta.indx,node.meta.leng,revs,colr)
+      let indx = node.meta.indx
+      let leng = node.meta.leng
+      let list = node.list
     endif
   "}
   elseif type=='b' "{
     if s:verbose==1
       let list = [bufname()]
-      let curr = 0
+      let indx = 0
       let leng = 1
     elseif s:verbose>1
       let list = map(range(1,bufnr('$')),'bufname(v:val)')
       let list = filter(list,'!empty(v:val)&&buflisted(v:val)')
-      let curr = match(list,bufname())
+      let indx = match(list,bufname())
       let leng = len(list)
     endif
-    let list = line#list(list,curr,leng,revs,colr)
   "}
   elseif type=='t' "{
   endif "}
-  let line = join(list,'')
-  if s:edgekind==0&&!empty(line)
-    let line = '%#linefill#'..line
+
+  let list = line#list(list,indx,leng,revs,colr)
+  if !empty(list)
+    let line = join(list,'')
+    if     s:edgekind==0
+      let line = '%#linefill#'..line
+    elseif s:edgekind==2
+      if indx==leng-1
+        if revs
+          let line = '%#lineedgecurr#'..line..'%#lineedgeinac#'
+        else
+          let line = '%#lineedgeinac#'..line..'%#lineedgecurr#'
+        endif
+      elseif indx==0
+        if revs
+          let line = '%#lineedgeinac#'..line..'%#lineedgecurr#'
+        else
+          let line = '%#lineedgecurr#'..line..'%#lineedgeinac#'
+        endif
+      else
+        let line = '%#lineedgeinac#'..line..'%#lineedgeinac#'
+      endif
+    endif
   endif
 
   return line
@@ -171,7 +195,7 @@ fu! line#list(...) abort "{
     let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     let elem = ''
-    if s:edgekind==0 " brackets  config{
+    if     s:edgekind==0 "{
       if indx==curr&&leng>1
         let elem.= '['..info..']'
       elseif leng==1
@@ -179,8 +203,8 @@ fu! line#list(...) abort "{
       else
         let elem.= ' '..info..' '
       endif
-    endif "}
-    if s:edgekind==1 " highlight config{
+    "}
+    elseif s:edgekind==1 "{
       let info = ' '..info..' '
       if indx==curr
         if colr=='linecurr'
@@ -191,9 +215,18 @@ fu! line#list(...) abort "{
       else
         let elem.= line#mode('lineinac',info)
       endif
-    endif "}
-    if s:edgekind==2 " tabs      config{
+    "}
+    elseif s:edgekind==2 "{
       let info = ' '..info..' '
+      if indx==curr
+        if colr=='linecurr'
+          let elem.= line#mode(colr,info)
+        else
+          let elem.= '%#'.colr.'#'.info
+        endif
+      else
+        let elem.= line#mode('lineinac',info)
+      endif
     endif "}
     call add(list,elem)
   endfor

@@ -120,7 +120,7 @@
   let line_verbose  = 2
   let line_gitinfo  = 1
   let line_gitdelay = 5000
-  let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
+  let line_edgekind = 2 "0:bracks,1:hi,2:stikers,3:powerline
   let line_brackets = '[]'
   let line_floating = 1
 
@@ -128,20 +128,46 @@
 
   " Colors   {
 
-    let s:yellow = '#777733'
-    let s:blue   = '#002a57' " 005f87
-    exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
-    exe $'hi linefill guibg=bg         guifg={s:yellow}'
-    hi lineinac guibg=bg      guifg=Grey
-    hi def link linecurri error
-    exe $'hi linecurrv guibg={s:blue} guifg=White'
-    hi def link linecurrc title
-    hi def link linecurrt title
-    hi def link linecurrr wildmenu
+    if g:line_edgekind == 2 "{
+
+      hi lineinac  guibg=#333300 guifg=White 
+      hi lineinaci guibg=#333300 guifg=White 
+      hi lineinacc guibg=#333300 guifg=White 
+      hi lineinacv guibg=#333300 guifg=White 
+      hi lineinact guibg=#333300 guifg=White 
+      hi lineinacr guibg=#333300 guifg=White 
+
+      hi linecurr  guibg=#777733 guifg=Black
+      hi linecurri guibg=#777733 guifg=Black
+      hi linecurrc guibg=#777733 guifg=Black
+      hi linecurrv guibg=#777733 guifg=Black
+      hi linecurrt guibg=#777733 guifg=Black
+      hi linecurrr guibg=#777733 guifg=Black
+      
+      hi lineedgecurr guibg=bg guifg=#777733
+      hi lineedgeinac guibg=bg guifg=#333300
+
+      hi linefill  guibg=bg guifg=#999933
+
+    endif "}
+    if g:line_edgekind == 1 "{
+      
+        let s:yellow = '#777733'
+        let s:blue   = '#002a57' " 005f87
+        exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
+        exe $'hi linefill guibg=bg         guifg={s:yellow}'
+        hi lineinac guibg=bg      guifg=Grey
+        hi def link linecurri error
+        exe $'hi linecurrv guibg={s:blue} guifg=White'
+        hi def link linecurrc title
+        hi def link linecurrt title
+        hi def link linecurrr wildmenu
+
+    endif "}
 
     hi def link linegits Title
     hi def link linegitc DiffAdded
-    hi linegitm guifg=#ff0000
+    hi def link linegitm WarningMsg
 
   "}
   " Skeleton {
@@ -165,7 +191,7 @@
 
   set cmdheight=1
   let zoom_autocmds = 1
-  let zoom_initload = 1
+  let zoom_initload = 0
   let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1
