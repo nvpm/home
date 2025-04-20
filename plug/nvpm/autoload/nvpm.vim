@@ -20,13 +20,9 @@ fu! nvpm#init(...) abort "{
   
     let s:dirs = {}
     let s:dirs.local  = '.nvpm/flux/'
-    let s:dirs.global = '~/nvim/flux/'
     let s:dirs.edit = '.nvpm/edit'
     let s:dirs.save = '.nvpm/save'
-
-    let s:dirs.global = resolve    (s:dirs.global)
-    let s:dirs.global = expand     (s:dirs.global)
-    let s:dirs.global = fnamemodify(s:dirs.global,':p')
+    let s:dirs.curr = '.nvpm/curr'
 
   " }
   " s:conf {
@@ -316,8 +312,7 @@ fu! nvpm#rend(...) abort "{
     call execute('edit '.curr)
 
     if 1+match(curr,'^.*\.flux$')||
-      \head == s:dirs.local      || 
-      \HEAD == s:dirs.global     && 
+      \head == s:dirs.local      &&
       \&ft  != 'flux'
       set filetype=flux
       set commentstring=-%s
