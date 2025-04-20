@@ -190,6 +190,9 @@ fu! line#list(...) abort "{
         let elem.= line#mode('lineinac',info)
       endif
     endif "}
+    if s:edgekind==2 " tabs      config{
+      let info = ' '..info..' '
+    endif "}
     call add(list,elem)
   endfor
 

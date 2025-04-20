@@ -156,15 +156,6 @@
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,'file')
     call add(g:line_skeleton.feet.r,'%y%m  %l,%c/%P')
-    "call line#skel('head.r','pack','w')
-    "call line#skel('head.r','user',' ')
-    "call line#skel('head.r','curr','p')
-    "call line#skel('feet.l','pack','b')
-    "call line#skel('feet.l','user',' ')
-    "call line#skel('feet.l','git')
-    "call line#skel('feet.l','user',' ')
-    "call line#skel('feet.l','file')
-    "call line#skel('feet.r','user','%y%m  %l,%c/%P')
 
   " "}
 
