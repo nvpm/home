@@ -62,7 +62,7 @@
 
   " nvpm user variables tree
   let nvpm_maketree = 1
-  let nvpm_initload = 1
+  let nvpm_initload = 0
   let nvpm_loadline = 1
 
   let nvpm_fluxconf = {}
@@ -146,11 +146,11 @@
   " Skeleton {
 
     call line#skel(1)
-    call add(g:line_skeleton.head.l,['pack','t'])
-    call add(g:line_skeleton.head.r,['pack','w'])
+    call add(g:line_skeleton.head.l,'tabs')
+    call add(g:line_skeleton.head.r,'wksp')
     call add(g:line_skeleton.head.r,' ')
-    call add(g:line_skeleton.head.r,['curr','p'])
-    call add(g:line_skeleton.feet.l,['pack','b'])
+    call add(g:line_skeleton.head.r,'PROJ')
+    call add(g:line_skeleton.feet.l,'bufs')
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,'git')
     call add(g:line_skeleton.feet.l,' ')

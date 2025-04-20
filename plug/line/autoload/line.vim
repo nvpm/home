@@ -36,6 +36,22 @@ fu! line#bone(...) abort "{
     if type(bone)==type('')
       if bone =~ '\(file\|git\)'
         let bone = [bone]
+      elseif bone ==# 'bufs'
+        let bone = ['pack','b']
+      elseif bone ==# 'tabs'
+        let bone = ['pack','t']
+      elseif bone ==# 'wksp'
+        let bone = ['pack','w']
+      elseif bone ==# 'proj'
+        let bone = ['pack','p']
+      elseif bone ==# 'BUFS'
+        let bone = ['curr','b']
+      elseif bone ==# 'TABS'
+        let bone = ['curr','t']
+      elseif bone ==# 'WKSP'
+        let bone = ['curr','w']
+      elseif bone ==# 'PROJ'
+        let bone = ['curr','p']
       else
         let bone = ['user',bone]
       endif
@@ -45,6 +61,8 @@ fu! line#bone(...) abort "{
       let item = ''
       if func =~ '\(file\|user\|pack\|curr\)'
         let item = line#{func}(bone[1:],revs)
+      elseif func == 'list'
+        let item = line#pack(bone[1:],revs)
       elseif func == 'git'
         let item = g:line.git
       elseif func == 'mode'
