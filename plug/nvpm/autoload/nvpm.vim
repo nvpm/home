@@ -19,7 +19,7 @@ fu! nvpm#init(...) abort "{
   " s:dirs {
   
     let s:dirs = {}
-    let s:dirs.local  = '.nvpm/flux/'
+    let s:dirs.root  = '.nvpm/flux/'
     let s:dirs.edit = '.nvpm/edit'
     let s:dirs.save = '.nvpm/save'
     let s:dirs.curr = '.nvpm/curr'
@@ -68,7 +68,7 @@ fu! nvpm#init(...) abort "{
   if init && !argc() 
     if filereadable(s:dirs.save)
       let flux = get(readfile(s:dirs.save),0,'')
-      if !empty(flux) && filereadable(s:dirs.local..flux)
+      if !empty(flux) && filereadable(s:dirs.root..flux)
         let u = init>0 && init<200
         call timer_start(u*200+(!u)*init,{->nvpm#load(flux)})
       endif
@@ -81,7 +81,7 @@ fu! nvpm#load(...) abort "{
   let file = flux#argv(a:000)
 
   if !g:nvpm.edit.mode
-    let file = s:dirs.local..file
+    let file = s:dirs.root..file
   endif
 
   if !filereadable(file)|return 1|endif
@@ -189,12 +189,12 @@ fu! nvpm#edit(...) abort "{
 
   " makes the edit file otherwise
   let fluxes = []
-  if isdirectory(s:dirs.local)
-    let fluxes = readdir(s:dirs.local)
+  if isdirectory(s:dirs.root)
+    let fluxes = readdir(s:dirs.root)
   endif
   let body   = []
   for file in fluxes
-    let file = s:dirs.local..file
+    let file = s:dirs.root..file
     let line = 'file '..fnamemodify(file,':t:r')..':'..file
     if file == g:nvpm.tree.file
       let body = [line]+body
@@ -243,12 +243,12 @@ fu! nvpm#make(...) abort "{
   let name = get(a:000,0,'')
 
   if empty(name)|return|endif
-  if !isdirectory(s:dirs.local)&&filereadable(s:dirs.local)
-    ec 'Location '..s:dirs.local..' is a file. Remove it first.'
+  if !isdirectory(s:dirs.root)&&filereadable(s:dirs.root)
+    ec 'Location '..s:dirs.root..' is a file. Remove it first.'
     return
   endif
 
-  call mkdir(s:dirs.local,'p')
+  call mkdir(s:dirs.root,'p')
   call nvpm#flux()
 
   let name = fnamemodify(name,':e')=='flux'?name:fnamemodify(name,':t:r')..'.flux'
@@ -261,7 +261,7 @@ fu! nvpm#make(...) abort "{
     endif
   endfor
 
-  let path = s:dirs.local..name
+  let path = s:dirs.root..name
 
   let lines = ''
   let lines.= '# NVPM new flux file,'
@@ -312,7 +312,7 @@ fu! nvpm#rend(...) abort "{
     call execute('edit '.curr)
 
     if 1+match(curr,'^.*\.flux$')||
-      \head == s:dirs.local      &&
+      \head == s:dirs.root      &&
       \&ft  != 'flux'
       set filetype=flux
       set commentstring=-%s
@@ -344,8 +344,8 @@ fu! nvpm#show(...) abort "{
 endfu "}
 fu! nvpm#flux(...) abort "{
 
-  if isdirectory(s:dirs.local)&&empty(g:nvpm.flux.list)
-    let g:nvpm.flux.list = readdir(s:dirs.local)
+  if isdirectory(s:dirs.root)&&empty(g:nvpm.flux.list)
+    let g:nvpm.flux.list = readdir(s:dirs.root)
     let g:nvpm.flux.leng = len(g:nvpm.flux.list)
     let g:nvpm.flux.indx = 0
   endif
@@ -354,7 +354,7 @@ endfu "}
 
 "-- user functions --
 fu! nvpm#DIRS(...) abort "{
-  let files = readdir(s:dirs.local)
+  let files = readdir(s:dirs.root)
   return files
 endfu "}
 fu! nvpm#LOOP(...) abort "{
