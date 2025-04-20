@@ -149,22 +149,22 @@
     "endif "}
     if g:line_edgekind == 2 "{
 
-      hi lineinac  guibg=#333300 guifg=White 
-      hi lineinaci guibg=#333300 guifg=White 
-      hi lineinacc guibg=#333300 guifg=White 
-      hi lineinacv guibg=#333300 guifg=White 
-      hi lineinact guibg=#333300 guifg=White 
-      hi lineinacr guibg=#333300 guifg=White 
+      hi lineinac  guibg=#333300 guifg=#a1a1a1
+      hi lineinaci guibg=#333300 guifg=#a1a1a1
+      hi lineinacc guibg=#333300 guifg=#a1a1a1
+      hi lineinacv guibg=#333300 guifg=#a1a1a1
+      hi lineinact guibg=#333300 guifg=#a1a1a1
+      hi lineinacr guibg=#333300 guifg=#a1a1a1
 
-      hi linecurr  guibg=#777733 guifg=Black
-      hi linecurri guibg=#777733 guifg=Black
-      hi linecurrc guibg=#777733 guifg=Black
-      hi linecurrv guibg=#777733 guifg=Black
-      hi linecurrt guibg=#777733 guifg=Black
-      hi linecurrr guibg=#777733 guifg=Black
+      hi linecurr  guibg=#777733 guifg=Black gui=bold
+      hi linecurri guibg=#777733 guifg=Black gui=bold
+      hi linecurrc guibg=#777733 guifg=Black gui=bold
+      hi linecurrv guibg=#777733 guifg=Black gui=bold
+      hi linecurrt guibg=#777733 guifg=Black gui=bold
+      hi linecurrr guibg=#777733 guifg=Black gui=bold
       
-      hi lineedgecurr guibg=bg guifg=#777733
-      hi lineedgeinac guibg=bg guifg=#333300
+      hi linecurredge guibg=bg guifg=#777733
+      hi lineinacedge guibg=bg guifg=#333300
 
       hi linefill  guibg=bg guifg=#999933
 
@@ -180,6 +180,8 @@
 
     call line#skel(1)
 
+    call add(g:line_skeleton.head.l,['git'])
+    call add(g:line_skeleton.head.l,' ')
     call add(g:line_skeleton.head.l,['list',2])
 
     call add(g:line_skeleton.head.r,['list',1])
@@ -187,8 +189,6 @@
     call add(g:line_skeleton.head.r,['curr',0])
 
     call add(g:line_skeleton.feet.l,['list',3])
-    call add(g:line_skeleton.feet.l,' ')
-    call add(g:line_skeleton.feet.l,['git'])
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['file'])
 

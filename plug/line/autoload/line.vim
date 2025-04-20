@@ -72,6 +72,8 @@ fu! line#atom(...) abort "{
     endif "}
     if empty(name)|return ''|endif
     let name = '%#'.colr.'#'..name
+    if s:edgekind==2
+    endif
     return name
   "}
   elseif type=='list' "{
@@ -114,18 +116,18 @@ fu! line#atom(...) abort "{
       elseif s:edgekind==2
         if indx==leng-1
           if revs
-            let line = '%#lineedgecurr#'..line..'%#lineedgeinac#'
+            let line = '%#linecurredge#'..line..'%#lineinacedge#'
           else
-            let line = '%#lineedgeinac#'..line..'%#lineedgecurr#'
+            let line = '%#lineinacedge#'..line..'%#linecurredge#'
           endif
         elseif indx==0
           if revs
-            let line = '%#lineedgeinac#'..line..'%#lineedgecurr#'
+            let line = '%#lineinacedge#'..line..'%#linecurredge#'
           else
-            let line = '%#lineedgecurr#'..line..'%#lineedgeinac#'
+            let line = '%#linecurredge#'..line..'%#lineinacedge#'
           endif
         else
-          let line = '%#lineedgeinac#'..line..'%#lineedgeinac#'
+          let line = '%#lineinacedge#'..line..'%#lineinacedge#'
         endif
       endif
     endif
