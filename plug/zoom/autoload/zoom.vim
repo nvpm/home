@@ -17,8 +17,8 @@ fu! zoom#init(...) abort "{
 
   let init = abs(get(g:,'zoom_initload'))
   if init
-    let u = init>0 && init<200
-    call timer_start(u*200+(!u)*init,{->zoom#show()})
+    let u = init>0 && init<100
+    call timer_start(u*100+(!u)*init,{->zoom#show()})
   endif
 
 endfu "}
