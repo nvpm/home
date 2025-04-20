@@ -122,6 +122,8 @@ fu! line#pack(...) abort "{
       let leng = len(list)
     endif
     let list = line#list(list,curr,leng,revs,colr)
+  "}
+  elseif type=='t' "{
   endif "}
   let line = join(list,'')
   if s:edgekind==0&&!empty(line)
@@ -204,7 +206,6 @@ endfu "}
 fu! line#init(...) abort "{
   if exists('s:init')|return|else|let s:init=1|endif
 
-  let s:activate = get(g:,'line_activate',1)
   let s:verbose  = get(g:,'line_verbose' ,2)
   let s:gitinfo  = get(g:,'line_gitinfo',1)
   let s:delay    = get(g:,'line_gitdelay',20000)
@@ -223,7 +224,7 @@ fu! line#init(...) abort "{
   call line#seth()
   call line#skel()
 
-  if s:activate
+  if get(g:,'line_initload')
     hi clear TabLine
     hi clear StatusLine
     call line#show()
@@ -262,7 +263,6 @@ fu! line#draw(...) abort "{
 endfu "}
 fu! line#show(...) abort "{
 
-  if !s:activate|return|endif
   if s:verbose>0&&s:gitinfo&&line#find('git')
     call line#giti()
     call line#time()
@@ -287,8 +287,6 @@ fu! line#show(...) abort "{
 
 endfu "}
 fu! line#hide(...) abort "{
-
-  if !s:activate|return|endif
 
   call line#save()
 
