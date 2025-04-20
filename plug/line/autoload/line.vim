@@ -38,7 +38,7 @@ fu! line#bone(...) abort "{
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
-        let item = g:line.giti
+        let item = s:giti
       else
         let item = line#atom(func,args,revs)
       endif
@@ -244,12 +244,12 @@ fu! line#giti(...) abort "{
 
   let info  = ''
   if s:gitinfo && executable('git')
-    let branch = trim(system(g:line.gitb))
+    let branch = trim(system(s:gitb))
     if 1+match(branch,'^fatal:.*')
       let info = '%#WarningMsg#gitless'
     else
-      let modified = !empty(trim(system(g:line.gitm)))
-      let staged   = !empty(trim(system(g:line.gits)))
+      let modified = !empty(trim(system(s:gitm)))
+      let staged   = !empty(trim(system(s:gits)))
       let char = ''
       let colr = '%#linegitc#'
       if modified
@@ -264,7 +264,7 @@ fu! line#giti(...) abort "{
     endif
 
   endif
-  let g:line.giti = info
+  let s:giti = info
 
 endfu "}
 
@@ -284,10 +284,11 @@ fu! line#init(...) abort "{
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
   let g:line.timer= -1
-  let g:line.giti = ''
-  let g:line.gits = 'git diff --no-ext-diff --cached --shortstat'
-  let g:line.gitm = 'git diff HEAD --shortstat'
-  let g:line.gitb = 'git rev-parse --abbrev-ref HEAD'
+
+  let s:giti = ''
+  let s:gits = 'git diff --no-ext-diff --cached --shortstat'
+  let s:gitm = 'git diff HEAD --shortstat'
+  let s:gitb = 'git rev-parse --abbrev-ref HEAD'
 
   call line#save()
   call line#seth()
@@ -418,7 +419,7 @@ fu! line#time(...) abort "{
     if 1+g:line.timer
       call timer_stop(g:line.timer)
       let g:line.timer = -1
-      let g:line.giti   = ''
+      let s:giti   = ''
     endif
   else
     if s:gitinfo && g:line.timer==-1
