@@ -173,11 +173,11 @@
   " Skeleton {
 
     call line#skel(1)
-    call add(g:line_skeleton.head.l,'tabs')
-    call add(g:line_skeleton.head.r,'wksp')
+    call add(g:line_skeleton.head.l,['list','t'])
+    call add(g:line_skeleton.head.r,['list','w'])
     call add(g:line_skeleton.head.r,' ')
-    call add(g:line_skeleton.head.r,'PROJ')
-    call add(g:line_skeleton.feet.l,'bufs')
+    call add(g:line_skeleton.head.r,['curr','p'])
+    call add(g:line_skeleton.feet.l,['list','b'])
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,'git')
     call add(g:line_skeleton.feet.l,' ')
@@ -191,7 +191,7 @@
 
   set cmdheight=1
   let zoom_autocmds = 1
-  let zoom_initload = 0
+  let zoom_initload = 1
   let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1

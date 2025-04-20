@@ -69,8 +69,8 @@ fu! nvpm#init(...) abort "{
     if filereadable(s:file.save)
       let flux = get(readfile(s:file.save),0,'')
       if !empty(flux) && filereadable(s:file.flux..flux)
-        let u = init>0 && init<100
-        call timer_start(u*100+(!u)*init,{->nvpm#load(flux)})
+        let u = init>0 && init<10
+        call timer_start(u*10+(!u)*init,{->nvpm#load(flux)})
       endif
     endif
   endif

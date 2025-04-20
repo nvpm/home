@@ -36,22 +36,6 @@ fu! line#bone(...) abort "{
     if type(bone)==type('')
       if bone =~ '\(file\|git\)'
         let bone = [bone]
-      elseif bone ==# 'bufs'
-        let bone = ['pack','b']
-      elseif bone ==# 'tabs'
-        let bone = ['pack','t']
-      elseif bone ==# 'wksp'
-        let bone = ['pack','w']
-      elseif bone ==# 'proj'
-        let bone = ['pack','p']
-      elseif bone ==# 'BUFS'
-        let bone = ['curr','b']
-      elseif bone ==# 'TABS'
-        let bone = ['curr','t']
-      elseif bone ==# 'WKSP'
-        let bone = ['curr','w']
-      elseif bone ==# 'PROJ'
-        let bone = ['curr','p']
       else
         let bone = ['user',bone]
       endif
@@ -234,6 +218,68 @@ fu! line#list(...) abort "{
   return revs?reverse(list):list
 
 endfu "}
+fu! line#user(...) abort "{
+
+  let body = get(a:1,0,'')
+  let colr = get(a:1,1)
+  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr
+  let colr = '%#'.colr.'#'
+  return colr..body
+
+endfu "}
+fu! line#file(...) abort "{
+
+  let name = bufname()
+  if name=~ '^term://.*'
+    let hi   = '%#Title#'
+    let char = ''
+    let name = 'terminal'
+  elseif name =~ $VIMRUNTIME..'/doc/'
+    let hi   = '%#Title#'
+    let char = ''
+    let name = fnamemodify(name,':t')
+  elseif &filetype == 'help'
+    let hi   = '%#Title#'
+    let char = ''
+    let name = fnamemodify(name,':~')
+  else
+    let hi   = get(a:1,0,'linefill')
+    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi
+    let hi   = '%#'.hi.'#'
+    let char = ''
+    let name = fnamemodify(name,':~')
+  endif
+  let name = hi..char..' '..name
+  return name
+
+endfu "}
+fu! line#giti(...) abort "{
+  let info  = ''
+  if s:gitinfo && executable('git')
+    let branch = trim(system('git rev-parse --abbrev-ref HEAD'))
+    if 1+match(branch,'^fatal:.*')
+      let g:line.git = '%#WarningMsg#gitless'
+      return
+    endif
+    let modified = !empty(trim(system('git diff HEAD --shortstat')))
+    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
+    let cr = ''
+    let char = ''
+    if empty(matchstr(branch,'fatal: not a git repository'))
+      let cr   = '%#linegitc#'
+      if modified
+        let cr    = '%#linegitm#'
+        let char  = '[M]'
+      endif
+      if staged
+        let cr   = '%#linegits#'
+        let char = '[S]'
+      endif
+      let info = cr .' '.branch . char
+    endif
+  endif
+  let g:line.git = info
+endfu "}
 
 "-- main functions --
 fu! line#init(...) abort "{
@@ -390,67 +436,5 @@ fu! line#time(...) abort "{
     endif
   endif
 
-endfu "}
-fu! line#user(...) abort "{
-
-  let body = get(a:1,0,'')
-  let colr = get(a:1,1)
-  let colr = type(colr)!=type('') || empty(colr) ? 'linefill' : colr
-  let colr = '%#'.colr.'#'
-  return colr..body
-
-endfu "}
-fu! line#file(...) abort "{
-
-  let name = bufname()
-  if name=~ '^term://.*'
-    let hi   = '%#Title#'
-    let char = ''
-    let name = 'terminal'
-  elseif name =~ $VIMRUNTIME..'/doc/'
-    let hi   = '%#Title#'
-    let char = ''
-    let name = fnamemodify(name,':t')
-  elseif &filetype == 'help'
-    let hi   = '%#Title#'
-    let char = ''
-    let name = fnamemodify(name,':~')
-  else
-    let hi   = get(a:1,0,'linefill')
-    let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi
-    let hi   = '%#'.hi.'#'
-    let char = ''
-    let name = fnamemodify(name,':~')
-  endif
-  let name = hi..char..' '..name
-  return name
-
-endfu "}
-fu! line#giti(...) abort "{
-  let info  = ''
-  if s:gitinfo && executable('git')
-    let branch = trim(system('git rev-parse --abbrev-ref HEAD'))
-    if 1+match(branch,'^fatal:.*')
-      let g:line.git = '%#WarningMsg#gitless'
-      return
-    endif
-    let modified = !empty(trim(system('git diff HEAD --shortstat')))
-    let staged   = !empty(trim(system('git diff --no-ext-diff --cached --shortstat')))
-    let cr = ''
-    let char = ''
-    if empty(matchstr(branch,'fatal: not a git repository'))
-      let cr   = '%#linegitc#'
-      if modified
-        let cr    = '%#linegitm#'
-        let char  = '[M]'
-      endif
-      if staged
-        let cr   = '%#linegits#'
-        let char = '[S]'
-      endif
-      let info = cr .' '.branch . char
-    endif
-  endif
-  let g:line.git = info
 endfu "}
 
