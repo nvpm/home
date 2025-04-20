@@ -62,7 +62,7 @@
 
   " nvpm user variables tree
   let nvpm_maketree = 1
-  let nvpm_initload = 0
+  let nvpm_initload = 1
   let nvpm_loadline = 1
 
   let nvpm_fluxconf = {}
@@ -164,7 +164,7 @@
 
   set cmdheight=1
   let zoom_autocmds = 1
-  let zoom_initload = 0
+  let zoom_initload = 1
   let zoom_keepline = 1
   let zoom_usefloat = 1
   let zoom_useminus = 1

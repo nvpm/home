@@ -68,16 +68,14 @@ fu! nvpm#init(...) abort "{
 
   " }
 
-  if get(g:,'nvpm_initload',0) && !argc() 
-    if !filereadable(s:dirs.save)
-      call nvpm#edit()
-      return
-    endif
-    let flux = get(readfile(s:dirs.save),0,'')
-    if empty(flux) || !filereadable(s:dirs.local..flux)
-      call nvpm#edit()
-    else
-      call nvpm#load(flux)
+  let init = abs(get(g:,'nvpm_initload',0))
+  if init && !argc() 
+    if filereadable(s:dirs.save)
+      let flux = get(readfile(s:dirs.save),0,'')
+      if !empty(flux) && filereadable(s:dirs.local..flux)
+        let u = init>0 && init<200
+        call timer_start(u*200+(!u)*init,{->nvpm#load(flux)})
+      endif
     endif
   endif
 
