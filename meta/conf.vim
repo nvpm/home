@@ -128,6 +128,25 @@
 
   " Colors   {
 
+    "if g:line_edgekind == 1 "{
+    "
+    "  let s:yellow = '#777733'
+    "  let s:blue   = '#002a57' " 005f87
+    "  exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
+    "  exe $'hi linefill guibg=bg         guifg={s:yellow}'
+    "  hi lineinac guibg=bg      guifg=Grey
+    "  hi def link linecurri error
+    "  exe $'hi linecurrv guibg={s:blue} guifg=White'
+    "  hi def link linecurrc title
+    "  hi def link linecurrt title
+    "  hi def link linecurrr wildmenu
+    "
+    "  hi def link linegits Title
+    "  hi def link linegitc DiffAdded
+    "  hi def link linegitm WarningMsg
+    "
+    "
+    "endif "}
     if g:line_edgekind == 2 "{
 
       hi lineinac  guibg=#333300 guifg=White 
@@ -149,42 +168,32 @@
 
       hi linefill  guibg=bg guifg=#999933
 
-    endif "}
-    if g:line_edgekind == 1 "{
-      
-        let s:yellow = '#777733'
-        let s:blue   = '#002a57' " 005f87
-        exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
-        exe $'hi linefill guibg=bg         guifg={s:yellow}'
-        hi lineinac guibg=bg      guifg=Grey
-        hi def link linecurri error
-        exe $'hi linecurrv guibg={s:blue} guifg=White'
-        hi def link linecurrc title
-        hi def link linecurrt title
-        hi def link linecurrr wildmenu
+      hi linegits guibg=#005500|hi LineGitsEdge guifg=#005500
+      hi linegitc guibg=#333300|hi LineGitcEdge guifg=#333300
+      hi linegitm guibg=#770000|hi LineGitmEdge guifg=#770000
 
     endif "}
-
-    hi def link linegits Title
-    hi def link linegitc DiffAdded
-    hi def link linegitm WarningMsg
 
   "}
   " Skeleton {
 
     call line#skel(1)
-    call add(g:line_skeleton.head.l,['list','t'])
-    call add(g:line_skeleton.head.r,['list','w'])
-    call add(g:line_skeleton.head.r,' ')
-    call add(g:line_skeleton.head.r,['curr','p'])
-    call add(g:line_skeleton.feet.l,['list','b'])
-    call add(g:line_skeleton.feet.l,' ')
-    call add(g:line_skeleton.feet.l,'git')
-    call add(g:line_skeleton.feet.l,' ')
-    call add(g:line_skeleton.feet.l,'file')
-    call add(g:line_skeleton.feet.r,'%y%m  %l,%c/%P')
 
-  " "}
+    call add(g:line_skeleton.head.l,['list',2])
+
+    call add(g:line_skeleton.head.r,['list',1])
+    call add(g:line_skeleton.head.r,' ')
+    call add(g:line_skeleton.head.r,['curr',0])
+
+    call add(g:line_skeleton.feet.l,['list',3])
+    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,['git'])
+    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,['file'])
+
+    call add(g:line_skeleton.feet.r,'%Y%m %l,%c/%P')
+
+  "}
 
 " }
 " zoom {
