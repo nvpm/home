@@ -16,13 +16,14 @@ fu! nvpm#init(...) abort "{
     let s:loop = {'+':1,'-':-1,'next':+1,'prev':-1}
 
   "}
-  " s:dirs {
+  " s:file {
   
-    let s:dirs = {}
-    let s:dirs.root  = '.nvpm/flux/'
-    let s:dirs.edit = '.nvpm/edit'
-    let s:dirs.save = '.nvpm/save'
-    let s:dirs.curr = '.nvpm/curr'
+    let s:file = {}
+    let s:file.root = '.nvpm/nvpm/'
+    let s:file.flux = s:file.root..'flux/'
+    let s:file.edit = s:file.root..'edit'
+    let s:file.save = s:file.root..'save'
+    let s:file.curr = s:file.root..'curr'
 
   " }
   " s:conf {
@@ -66,11 +67,11 @@ fu! nvpm#init(...) abort "{
 
   let init = abs(get(g:,'nvpm_initload',0))
   if init && !argc() 
-    if filereadable(s:dirs.save)
-      let flux = get(readfile(s:dirs.save),0,'')
-      if !empty(flux) && filereadable(s:dirs.root..flux)
-        let u = init>0 && init<200
-        call timer_start(u*200+(!u)*init,{->nvpm#load(flux)})
+    if filereadable(s:file.save)
+      let flux = get(readfile(s:file.save),0,'')
+      if !empty(flux) && filereadable(s:file.flux..flux)
+        let u = init>0 && init<100
+        call timer_start(u*100+(!u)*init,{->nvpm#load(flux)})
       endif
     endif
   endif
@@ -81,7 +82,7 @@ fu! nvpm#load(...) abort "{
   let file = flux#argv(a:000)
 
   if !g:nvpm.edit.mode
-    let file = s:dirs.root..file
+    let file = s:file.flux..file
   endif
 
   if !filereadable(file)|return 1|endif
@@ -189,12 +190,12 @@ fu! nvpm#edit(...) abort "{
 
   " makes the edit file otherwise
   let fluxes = []
-  if isdirectory(s:dirs.root)
-    let fluxes = readdir(s:dirs.root)
+  if isdirectory(s:file.flux)
+    let fluxes = readdir(s:file.flux)
   endif
   let body   = []
   for file in fluxes
-    let file = s:dirs.root..file
+    let file = s:file.flux..file
     let line = 'file '..fnamemodify(file,':t:r')..':'..file
     if file == g:nvpm.tree.file
       let body = [line]+body
@@ -213,15 +214,15 @@ fu! nvpm#edit(...) abort "{
     call mkdir(nvpm,'p')
   endif
 
-  call writefile(body,s:dirs.edit)
+  call writefile(body,s:file.edit)
   let g:nvpm.edit.mode = 1
-  call nvpm#load(s:dirs.edit)
+  call nvpm#load(s:file.edit)
 
 endfu "}
 fu! nvpm#save(...) abort "{
 
-  if g:nvpm.tree.file != s:dirs.edit
-    call writefile([fnamemodify(g:nvpm.tree.file,':t')],s:dirs.save)
+  if g:nvpm.tree.file != s:file.edit
+    call writefile([fnamemodify(g:nvpm.tree.file,':t')],s:file.save)
   endif
 
 endfu "}
@@ -243,12 +244,12 @@ fu! nvpm#make(...) abort "{
   let name = get(a:000,0,'')
 
   if empty(name)|return|endif
-  if !isdirectory(s:dirs.root)&&filereadable(s:dirs.root)
-    ec 'Location '..s:dirs.root..' is a file. Remove it first.'
+  if !isdirectory(s:file.flux)&&filereadable(s:file.flux)
+    ec 'Location '..s:file.flux..' is a file. Remove it first.'
     return
   endif
 
-  call mkdir(s:dirs.root,'p')
+  call mkdir(s:file.flux,'p')
   call nvpm#flux()
 
   let name = fnamemodify(name,':e')=='flux'?name:fnamemodify(name,':t:r')..'.flux'
@@ -261,7 +262,7 @@ fu! nvpm#make(...) abort "{
     endif
   endfor
 
-  let path = s:dirs.root..name
+  let path = s:file.flux..name
 
   let lines = ''
   let lines.= '# NVPM new flux file,'
@@ -306,13 +307,12 @@ fu! nvpm#rend(...) abort "{
   let head = fnamemodify(curr,':h')..'/'
   let HEAD = fnamemodify(head,':p')..'/'
 
-
   if !empty(curr)
 
     call execute('edit '.curr)
 
     if 1+match(curr,'^.*\.flux$')||
-      \head == s:dirs.root      &&
+      \head == s:file.flux      &&
       \&ft  != 'flux'
       set filetype=flux
       set commentstring=-%s
@@ -344,8 +344,8 @@ fu! nvpm#show(...) abort "{
 endfu "}
 fu! nvpm#flux(...) abort "{
 
-  if isdirectory(s:dirs.root)&&empty(g:nvpm.flux.list)
-    let g:nvpm.flux.list = readdir(s:dirs.root)
+  if isdirectory(s:file.flux)&&empty(g:nvpm.flux.list)
+    let g:nvpm.flux.list = readdir(s:file.flux)
     let g:nvpm.flux.leng = len(g:nvpm.flux.list)
     let g:nvpm.flux.indx = 0
   endif
@@ -354,7 +354,7 @@ endfu "}
 
 "-- user functions --
 fu! nvpm#DIRS(...) abort "{
-  let files = readdir(s:dirs.root)
+  let files = readdir(s:file.flux)
   return files
 endfu "}
 fu! nvpm#LOOP(...) abort "{

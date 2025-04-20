@@ -64,6 +64,7 @@
   let nvpm_maketree = 1
   let nvpm_initload = 1
   let nvpm_loadline = 1
+  let nvpm_autocmds = 1
 
   let nvpm_fluxconf = {}
   let nvpm_fluxconf.lexis = ''
