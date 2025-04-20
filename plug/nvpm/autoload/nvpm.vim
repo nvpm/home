@@ -112,6 +112,10 @@ fu! nvpm#load(...) abort "{
   endif
   call nvpm#save()
   call nvpm#rend()
+  if exists('g:zoom.mode')&&g:zoom.mode
+    only
+    call zoom#show()
+  endif
 
 endfu "}
 fu! nvpm#loop(...) abort "{
