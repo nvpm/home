@@ -23,7 +23,6 @@ fu! nvpm#init(...) abort "{
     let s:file.flux = s:file.root..'flux/'
     let s:file.edit = s:file.root..'edit'
     let s:file.save = s:file.root..'save'
-    let s:file.curr = s:file.root..'curr'
 
   " }
   " s:conf {
@@ -306,25 +305,20 @@ fu! nvpm#rend(...) abort "{
   let curr = simplify(g:nvpm.tree.curr)
   let head = fnamemodify(curr,':h')..'/'
   let HEAD = fnamemodify(head,':p')..'/'
-
   if !empty(curr)
-
     call execute('edit '.curr)
-
     if 1+match(curr,'^.*\.flux$')||
       \head == s:file.flux      &&
       \&ft  != 'flux'
       set filetype=flux
       set commentstring=-%s
     endif
-
     if get(g:,'nvpm_maketree',0) &&
       \!empty(head) &&
       \!filereadable(head) &&
       \-1==match(curr,'term\:\/\/')
       call mkdir(head,'p')
     endif
-
   endif
 
 endfu "}
