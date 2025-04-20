@@ -106,6 +106,8 @@ fu! nvpm#load(...) abort "{
 
   if get(g:,'nvpm_loadline',1)
     if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+      hi clear TabLine
+      hi clear StatusLine
       let g:line.nvpm = 1
       call line#show()
     endif

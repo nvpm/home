@@ -62,7 +62,7 @@
 
   " nvpm user variables tree
   let nvpm_maketree = 1
-  let nvpm_initload = 0
+  let nvpm_initload = 1
   let nvpm_loadline = 1
 
   let nvpm_fluxconf = {}
@@ -115,8 +115,8 @@
   "set nowrap
 
   let line_autocmds = 1
-  let line_activate = 1
-  let line_verbose  = 3
+  let line_initload = 1
+  let line_verbose  = 2
   let line_gitinfo  = 1
   let line_gitdelay = 5000
   let line_edgekind = 1 "0:bracks,1:hi,2:tabs,3:powerline
