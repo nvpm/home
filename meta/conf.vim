@@ -195,7 +195,7 @@
     call add(g:line_skeleton.feet.l,['git'])
     call add(g:line_skeleton.feet.l,repeat(' ',1))
     call add(g:line_skeleton.feet.l,['file'])
-    call add(g:line_skeleton.feet.r,['user','%Y%m / %l,%c / %P'])
+    call add(g:line_skeleton.feet.r,['user','%Y%m / %l,%c / %p%%'])
 
   "}
 
