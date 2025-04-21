@@ -169,7 +169,7 @@
       hi linefill  guibg=bg guifg=#999933
 
       hi linegits guibg=#005500|hi LineGitsEdge guifg=#005500
-      hi linegitc guibg=#333300|hi LineGitcEdge guifg=#333300
+      hi linegitc guibg=#000055|hi LineGitcEdge guifg=#000055
       hi linegitm guibg=#440000|hi LineGitmEdge guifg=#440000
       hi linegitl guibg=#440000|hi LineGitlEdge guifg=#440000
 
@@ -180,8 +180,6 @@
 
     call line#skel(1)
 
-    call add(g:line_skeleton.head.l,['git'])
-    call add(g:line_skeleton.head.l,' ')
     call add(g:line_skeleton.head.l,['list',2])
 
     call add(g:line_skeleton.head.r,['list',1])
@@ -189,6 +187,8 @@
     call add(g:line_skeleton.head.r,['curr',0])
 
     call add(g:line_skeleton.feet.l,['list',3])
+    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,['git'])
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['file'])
 

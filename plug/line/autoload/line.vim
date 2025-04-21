@@ -272,6 +272,11 @@ fu! line#giti(...) abort "{
         endif
         let colr = '%#linegits#'
         let char = '[S]'
+      else
+        if s:edgekind==2
+          let edgel = '%#linegitcedge#'
+          let edger = '%#linegitcedge#'
+        endif
       endif
       let info = edgel..colr ..' '..branch .. char .. edger
     endif "}
