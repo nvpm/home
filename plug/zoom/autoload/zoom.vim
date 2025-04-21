@@ -15,6 +15,7 @@ fu! zoom#init(...) abort "{
   let g:zoom.carg = ''
   let g:zoom.lastft= ''
 
+  if argc()|return|endif
   let init = abs(get(g:,'zoom_initload'))
   if init
     let u = init>0 && init<10
