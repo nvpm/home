@@ -128,6 +128,10 @@ fu! zoom#show(...) abort "{
   endif
 
   exe 'set fillchars=vert:\ '
+  if s:nvim
+    exe 'set fillchars+=horiz:\ '
+    exe 'set fillchars+=horizdown:\ '
+  endif
 
 endfu "}
 fu! zoom#hide(...) abort "{

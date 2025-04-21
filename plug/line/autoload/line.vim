@@ -302,6 +302,7 @@ endfu "}
 "-- main functions --
 fu! line#init(...) abort "{
   if exists('s:init')|return|else|let s:init=1|endif
+  let s:nvim = has('nvim')
 
   let s:verbose  = get(g:,'line_verbose' ,2)
   let s:gitinfo  = get(g:,'line_gitinfo',1)
@@ -347,9 +348,15 @@ endfu "}
 fu! line#feet(...) abort "{
 
   let line = ''
+  if g:line.zoom.mode && &laststatus==3
+    let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+  endif
   let line.= line#bone(s:skeleton.feet.l,0)
   let line.= '%#linefill#%='
   let line.= line#bone(s:skeleton.feet.r,1)
+  if g:line.zoom.mode && &laststatus==3
+    let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+  endif
 
   let &statusline = line
 
@@ -366,14 +373,14 @@ fu! line#show(...) abort "{
   endif
   if g:line.nvpm
     set showtabline=2
-    let &laststatus=2
+    let &laststatus=2+s:nvim
   else
     if s:verbose==0
       let &laststatus  = s:laststatus
       let &showtabline = s:showtabline
     endif
     if s:verbose>0
-      let &laststatus=2
+      let &laststatus=2+s:nvim
     endif
     if s:verbose>2
       set showtabline=2
