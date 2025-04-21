@@ -192,7 +192,7 @@ fu! line#bone(...) abort "{
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
-        let item = s:giti
+        let item = g:line.git
       else
         let item = line#atom(func,args,revs)
       endif
@@ -295,7 +295,7 @@ fu! line#giti(...) abort "{
       let info = edgel..colr ..' '..branch .. char .. edger
     endif "}
   endif
-  let s:giti = info
+  let g:line.git = info
 
 endfu "}
 
@@ -316,8 +316,7 @@ fu! line#init(...) abort "{
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
   let g:line.timer= -1
-
-  let s:giti = ''
+  let g:line.git = ''
 
   call line#save()
   call line#skel()
@@ -435,7 +434,7 @@ fu! line#time(...) abort "{
     if 1+g:line.timer
       call timer_stop(g:line.timer)
       let g:line.timer = -1
-      let s:giti   = ''
+      let g:line.git   = ''
     endif
   else
     if s:gitinfo && g:line.timer==-1
