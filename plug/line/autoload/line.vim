@@ -10,13 +10,13 @@ fu! line#mode(...) abort "{
   endif
   let mode = mode()
 
-  if mode=='i'      
+  if mode=='i'
     return '%#'..a:1..'Insert#'     .. a:2
   endif
-  if mode=~'\(v\|V\|\|s\|S\|\)' 
+  if mode=~'\(v\|V\|\|s\|S\|\)'
     return '%#'..a:1..'Visual#'     .. a:2
   endif
-  if mode=='R'          
+  if mode=='R'
     return '%#'..a:1..'Replace#'    .. a:2
   endif
   if mode=~'\(c\|r\|!\)'

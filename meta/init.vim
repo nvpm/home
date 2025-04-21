@@ -10,32 +10,47 @@ fu! s:test.line(...) "{
   so plug/line/autoload/line.vim
   so plug/line/plugin/line.vim
 
-  ec line#atom('user',['%Y%m %l,%c/%P'])
-  return
-  let file = 'char/char.gen'
-  let body = []
-  let line = ''
-  let size = float2nr(pow(2,7))
-  let shift= 0
-  for n in range(10000)
-    let init = (n+0)*size + shift
-    let end  = (n+1)*size + shift
-    call add(body,'{ '..init.' - '.end)
-    call add(body,'')
-    for i in range(init,end)
-      let char = nr2char(i).. ' '
-      if i%30==0
-        call add(body,line)
-        let line = ''
-      elseif char=~'\p'
-        let line.= char
-      endif
-    endfor
-    call add(body,'')
-    call add(body,'}')
+  "U+2500–U+257F   # Box Drawing
+  "U+2580–U+259F   # Block Elements
+  "U+1FB00–U+1FBFF # Legacy Computing (includes extended box drawing)
+
+  for i in range(0x2500,0x257f)
+    echon nr2char(i) . ' '
   endfor
-  call writefile(body,file)
-  ec 'finished'
+
+  for i in range(0x2580,0x259f)
+    echon nr2char(i) . ' '
+  endfor
+
+  for i in range(0x1FB00,0x1FBFF)
+    echon nr2char(i) . ' '
+  endfor
+
+    return
+    let file = 'char/char.gen'
+    let body = []
+    let line = ''
+    let size = float2nr(pow(2,7))
+    let shift= 0
+    for n in range(10000)
+      let init = (n+0)*size + shift
+      let end  = (n+1)*size + shift
+      call add(body,'{ '..init.' - '.end)
+      call add(body,'')
+      for i in range(init,end)
+        let char = nr2char(i).. ' '
+        if i%30==0
+          call add(body,line)
+          let line = ''
+        elseif char=~'\p'
+          let line.= char
+        endif
+      endfor
+      call add(body,'')
+      call add(body,'}')
+    endfor
+    call writefile(body,file)
+    ec 'finished'
 
   return
   "fu! Showcterm()
