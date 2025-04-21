@@ -81,7 +81,7 @@ fu! line#atom(...) abort "{
         let list = node.list
       endif
     "}
-    elseif type=='b' "{
+    elseif type==3 "{
       if s:verbose==1
         let list = [bufname()]
         let indx = 0
@@ -93,7 +93,7 @@ fu! line#atom(...) abort "{
         let leng = len(list)
       endif
     "}
-    elseif type=='t' "{
+    elseif type==2 "{
     endif "}
 
     let list = line#list(list,indx,leng,revs,colr)
@@ -153,7 +153,7 @@ fu! line#atom(...) abort "{
     endif
     let hi   = '%#'.hi.'#'
     let name = hi..char..' '..name
-    if s:edgekind==2 && hlexists('linefileedge')
+    if s:edgekind==2
       let name = '%#linefileedge#'..name..'%#linefileedge#'
     endif
     return name
@@ -167,7 +167,7 @@ fu! line#atom(...) abort "{
       let info = get(info,0,'')
     endif
     if type(info)==1
-      if s:edgekind==2 && hlexists('LineUserEdge')
+      if s:edgekind==2
         let info = '%#LineUser#'..info
         let info = '%#LineUserEdge#'..info..'%#LineUserEdge#'
       endif
@@ -264,7 +264,7 @@ fu! line#giti(...) abort "{
     let branch = trim(system(gitb))
     if 1+match(branch,'^fatal:.*') "{
       let info = '%#LineGitl#gitless'
-      if s:edgekind==2 && hlexists('linegitledge')
+      if s:edgekind==2
         let info = '%#LineGitlEdge#'..info..'%#LineGitlEdge#'
       endif
     else
@@ -273,21 +273,21 @@ fu! line#giti(...) abort "{
       let edgel= ''
       let edger= ''
       if !empty(trim(system(gitm)))
-        if s:edgekind==2 && hlexists('linegitmedge')
+        if s:edgekind==2
           let edgel = '%#linegitmedge#'
           let edger = '%#linegitmedge#'
         endif
         let colr = '%#linegitm#'
         let char = '[M]'
       elseif !empty(trim(system(gits)))
-        if s:edgekind==2 && hlexists('linegitsedge')
+        if s:edgekind==2
           let edgel = '%#linegitsedge#'
           let edger = '%#linegitsedge#'
         endif
         let colr = '%#linegits#'
         let char = '[S]'
       else
-        if s:edgekind==2 && hlexists('linegitcedge')
+        if s:edgekind==2
           let edgel = '%#linegitcedge#'
           let edger = '%#linegitcedge#'
         endif
