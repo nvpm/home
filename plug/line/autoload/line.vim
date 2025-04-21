@@ -72,7 +72,7 @@ fu! line#atom(...) abort "{
     endif "}
     if empty(name)|return ''|endif
     let name = '%#'.colr.'#'..name
-    if s:edgekind==2
+    if s:edgekind==2 && hlexists('linecurredge')
       let name = '%#linecurredge#'..name..'%#linecurredge#'
     endif
     return name
@@ -114,7 +114,9 @@ fu! line#atom(...) abort "{
       let line = join(list,'')
       if     s:edgekind==0
         let line = '%#linefill#'..line
-      elseif s:edgekind==2
+      elseif s:edgekind==2 && 
+            \hlexists('linecurredge') && 
+            \hlexists('linecurredge')
         if indx==leng-1
           if revs
             let line = '%#linecurredge#'..line..'%#lineinacedge#'
@@ -249,7 +251,7 @@ fu! line#giti(...) abort "{
     let branch = trim(system(s:gitb))
     if 1+match(branch,'^fatal:.*') "{
       let info = '%#LineGitl#gitless'
-      if s:edgekind==2
+      if s:edgekind==2 && hlexists('linegitledge')
         let info = '%#LineGitlEdge#'..info..'%#LineGitlEdge#'
       endif
     else
@@ -258,21 +260,21 @@ fu! line#giti(...) abort "{
       let edgel= ''
       let edger= ''
       if !empty(trim(system(s:gitm)))
-        if s:edgekind==2
+        if s:edgekind==2 && hlexists('linegitmedge')
           let edgel = '%#linegitmedge#'
           let edger = '%#linegitmedge#'
         endif
         let colr = '%#linegitm#'
         let char = '[M]'
       elseif !empty(trim(system(s:gits)))
-        if s:edgekind==2
+        if s:edgekind==2 && hlexists('linegitsedge')
           let edgel = '%#linegitsedge#'
           let edger = '%#linegitsedge#'
         endif
         let colr = '%#linegits#'
         let char = '[S]'
       else
-        if s:edgekind==2
+        if s:edgekind==2 && hlexists('linegitcedge')
           let edgel = '%#linegitcedge#'
           let edger = '%#linegitcedge#'
         endif
