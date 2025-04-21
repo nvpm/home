@@ -10,6 +10,7 @@ fu! s:test.line(...) "{
   so plug/line/autoload/line.vim
   so plug/line/plugin/line.vim
 
+  ec line#atom('user',['%Y%m %l,%c/%P'])
   return
   let file = 'char/char.gen'
   let body = []

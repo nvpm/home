@@ -33,7 +33,7 @@ fu! line#bone(...) abort "{
   for bone in a:1
     let type = type(bone)
     if     type==1 " string
-      call add(list,bone)
+      let item = bone
     elseif type==3 " list
       let func = bone[0]
       let args = bone[1:]
@@ -42,15 +42,15 @@ fu! line#bone(...) abort "{
       else
         let item = line#atom(func,args,revs)
       endif
-      call add(list,item)
     endif
+    call add(list,item)
   endfor
   return join(list,'')
 
 endfu "}
 fu! line#atom(...) abort "{
   let type = a:1
-  let args = get(a:,2)
+  let args = get(a:,2,'hello')
   let revs = get(a:,3)
 
   if     type=='curr' "{
@@ -165,7 +165,19 @@ fu! line#atom(...) abort "{
     return line#mode('linemode')
   "}
   elseif type=='user' "{
-    return ''
+    let info = args
+    if type(info)==3
+      let info = get(info,0,'')
+    endif
+    if type(info)==1
+      if s:edgekind==2 && hlexists('LineUserEdge')
+        let info = '%#LineUser#'..info
+        let info = '%#LineUserEdge#'..info..'%#LineUserEdge#'
+      endif
+    else
+      return ''
+    endif
+    return info
   "}
   endif
 

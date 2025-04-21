@@ -149,12 +149,12 @@
     "endif "}
     if g:line_edgekind == 2 "{
 
-      hi lineinac  guibg=#333300 guifg=#a1a1a1
-      hi lineinaci guibg=#333300 guifg=#a1a1a1
-      hi lineinacc guibg=#333300 guifg=#a1a1a1
-      hi lineinacv guibg=#333300 guifg=#a1a1a1
-      hi lineinact guibg=#333300 guifg=#a1a1a1
-      hi lineinacr guibg=#333300 guifg=#a1a1a1
+      hi lineinac  guibg=#333300 guifg=Black gui=bold 
+      hi lineinaci guibg=#333300 guifg=Black gui=bold 
+      hi lineinacc guibg=#333300 guifg=Black gui=bold 
+      hi lineinacv guibg=#333300 guifg=Black gui=bold 
+      hi lineinact guibg=#333300 guifg=Black gui=bold 
+      hi lineinacr guibg=#333300 guifg=Black gui=bold 
 
       hi linecurr  guibg=#777733 guifg=Black gui=bold
       hi linecurri guibg=#777733 guifg=Black gui=bold
@@ -168,8 +168,11 @@
 
       hi linefill  guibg=bg guifg=#999933
 
-      hi linefile     guibg=#999933 guifg=Black   gui=bold
-      hi linefileedge guibg=bg      guifg=#999933
+      hi LineFile     guibg=#444400 guifg=#000000 gui=bold
+      hi LineFileEdge guibg=bg      guifg=#444400
+
+      hi LineUser     guibg=#444400 guifg=#000000 gui=bold
+      hi LineUserEdge guibg=bg      guifg=#444400
 
       hi linegits guibg=#005500 | hi LineGitsEdge guifg=#005500
       hi linegitc guibg=#000055 | hi LineGitcEdge guifg=#000055
@@ -195,7 +198,7 @@
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['file'])
 
-    call add(g:line_skeleton.feet.r,'%Y%m %l,%c/%P')
+    call add(g:line_skeleton.feet.r,['user','%Y%m %l,%c/%P'])
 
   "}
 
