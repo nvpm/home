@@ -142,14 +142,14 @@
     " }
     " LineSpot {
 
-      hi LineSpotNormal   guibg=#00ff00 guifg=Black
+      hi LineSpotNormal   guibg=#007700 guifg=#00ff00
       hi LineSpotInsert   guibg=#ff0000 guifg=White
       hi LineSpotReplace  guibg=#00ffff guifg=Black
       hi LineSpotVisual   guibg=#0000ff guifg=White
       hi LineSpotCmdline  guibg=#ffff00 guifg=Black
       hi LineSpotTerminal guibg=#ffffff guifg=Black
 
-      hi LineSpotEdgeNormal   guibg=bg guifg=#00ff00
+      hi LineSpotEdgeNormal   guibg=bg guifg=#007700
       hi LineSpotEdgeInsert   guibg=bg guifg=#ff0000
       hi LineSpotEdgeReplace  guibg=bg guifg=#00ffff
       hi LineSpotEdgeVisual   guibg=bg guifg=#0000ff
