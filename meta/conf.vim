@@ -150,22 +150,22 @@
     if g:line_edgekind == 2 "{
 
       hi lineinac  guibg=#333300 guifg=Black
-      hi lineinaci guibg=#440000 guifg=Black
-      hi lineinacc guibg=#004444 guifg=Black
-      hi lineinacv guibg=#111111 guifg=Black
-      hi lineinact guibg=#111111 guifg=Black
+      hi lineinaci guibg=#440000 guifg=White
       hi lineinacr guibg=#222200 guifg=Black
+      hi lineinacv guibg=#111111 guifg=White
+      hi lineinacc guibg=#0a0a0a guifg=White
+      hi lineinact guibg=#0a0a0a guifg=White
 
-      hi lineinacedge  guifg=#333300 guibg=bg
-      hi lineinacedgei guifg=#440000 guibg=bg
-      hi lineinacedgec guifg=#004444 guibg=bg
-      hi lineinacedgev guifg=#111111 guibg=bg
-      hi lineinacedget guifg=#111111 guibg=bg
-      hi lineinacedger guifg=#222200 guibg=bg
+      hi lineinacedge  guibg=bg guifg=#333300
+      hi lineinacedgei guibg=bg guifg=#440000
+      hi lineinacedger guibg=bg guifg=#222200
+      hi lineinacedgev guibg=bg guifg=#111111
+      hi lineinacedgec guibg=bg guifg=#0a0a0a
+      hi lineinacedget guibg=bg guifg=#0a0a0a
 
       hi linecurr  guibg=#777733 guifg=Black gui=bold
       hi linecurri guibg=#cc1111 guifg=White gui=bold
-      hi linecurrv guibg=#11cccc guifg=White gui=bold
+      hi linecurrv guibg=#11cccc guifg=Black gui=bold
       hi linecurrc guibg=#222222 guifg=White gui=bold
       hi linecurrt guibg=#222222 guifg=White gui=bold
       hi linecurrr guibg=#ff33ff guifg=Black gui=bold

@@ -136,7 +136,9 @@ fu! line#atom(...) abort "{
           endif
           let line = left..line..right
         else
-          let line = '%#lineinacedge#'..line..'%#lineinacedge#'
+          let left = line#mode('lineinacedge','')
+          let right= line#mode('lineinacedge','')
+          let line = left..line..right
         endif
       endif
     endif
