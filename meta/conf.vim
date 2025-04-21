@@ -51,7 +51,7 @@
   hi DiffAdded   guifg=#00ff00 gui=bold
   hi DiffRemoved guifg=#ff5555 gui=bold
   hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
-  hi NonText     ctermfg=0 guifg=#000000
+  hi NonText     ctermfg=0 guifg=#555555
 
 " }
 " nvpm {
@@ -128,71 +128,72 @@
 
   " Colors   {
 
-    if g:line_edgekind == 1 "{
+    " LineInac {
 
-      let s:yellow = '#777733'
-      let s:blue   = '#002a57' " 005f87
-      exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
-      exe $'hi linefill guibg=bg         guifg={s:yellow}'
-      hi lineinac guibg=bg      guifg=Grey
-      hi def link linecurri error
-      exe $'hi linecurrv guibg={s:blue} guifg=White'
-      hi def link linecurrc title
-      hi def link linecurrt title
-      hi def link linecurrr wildmenu
+      hi LineInac             guibg=#001100   guifg=#717171
+      hi LineInacEdge         guibg=bg        guifg=#001100
 
-      hi def link linegits Title
-      hi def link linegitc DiffAdded
-      hi def link linegitm WarningMsg
+      "hi LineInacNormal       guibg=#333300   guifg=Black
+      "hi LineInacInsert       guibg=#440000   guifg=White
+      "hi LineInacReplace      guibg=#222200   guifg=Black
+      "hi LineInacVisual       guibg=#111111   guifg=White
+      "hi LineInacCmdline      guibg=#0a0a0a   guifg=White
+      "hi LineInacTerminal     guibg=#0a0a0a   guifg=White
 
+      "hi LineInacEdgeNormal   guibg=bg guifg=#333300
+      "hi LineInacEdgeInsert   guibg=bg guifg=#440000
+      "hi LineInacEdgeReplace  guibg=bg guifg=#222200
+      "hi LineInacEdgeVisual   guibg=bg guifg=#111111
+      "hi LineInacEdgeCmdline  guibg=bg guifg=#0a0a0a
+      "hi LineInacEdgeTerminal guibg=bg guifg=#0a0a0a
 
-    endif "}
-    if g:line_edgekind == 2 "{
+    " }
+    " LineCurr {
 
-      hi lineinac  guibg=#333300 guifg=Black
-      hi lineinaci guibg=#440000 guifg=White
-      hi lineinacr guibg=#222200 guifg=Black
-      hi lineinacv guibg=#111111 guifg=White
-      hi lineinacc guibg=#0a0a0a guifg=White
-      hi lineinact guibg=#0a0a0a guifg=White
+      hi LineCurr             guibg=#007700   guifg=Black
+      hi LineCurrEdge         guibg=bg        guifg=#007700
 
-      hi lineinacedge  guibg=bg guifg=#333300
-      hi lineinacedgei guibg=bg guifg=#440000
-      hi lineinacedger guibg=bg guifg=#222200
-      hi lineinacedgev guibg=bg guifg=#111111
-      hi lineinacedgec guibg=bg guifg=#0a0a0a
-      hi lineinacedget guibg=bg guifg=#0a0a0a
+      "hi LineCurrNormal   guibg=#777733 guifg=Black gui=bold
+      "hi LineCurrInsert   guibg=#cc1111 guifg=White gui=bold
+      "hi LineCurrReplace  guibg=#11cccc guifg=Black gui=bold
+      "hi LineCurrVisual   guibg=#555555 guifg=White gui=bold
+      "hi LineCurrCmdline  guibg=#555555 guifg=White gui=bold
+      "hi LineCurrTerminal guibg=#ff33ff guifg=Black gui=bold
+      "
+      "hi LineCurrEdgeNormal   guibg=bg guifg=#777733
+      "hi LineCurrEdgeInsert   guibg=bg guifg=#cc1111
+      "hi LineCurrEdgeReplace  guibg=bg guifg=#11cccc
+      "hi LineCurrEdgeVisual   guibg=bg guifg=#555555
+      "hi LineCurrEdgeCmdline  guibg=bg guifg=#555555
+      "hi LineCurrEdgeTerminal guibg=bg guifg=#ff33ff
 
-      hi linecurr  guibg=#777733 guifg=Black gui=bold
-      hi linecurri guibg=#cc1111 guifg=White gui=bold
-      hi linecurrv guibg=#11cccc guifg=Black gui=bold
-      hi linecurrc guibg=#222222 guifg=White gui=bold
-      hi linecurrt guibg=#222222 guifg=White gui=bold
-      hi linecurrr guibg=#ff33ff guifg=Black gui=bold
-      
-      hi linecurredge  guibg=bg guifg=#777733
-      hi linecurredgei guibg=bg guifg=#cc1111
-      hi linecurredgev guibg=bg guifg=#11cccc
-      hi linecurredgec guibg=bg guifg=#222222
-      hi linecurredget guibg=bg guifg=#222222
-      hi linecurredger guibg=bg guifg=#ff33ff
+    " }
+    " LineSpot {
 
-      hi lineinacedge guibg=bg guifg=#333300
+      hi LineSpot     guibg=#999900 guifg=#000000
+      hi LineSpotEdge guibg=bg      guifg=#999900
 
-      hi linefill  guibg=bg guifg=#999933
+    " }
+    " LineFile {
 
-      hi LineFile     guibg=#444400 guifg=#000000 gui=bold
+      hi LineFile     guibg=#444400 guifg=#000000
       hi LineFileEdge guibg=bg      guifg=#444400
 
-      hi LineUser     guibg=#444400 guifg=#000000 gui=bold
+    " }
+    " LineUser {
+
+      hi LineUser     guibg=#444400 guifg=#000000
       hi LineUserEdge guibg=bg      guifg=#444400
 
-      hi linegits guibg=#005500 | hi LineGitsEdge guifg=#005500
-      hi linegitc guibg=#000055 | hi LineGitcEdge guifg=#000055
-      hi linegitm guibg=#440000 | hi LineGitmEdge guifg=#440000
-      hi linegitl guibg=#440000 | hi LineGitlEdge guifg=#440000
+    " }
+    " LineGitx {
 
-    endif "}
+      hi LineGits guibg=#005500 | hi LineGitsEdge guifg=#005500
+      hi LineGitc guibg=#000055 | hi LineGitcEdge guifg=#000055
+      hi LineGitm guibg=#440000 | hi LineGitmEdge guifg=#440000
+      hi LineGitl guibg=#440000 | hi LineGitlEdge guifg=#440000
+
+    " }
 
   "}
   " Skeleton {
@@ -203,7 +204,7 @@
 
     call add(g:line_skeleton.head.r,['list',1])
     call add(g:line_skeleton.head.r,' ')
-    call add(g:line_skeleton.head.r,['curr',0])
+    call add(g:line_skeleton.head.r,['curr',0,'linespot'])
 
     call add(g:line_skeleton.feet.l,['list',3])
     call add(g:line_skeleton.feet.l,' ')
