@@ -168,6 +168,9 @@
 
       hi linefill  guibg=bg guifg=#999933
 
+      hi linefile     guibg=#999933 guifg=Black   gui=bold
+      hi linefileedge guibg=bg      guifg=#999933
+
       hi linegits guibg=#005500|hi LineGitsEdge guifg=#005500
       hi linegitc guibg=#000055|hi LineGitcEdge guifg=#000055
       hi linegitm guibg=#440000|hi LineGitmEdge guifg=#440000

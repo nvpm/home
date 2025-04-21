@@ -138,26 +138,25 @@ fu! line#atom(...) abort "{
   "}
   elseif type=='file' "{
     let name = bufname()
+    let hi   = get(args,0,'linefile')
     if name=~ '^term://.*'
-      let hi   = '%#Title#'
       let char = ''
       let name = 'terminal'
     elseif name =~ $VIMRUNTIME..'/doc/'
-      let hi   = '%#Title#'
       let char = ''
       let name = fnamemodify(name,':t')
     elseif &filetype == 'help'
-      let hi   = '%#Title#'
       let char = ''
       let name = fnamemodify(name,':~')
     else
-      let hi   = get(args,0,'linefill')
-      "let hi   = type(hi)!=type('') || empty(hi) ? 'linefill' : hi
-      let hi   = '%#'.hi.'#'
       let char = ''
       let name = fnamemodify(name,':~')
     endif
+    let hi   = '%#'.hi.'#'
     let name = hi..char..' '..name
+    if s:edgekind==2 && hlexists('linefileedge')
+      let name = '%#linefileedge#'..name..'%#linefileedge#'
+    endif
     return name
   "}
   elseif type=='mode' "{
