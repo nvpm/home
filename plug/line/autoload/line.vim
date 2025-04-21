@@ -263,34 +263,35 @@ fu! line#giti(...) abort "{
     let gitb = 'git rev-parse --abbrev-ref HEAD'
     let branch = trim(system(gitb))
     if 1+match(branch,'^fatal:.*') "{
-      let info = '%#LineGitl#gitless'
+      let info = '%#LineGitm#gitless'
       if s:edgekind==2
-        let info = '%#LineGitlEdge#'..info..'%#LineGitlEdge#'
+        let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
       endif
     else
+      let gits = !empty(trim(system(gits)))
+      let gitm = !empty(trim(system(gitm)))
       let char = ''
-      let colr = '%#linegitc#'
+      let colr = '%#LineGitc#'
       let edgel= ''
       let edger= ''
-      if !empty(trim(system(gitm)))
-        if s:edgekind==2
-          let edgel = '%#linegitmedge#'
-          let edger = '%#linegitmedge#'
-        endif
-        let colr = '%#linegitm#'
-        let char = '[M]'
-      elseif !empty(trim(system(gits)))
-        if s:edgekind==2
-          let edgel = '%#linegitsedge#'
-          let edger = '%#linegitsedge#'
-        endif
-        let colr = '%#linegits#'
-        let char = '[S]'
-      else
-        if s:edgekind==2
-          let edgel = '%#linegitcedge#'
-          let edger = '%#linegitcedge#'
-        endif
+      if s:edgekind==2
+        let edgel = '%#LineGitcEdge#'
+        let edger = '%#LineGitcEdge#'
+      endif
+      if gits
+          if s:edgekind==2
+            let edgel = '%#LineGitsEdge#'
+            let edger = '%#LineGitsEdge#'
+          endif
+          let colr = '%#LineGits#'
+          let char = '[S]'
+      elseif gitm
+          if s:edgekind==2
+            let edgel = '%#LineGitmEdge#'
+            let edger = '%#LineGitmEdge#'
+          endif
+          let colr = '%#LineGitm#'
+          let char = '[M]'
       endif
       let info = edgel..colr ..' '..branch .. char .. edger
     endif "}

@@ -171,7 +171,6 @@
 
       hi LineGits guibg=#555500 | hi LineGitsEdge guifg=#555500
       hi LineGitm guibg=#440000 | hi LineGitmEdge guifg=#440000
-      hi LineGitl guibg=#440000 | hi LineGitlEdge guifg=#440000
 
       hi def link LineGitc     LineCurr 
       hi def link LineGitcEdge LineCurrEdge
