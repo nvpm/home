@@ -113,8 +113,6 @@
 " }
 " line {
 
-  "set nowrap
-
   let line_autocmds = 1
   let line_initload = 0
   let line_verbose  = 2
@@ -142,17 +140,17 @@
     " }
     " LineSpot {
 
-      hi LineSpotNormal   guibg=#007700 guifg=#00ff00
+      hi LineSpotNormal   guibg=#007700 guifg=Black
       hi LineSpotInsert   guibg=#ff0000 guifg=White
       hi LineSpotReplace  guibg=#00ffff guifg=Black
-      hi LineSpotVisual   guibg=#0000ff guifg=White
+      hi LineSpotVisual   guibg=#005f87 guifg=White
       hi LineSpotCmdline  guibg=#ffff00 guifg=Black
       hi LineSpotTerminal guibg=#ffffff guifg=Black
 
       hi LineSpotEdgeNormal   guibg=bg guifg=#007700
       hi LineSpotEdgeInsert   guibg=bg guifg=#ff0000
       hi LineSpotEdgeReplace  guibg=bg guifg=#00ffff
-      hi LineSpotEdgeVisual   guibg=bg guifg=#0000ff
+      hi LineSpotEdgeVisual   guibg=bg guifg=#005f87
       hi LineSpotEdgeCmdline  guibg=bg guifg=#ffff00
       hi LineSpotEdgeTerminal guibg=bg guifg=#ffffff
       
@@ -205,13 +203,12 @@
   set cmdheight=1
   let zoom_autocmds = 1
   let zoom_initload = 1
-  let zoom_keepline = 1
+  let zoom_keepline = 0
   let zoom_usefloat = 1
   let zoom_useminus = 1
 
   let zoom_height = -4
   let zoom_width  = 80
-  "let zoom_right  = -5
 
   nmap <silent>mz :Zoom<cr>
 

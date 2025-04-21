@@ -64,14 +64,11 @@ fu! nvpm#init(...) abort "{
 
   " }
 
-  if argc()|return|endif
-  let init = abs(get(g:,'nvpm_initload',0))
-  if init
+  if !argc()&&get(g:,'nvpm_initload')
     if filereadable(s:file.save)
       let flux = get(readfile(s:file.save),0,'')
       if !empty(flux) && filereadable(s:file.flux..flux)
-        let u = init>0 && init<10
-        call timer_start(u*10+(!u)*init,{->nvpm#load(flux)})
+        call nvpm#load(flux)
       endif
     endif
   endif
