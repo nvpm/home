@@ -64,8 +64,9 @@ fu! nvpm#init(...) abort "{
 
   " }
 
+  if argc()|return|endif
   let init = abs(get(g:,'nvpm_initload',0))
-  if init && !argc() 
+  if init
     if filereadable(s:file.save)
       let flux = get(readfile(s:file.save),0,'')
       if !empty(flux) && filereadable(s:file.flux..flux)
