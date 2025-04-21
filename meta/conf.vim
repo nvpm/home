@@ -149,21 +149,34 @@
     endif "}
     if g:line_edgekind == 2 "{
 
-      hi lineinac  guibg=#333300 guifg=Black gui=bold 
-      hi lineinaci guibg=#333300 guifg=Black gui=bold 
-      hi lineinacc guibg=#333300 guifg=Black gui=bold 
-      hi lineinacv guibg=#333300 guifg=Black gui=bold 
-      hi lineinact guibg=#333300 guifg=Black gui=bold 
-      hi lineinacr guibg=#333300 guifg=Black gui=bold 
+      hi lineinac  guibg=#333300 guifg=Black
+      hi lineinaci guibg=#440000 guifg=Black
+      hi lineinacc guibg=#004444 guifg=Black
+      hi lineinacv guibg=#111111 guifg=Black
+      hi lineinact guibg=#111111 guifg=Black
+      hi lineinacr guibg=#222200 guifg=Black
+
+      hi lineinacedge  guifg=#333300 guibg=bg
+      hi lineinacedgei guifg=#440000 guibg=bg
+      hi lineinacedgec guifg=#004444 guibg=bg
+      hi lineinacedgev guifg=#111111 guibg=bg
+      hi lineinacedget guifg=#111111 guibg=bg
+      hi lineinacedger guifg=#222200 guibg=bg
 
       hi linecurr  guibg=#777733 guifg=Black gui=bold
-      hi linecurri guibg=#777733 guifg=Black gui=bold
-      hi linecurrc guibg=#777733 guifg=Black gui=bold
-      hi linecurrv guibg=#777733 guifg=Black gui=bold
-      hi linecurrt guibg=#777733 guifg=Black gui=bold
-      hi linecurrr guibg=#777733 guifg=Black gui=bold
+      hi linecurri guibg=#cc1111 guifg=White gui=bold
+      hi linecurrv guibg=#11cccc guifg=White gui=bold
+      hi linecurrc guibg=#222222 guifg=White gui=bold
+      hi linecurrt guibg=#222222 guifg=White gui=bold
+      hi linecurrr guibg=#ff33ff guifg=Black gui=bold
       
-      hi linecurredge guibg=bg guifg=#777733
+      hi linecurredge  guibg=bg guifg=#777733
+      hi linecurredgei guibg=bg guifg=#cc1111
+      hi linecurredgev guibg=bg guifg=#11cccc
+      hi linecurredgec guibg=bg guifg=#222222
+      hi linecurredget guibg=bg guifg=#222222
+      hi linecurredger guibg=bg guifg=#ff33ff
+
       hi lineinacedge guibg=bg guifg=#333300
 
       hi linefill  guibg=bg guifg=#999933
@@ -198,7 +211,7 @@
     call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['file'])
 
-    call add(g:line_skeleton.feet.r,['user','%Y%m %l,%c/%P'])
+    call add(g:line_skeleton.feet.r,['user','%Y%m / %l,%c / %P'])
 
   "}
 

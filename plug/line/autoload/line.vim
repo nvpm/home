@@ -119,16 +119,22 @@ fu! line#atom(...) abort "{
             \hlexists('linecurredge')
         if indx==leng-1
           if revs
-            let line = '%#linecurredge#'..line..'%#lineinacedge#'
+            let left = line#mode('linecurredge','')
+            let right= line#mode('lineinacedge','')
           else
-            let line = '%#lineinacedge#'..line..'%#linecurredge#'
+            let left = line#mode('lineinacedge','')
+            let right= line#mode('linecurredge','')
           endif
+          let line = left..line..right
         elseif indx==0
           if revs
-            let line = '%#lineinacedge#'..line..'%#linecurredge#'
+            let left = line#mode('lineinacedge','')
+            let right= line#mode('linecurredge','')
           else
-            let line = '%#linecurredge#'..line..'%#lineinacedge#'
+            let left = line#mode('linecurredge','')
+            let right= line#mode('lineinacedge','')
           endif
+          let line = left..line..right
         else
           let line = '%#lineinacedge#'..line..'%#lineinacedge#'
         endif
