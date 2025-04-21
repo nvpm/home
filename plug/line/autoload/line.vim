@@ -55,7 +55,7 @@ fu! line#atom(...) abort "{
 
   if     type=='curr' "{
     let type = get(args,0,-1)
-    let colr = get(args,1,'linefill')
+    let colr = get(args,1,s:edgekind==2?'linecurr':'linefill')
     let name = ''
 
     if g:line.nvpm   "{
@@ -73,6 +73,7 @@ fu! line#atom(...) abort "{
     if empty(name)|return ''|endif
     let name = '%#'.colr.'#'..name
     if s:edgekind==2
+      let name = '%#linecurredge#'..name..'%#linecurredge#'
     endif
     return name
   "}
