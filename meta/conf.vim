@@ -128,25 +128,25 @@
 
   " Colors   {
 
-    "if g:line_edgekind == 1 "{
-    "
-    "  let s:yellow = '#777733'
-    "  let s:blue   = '#002a57' " 005f87
-    "  exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
-    "  exe $'hi linefill guibg=bg         guifg={s:yellow}'
-    "  hi lineinac guibg=bg      guifg=Grey
-    "  hi def link linecurri error
-    "  exe $'hi linecurrv guibg={s:blue} guifg=White'
-    "  hi def link linecurrc title
-    "  hi def link linecurrt title
-    "  hi def link linecurrr wildmenu
-    "
-    "  hi def link linegits Title
-    "  hi def link linegitc DiffAdded
-    "  hi def link linegitm WarningMsg
-    "
-    "
-    "endif "}
+    if g:line_edgekind == 1 "{
+
+      let s:yellow = '#777733'
+      let s:blue   = '#002a57' " 005f87
+      exe $'hi linecurr guibg={s:yellow} guifg=Black gui=bold'
+      exe $'hi linefill guibg=bg         guifg={s:yellow}'
+      hi lineinac guibg=bg      guifg=Grey
+      hi def link linecurri error
+      exe $'hi linecurrv guibg={s:blue} guifg=White'
+      hi def link linecurrc title
+      hi def link linecurrt title
+      hi def link linecurrr wildmenu
+
+      hi def link linegits Title
+      hi def link linegitc DiffAdded
+      hi def link linegitm WarningMsg
+
+
+    endif "}
     if g:line_edgekind == 2 "{
 
       hi lineinac  guibg=#333300 guifg=Black gui=bold 
