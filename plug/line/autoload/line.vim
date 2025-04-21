@@ -3,59 +3,41 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! line#skel(...) abort "{
+fu! line#mode(...) abort "{
 
-  if a:0
-    if !exists('g:line_skeleton')
-      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    endif
-  elseif empty(s:skeleton)
-    let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    call add(s:skeleton.head.l,['list','t'])
-    call add(s:skeleton.head.r,['list','w'])
-    call add(s:skeleton.head.r,' ')
-    call add(s:skeleton.head.r,['curr','p'])
-    call add(s:skeleton.feet.l,['list','b'])
-    call add(s:skeleton.feet.l,['user',' '])
-    call add(s:skeleton.feet.l,['git'])
-    call add(s:skeleton.feet.l,' ')
-    call add(s:skeleton.feet.l,['file'])
-    call add(s:skeleton.feet.r,'%y%m  %l,%c/%P')
-    let g:line_skeleton = s:skeleton
+  if hlexists(a:1)
+    return '%#'..a:1..'#'..a:2
+  endif
+  let mode = mode()
+
+  if mode=='i'      
+    return '%#'..a:1..'Insert#'     .. a:2
+  endif
+  if mode=~'\(v\|V\|\|s\|S\|\)' 
+    return '%#'..a:1..'Visual#'     .. a:2
+  endif
+  if mode=='R'          
+    return '%#'..a:1..'Replace#'    .. a:2
+  endif
+  if mode=~'\(c\|r\|!\)'
+    return '%#'..a:1..'Cmdline#'    .. a:2
+  endif
+  if mode=='t'
+    return '%#'..a:1..'Terminal#'   .. a:2
   endif
 
-endfu "}
-fu! line#bone(...) abort "{
-
-  let revs = a:2
-  let list = []
-
-  for bone in a:1
-    let type = type(bone)
-    if     type==1 " string
-      let item = bone
-    elseif type==3 " list
-      let func = bone[0]
-      let args = bone[1:]
-      if  func == 'git'
-        let item = s:giti
-      else
-        let item = line#atom(func,args,revs)
-      endif
-    endif
-    call add(list,item)
-  endfor
-  return join(list,'')
+  return '%#'..a:1..'Normal#'     .. a:2
 
 endfu "}
 fu! line#atom(...) abort "{
+
   let type = a:1
   let args = get(a:,2,'hello')
   let revs = get(a:,3)
 
   if     type=='curr' "{
     let type = get(args,0,-1)
-    let colr = get(args,1,s:edgekind==2?'linecurr':'linefill')
+    let colr = get(args,1,'linecurr')
     let name = ''
 
     if g:line.nvpm   "{
@@ -71,9 +53,14 @@ fu! line#atom(...) abort "{
       let name = expand('%:t')
     endif "}
     if empty(name)|return ''|endif
-    let name = '%#'.colr.'#'..name
-    if s:edgekind==2 && hlexists('linecurredge')
-      let name = '%#linecurredge#'..name..'%#linecurredge#'
+    if s:edgekind==2
+      let edge = colr.'Edge'
+      let left = line#mode(edge,'')
+      let right= line#mode(edge,'')
+      let name = line#mode(colr,name)
+      let name = left..name..right
+    else
+      let name = '%#'.colr.'#'..name
     endif
     return name
   "}
@@ -114,10 +101,12 @@ fu! line#atom(...) abort "{
       let line = join(list,'')
       if     s:edgekind==0
         let line = '%#linefill#'..line
-      elseif s:edgekind==2 && 
-            \hlexists('linecurredge') && 
-            \hlexists('linecurredge')
-        if indx==leng-1
+      elseif s:edgekind==2
+        if     leng==1      "{
+          let left = line#mode('linecurredge','')
+          let right= line#mode('linecurredge','')
+        "}
+        elseif indx==leng-1 "{
           if revs
             let left = line#mode('linecurredge','')
             let right= line#mode('lineinacedge','')
@@ -125,8 +114,8 @@ fu! line#atom(...) abort "{
             let left = line#mode('lineinacedge','')
             let right= line#mode('linecurredge','')
           endif
-          let line = left..line..right
-        elseif indx==0
+        "}
+        elseif indx==0      "{
           if revs
             let left = line#mode('lineinacedge','')
             let right= line#mode('linecurredge','')
@@ -134,12 +123,12 @@ fu! line#atom(...) abort "{
             let left = line#mode('linecurredge','')
             let right= line#mode('lineinacedge','')
           endif
-          let line = left..line..right
-        else
+        "}
+        else                "{
           let left = line#mode('lineinacedge','')
           let right= line#mode('lineinacedge','')
-          let line = left..line..right
-        endif
+        endif "}
+        let line = left..line..right
       endif
     endif
 
@@ -190,26 +179,27 @@ fu! line#atom(...) abort "{
   endif
 
 endfu "}
-fu! line#mode(...) abort "{
+fu! line#bone(...) abort "{
 
-  let name = a:1
-  let mode = mode()
-  let line = ''
-  if     mode=='i'
-    let line.= '%#'..name..'i#'..(a:0==1?'insert':a:2)
-  elseif mode=~'\(v\|V\|\|s\|S\|\)'
-    let line.= '%#'..name..'v#'..(a:0==1?'visual':a:2)
-  elseif mode=='R'
-    let line.= '%#'..name..'r#'..(a:0==1?'replace':a:2)
-  elseif mode=~'\(c\|r\|!\)'
-    let line.= '%#'..name..'c#'..(a:0==1?'cmdline':a:2)
-  elseif mode=='t'
-    let line.= '%#'..name..'t#'..(a:0==1?'terminal':a:2)
-  else
-    let line.= '%#'..name..'#' ..(a:0==1?'normal':a:2)
-  endif
+  let revs = a:2
+  let list = []
 
-  return line
+  for bone in a:1
+    let type = type(bone)
+    if     type==1 " string
+      let item = bone
+    elseif type==3 " list
+      let func = bone[0]
+      let args = bone[1:]
+      if  func == 'git'
+        let item = s:giti
+      else
+        let item = line#atom(func,args,revs)
+      endif
+    endif
+    call add(list,item)
+  endfor
+  return join(list,'')
 
 endfu "}
 fu! line#list(...) abort "{
@@ -329,7 +319,6 @@ fu! line#init(...) abort "{
   let s:gitb = 'git rev-parse --abbrev-ref HEAD'
 
   call line#save()
-  call line#seth()
   call line#skel()
 
   if get(g:,'line_initload')
@@ -427,24 +416,6 @@ fu! line#find(...) abort "{
 endfu "}
 
 "-- auxy functions --
-fu! line#seth(...) abort "{
-
-  if s:edgekind==0|return|endif
-
-  if !hlexists('lineinac')|hi def link lineinac normal|endif
-  if !hlexists('linecurr')
-    hi def link linecurr  error
-    hi def link linecurri error
-    hi def link linecurrv error
-    hi def link linecurrr error
-    hi def link linecurrc error
-    hi def link linecurrt error
-  endif
-  if !hlexists('linegits')|hi def link linegits visual    |endif
-  if !hlexists('linegitm')|hi def link linegitm warningmsg|endif
-  if !hlexists('linegitc')|hi def link linegitc normal    |endif
-
-endfu "}
 fu! line#save(...) abort "{
 
   let s:laststatus  = &laststatus
@@ -463,6 +434,28 @@ fu! line#time(...) abort "{
     if s:gitinfo && g:line.timer==-1
       let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
     endif
+  endif
+
+endfu "}
+fu! line#skel(...) abort "{
+
+  if a:0
+    if !exists('g:line_skeleton')
+      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    endif
+  elseif empty(s:skeleton)
+    let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    call add(s:skeleton.head.l,['list','t'])
+    call add(s:skeleton.head.r,['list','w'])
+    call add(s:skeleton.head.r,' ')
+    call add(s:skeleton.head.r,['curr','p'])
+    call add(s:skeleton.feet.l,['list','b'])
+    call add(s:skeleton.feet.l,['user',' '])
+    call add(s:skeleton.feet.l,['git'])
+    call add(s:skeleton.feet.l,' ')
+    call add(s:skeleton.feet.l,['file'])
+    call add(s:skeleton.feet.r,'%y%m  %l,%c/%P')
+    let g:line_skeleton = s:skeleton
   endif
 
 endfu "}

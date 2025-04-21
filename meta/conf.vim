@@ -130,68 +130,53 @@
 
     " LineInac {
 
-      hi LineInac             guibg=#001100   guifg=#717171
-      hi LineInacEdge         guibg=bg        guifg=#001100
-
-      "hi LineInacNormal       guibg=#333300   guifg=Black
-      "hi LineInacInsert       guibg=#440000   guifg=White
-      "hi LineInacReplace      guibg=#222200   guifg=Black
-      "hi LineInacVisual       guibg=#111111   guifg=White
-      "hi LineInacCmdline      guibg=#0a0a0a   guifg=White
-      "hi LineInacTerminal     guibg=#0a0a0a   guifg=White
-
-      "hi LineInacEdgeNormal   guibg=bg guifg=#333300
-      "hi LineInacEdgeInsert   guibg=bg guifg=#440000
-      "hi LineInacEdgeReplace  guibg=bg guifg=#222200
-      "hi LineInacEdgeVisual   guibg=bg guifg=#111111
-      "hi LineInacEdgeCmdline  guibg=bg guifg=#0a0a0a
-      "hi LineInacEdgeTerminal guibg=bg guifg=#0a0a0a
+      hi LineInac     guibg=#001100 guifg=#009900
+      hi LineInacEdge guibg=bg      guifg=#001100
 
     " }
     " LineCurr {
 
-      hi LineCurr             guibg=#007700   guifg=Black
-      hi LineCurrEdge         guibg=bg        guifg=#007700
-
-      "hi LineCurrNormal   guibg=#777733 guifg=Black gui=bold
-      "hi LineCurrInsert   guibg=#cc1111 guifg=White gui=bold
-      "hi LineCurrReplace  guibg=#11cccc guifg=Black gui=bold
-      "hi LineCurrVisual   guibg=#555555 guifg=White gui=bold
-      "hi LineCurrCmdline  guibg=#555555 guifg=White gui=bold
-      "hi LineCurrTerminal guibg=#ff33ff guifg=Black gui=bold
-      "
-      "hi LineCurrEdgeNormal   guibg=bg guifg=#777733
-      "hi LineCurrEdgeInsert   guibg=bg guifg=#cc1111
-      "hi LineCurrEdgeReplace  guibg=bg guifg=#11cccc
-      "hi LineCurrEdgeVisual   guibg=bg guifg=#555555
-      "hi LineCurrEdgeCmdline  guibg=bg guifg=#555555
-      "hi LineCurrEdgeTerminal guibg=bg guifg=#ff33ff
+      hi LineCurr     guibg=#003300 guifg=#00ff00
+      hi LineCurrEdge guibg=bg      guifg=#003300
 
     " }
     " LineSpot {
 
-      hi LineSpot     guibg=#999900 guifg=#000000
-      hi LineSpotEdge guibg=bg      guifg=#999900
+      hi LineSpotNormal   guibg=#00ff00 guifg=Black
+      hi LineSpotInsert   guibg=#ff0000 guifg=White
+      hi LineSpotReplace  guibg=#00ffff guifg=Black
+      hi LineSpotVisual   guibg=#0000ff guifg=White
+      hi LineSpotCmdline  guibg=#ffff00 guifg=Black
+      hi LineSpotTerminal guibg=#ffffff guifg=Black
 
+      hi LineSpotEdgeNormal   guibg=bg guifg=#00ff00
+      hi LineSpotEdgeInsert   guibg=bg guifg=#ff0000
+      hi LineSpotEdgeReplace  guibg=bg guifg=#00ffff
+      hi LineSpotEdgeVisual   guibg=bg guifg=#0000ff
+      hi LineSpotEdgeCmdline  guibg=bg guifg=#ffff00
+      hi LineSpotEdgeTerminal guibg=bg guifg=#ffffff
+      
     " }
     " LineFile {
 
-      hi LineFile     guibg=#444400 guifg=#000000
-      hi LineFileEdge guibg=bg      guifg=#444400
+      hi def link LineFile     LineCurr
+      hi def link LineFileEdge LineCurrEdge
 
     " }
     " LineUser {
 
-      hi LineUser     guibg=#444400 guifg=#000000
-      hi LineUserEdge guibg=bg      guifg=#444400
+      hi def link LineUser     LineFile
+      hi def link LineUserEdge LineFileEdge
 
     " }
     " LineGitx {
 
       hi LineGits guibg=#005500 | hi LineGitsEdge guifg=#005500
-      hi LineGitc guibg=#000055 | hi LineGitcEdge guifg=#000055
       hi LineGitm guibg=#440000 | hi LineGitmEdge guifg=#440000
       hi LineGitl guibg=#440000 | hi LineGitlEdge guifg=#440000
+
+      hi def link LineGitc     LineCurr 
+      hi def link LineGitcEdge LineCurrEdge
 
     " }
 
@@ -200,18 +185,16 @@
 
     call line#skel(1)
 
+    call add(g:line_skeleton.head.l,['curr',0,'linespot'])
+    call add(g:line_skeleton.head.l,repeat(' ',1))
     call add(g:line_skeleton.head.l,['list',2])
-
     call add(g:line_skeleton.head.r,['list',1])
-    call add(g:line_skeleton.head.r,' ')
-    call add(g:line_skeleton.head.r,['curr',0,'linespot'])
 
     call add(g:line_skeleton.feet.l,['list',3])
-    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,repeat(' ',1))
     call add(g:line_skeleton.feet.l,['git'])
-    call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,repeat(' ',1))
     call add(g:line_skeleton.feet.l,['file'])
-
     call add(g:line_skeleton.feet.r,['user','%Y%m / %l,%c / %P'])
 
   "}
