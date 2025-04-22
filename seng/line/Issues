@@ -1,11 +1,8 @@
 
 |bugs|
-  ● [bug] setting g:line_skeleton on the run messes tab or status lines ~
   ● [bug] ~
 
 |fixed|
-  ●  ~
-  ●  ~
-  ●  ~
+  ● [bug] setting g:line_skeleton on the run messes tab or status lines ~
 
 vim: ft=help: tw=2

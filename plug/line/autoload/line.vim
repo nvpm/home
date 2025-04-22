@@ -3,6 +3,41 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#skel(...) abort "{
+
+  if a:0==1
+    if !exists('g:line_skeleton')
+      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    endif
+    return
+  endif
+  if a:0==0
+    if type(s:skeleton)!=4 " dict type
+      let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+      call add(s:skeleton.head.l,['list',2])
+      call add(s:skeleton.head.r,['list',1])
+      call add(s:skeleton.head.r,' ')
+      call add(s:skeleton.head.r,['curr',0])
+      call add(s:skeleton.feet.l,['list',3])
+      call add(s:skeleton.feet.l,' ')
+      call add(s:skeleton.feet.l,['git'])
+      call add(s:skeleton.feet.l,' ')
+      call add(s:skeleton.feet.l,['file'])
+      call add(s:skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
+      let s:headl = 1
+      let s:headr = 1
+      let s:feetl = 1
+      let s:feetr = 1
+    else
+      let s:headl = exists('s:skeleton.head.l')
+      let s:headr = exists('s:skeleton.head.r')
+      let s:feetl = exists('s:skeleton.feet.l')
+      let s:feetr = exists('s:skeleton.feet.r')
+    endif
+    return
+  endif
+
+endfu "}
 fu! line#mode(...) abort "{
 
   if hlexists(a:1)
@@ -32,7 +67,7 @@ endfu "}
 fu! line#atom(...) abort "{
 
   let type = a:1
-  let args = get(a:,2,'hello')
+  let args = get(a:,2,'none')
   let revs = get(a:,3)
 
   if     type=='curr' "{
@@ -163,10 +198,10 @@ fu! line#atom(...) abort "{
   "}
   elseif type=='user' "{
     let info = args
-    if type(info)==3
+    if type(info)==3 " list type
       let info = get(info,0,'')
     endif
-    if type(info)==1
+    if type(info)==1 " string type
       if s:edgekind==2
         let info = '%#LineUser#'..info
         let info = '%#LineUserEdge#'..info..'%#LineUserEdge#'
@@ -186,9 +221,9 @@ fu! line#bone(...) abort "{
 
   for bone in a:1
     let type = type(bone)
-    if     type==1 " string
+    if     type==1 " string type
       let item = bone
-    elseif type==3 " list
+    elseif type==3 " list type
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
@@ -284,14 +319,14 @@ fu! line#giti(...) abort "{
             let edger = '%#LineGitsEdge#'
           endif
           let colr = '%#LineGits#'
-          let char = '[S]'
+          "let char = '[S]'
       elseif gitm
           if s:edgekind==2
             let edgel = '%#LineGitmEdge#'
             let edger = '%#LineGitmEdge#'
           endif
           let colr = '%#LineGitm#'
-          let char = '[M]'
+          "let char = '[M]'
       endif
       let info = edgel..colr ..' '..branch .. char .. edger
     endif "}
@@ -309,8 +344,7 @@ fu! line#init(...) abort "{
   let s:gitinfo  = get(g:,'line_gitinfo',1)
   let s:delay    = get(g:,'line_gitdelay',20000)
   let s:edgekind = get(g:,'line_edgekind',1)
-  let s:floating = get(g:,'line_floating',0)
-  let s:skeleton = get(g:,'line_skeleton',{})
+  let s:skeleton = get(g:,'line_skeleton')
 
   let g:line = {}
   let g:line.nvpm = 0
@@ -327,19 +361,34 @@ fu! line#init(...) abort "{
     hi clear StatusLine
     call line#show()
   endif
+  if !get(g:,'line_keepuser')
+    unlet! g:line_verbose
+    unlet! g:line_gitinfo
+    unlet! g:line_gitdelay
+    unlet! g:line_edgekind
+    unlet! g:line_skeleton
+    unlet! g:line_initload
+    unlet! g:line_keepuser
+  endif
 
 endfu "}
 fu! line#head(...) abort "{
 
   let line = ''
-  if g:line.zoom.mode
-    let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+  if s:headl
+    if g:line.zoom.mode
+      let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+    endif
+    let line.= line#bone(s:skeleton.head.l,0)
   endif
-  let line.= line#bone(s:skeleton.head.l,0)
+
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skeleton.head.r,1)
-  if g:line.zoom.mode
-    let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+
+  if s:headr
+    let line.= line#bone(s:skeleton.head.r,1)
+    if g:line.zoom.mode
+      let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+    endif
   endif
 
   let &tabline = line
@@ -348,14 +397,21 @@ endfu "}
 fu! line#feet(...) abort "{
 
   let line = ''
-  if g:line.zoom.mode && &laststatus==3
-    let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+
+  if s:feetl
+    if g:line.zoom.mode && &laststatus==3
+      let line.= '%#Normal#'..repeat(' ',g:line.zoom.left)
+    endif
+    let line.= line#bone(s:skeleton.feet.l,0)
   endif
-  let line.= line#bone(s:skeleton.feet.l,0)
+
   let line.= '%#linefill#%='
-  let line.= line#bone(s:skeleton.feet.r,1)
-  if g:line.zoom.mode && &laststatus==3
-    let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+
+  if s:feetr
+    let line.= line#bone(s:skeleton.feet.r,1)
+    if g:line.zoom.mode && &laststatus==3
+      let line.= '%#Normal#'..repeat(' ',g:line.zoom.right)
+    endif
   endif
 
   let &statusline = line
@@ -412,17 +468,17 @@ fu! line#line(...) abort "{
   endif
 
 endfu "}
+
+"-- auxy functions --
 fu! line#find(...) abort "{
 
   let name = a:1
-  if 1+match(s:skeleton.feet.l,name)|return 1|endif
-  if 1+match(s:skeleton.feet.r,name)|return 1|endif
-  if 1+match(s:skeleton.head.l,name)|return 1|endif
-  if 1+match(s:skeleton.head.r,name)|return 1|endif
+  if s:feetl&&1+match(s:skeleton.feet.l,name)|return 1|endif
+  if s:feetr&&1+match(s:skeleton.feet.r,name)|return 1|endif
+  if s:headl&&1+match(s:skeleton.head.l,name)|return 1|endif
+  if s:headr&&1+match(s:skeleton.head.r,name)|return 1|endif
 
 endfu "}
-
-"-- auxy functions --
 fu! line#save(...) abort "{
 
   let s:laststatus  = &laststatus
@@ -444,26 +500,24 @@ fu! line#time(...) abort "{
   endif
 
 endfu "}
-fu! line#skel(...) abort "{
 
-  if a:0
-    if !exists('g:line_skeleton')
-      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    endif
-  elseif empty(s:skeleton)
-    let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    call add(s:skeleton.head.l,['list','t'])
-    call add(s:skeleton.head.r,['list','w'])
-    call add(s:skeleton.head.r,' ')
-    call add(s:skeleton.head.r,['curr','p'])
-    call add(s:skeleton.feet.l,['list','b'])
-    call add(s:skeleton.feet.l,['user',' '])
-    call add(s:skeleton.feet.l,['git'])
-    call add(s:skeleton.feet.l,' ')
-    call add(s:skeleton.feet.l,['file'])
-    call add(s:skeleton.feet.r,'%y%m  %l,%c/%P')
-    let g:line_skeleton = s:skeleton
-  endif
+if NVPMTEST
+  fu! line#test(...) abort "{
 
-endfu "}
+    ec 'g:line_skeleton is s:skeleton' g:line_skeleton is s:skeleton
+    ec 's:skeleton'
+    if s:headl|ec 'head.l ' s:skeleton.head.l|endif
+    if s:headr|ec 'head.r ' s:skeleton.head.r|endif
+    if s:feetl|ec 'feet.l ' s:skeleton.feet.l|endif
+    if s:feetr|ec 'feet.r ' s:skeleton.feet.r|endif
 
+    ec ' '
+
+    ec 'g:line_skeleton'
+    if s:headl|ec 'head.l ' g:line_skeleton.head.l|endif
+    if s:headr|ec 'head.r ' g:line_skeleton.head.r|endif
+    if s:feetl|ec 'feet.l ' g:line_skeleton.feet.l|endif
+    if s:feetr|ec 'feet.r ' g:line_skeleton.feet.r|endif
+
+  endfu "}
+endif

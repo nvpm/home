@@ -113,14 +113,12 @@
 " }
 " line {
 
-  let line_autocmds = 1
   let line_initload = 1
   let line_verbose  = 2
   let line_gitinfo  = 1
   let line_gitdelay = 5000
-  let line_edgekind = 2 "0:bracks,1:hi,2:stikers,3:powerline
+  let line_edgekind = 2 "0:bracks,1:hi,2:buttons,3:powerline
   let line_brackets = '[]'
-  let line_floating = 1
 
   nmap <silent>ml :Line<cr><c-l>
 
@@ -190,8 +188,7 @@
     call add(g:line_skeleton.feet.l,['list',3])
     call add(g:line_skeleton.feet.l,['git'])
     call add(g:line_skeleton.feet.l,['file'])
-    call add(g:line_skeleton.feet.r,['user','%Y%m ● %l,%v | %p%%'])
-
+    call add(g:line_skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
 
   "}
 
@@ -206,7 +203,7 @@
   let zoom_useminus = 1
 
   let zoom_height = -4
-  let zoom_width  = 80
+  let zoom_width  = 84
 
   nmap <silent>mz :Zoom<cr>
 
