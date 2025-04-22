@@ -7,10 +7,37 @@ let s:test = {}
 " plug {
 fu! s:test.line(...) "{
 
-  so plug/line/autoload/line.vim
-  so plug/line/plugin/line.vim
+  so pack/autoload/line.vim
+  so pack/plugin/line.vim
 
-  call line#test()
+  "ec 'keys  ' keys(g:line.git)
+  "ec 'info  ' string(g:line.git.info)
+  "ec 'flags ' string(g:line.git.flags)
+  "ec 'jobs  ' string(g:line.git.jobs)
+  "ec 'timer ' string(g:line.git.timer)
+  "ec 'branch' string(g:line.git.branch)
+
+  if !exists('s:job')
+    let s:job = 0
+  else
+    call jobstop(s:job)
+  endif
+
+  let loops = 'while true;do '
+  let loope = 'sleep 2;done'
+  let gitb = 'git rev-parse --abbrev-ref HEAD'
+  let gitb = loops .. gitb .. loope
+    fu! s:gitb(...) "{
+      let data = a:2
+      if !empty(data)&&data!=['']
+        ec substitute(join(data),'\n','','g')
+      endif
+    endfu "}
+  let gitb = 'git rev-parse --abbrev-ref HEAD'
+  let loop = 'while true;do '.gitb.';sleep 1;done'
+  let cmd  = loop
+  let s:job= jobstart(cmd,{'on_stdout':function('s:gitb')})
+  call jobstop(s:job)
 
   return
   "U+2500–U+257F   # Box Drawing
@@ -76,8 +103,8 @@ fu! s:test.line(...) "{
 endfu "}
 fu! s:test.flux(...) "{
 
-  so plug/flux/autoload/flux.vim
-  so plug/flux/syntax/flux.vim
+  so pack/autoload/flux.vim
+  so pack/syntax/flux.vim
 
   let conf = {}
 
@@ -102,18 +129,19 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.nvpm(...) "{
 
-  so plug/flux/autoload/flux.vim
-  so plug/flux/syntax/flux.vim
-  so plug/nvpm/autoload/nvpm.vim
-  so plug/nvpm/plugin/nvpm.vim
+  so pack/autoload/flux.vim
+  so pack/syntax/flux.vim
+  so pack/autoload/nvpm.vim
+  so pack/plugin/nvpm.vim
 
 endfu "}
 fu! s:test.zoom(...) "{
 
-  so plug/zoom/autoload/zoom.vim
-  so plug/zoom/plugin/zoom.vim
+  so pack/autoload/zoom.vim
+  so pack/plugin/zoom.vim
 
-  ec '     h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
+  let left = repeat(' ' , g:line.zoom.left )
+  ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
 
   return
 

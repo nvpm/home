@@ -3,6 +3,54 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#agit(...) abort "{
+
+endfu "}
+fu! line#time(...) abort "{
+
+  if a:0&&executable('git')
+
+    let loops = 'while true;do '
+    let loope = 'sleep 2;done'
+
+    if !g:line.git.jobs.b "{
+      let gitb = 'git rev-parse --abbrev-ref HEAD'
+      let gitb = loops .. gitb .. loope
+      if !exists('*s:gitb')
+        fu! s:gitb(...) "{
+          let data = a:2
+          if !empty(data)&&data!=['']
+            let data = join(data)
+            let data = substitute(data,'\n','','g')
+          endif
+        endfu "}
+      endif
+      let job = jobstart(split(gitb),{'on_stdout':function('s:gitb')})
+      let g:line.git.jobs.b = job
+    endif "}
+
+    let gits = 'git diff --no-ext-diff --cached --shortstat'
+    let gitm = 'git diff HEAD --shortstat'
+    let gitm = loops .. gitm .. loope
+    let gitb = loops .. gitb .. loope
+
+    return
+  endif
+  if s:gitinfo && g:line.git.timer
+    let g:line.git.timer = timer_start(s:delay,'line#agit',{'repeat':-1})
+    call line#time(1)
+  endif
+
+endfu "}
+fu! line#stop(...) abort "{
+
+  if g:line.git.timer
+    call timer_stop(g:line.git.timer)
+    let g:line.git.timer= 0
+    let g:line.git.info = ''
+  endif
+
+endfu "}
 fu! line#skel(...) abort "{
 
   if a:0==1
@@ -227,7 +275,7 @@ fu! line#bone(...) abort "{
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
-        let item = g:line.git
+        let item = g:line.git.info
       else
         let item = line#atom(func,args,revs)
       endif
@@ -305,8 +353,13 @@ fu! line#init(...) abort "{
   let g:line.nvpm = 0
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
-  let g:line.timer= -1
-  let g:line.git = ''
+  let g:line.git  = {}
+
+  let g:line.git.jobs   = #{b:0,s:0,m:0}
+  let g:line.git.timer  = 0
+  let g:line.git.info   = ''
+  let g:line.git.flags  = #{s:'',m:''}
+  let g:line.git.branch = ''
 
   call line#save()
   call line#skel()
@@ -402,12 +455,11 @@ fu! line#show(...) abort "{
 endfu "}
 fu! line#hide(...) abort "{
 
+  call line#stop()
   call line#save()
 
   set showtabline=0
   set laststatus=0
-
-  call line#time(1)
 
   let g:line.mode = 0
 
@@ -437,67 +489,6 @@ fu! line#save(...) abort "{
 
   let s:laststatus  = &laststatus
   let s:showtabline = &showtabline
-
-endfu "}
-fu! line#giti(...) abort "{
-
-  let info  = ''
-  "if s:gitinfo && executable('git')
-  if executable('git')
-    let gits = 'git diff --no-ext-diff --cached --shortstat'
-    let gitm = 'git diff HEAD --shortstat'
-    let gitb = 'git rev-parse --abbrev-ref HEAD'
-    let branch = trim(system(gitb))
-    if 1+match(branch,'^fatal:.*') "{
-      let info = '%#LineGitm#gitless'
-      if s:edgekind==2
-        let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
-      endif
-    else
-      let gits = !empty(trim(system(gits)))
-      let gitm = !empty(trim(system(gitm)))
-      let char = ''
-      let colr = '%#LineGitc#'
-      let edgel= ''
-      let edger= ''
-      if s:edgekind==2
-        let edgel = '%#LineGitcEdge#'
-        let edger = '%#LineGitcEdge#'
-      endif
-      if gits
-          if s:edgekind==2
-            let edgel = '%#LineGitsEdge#'
-            let edger = '%#LineGitsEdge#'
-          endif
-          let colr = '%#LineGits#'
-          "let char = '[S]'
-      elseif gitm
-          if s:edgekind==2
-            let edgel = '%#LineGitmEdge#'
-            let edger = '%#LineGitmEdge#'
-          endif
-          let colr = '%#LineGitm#'
-          "let char = '[M]'
-      endif
-      let info = edgel..colr ..' '..branch .. char .. edger
-    endif "}
-  endif
-  let g:line.git = info
-
-endfu "}
-fu! line#time(...) abort "{
-
-  if a:0
-    if 1+g:line.timer
-      call timer_stop(g:line.timer)
-      let g:line.timer = -1
-      let g:line.git   = ''
-    endif
-  else
-    if s:gitinfo && g:line.timer==-1
-      let g:line.timer = timer_start(s:delay,'line#giti',{'repeat':-1})
-    endif
-  endif
 
 endfu "}
 
