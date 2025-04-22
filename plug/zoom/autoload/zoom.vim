@@ -188,6 +188,7 @@ fu! zoom#buff(...) abort "{
 
   silent! setl nomodifiable
   silent! setl nonumber
+  silent! setl norelativenumber
   silent! setl signcolumn=no
   silent! setl nobuflisted
   silent! setl winfixwidth
