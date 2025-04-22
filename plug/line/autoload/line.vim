@@ -515,9 +515,9 @@ if NVPMTEST
     endfu
 
     let gits = 'git diff --no-ext-diff --cached --shortstat'
-    let gitm = 'git diff HEAD'
+    let gitm = 'git diff HEAD --shortstat'
     let gitb = 'git rev-parse --abbrev-ref HEAD'
-    let cmd  = '$(git diff)'
+    let cmd  = '$('.gitm.')'
     call jobstart(cmd,{'on_exit':function('s:OnEvent')})
 
   endfu "}
