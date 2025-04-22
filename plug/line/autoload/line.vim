@@ -379,8 +379,7 @@ endfu "}
 fu! line#show(...) abort "{
 
   if s:verbose>0&&s:gitinfo&&line#find('git')
-    "call line#giti()
-    "call line#time()
+    call line#time()
   endif
   if g:line.nvpm
     set showtabline=2
@@ -504,21 +503,22 @@ endfu "}
 
 if NVPMTEST
   fu! line#test(...) abort "{
-
-    fu! s:OnEvent(job_id, data, event) dict
-      if a:event == 'stdout'
-        let str = ' stdout: '.join(a:data)
-      else
-        let str = 'hello'
+      
+    fu! s:gitb(...)
+      let data = a:2
+        if !empty(data)&&data!=['']
+        let data = substitute(join(data, ''), '\n', '', 'g')
+        ec data
       endif
-      ec a:data
     endfu
 
     let gits = 'git diff --no-ext-diff --cached --shortstat'
     let gitm = 'git diff HEAD --shortstat'
     let gitb = 'git rev-parse --abbrev-ref HEAD'
-    let cmd  = '$('.gitm.')'
-    call jobstart(cmd,{'on_exit':function('s:OnEvent')})
+
+    call jobstart(split(gitb),{'on_stdout':function('s:gitb')})
+    call jobstart(split(gits),{'on_stdout':function('s:gitb')})
+    call jobstart(split(gitm),{'on_stdout':function('s:gitb')})
 
   endfu "}
 endif

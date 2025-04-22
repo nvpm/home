@@ -11,6 +11,7 @@ fu! s:test.line(...) "{
   so plug/line/plugin/line.vim
 
   call line#test()
+
   return
   "U+2500–U+257F   # Box Drawing
   "U+2580–U+259F   # Block Elements
