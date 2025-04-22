@@ -11,8 +11,7 @@ fu! s:test.line(...) "{
   so plug/line/plugin/line.vim
 
   call line#test()
-
-  return 
+  return
   "U+2500–U+257F   # Box Drawing
   "U+2580–U+259F   # Block Elements
   "U+1FB00–U+1FBFF # Legacy Computing (includes extended box drawing)
@@ -161,10 +160,10 @@ endfu "}
 "}
 " exec {
 
-if 1| so meta/conf.vim |endif
+if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
-if 1|call s:test.zoom()|endif
+if 0|call s:test.zoom()|endif
 if 1|call s:test.line()|endif
 
 "}

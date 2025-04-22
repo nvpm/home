@@ -289,51 +289,6 @@ fu! line#list(...) abort "{
   return revs?reverse(list):list
 
 endfu "}
-fu! line#giti(...) abort "{
-
-  let info  = ''
-  if s:gitinfo && executable('git')
-    let gits = 'git diff --no-ext-diff --cached --shortstat'
-    let gitm = 'git diff HEAD --shortstat'
-    let gitb = 'git rev-parse --abbrev-ref HEAD'
-    let branch = trim(system(gitb))
-    if 1+match(branch,'^fatal:.*') "{
-      let info = '%#LineGitm#gitless'
-      if s:edgekind==2
-        let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
-      endif
-    else
-      let gits = !empty(trim(system(gits)))
-      let gitm = !empty(trim(system(gitm)))
-      let char = ''
-      let colr = '%#LineGitc#'
-      let edgel= ''
-      let edger= ''
-      if s:edgekind==2
-        let edgel = '%#LineGitcEdge#'
-        let edger = '%#LineGitcEdge#'
-      endif
-      if gits
-          if s:edgekind==2
-            let edgel = '%#LineGitsEdge#'
-            let edger = '%#LineGitsEdge#'
-          endif
-          let colr = '%#LineGits#'
-          "let char = '[S]'
-      elseif gitm
-          if s:edgekind==2
-            let edgel = '%#LineGitmEdge#'
-            let edger = '%#LineGitmEdge#'
-          endif
-          let colr = '%#LineGitm#'
-          "let char = '[M]'
-      endif
-      let info = edgel..colr ..' '..branch .. char .. edger
-    endif "}
-  endif
-  let g:line.git = info
-
-endfu "}
 
 "-- main functions --
 fu! line#init(...) abort "{
@@ -424,8 +379,8 @@ endfu "}
 fu! line#show(...) abort "{
 
   if s:verbose>0&&s:gitinfo&&line#find('git')
-    call line#giti()
-    call line#time()
+    "call line#giti()
+    "call line#time()
   endif
   if g:line.nvpm
     set showtabline=2
@@ -485,6 +440,52 @@ fu! line#save(...) abort "{
   let s:showtabline = &showtabline
 
 endfu "}
+fu! line#giti(...) abort "{
+
+  let info  = ''
+  "if s:gitinfo && executable('git')
+  if executable('git')
+    let gits = 'git diff --no-ext-diff --cached --shortstat'
+    let gitm = 'git diff HEAD --shortstat'
+    let gitb = 'git rev-parse --abbrev-ref HEAD'
+    let branch = trim(system(gitb))
+    if 1+match(branch,'^fatal:.*') "{
+      let info = '%#LineGitm#gitless'
+      if s:edgekind==2
+        let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
+      endif
+    else
+      let gits = !empty(trim(system(gits)))
+      let gitm = !empty(trim(system(gitm)))
+      let char = ''
+      let colr = '%#LineGitc#'
+      let edgel= ''
+      let edger= ''
+      if s:edgekind==2
+        let edgel = '%#LineGitcEdge#'
+        let edger = '%#LineGitcEdge#'
+      endif
+      if gits
+          if s:edgekind==2
+            let edgel = '%#LineGitsEdge#'
+            let edger = '%#LineGitsEdge#'
+          endif
+          let colr = '%#LineGits#'
+          "let char = '[S]'
+      elseif gitm
+          if s:edgekind==2
+            let edgel = '%#LineGitmEdge#'
+            let edger = '%#LineGitmEdge#'
+          endif
+          let colr = '%#LineGitm#'
+          "let char = '[M]'
+      endif
+      let info = edgel..colr ..' '..branch .. char .. edger
+    endif "}
+  endif
+  let g:line.git = info
+
+endfu "}
 fu! line#time(...) abort "{
 
   if a:0
@@ -504,20 +505,20 @@ endfu "}
 if NVPMTEST
   fu! line#test(...) abort "{
 
-    ec 'g:line_skeleton is s:skeleton' g:line_skeleton is s:skeleton
-    ec 's:skeleton'
-    if s:headl|ec 'head.l ' s:skeleton.head.l|endif
-    if s:headr|ec 'head.r ' s:skeleton.head.r|endif
-    if s:feetl|ec 'feet.l ' s:skeleton.feet.l|endif
-    if s:feetr|ec 'feet.r ' s:skeleton.feet.r|endif
+    fu! s:OnEvent(job_id, data, event) dict
+      if a:event == 'stdout'
+        let str = ' stdout: '.join(a:data)
+      else
+        let str = 'hello'
+      endif
+      ec a:data
+    endfu
 
-    ec ' '
-
-    ec 'g:line_skeleton'
-    if s:headl|ec 'head.l ' g:line_skeleton.head.l|endif
-    if s:headr|ec 'head.r ' g:line_skeleton.head.r|endif
-    if s:feetl|ec 'feet.l ' g:line_skeleton.feet.l|endif
-    if s:feetr|ec 'feet.r ' g:line_skeleton.feet.r|endif
+    let gits = 'git diff --no-ext-diff --cached --shortstat'
+    let gitm = 'git diff HEAD'
+    let gitb = 'git rev-parse --abbrev-ref HEAD'
+    let cmd  = '$(git diff)'
+    call jobstart(cmd,{'on_exit':function('s:OnEvent')})
 
   endfu "}
 endif
