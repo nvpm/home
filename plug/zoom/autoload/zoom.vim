@@ -13,7 +13,7 @@ fu! zoom#init(...) abort "{
   let g:zoom.mode = 0
   let g:zoom.buff = '.nvpm/zoom'
   let g:zoom.carg = ''
-  let g:zoom.lastft= ''
+  "let g:zoom.lastft= ''
 
   if !argc()&&get(g:,'zoom_initload')
     call timer_start(50,{->zoom#show()})
@@ -234,7 +234,8 @@ fu! zoom#help(...) abort "{
 
   let bufname=bufname()
 
-  if &ft == 'help'&&g:zoom.lastft!='help'
+  "if &ft == 'help'&&g:zoom.lastft!='help'
+  if &ft == 'help'
     silent! helpclose
     exec 'edit '. bufname
   endif

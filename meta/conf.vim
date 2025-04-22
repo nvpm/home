@@ -113,6 +113,7 @@
 " }
 " line {
 
+  let line_keepuser = 0
   let line_initload = 1
   let line_verbose  = 2
   let line_gitinfo  = 1
@@ -126,7 +127,7 @@
 
     " LineInac {
 
-      hi LineInac     guibg=#001100 guifg=#009900
+      hi LineInac     guibg=#001100 guifg=#007700
       hi LineInacEdge guibg=bg      guifg=#001100
 
     " }
@@ -203,7 +204,7 @@
   let zoom_useminus = 1
 
   let zoom_height = -4
-  let zoom_width  = 84
+  let zoom_width  = 80
 
   nmap <silent>mz :Zoom<cr>
 
