@@ -3,82 +3,61 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! s:gitb(j,d,e) "{
-  if !empty(a:d)&&a:d!=['']
-    let g:line.git.branch = join(a:d)
-  endif
-endfu "}
-fu! s:gitm(j,d,e) "{
-  if !empty(a:d)&&a:d!=['']
-    let g:line.git.modified = 1
-  endif
-endfu "}
-fu! s:gits(j,d,e) "{
-  if !empty(a:d)&&a:d!=['']
-    let g:line.git.staged = 1
-  endif
-endfu "}
-
-fu! line#agit(...) abort "{
-
-  " git branch   job {
-
-    let cmd = 'git rev-parse --abbrev-ref HEAD'
-    call jobstart(cmd,{'on_stdout':function('s:gitb')})
-
-  " }
-  " git modified job {
-
-    let cmd = 'git diff HEAD --shortstat'
-    call jobstart(cmd,{'on_stdout':function('s:gitm')})
-
-  " }
-  " git staged   job {
-
-    let cmd = 'git diff --no-ext-diff --cached --shortstat'
-    call jobstart(cmd,{'on_stdout':function('s:gits')})
-
-  " }
-  
-  "call timer_start(20,{->line#igit()})
-  call line#igit()
-
-endfu "}
-fu! line#igit(...) abort "{
-
-  if  empty(g:line.git.branch) "{
-    if s:edgekind==2
-      let info = '%#LineGitmEdge#%#LineGitm#gitless%#LineGitmEdge#'
-    else
-      let info = '%#LineGitm#gitless%'
-    endif "}
-  else " there is a branch {
-    let branch = g:line.git.branch
-    let flag = 'c'
-    let flag = g:line.git.modified ? 'm' : flag
-    let flag = g:line.git.staged   ? 's' : flag
-    let colr = '%#LineGit'.flag
-    if s:edgekind==2
-      let info = colr.'Edge#'.colr .'#'.' '.branch.colr.'Edge#'
-    else
-      let info = colr .'#'.' '.branch
-    endif
-  endif "}
-
-  let g:line.git.info = info
-
-endfu "}
 fu! line#time(...) abort "{
 
-  if !line#find('git')||!s:gitinfo|return|endif
+  if !s:gitinfo|return|endif
 
-  if a:0&&g:line.git.timer
-    call timer_stop(g:line.git.timer)
-    let g:line.git.timer = 0
-    let g:line.git.info  = ''
-  elseif !g:line.git.timer
-    let g:line.git.timer = timer_start(s:delay,'line#agit',{'repeat':-1})
+  if a:0&&g:line.timer
+    call timer_stop(g:line.timer)
+    let g:line.timer = 0
+    let g:line.git   = ''
+  elseif !g:line.timer
+    let g:line.timer = timer_start(s:delay,'line#gitf',{'repeat':-1})
   endif
+
+endfu "}
+fu! line#gitf(...) abort "{
+
+  if !s:gitinfo||!g:line.mode|return|endif
+
+  let gits = 'git diff --no-ext-diff --cached --shortstat'
+  let gitm = 'git diff HEAD --shortstat'
+  let gitb = 'git rev-parse --abbrev-ref HEAD'
+  let branch = trim(system(gitb))
+  if 1+match(branch,'^fatal:.*')
+    let info = '%#LineGitm#gitless'
+    if s:edgekind==2
+      let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
+    endif
+  else
+    let gits = !empty(trim(system(gits)))
+    let gitm = !empty(trim(system(gitm)))
+    let char = ''
+    let colr = '%#LineGitc#'
+    let edgel= ''
+    let edger= ''
+    if s:edgekind==2
+      let edgel = '%#LineGitcEdge#'
+      let edger = '%#LineGitcEdge#'
+    endif
+    if gits
+        if s:edgekind==2
+          let edgel = '%#LineGitsEdge#'
+          let edger = '%#LineGitsEdge#'
+        endif
+        let colr = '%#LineGits#'
+        let char = '[S]'
+    elseif gitm
+        if s:edgekind==2
+          let edgel = '%#LineGitmEdge#'
+          let edger = '%#LineGitmEdge#'
+        endif
+        let colr = '%#LineGitm#'
+        let char = '[M]'
+    endif
+    let info = edgel..colr ..' '..branch .. char .. edger
+  endif
+  let g:line.git = info
 
 endfu "}
 fu! line#skel(...) abort "{
@@ -305,7 +284,7 @@ fu! line#bone(...) abort "{
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
-        let item = g:line.git.info
+        let item = g:line.git
       else
         let item = line#atom(func,args,revs)
       endif
@@ -373,25 +352,21 @@ fu! line#init(...) abort "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
-  let s:verbose  = get(g:,'line_verbose' ,2)
-  let s:gitinfo  = get(g:,'line_gitinfo',1)
-  let s:delay    = get(g:,'line_gitdelay',20000)
+  let s:verbose  = get(g:,'line_verbose',2)
+  let s:gitinfo  = get(g:,'line_gitinfo',0)
+  let s:delay    = get(g:,'line_gitdelay',7000)
   let s:edgekind = get(g:,'line_edgekind',1)
-  let s:skeleton = get(g:,'line_skeleton')
+  let s:skeleton = get(g:,'line_skeleton',0)
 
   let s:gitinfo  = s:gitinfo && executable('git')
+  let g:line_gitinfo = s:gitinfo " for autocmds in plugin/line.vim
 
   let g:line = {}
   let g:line.nvpm = 0
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
-
-  let g:line.git          = {}
-  let g:line.git.timer    = 0
-  let g:line.git.modified = 0
-  let g:line.git.staged   = 0
-  let g:line.git.info     = ''
-  let g:line.git.branch   = ''
+  let g:line.git  = ''
+  let g:line.timer= 0
 
   call line#save()
   call line#skel()
@@ -400,11 +375,10 @@ fu! line#init(...) abort "{
     hi clear TabLine
     hi clear StatusLine
     call line#show()
+    call timer_start(s:delay+1,{->line#draw()})
   endif
   if !get(g:,'line_keepuser')
     unlet! g:line_verbose
-    unlet! g:line_gitinfo
-    unlet! g:line_gitdelay
     unlet! g:line_edgekind
     unlet! g:line_skeleton
     unlet! g:line_initload
@@ -458,13 +432,11 @@ fu! line#feet(...) abort "{
 
 endfu "}
 fu! line#draw(...) abort "{
+  if !g:line.mode|return|endif
   if &showtabline|call line#head()|endif
   if &laststatus |call line#feet()|endif
 endfu "}
 fu! line#show(...) abort "{
-
-  call line#agit()
-  call line#time()
 
   if g:line.nvpm
     set showtabline=2
@@ -483,11 +455,11 @@ fu! line#show(...) abort "{
   endif
 
   let g:line.mode = 1
+  call timer_start(get(g:,'line_gitdelay',&updatetime),{->line#gitf()})
 
 endfu "}
 fu! line#hide(...) abort "{
 
-  call line#time(1)
   call line#save()
 
   set showtabline=0
@@ -523,9 +495,3 @@ fu! line#save(...) abort "{
   let s:showtabline = &showtabline
 
 endfu "}
-
-if NVPMTEST
-  fu! line#test(...) abort "{
-      
-  endfu "}
-endif

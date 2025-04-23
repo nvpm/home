@@ -2,6 +2,8 @@
 " init {
 
 let s:test = {}
+let s:info = 'default'
+
 
 "}
 " plug {
@@ -9,79 +11,6 @@ fu! s:test.line(...) "{
 
   so pack/autoload/line.vim
   so pack/plugin/line.vim
-
-  fu! s:gitb(...) "{
-    let data = a:2
-    if !empty(data)&&data!=['']
-      ec join(data)
-    endif
-  endfu "}
-  let cmd = 'git diff HEAD --shortstat'                   "modified
-  let cmd = 'git diff --no-ext-diff --cached --shortstat' "staged
-  let cmd = 'git rev-parse --abbrev-ref HEAD'             "branch
-  call jobstart(cmd,{'on_stdout':function('s:gitb')})
-
-
-  return
-  "U+2500–U+257F   # Box Drawing
-  "U+2580–U+259F   # Block Elements
-  "U+1FB00–U+1FBFF # Legacy Computing (includes extended box drawing)
-
-  for i in range(0x2500,0x257f)
-    echon nr2char(i) . ' '
-  endfor
-
-  for i in range(0x2580,0x259f)
-    echon nr2char(i) . ' '
-  endfor
-
-  for i in range(0x1FB00,0x1FBFF)
-    echon nr2char(i) . ' '
-  endfor
-
-    return
-    let file = 'char/char.gen'
-    let body = []
-    let line = ''
-    let size = float2nr(pow(2,7))
-    let shift= 0
-    for n in range(10000)
-      let init = (n+0)*size + shift
-      let end  = (n+1)*size + shift
-      call add(body,'{ '..init.' - '.end)
-      call add(body,'')
-      for i in range(init,end)
-        let char = nr2char(i).. ' '
-        if i%30==0
-          call add(body,line)
-          let line = ''
-        elseif char=~'\p'
-          let line.= char
-        endif
-      endfor
-      call add(body,'')
-      call add(body,'}')
-    endfor
-    call writefile(body,file)
-    ec 'finished'
-
-  return
-  "fu! Showcterm()
-  "  let term = &termguicolors
-  "  set notermguicolors
-  "  ec repeat("\n",3)
-  "  for i in range(256)
-  "    let name = 'nvpmtestcolor'.i
-  "    exe 'hi '..name..' ctermbg='..i..' ctermfg='..(i%8==0||(i>=233&&i<=239)?255:8)
-  "    exe 'echohl '..name
-  "    echon ' '..i..' '
-  "    "exe 'hi clear '..name
-  "  endfor
-  "  ec repeat("\n",2)
-  "  let &termguicolors = term
-  "endfu
-  ""call Showcterm()|delfunc Showcterm
-  "ec line#foot()
 
 endfu "}
 fu! s:test.flux(...) "{
@@ -175,7 +104,7 @@ endfu "}
 if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
-if 0|call s:test.zoom()|endif
+if 1|call s:test.zoom()|endif
 if 1|call s:test.line()|endif
 
 "}
