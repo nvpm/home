@@ -5,49 +5,77 @@ let __LINEAUTO__ = 1
 
 fu! line#agit(...) abort "{
 
+  " git branch   job {
+
+    if !exists('*s:gitb') "{
+      fu! s:gitb(...)
+        let data = a:2
+        if !empty(data)&&data!=['']
+          let g:line.git.branch = substitute(join(data),'\n','','g')
+        else
+          let g:line.git.branch = ''
+        endif
+      endfu
+    endif "}
+    let cmd = 'git rev-parse --abbrev-ref HEAD'
+    call jobstart(cmd,{'on_stdout':function('s:gitb')})
+
+  " }
+  " git modified job {
+
+    if !exists('*s:gitm') "{
+      fu! s:gitm(...)
+        let data = a:2
+        let g:line.git.modified = !empty(data)&&data!=['']
+      endfu
+    endif "}
+    let cmd = 'git diff HEAD --shortstat'
+    call jobstart(cmd,{'on_stdout':function('s:gitm')})
+
+  " }
+  " git staged   job {
+
+    if !exists('*s:gits') "{
+      fu! s:gits(...)
+        let data = a:2
+        let g:line.git.staged = !empty(data)&&data!=['']
+      endfu
+    endif "}
+    let cmd = 'git diff --no-ext-diff --cached --shortstat'
+    call jobstart(cmd,{'on_stdout':function('s:gits')})
+
+  " }
+  
+  if  empty(g:line.git.branch) "{
+    if s:edgekind==2
+      let info = '%#LineGitmEdge#%#LineGitm#gitless%#LineGitmEdge#'
+    else
+      let info = '%#LineGitm#gitless%'
+    endif "}
+  else " there is a branch {
+    let branch = g:line.git.branch
+    let flag = 'c'
+    let flag = g:line.git.modified ? 'm' : flag
+    let flag = g:line.git.staged   ? 's' : flag
+    let colr = '%#LineGit'.flag
+    if s:edgekind==2
+      let info = colr.'Edge#'.colr .'#'.' '.branch.colr.'Edge#'
+    else
+      let info = colr .'#'.' '.branch
+    endif
+  endif "}
+
 endfu "}
 fu! line#time(...) abort "{
 
-  if a:0&&executable('git')
+  if !line#find('git')||!s:gitinfo|return|endif
 
-    let loops = 'while true;do '
-    let loope = 'sleep 2;done'
-
-    if !g:line.git.jobs.b "{
-      let gitb = 'git rev-parse --abbrev-ref HEAD'
-      let gitb = loops .. gitb .. loope
-      if !exists('*s:gitb')
-        fu! s:gitb(...) "{
-          let data = a:2
-          if !empty(data)&&data!=['']
-            let data = join(data)
-            let data = substitute(data,'\n','','g')
-          endif
-        endfu "}
-      endif
-      let job = jobstart(split(gitb),{'on_stdout':function('s:gitb')})
-      let g:line.git.jobs.b = job
-    endif "}
-
-    let gits = 'git diff --no-ext-diff --cached --shortstat'
-    let gitm = 'git diff HEAD --shortstat'
-    let gitm = loops .. gitm .. loope
-    let gitb = loops .. gitb .. loope
-
-    return
-  endif
-  if s:gitinfo && g:line.git.timer
-    let g:line.git.timer = timer_start(s:delay,'line#agit',{'repeat':-1})
-    call line#time(1)
-  endif
-
-endfu "}
-fu! line#stop(...) abort "{
-
-  if g:line.git.timer
+  if a:0&&g:line.git.timer
     call timer_stop(g:line.git.timer)
-    let g:line.git.timer= 0
-    let g:line.git.info = ''
+    let g:line.git.timer = 0
+    let g:line.git.info  = ''
+  elseif !g:line.git.timer
+    let g:line.git.timer = timer_start(s:delay,'line#agit',{'repeat':-1})
   endif
 
 endfu "}
@@ -349,17 +377,19 @@ fu! line#init(...) abort "{
   let s:edgekind = get(g:,'line_edgekind',1)
   let s:skeleton = get(g:,'line_skeleton')
 
+  let s:gitinfo  = s:gitinfo && executable('git')
+
   let g:line = {}
   let g:line.nvpm = 0
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
-  let g:line.git  = {}
 
-  let g:line.git.jobs   = #{b:0,s:0,m:0}
-  let g:line.git.timer  = 0
-  let g:line.git.info   = ''
-  let g:line.git.flags  = #{s:'',m:''}
-  let g:line.git.branch = ''
+  let g:line.git          = {}
+  let g:line.git.timer    = 0
+  let g:line.git.modified = 0
+  let g:line.git.staged   = 0
+  let g:line.git.info     = ''
+  let g:line.git.branch   = ''
 
   call line#save()
   call line#skel()
@@ -431,9 +461,8 @@ fu! line#draw(...) abort "{
 endfu "}
 fu! line#show(...) abort "{
 
-  if s:verbose>0&&s:gitinfo&&line#find('git')
-    call line#time()
-  endif
+  call line#time()
+
   if g:line.nvpm
     set showtabline=2
     let &laststatus=2+s:nvim
@@ -455,7 +484,7 @@ fu! line#show(...) abort "{
 endfu "}
 fu! line#hide(...) abort "{
 
-  call line#stop()
+  call line#time('stop')
   call line#save()
 
   set showtabline=0

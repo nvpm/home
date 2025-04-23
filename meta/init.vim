@@ -17,16 +17,16 @@ fu! s:test.line(...) "{
   "ec 'timer ' string(g:line.git.timer)
   "ec 'branch' string(g:line.git.branch)
 
-  if !exists('s:job')
-    let s:job = 0
-  else
-    call jobstop(s:job)
-  endif
+  "if !exists('s:job')
+  "  let s:job = 0
+  "else
+  "  call jobstop(s:job)
+  "endif
 
-  let loops = 'while true;do '
-  let loope = 'sleep 2;done'
-  let gitb = 'git rev-parse --abbrev-ref HEAD'
-  let gitb = loops .. gitb .. loope
+  "let loops = 'while true;do '
+  "let loope = ';sleep 2;done'
+  "let gitb = 'git rev-parse --abbrev-ref HEAD'
+  "let gitb = loops .. gitb .. loope
     fu! s:gitb(...) "{
       let data = a:2
       if !empty(data)&&data!=['']
@@ -34,10 +34,8 @@ fu! s:test.line(...) "{
       endif
     endfu "}
   let gitb = 'git rev-parse --abbrev-ref HEAD'
-  let loop = 'while true;do '.gitb.';sleep 1;done'
-  let cmd  = loop
-  let s:job= jobstart(cmd,{'on_stdout':function('s:gitb')})
-  call jobstop(s:job)
+  let s:job= jobstart(gitb,{'on_stdout':function('s:gitb')})
+
 
   return
   "U+2500–U+257F   # Box Drawing
