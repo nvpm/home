@@ -4,7 +4,7 @@
     workspace 🭹 line {
       tab  code
         file auto : autoload/line.vim
-        -file plug : plugin/line.vim
+        file plug : plugin/line.vim
         file init = meta/init.vim
       tab 🯅 seng = seng/line
           file TODO     

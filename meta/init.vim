@@ -10,31 +10,16 @@ fu! s:test.line(...) "{
   so pack/autoload/line.vim
   so pack/plugin/line.vim
 
-  "ec 'keys  ' keys(g:line.git)
-  "ec 'info  ' string(g:line.git.info)
-  "ec 'flags ' string(g:line.git.flags)
-  "ec 'jobs  ' string(g:line.git.jobs)
-  "ec 'timer ' string(g:line.git.timer)
-  "ec 'branch' string(g:line.git.branch)
-
-  "if !exists('s:job')
-  "  let s:job = 0
-  "else
-  "  call jobstop(s:job)
-  "endif
-
-  "let loops = 'while true;do '
-  "let loope = ';sleep 2;done'
-  "let gitb = 'git rev-parse --abbrev-ref HEAD'
-  "let gitb = loops .. gitb .. loope
-    fu! s:gitb(...) "{
-      let data = a:2
-      if !empty(data)&&data!=['']
-        ec substitute(join(data),'\n','','g')
-      endif
-    endfu "}
-  let gitb = 'git rev-parse --abbrev-ref HEAD'
-  let s:job= jobstart(gitb,{'on_stdout':function('s:gitb')})
+  fu! s:gitb(...) "{
+    let data = a:2
+    if !empty(data)&&data!=['']
+      ec join(data)
+    endif
+  endfu "}
+  let cmd = 'git rev-parse --abbrev-ref HEAD'             "branch
+  let cmd = 'git diff --no-ext-diff --cached --shortstat' "staged
+  let cmd = 'git diff HEAD --shortstat'                   "modified
+  call jobstart(cmd,{'on_stdout':function('s:gitb')})
 
 
   return

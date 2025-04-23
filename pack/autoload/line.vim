@@ -3,49 +3,48 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! s:gitb(j,d,e) "{
+  if !empty(a:d)&&a:d!=['']
+    let g:line.git.branch = join(a:d)
+  endif
+endfu "}
+fu! s:gitm(j,d,e) "{
+  if !empty(a:d)&&a:d!=['']
+    let g:line.git.modified = 1
+  endif
+endfu "}
+fu! s:gits(j,d,e) "{
+  if !empty(a:d)&&a:d!=['']
+    let g:line.git.staged = 1
+  endif
+endfu "}
+
 fu! line#agit(...) abort "{
 
   " git branch   job {
 
-    if !exists('*s:gitb') "{
-      fu! s:gitb(...)
-        let data = a:2
-        if !empty(data)&&data!=['']
-          let g:line.git.branch = substitute(join(data),'\n','','g')
-        else
-          let g:line.git.branch = ''
-        endif
-      endfu
-    endif "}
     let cmd = 'git rev-parse --abbrev-ref HEAD'
     call jobstart(cmd,{'on_stdout':function('s:gitb')})
 
   " }
   " git modified job {
 
-    if !exists('*s:gitm') "{
-      fu! s:gitm(...)
-        let data = a:2
-        let g:line.git.modified = !empty(data)&&data!=['']
-      endfu
-    endif "}
     let cmd = 'git diff HEAD --shortstat'
     call jobstart(cmd,{'on_stdout':function('s:gitm')})
 
   " }
   " git staged   job {
 
-    if !exists('*s:gits') "{
-      fu! s:gits(...)
-        let data = a:2
-        let g:line.git.staged = !empty(data)&&data!=['']
-      endfu
-    endif "}
     let cmd = 'git diff --no-ext-diff --cached --shortstat'
     call jobstart(cmd,{'on_stdout':function('s:gits')})
 
   " }
   
+  call timer_start(20,{->line#igit()})
+
+endfu "}
+fu! line#igit(...) abort "{
+
   if  empty(g:line.git.branch) "{
     if s:edgekind==2
       let info = '%#LineGitmEdge#%#LineGitm#gitless%#LineGitmEdge#'
@@ -64,6 +63,8 @@ fu! line#agit(...) abort "{
       let info = colr .'#'.' '.branch
     endif
   endif "}
+
+  let g:line.git.info = info
 
 endfu "}
 fu! line#time(...) abort "{
@@ -461,6 +462,7 @@ fu! line#draw(...) abort "{
 endfu "}
 fu! line#show(...) abort "{
 
+  call line#agit()
   call line#time()
 
   if g:line.nvpm
@@ -484,7 +486,7 @@ fu! line#show(...) abort "{
 endfu "}
 fu! line#hide(...) abort "{
 
-  call line#time('stop')
+  call line#time(1)
   call line#save()
 
   set showtabline=0
