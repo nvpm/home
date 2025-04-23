@@ -16,9 +16,9 @@ fu! s:test.line(...) "{
       ec join(data)
     endif
   endfu "}
-  let cmd = 'git rev-parse --abbrev-ref HEAD'             "branch
-  let cmd = 'git diff --no-ext-diff --cached --shortstat' "staged
   let cmd = 'git diff HEAD --shortstat'                   "modified
+  let cmd = 'git diff --no-ext-diff --cached --shortstat' "staged
+  let cmd = 'git rev-parse --abbrev-ref HEAD'             "branch
   call jobstart(cmd,{'on_stdout':function('s:gitb')})
 
 

@@ -40,7 +40,8 @@ fu! line#agit(...) abort "{
 
   " }
   
-  call timer_start(20,{->line#igit()})
+  "call timer_start(20,{->line#igit()})
+  call line#igit()
 
 endfu "}
 fu! line#igit(...) abort "{
