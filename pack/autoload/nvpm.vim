@@ -96,13 +96,9 @@ fu! nvpm#load(...) abort "{
   let g:nvpm.tree.file = file
   let g:nvpm.tree.mode = 1
 
-  if get(g:,'nvpm_loadline',1)
-    if exists('*line#show')
-      hi clear TabLine
-      hi clear StatusLine
-      let g:line.nvpm = 1
-      call line#show()
-    endif
+  if exists('*line#show')
+    let g:line.nvpm = 1
+    call line#show()
   endif
   call nvpm#save()
   call nvpm#rend()

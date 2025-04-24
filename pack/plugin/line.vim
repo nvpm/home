@@ -12,7 +12,6 @@ command! Line call line#line()
 "-- auto commands --
 augroup LINE
   au!
-  au BufWritePost,BufEnter,FocusGained,ModeChanged,BufDelete * 
-        \call line#draw()
+  au BufWinEnter,ModeChanged,BufDelete * call line#draw()
 augroup END
 

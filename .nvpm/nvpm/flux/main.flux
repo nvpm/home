@@ -89,8 +89,4 @@
       file jobs:job_control.txt
       file btin:builtin.txt
   }
-
-----------
-                     ✅ 
-  
 # vim: fdm=marker fmr={,} fdl=0 fen

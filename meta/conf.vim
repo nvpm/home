@@ -63,7 +63,6 @@
   " nvpm user variables tree
   let nvpm_maketree = 1
   let nvpm_initload = 1
-  let nvpm_loadline = 1
   let nvpm_autocmds = 1
 
   let nvpm_fluxconf = {}
@@ -113,9 +112,8 @@
 " }
 " line {
 
-  set ut=1000
   let line_keepuser = 0
-  let line_initload = 1
+  let line_initload = 0
   let line_verbose  = 2
   let line_bonetype = 2 "0:bracks,1:hi,2:buttons,3:powerline
   let line_brackets = '[]'
@@ -124,6 +122,8 @@
 
   " Colors   {
 
+    hi clear TabLine
+    hi clear StatusLine
     " LineInac {
 
       hi LineInac     guibg=#001100 guifg=#007700

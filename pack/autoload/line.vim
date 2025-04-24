@@ -4,69 +4,33 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! line#init(...) abort "{
-  if exists('s:init')|return|else|let s:init=1|endif
-  let s:nvim = has('nvim')
-
-  let s:verbose  = get(g:,'line_verbose',2)
-  let s:bonetype = get(g:,'line_bonetype',1)
-  let s:skeleton = get(g:,'line_skeleton',0)
-
-  let g:line = {}
-  let g:line.nvpm = 0
-  let g:line.zoom = #{mode:0,left:0,right:0}
-  let g:line.mode = 0
-  let g:line.git  = #{info:''}
-
-  call line#save()
-  call line#skel()
-
-  if get(g:,'line_initload')
-    hi clear TabLine
-    hi clear StatusLine
-    call timer_start(200,{->line#show()})
-  endif
-  if !get(g:,'line_keepuser')
-    unlet! g:line_verbose
-    unlet! g:line_bonetype
-    unlet! g:line_skeleton
-    unlet! g:line_initload
-    unlet! g:line_keepuser
-  endif
-
-endfu "}
 fu! line#skel(...) abort "{
 
-  if a:0==1
+  if a:0
     if !exists('g:line_skeleton')
       let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
     endif
-    return
-  endif
-  if a:0==0
-    if type(s:skeleton)!=4 " dict type
-      let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-      call add(s:skeleton.head.l,['list',2])
-      call add(s:skeleton.head.r,['list',1])
-      call add(s:skeleton.head.r,' ')
-      call add(s:skeleton.head.r,['curr',0])
-      call add(s:skeleton.feet.l,['list',3])
-      call add(s:skeleton.feet.l,' ')
-      call add(s:skeleton.feet.l,['git'])
-      call add(s:skeleton.feet.l,' ')
-      call add(s:skeleton.feet.l,['file'])
-      call add(s:skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
-      let s:headl = 1
-      let s:headr = 1
-      let s:feetl = 1
-      let s:feetr = 1
-    else
-      let s:headl = exists('s:skeleton.head.l')
-      let s:headr = exists('s:skeleton.head.r')
-      let s:feetl = exists('s:skeleton.feet.l')
-      let s:feetr = exists('s:skeleton.feet.r')
-    endif
-    return
+  elseif type(s:skeleton)!=4 " dict type
+    let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    call add(s:skeleton.head.l,['list',2])
+    call add(s:skeleton.head.r,['list',1])
+    call add(s:skeleton.head.r,' ')
+    call add(s:skeleton.head.r,['curr',0])
+    call add(s:skeleton.feet.l,['list',3])
+    call add(s:skeleton.feet.l,' ')
+    call add(s:skeleton.feet.l,['git'])
+    call add(s:skeleton.feet.l,' ')
+    call add(s:skeleton.feet.l,['file'])
+    call add(s:skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
+    let s:headl = 1
+    let s:headr = 1
+    let s:feetl = 1
+    let s:feetr = 1
+  else
+    let s:headl = exists('s:skeleton.head.l')
+    let s:headr = exists('s:skeleton.head.r')
+    let s:feetl = exists('s:skeleton.feet.l')
+    let s:feetr = exists('s:skeleton.feet.r')
   endif
 
 endfu "}
@@ -323,6 +287,35 @@ fu! line#list(...) abort "{
 endfu "}
 
 "-- main functions --
+fu! line#init(...) abort "{
+  if exists('s:init')|return|else|let s:init=1|endif
+  let s:nvim = has('nvim')
+
+  let s:verbose  = get(g:,'line_verbose',2)
+  let s:bonetype = get(g:,'line_bonetype',1)
+  let s:skeleton = get(g:,'line_skeleton',0)
+
+  let g:line = {}
+  let g:line.nvpm = 0
+  let g:line.zoom = #{mode:0,left:0,right:0}
+  let g:line.mode = 0
+  let g:line.git  = #{info:''}
+
+  call line#save()
+  call line#skel()
+
+  if get(g:,'line_initload')
+    call line#show()
+  endif
+  if !get(g:,'line_keepuser')
+    unlet! g:line_verbose
+    unlet! g:line_bonetype
+    unlet! g:line_skeleton
+    unlet! g:line_initload
+    unlet! g:line_keepuser
+  endif
+
+endfu "}
 fu! line#head(...) abort "{
 
   let line = ''
@@ -369,9 +362,8 @@ fu! line#feet(...) abort "{
 
 endfu "}
 fu! line#draw(...) abort "{
-  if !g:line.mode|return|endif
-  if &showtabline|call line#head()|endif
-  if &laststatus |call line#feet()|endif
+  call line#head()
+  call line#feet()
 endfu "}
 fu! line#show(...) abort "{
 
