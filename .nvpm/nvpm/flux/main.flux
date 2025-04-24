@@ -4,6 +4,7 @@
     workspace 🭹 line {
       tab  code
         file auto : autoload/line.vim
+        -file auxy : auxy/line
         -file init = meta/init.vim
         file plug : plugin/line.vim
       tab 🯅 seng = seng/line
@@ -84,8 +85,8 @@
       -file help.txt
       -file cmdline.txt
       -file eval:eval.txt
+      file chan:channel.txt
       file jobs:job_control.txt
-      -file chan:channel.txt
       file btin:builtin.txt
   }
 

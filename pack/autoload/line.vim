@@ -4,91 +4,27 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
-fu! line#gmsg(...) abort "{
-  let type = a:1
-  let data = a:3
-  if type==0 " branch info
-    if !empty(data)&&data!=['']
-      let g:line.branch = trim(join(data))
-    endif
-  elseif type==1 " modified info
-    if !empty(data)&&data!=['']
-      let g:line.modified = 1
-    endif
-  elseif type==2 " staged   info
-    if !empty(data)&&data!=['']
-      let g:line.staged = 1
-      let g:line.modified = 0
-    endif
-  endif
-endfu "}
-fu! line#jobs(...) abort "{
-
-  if !s:gitinfo|return|endif
-
-  let bash = {}
-  let bash.s = 'while true;do '
-  let bash.t = ';sleep '
-  let bash.e = ';done'
-  let init = 0.10
-  let step = 0.05
-
-  let gitb = 'git rev-parse --abbrev-ref HEAD'
-  let gitm = 'git diff HEAD --shortstat'
-  let gits = 'git diff --no-ext-diff --cached --shortstat'
-
-" git branch   job {
-
-  let cmd = bash.s..gitb..bash.t..(init+0*step)..bash.e
-  call jobstart(cmd,{'on_stdout':function('line#gmsg',[0])})
-
-" }
-" git modified job {
-
-  let cmd = bash.s..gitm..bash.t..(init+1*step)..bash.e
-  call jobstart(cmd,{'on_stdout':function('line#gmsg',[1])})
-
-" }
-" git staged   job {
-
-  let cmd = bash.s..gits..bash.t..(init+2*step)..bash.e
-  call jobstart(cmd,{'on_stdout':function('line#gmsg',[2])})
-
-  " }
-
-endfu "}
 fu! line#init(...) abort "{
   if exists('s:init')|return|else|let s:init=1|endif
   let s:nvim = has('nvim')
 
   let s:verbose  = get(g:,'line_verbose',2)
-  let s:gitinfo  = get(g:,'line_gitinfo',0)
-  let s:delay    = get(g:,'line_gitdelay',7000)
   let s:bonetype = get(g:,'line_bonetype',1)
   let s:skeleton = get(g:,'line_skeleton',0)
-
-  let s:gitinfo  = s:gitinfo && executable('git')
-  let g:line_gitinfo = s:gitinfo " for autocmds in plugin/line.vim
-  let g:line_gitdelay = s:delay  " for autocmds in plugin/line.vim
 
   let g:line = {}
   let g:line.nvpm = 0
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
-  let g:line.git  = ''
-  let g:line.branch= ''
-  let g:line.modified = 0
-  let g:line.staged = 0
-  "let g:line.clean = 0
+  let g:line.git  = #{info:''}
 
   call line#save()
   call line#skel()
-  call line#jobs()
 
   if get(g:,'line_initload')
     hi clear TabLine
     hi clear StatusLine
-    call line#show()
+    call timer_start(200,{->line#show()})
   endif
   if !get(g:,'line_keepuser')
     unlet! g:line_verbose
@@ -97,46 +33,6 @@ fu! line#init(...) abort "{
     unlet! g:line_initload
     unlet! g:line_keepuser
   endif
-
-endfu "}
-fu! line#gitf(...) abort "{
-
-  let info = ''
-  if empty(g:line.branch)
-    let info = '%#LineGitm#gitless'
-    if s:bonetype==2
-      let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
-    endif
-  else
-    if g:line.staged
-        if s:bonetype==2
-          let edgel = '%#LineGitsEdge#'
-          let edger = '%#LineGitsEdge#'
-        endif
-        let colr = '%#LineGits#'
-        let char = '[S]'
-    elseif g:line.modified
-        if s:bonetype==2
-          let edgel = '%#LineGitmEdge#'
-          let edger = '%#LineGitmEdge#'
-        endif
-        let colr = '%#LineGitm#'
-        let char = '[M]'
-    else
-      let char = ''
-      let colr = '%#LineGitc#'
-      let edgel= ''
-      let edger= ''
-      if s:bonetype==2
-        let edgel = '%#LineGitcEdge#'
-        let edger = '%#LineGitcEdge#'
-      endif
-    endif
-    let info = edgel..colr ..' '..g:line.branch .. char .. edger
-  endif
-  return info
-  "let g:line.git = info
-  "call line#draw()
 
 endfu "}
 fu! line#skel(...) abort "{
@@ -363,8 +259,7 @@ fu! line#bone(...) abort "{
       let func = bone[0]
       let args = bone[1:]
       if  func == 'git'
-        "let item = g:line.git
-        let item = line#gitf()
+        let item = g:line.git.info
       else
         let item = line#atom(func,args,revs)
       endif
@@ -521,15 +416,6 @@ fu! line#line(...) abort "{
 endfu "}
 
 "-- auxy functions --
-fu! line#find(...) abort "{
-
-  let name = a:1
-  if s:feetl&&1+match(s:skeleton.feet.l,name)|return 1|endif
-  if s:feetr&&1+match(s:skeleton.feet.r,name)|return 1|endif
-  if s:headl&&1+match(s:skeleton.head.l,name)|return 1|endif
-  if s:headr&&1+match(s:skeleton.head.r,name)|return 1|endif
-
-endfu "}
 fu! line#save(...) abort "{
 
   let s:laststatus  = &laststatus

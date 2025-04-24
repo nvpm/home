@@ -12,10 +12,7 @@ command! Line call line#line()
 "-- auto commands --
 augroup LINE
   au!
-  au BufWritePost,BufEnter,FocusGained,ModeChanged,BufDelete * call line#draw()
-  "if g:line_gitinfo
-  "  au BufWritePost,FocusGained * 
-  " \call timer_start(g:line_gitdelay,{->line#gitf()})
-  "endif
+  au BufWritePost,BufEnter,FocusGained,ModeChanged,BufDelete * 
+        \call line#draw()
 augroup END
 

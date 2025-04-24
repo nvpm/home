@@ -12,8 +12,18 @@ fu! s:test.line(...) "{
   so pack/autoload/line.vim
   so pack/plugin/line.vim
 
-
-  call line#jobs()
+  fu! s:data(...)
+    let data = a:2
+    if data!=['']
+      "let g:line.git = '%#normal#'.trim(join(data))
+      echo data
+    else
+      "let g:line.git = ''
+    endif
+    "call line#draw()
+  endfu
+  let cmd = 'pack/auxy/line'
+  let job = jobstart(cmd,{'on_stdout':function('s:data')})
 
 endfu "}
 fu! s:test.flux(...) "{
@@ -108,6 +118,6 @@ if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
 if 0|call s:test.zoom()|endif
-if 1|call s:test.line()|endif
+if 0|call s:test.line()|endif
 
 "}

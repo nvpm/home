@@ -117,8 +117,6 @@
   let line_keepuser = 0
   let line_initload = 1
   let line_verbose  = 2
-  let line_gitinfo  = 1
-  let line_gitdelay = 2000
   let line_bonetype = 2 "0:bracks,1:hi,2:buttons,3:powerline
   let line_brackets = '[]'
 
@@ -188,9 +186,7 @@
     call add(g:line_skeleton.head.r,['curr',0,'linespot'])
 
     call add(g:line_skeleton.feet.l,['list',3])
-    call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['git'])
-    call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['file'])
     call add(g:line_skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
 
