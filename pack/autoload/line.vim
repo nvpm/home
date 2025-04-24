@@ -12,11 +12,11 @@ fu! line#gmsg(...) abort "{
     endif
   elseif type==1 " modified info
     if !empty(data)&&data!=['']
-      let g:line.modified = !empty(trim(join(data)))
+      let g:line.modified = 1
     endif
   elseif type==2 " staged   info
     if !empty(data)&&data!=['']
-      let g:line.staged = !empty(trim(join(data)))
+      let g:line.staged = 1
     endif
   endif
 endfu "}
@@ -29,13 +29,12 @@ fu! line#jobs(...) abort "{
   let bash.t = ';sleep '
   let bash.e = ';done'
   let init = 1.00
-  let step = 0.50
+  let step = 0.00
 
   let gitb = 'git rev-parse --abbrev-ref HEAD'
   let gitm = 'git diff HEAD --shortstat'
   let gits = 'git diff --no-ext-diff --cached --shortstat'
-  "let gitm = 'if '..gitm..'>/dev/null;then echo modified;fi'
-  "let gits = 'if '..gits..'>/dev/null;then echo staged  ;fi'
+
 " git branch   job {
 
   let cmd = bash.s..gitb..bash.t..(init+0*step)..bash.e
@@ -75,7 +74,6 @@ fu! line#init(...) abort "{
   let g:line.zoom = #{mode:0,left:0,right:0}
   let g:line.mode = 0
   let g:line.git  = ''
-  let g:line.timer= 0
   let g:line.branch= ''
   let g:line.modified = 0
   let g:line.staged = 0
@@ -108,14 +106,6 @@ fu! line#gitf(...) abort "{
       let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
     endif
   else
-    let char = ''
-    let colr = '%#LineGitc#'
-    let edgel= ''
-    let edger= ''
-    if s:bonetype==2
-      let edgel = '%#LineGitcEdge#'
-      let edger = '%#LineGitcEdge#'
-    endif
     if g:line.staged
         if s:bonetype==2
           let edgel = '%#LineGitsEdge#'
@@ -130,6 +120,15 @@ fu! line#gitf(...) abort "{
         endif
         let colr = '%#LineGitm#'
         let char = '[M]'
+    else
+      let char = ''
+      let colr = '%#LineGitc#'
+      let edgel= ''
+      let edger= ''
+      if s:bonetype==2
+        let edgel = '%#LineGitcEdge#'
+        let edger = '%#LineGitcEdge#'
+      endif
     endif
     let info = edgel..colr ..' '..g:line.branch .. char .. edger
   endif
