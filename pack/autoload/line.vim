@@ -1,4 +1,5 @@
 "-- auto/line.vim  --
+"
 
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
