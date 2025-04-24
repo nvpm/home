@@ -182,11 +182,11 @@
 
     call add(g:line_skeleton.head.l,['list',2])
     call add(g:line_skeleton.head.r,['list',1])
-    call add(g:line_skeleton.head.r,repeat(' ',1))
     call add(g:line_skeleton.head.r,['curr',0,'linespot'])
 
-    call add(g:line_skeleton.feet.l,['list',3])
     call add(g:line_skeleton.feet.l,['git'])
+    call add(g:line_skeleton.feet.l,['list',3])
+    call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['file'])
     call add(g:line_skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
 
