@@ -113,11 +113,12 @@
 " }
 " line {
 
+  set ut=1000
   let line_keepuser = 0
   let line_initload = 1
   let line_verbose  = 2
   let line_gitinfo  = 1
-  let line_gitdelay = 1000
+  let line_gitdelay = 2000
   let line_bonetype = 2 "0:bracks,1:hi,2:buttons,3:powerline
   let line_brackets = '[]'
 

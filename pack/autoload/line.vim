@@ -3,9 +3,48 @@
 if !NVPMTEST&&exists('__LINEAUTO__')|finish|endif
 let __LINEAUTO__ = 1
 
+fu! line#init(...) abort "{
+  if exists('s:init')|return|else|let s:init=1|endif
+  let s:nvim = has('nvim')
+
+  let s:verbose  = get(g:,'line_verbose',2)
+  let s:gitinfo  = get(g:,'line_gitinfo',0)
+  let s:delay    = get(g:,'line_gitdelay',7000)
+  let s:bonetype = get(g:,'line_bonetype',1)
+  let s:skeleton = get(g:,'line_skeleton',0)
+
+  let s:gitinfo  = s:gitinfo && executable('git')
+  let g:line_gitinfo = s:gitinfo " for autocmds in plugin/line.vim
+  let g:line_gitdelay = s:delay  " for autocmds in plugin/line.vim
+
+  let g:line = {}
+  let g:line.nvpm = 0
+  let g:line.zoom = #{mode:0,left:0,right:0}
+  let g:line.mode = 0
+  let g:line.git  = ''
+  let g:line.timer= 0
+
+  call line#save()
+  call line#skel()
+
+  if get(g:,'line_initload')
+    hi clear TabLine
+    hi clear StatusLine
+    call line#show()
+    call timer_start(s:delay,{->line#gitf()})
+  endif
+  if !get(g:,'line_keepuser')
+    unlet! g:line_verbose
+    unlet! g:line_bonetype
+    unlet! g:line_skeleton
+    unlet! g:line_initload
+    unlet! g:line_keepuser
+  endif
+
+endfu "}
 fu! line#time(...) abort "{
 
-  if !s:gitinfo|return|endif
+  if 1&&!s:gitinfo|return|endif
 
   if a:0&&g:line.timer
     call timer_stop(g:line.timer)
@@ -14,6 +53,7 @@ fu! line#time(...) abort "{
   elseif !g:line.timer
     let g:line.timer = timer_start(s:delay,'line#gitf',{'repeat':-1})
   endif
+
 
 endfu "}
 fu! line#gitf(...) abort "{
@@ -58,6 +98,7 @@ fu! line#gitf(...) abort "{
     let info = edgel..colr ..' '..branch .. char .. edger
   endif
   let g:line.git = info
+  call line#draw()
 
 endfu "}
 fu! line#skel(...) abort "{
@@ -348,44 +389,6 @@ fu! line#list(...) abort "{
 endfu "}
 
 "-- main functions --
-fu! line#init(...) abort "{
-  if exists('s:init')|return|else|let s:init=1|endif
-  let s:nvim = has('nvim')
-
-  let s:verbose  = get(g:,'line_verbose',2)
-  let s:gitinfo  = get(g:,'line_gitinfo',0)
-  let s:delay    = get(g:,'line_gitdelay',7000)
-  let s:bonetype = get(g:,'line_bonetype',1)
-  let s:skeleton = get(g:,'line_skeleton',0)
-
-  let s:gitinfo  = s:gitinfo && executable('git')
-  let g:line_gitinfo = s:gitinfo " for autocmds in plugin/line.vim
-
-  let g:line = {}
-  let g:line.nvpm = 0
-  let g:line.zoom = #{mode:0,left:0,right:0}
-  let g:line.mode = 0
-  let g:line.git  = ''
-  let g:line.timer= 0
-
-  call line#save()
-  call line#skel()
-
-  if get(g:,'line_initload')
-    hi clear TabLine
-    hi clear StatusLine
-    call line#show()
-    call timer_start(s:delay+1,{->line#draw()})
-  endif
-  if !get(g:,'line_keepuser')
-    unlet! g:line_verbose
-    unlet! g:line_bonetype
-    unlet! g:line_skeleton
-    unlet! g:line_initload
-    unlet! g:line_keepuser
-  endif
-
-endfu "}
 fu! line#head(...) abort "{
 
   let line = ''
@@ -455,7 +458,6 @@ fu! line#show(...) abort "{
   endif
 
   let g:line.mode = 1
-  call timer_start(get(g:,'line_gitdelay',&updatetime),{->line#gitf()})
 
 endfu "}
 fu! line#hide(...) abort "{

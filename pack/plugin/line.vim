@@ -12,15 +12,11 @@ command! Line call line#line()
 "-- auto commands --
 augroup LINE
   au!
-  au BufEnter,ModeChanged,BufDelete * call line#draw()
+  au BufEnter,ModeChanged,BufDelete * 
+  \call line#draw()
   if g:line_gitinfo
-    au BufWrite,CmdWinLeave,CmdWinEnter * call line#gitf()
-    au CursorHold,CursorHoldI * call line#gitf()
-    if has('nvim')
-      au TermEnter,TermLeave,TermClose * call line#gitf()
-    else
-      au TerminalOpen,TerminalWinOpen  * call line#gitf()
-    endif
+    au BufWritePost,FocusGained * 
+   \call timer_start(g:line_gitdelay,{->line#gitf()})
   endif
 augroup END
 
