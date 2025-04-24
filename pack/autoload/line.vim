@@ -18,6 +18,7 @@ fu! line#gmsg(...) abort "{
   elseif type==2 " staged   info
     if !empty(data)&&data!=['']
       let g:line.staged = 1
+      let g:line.modified = 0
     endif
   endif
 endfu "}
@@ -29,8 +30,8 @@ fu! line#jobs(...) abort "{
   let bash.s = 'while true;do '
   let bash.t = ';sleep '
   let bash.e = ';done'
-  let init = 1.00
-  let step = 0.00
+  let init = 0.10
+  let step = 0.05
 
   let gitb = 'git rev-parse --abbrev-ref HEAD'
   let gitm = 'git diff HEAD --shortstat'
