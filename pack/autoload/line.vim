@@ -26,7 +26,7 @@ fu! line#gitf(...) abort "{
   let branch = trim(system(gitb))
   if 1+match(branch,'^fatal:.*')
     let info = '%#LineGitm#gitless'
-    if s:edgekind==2
+    if s:bonetype==2
       let info = '%#LineGitmEdge#'..info..'%#LineGitmEdge#'
     endif
   else
@@ -36,19 +36,19 @@ fu! line#gitf(...) abort "{
     let colr = '%#LineGitc#'
     let edgel= ''
     let edger= ''
-    if s:edgekind==2
+    if s:bonetype==2
       let edgel = '%#LineGitcEdge#'
       let edger = '%#LineGitcEdge#'
     endif
     if gits
-        if s:edgekind==2
+        if s:bonetype==2
           let edgel = '%#LineGitsEdge#'
           let edger = '%#LineGitsEdge#'
         endif
         let colr = '%#LineGits#'
         let char = '[S]'
     elseif gitm
-        if s:edgekind==2
+        if s:bonetype==2
           let edgel = '%#LineGitmEdge#'
           let edger = '%#LineGitmEdge#'
         endif
@@ -145,7 +145,7 @@ fu! line#atom(...) abort "{
       let name = expand('%:t')
     endif "}
     if empty(name)|return ''|endif
-    if s:edgekind==2
+    if s:bonetype==2
       let edge = colr.'Edge'
       let left = line#mode(edge,'')
       let right= line#mode(edge,'')
@@ -191,9 +191,9 @@ fu! line#atom(...) abort "{
     let list = line#list(list,indx,leng,revs,colr)
     if !empty(list)
       let line = join(list,'')
-      if     s:edgekind==0
+      if     s:bonetype==0
         let line = '%#linefill#'..line
-      elseif s:edgekind==2
+      elseif s:bonetype==2
         if     leng==1      "{
           let left = line#mode('linecurredge','')
           let right= line#mode('linecurredge','')
@@ -245,7 +245,7 @@ fu! line#atom(...) abort "{
     endif
     let hi   = '%#'.hi.'#'
     let name = hi..char..' '..name
-    if s:edgekind==2
+    if s:bonetype==2
       let name = '%#linefileedge#'..name..'%#linefileedge#'
     endif
     return name
@@ -259,7 +259,7 @@ fu! line#atom(...) abort "{
       let info = get(info,0,'')
     endif
     if type(info)==1 " string type
-      if s:edgekind==2
+      if s:bonetype==2
         let info = '%#LineUser#'..info
         let info = '%#LineUserEdge#'..info..'%#LineUserEdge#'
       endif
@@ -307,7 +307,7 @@ fu! line#list(...) abort "{
     let info = g:line.nvpm?eval('item.data.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     let elem = ''
-    if     s:edgekind==0 "{
+    if     s:bonetype==0 "{
       if indx==curr&&leng>1
         let elem.= '['..info..']'
       elseif leng==1
@@ -316,7 +316,7 @@ fu! line#list(...) abort "{
         let elem.= ' '..info..' '
       endif
     "}
-    elseif s:edgekind==1 "{
+    elseif s:bonetype==1 "{
       let info = ' '..info..' '
       if indx==curr
         if colr=='linecurr'
@@ -328,7 +328,7 @@ fu! line#list(...) abort "{
         let elem.= line#mode('lineinac',info)
       endif
     "}
-    elseif s:edgekind==2 "{
+    elseif s:bonetype==2 "{
       let info = ' '..info..' '
       if indx==curr
         if colr=='linecurr'
@@ -355,7 +355,7 @@ fu! line#init(...) abort "{
   let s:verbose  = get(g:,'line_verbose',2)
   let s:gitinfo  = get(g:,'line_gitinfo',0)
   let s:delay    = get(g:,'line_gitdelay',7000)
-  let s:edgekind = get(g:,'line_edgekind',1)
+  let s:bonetype = get(g:,'line_bonetype',1)
   let s:skeleton = get(g:,'line_skeleton',0)
 
   let s:gitinfo  = s:gitinfo && executable('git')
@@ -379,7 +379,7 @@ fu! line#init(...) abort "{
   endif
   if !get(g:,'line_keepuser')
     unlet! g:line_verbose
-    unlet! g:line_edgekind
+    unlet! g:line_bonetype
     unlet! g:line_skeleton
     unlet! g:line_initload
     unlet! g:line_keepuser
