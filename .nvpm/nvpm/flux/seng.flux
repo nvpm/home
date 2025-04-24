@@ -4,7 +4,7 @@
         file init = meta/init.vim
         file char = char/char.txt
         file gen  = char/char.gen
-    loop plugin: nvpm line flux zoom text {
+    loop plugin: line nvpm flux zoom text {
       workspace $(plugin):$(plugin) 
         tab misc {
           file TODO     

@@ -12,6 +12,9 @@ fu! s:test.line(...) "{
   so pack/autoload/line.vim
   so pack/plugin/line.vim
 
+
+  call line#jobs()
+
 endfu "}
 fu! s:test.flux(...) "{
 
@@ -104,7 +107,7 @@ endfu "}
 if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
 if 0|call s:test.nvpm()|endif
-if 1|call s:test.zoom()|endif
+if 0|call s:test.zoom()|endif
 if 1|call s:test.line()|endif
 
 "}
