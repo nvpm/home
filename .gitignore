@@ -1,1 +1,2 @@
-# .nvpm/**/*
+.nvpm/nvpm/edit
+.nvpm/nvpm/save

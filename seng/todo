@@ -1,4 +1,5 @@
 
+  ● move <plug>#init() to autoload file ~
   ● change lexis->lexicon ~
   ● separate fluxconf into individual variables ~
   ● deal with conf/menu.vim  ~

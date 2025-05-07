@@ -1,218 +1,282 @@
 " devl {
 
-  hi NVPMPassed  guifg=#009900 gui=bold
-  hi NVPMFailed  guifg=#ffffff guibg=#990000 gui=bold
+let NVPMTEST = 1
+if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
+  so meta/meta.vim
+  nmap <silent><F1> <esc>:wall<cr>:MetaInit<cr>
+  nmap <silent><F2> <esc>:wall<cr>:MetaSync<cr>
+  nmap <silent><F3> <esc>:wall<cr>:MetaMake<cr>
+  nmap <silent>mgc  <esc>:wall<cr>:MetaSave nvpm<cr>
+  nmap <silent>mgp  <esc>:wall<cr>:MetaPush nvpm<cr>
+  com! MetaInit so meta/init.vim
+  com! MetaSync call meta#sync()
+  com! MetaMake call meta#make()
+  com! -nargs=* -complete=customlist,meta#plug MetaSave call meta#save("<args>")
+  com! -nargs=* -complete=customlist,meta#plug MetaPush call meta#push("<args>")
+endif
 
-  let NVPMTEST = 1
-
-  nmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-  imap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-  cmap <silent><F1> <esc>:wall<cr>:NVPMInit<cr>
-  command! NVPMInit so meta/init.vim
-
-  nmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-  imap <silent><F3> <esc>:wall<cr>:NVPMMenuSync<cr>
-  cmap <silent><F2> <esc>:wall<cr>:NVPMMenuSync<cr>
-  command! NVPMMenuSync so meta/conf.vim|
-                       \so meta/menu.vim|
-                       \call menu#sync()
-
-  nmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-  imap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-  cmap <silent><F3> <esc>:wall<cr>:NVPMMenuMake<cr>
-  command! NVPMMenuMake so meta/conf.vim|
-                       \so meta/menu.vim|
-                       \call menu#make()
-
-  nmap <silent>mgc  <esc>:wall<cr>:NVPMMenuSave<cr>
-  nmap <silent>mgp  <esc>:wall<cr>:NVPMMenuPush<cr>
-
-  command! NVPMMenuSave so meta/menu.vim|call menu#save()
-  command! NVPMMenuPush so meta/menu.vim|call menu#push()
-
-" end-devl}
+"}
 " main {
 
-  set termguicolors     " enable true colors support
-  let ayucolor="light"  " for light version of theme
-  let ayucolor="mirage" " for mirage version of theme
-  let ayucolor="dark"   " for dark version of theme
-  "colorscheme github
-  colorscheme ayu
-  if !has('nvim')
-    syntax on
-    set bg=dark
-  endif
+if !has('nvim')
+  set termguicolors
+  syntax on
+  set bg=dark
+endif
+colorscheme ayu
 
-  "hi Pmenu      guibg=#1f252a guifg=#888888
-  "hi PmenuSel   guibg=#aa361b guifg=#ffffff
+hi clear Pmenu       |hi Pmenu       guibg=#1f252a guifg=#888888
+hi clear PmenuSel    |hi PmenuSel    guibg=#aa361b guifg=#ffffff
+hi clear Folded      |hi Folded      guibg=#0f0f0f guifg=#749984
+hi clear DiffAdded   |hi DiffAdded   guifg=#00ff00 gui=bold
+hi clear DiffRemoved |hi DiffRemoved guifg=#ff5555 gui=bold
+hi clear Visual      |hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
+hi clear NonText     |hi NonText     ctermfg=0 guifg=#555555
 
-  hi Folded      guifg=#749984
-  hi DiffAdded   guifg=#00ff00 gui=bold
-  hi DiffRemoved guifg=#ff5555 gui=bold
-  hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
-  hi NonText     ctermfg=0 guifg=#555555
+"}
+" arbo {
 
-" }
-" nvpm {
+if !has('nvim')
+  set hidden
+endif
 
-  if !has('nvim')
-    set hidden
-  endif
+" arbo user variables tree
+let arbo_maketree = 1
+let arbo_initload = 1
+let arbo_autocmds = 1
 
-  " nvpm user variables tree
-  let nvpm_maketree = 1
-  let nvpm_initload = 1
-  let nvpm_autocmds = 1
+hi fluxvars guifg=#00ff00 gui=bold
 
-  let nvpm_fluxconf = {}
-  let nvpm_fluxconf.lexis = ''
-  let nvpm_fluxconf.lexis.= '|project proj scheme layout book'
-  let nvpm_fluxconf.lexis.= '|workspace arch archive architecture section'
-  let nvpm_fluxconf.lexis.= '|tab folder fold shelf package pack chapter'
-  let nvpm_fluxconf.lexis.= '|file buff buffer path entry node leaf page'
+nmap <silent><space>   :ArboLoop + 3<cr>
+nmap <silent>m<space>  :ArboLoop - 3<cr>
+nmap <silent><tab>     :ArboLoop + 2<cr>
+nmap <silent>m<tab>    :ArboLoop - 2<cr>
+nmap <silent><BS>      :ArboLoop + 1<cr>
+nmap <silent><DEL>     :ArboLoop - 1<cr>
+nmap <silent><C-p>     :ArboLoop - 1<cr>
+nmap <silent><C-n>     :ArboLoop + 1<cr>
+nmap <silent><C-i>     :ArboLoop - 0<cr>
+nmap <silent><C-o>     :ArboLoop - 0<cr>
+nmap <silent><C-Space> :ArboLoop + 0<cr>
+nmap <silent>=         :ArboLoop + -1<cr>
+nmap <silent>-         :ArboLoop - -1<cr>
 
-  hi fluxvars guifg=#00ff00 gui=bold
+nmap <F8>  <esc>:ArboLoad<space>
+imap <F8>  <esc>:ArboLoad<space>
+cmap <F8>  <esc>:ArboLoad<space>
+nmap <F9>  <esc>:ArboLoad<space>
+imap <F9>  <esc>:ArboLoad<space>
+cmap <F9>  <esc>:ArboLoad<space>
+nmap <F10> <esc>:ArboMake<space>
+imap <F10> <esc>:ArboMake<space>
+cmap <F10> <esc>:ArboMake<space>
+nmap <F11> <esc>:wall<cr>:ArboEdit<cr>
+imap <F11> <esc>:wall<cr>:ArboEdit<cr>
+cmap <F11> <esc>:wall<cr>:ArboEdit<cr>
+nmap <F12> <esc>:wall<cr>:ArboEdit<cr>
+imap <F12> <esc>:wall<cr>:ArboEdit<cr>
+cmap <F12> <esc>:wall<cr>:ArboEdit<cr>
 
-  nmap <silent><space>   :NvpmLoop + 3<cr>
-  nmap <silent>m<space>  :NvpmLoop - 3<cr>
-  nmap <silent><tab>     :NvpmLoop + 2<cr>
-  nmap <silent>m<tab>    :NvpmLoop - 2<cr>
-  nmap <silent><BS>      :NvpmLoop + 1<cr>
-  nmap <silent><DEL>     :NvpmLoop - 1<cr>
-  nmap <silent><C-p>     :NvpmLoop - 1<cr>
-  nmap <silent><C-n>     :NvpmLoop + 1<cr>
-  nmap <silent><C-i>     :NvpmLoop - 0<cr>
-  nmap <silent><C-o>     :NvpmLoop - 0<cr>
-  nmap <silent><C-Space> :NvpmLoop + 0<cr>
-  nmap <silent>=         :NvpmLoop + -1<cr>
-  nmap <silent>-         :NvpmLoop - -1<cr>
+nmap mt :ArboTerm<cr>i
 
-  nmap <F8> <esc>:NvpmLoad<space>
-  imap <F8> <esc>:NvpmLoad<space>
-  cmap <F8> <esc>:NvpmLoad<space>
-
-  nmap <F9> <esc>:NvpmLoad<space>
-  imap <F9> <esc>:NvpmLoad<space>
-  cmap <F9> <esc>:NvpmLoad<space>
-
-  nmap <F10> <esc>:NvpmMake<space>
-  imap <F10> <esc>:NvpmMake<space>
-  cmap <F10> <esc>:NvpmMake<space>
-
-  nmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <F11> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <F11> <esc>:wall<cr>:NvpmEdit<cr>
-  nmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <F12> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <F12> <esc>:wall<cr>:NvpmEdit<cr>
-
-  nmap mt :NvpmTerm<cr>i
-
-" }
+"}
 " line {
 
-  let line_keepuser = 0
-  let line_initload = 0
-  let line_verbose  = 2
-  let line_bonetype = 2 "0:bracks,1:hi,2:buttons,3:powerline
-  let line_brackets = '[]'
+"let __LINEAUTO__  = 1
+"let __LINEPLUG__  = 1
+let line_keepuser = 0
+let line_initload = g:arbo_initload
+let line_initload = 1
+let line_showmode = 2
+let line_gitimode = 2
+let line_gitdelay = &ut
+let line_bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
+let line_inacedge = ' , '
+let line_curredge = ' , ' " () []   
+if g:line_bonetype==0
+  let line_curredge = '[,]'
+  let line_inacedge = ' , '
+endif
+let line_boneedge = ',' "                     
 
-  nmap <silent>ml :Line<cr><c-l>
+nmap <silent>ml :Line<cr><c-l>
 
   " Colors   {
 
-    hi clear TabLine
-    hi clear StatusLine
-    " LineInac {
+    hi clear tabline
+    hi clear statusline
+    " LineFill {
 
-      hi LineInac     guibg=#001100 guifg=#007700
-      hi LineInacEdge guibg=bg      guifg=#001100
+      if g:line_bonetype==2
+        hi def link LineFill Normal
+      else
+        hi def link LineFill DiffChange
+      endif
 
     " }
-    " LineCurr {
+    " LineMode {
 
-      hi LineCurr     guibg=#003300 guifg=#00ff00
-      hi LineCurrEdge guibg=bg      guifg=#003300
+      if g:line_bonetype
+        hi LineModeNormal   guibg=#000077 guifg=White
+        hi LineModeInsert   guibg=#ff0000 guifg=White
+        hi LineModeReplace  guibg=#00ffff guifg=Black
+        hi LineModeVisual   guibg=#005f87 guifg=White
+        hi LineModeCmdline  guibg=#ffff00 guifg=Black
+        hi LineModeTerminal guibg=#ffffff guifg=Black
+
+        if g:line_bonetype==2
+          hi LineModeEdgeNormal   guibg=bg guifg=#000077
+          hi LineModeEdgeInsert   guibg=bg guifg=#ff0000
+          hi LineModeEdgeReplace  guibg=bg guifg=#00ffff
+          hi LineModeEdgeVisual   guibg=bg guifg=#005f87
+          hi LineModeEdgeCmdline  guibg=bg guifg=#ffff00
+          hi LineModeEdgeTerminal guibg=bg guifg=#ffffff
+        endif
+      else
+        hi def link ModeSpot LineFill
+      endif
 
     " }
     " LineSpot {
 
-      hi LineSpotNormal   guibg=#007700 guifg=Black
-      hi LineSpotInsert   guibg=#ff0000 guifg=White
-      hi LineSpotReplace  guibg=#00ffff guifg=Black
-      hi LineSpotVisual   guibg=#005f87 guifg=White
-      hi LineSpotCmdline  guibg=#ffff00 guifg=Black
-      hi LineSpotTerminal guibg=#ffffff guifg=Black
+      if g:line_bonetype
+        hi def link LineSpotNormal   LineModeNormal
+        hi def link LineSpotInsert   LineModeInsert
+        hi def link LineSpotReplace  LineModeReplace
+        hi def link LineSpotVisual   LineModeVisual
+        hi def link LineSpotCmdline  LineModeCmdline
+        hi def link LineSpotTerminal LineModeTerminal
 
-      hi LineSpotEdgeNormal   guibg=bg guifg=#007700
-      hi LineSpotEdgeInsert   guibg=bg guifg=#ff0000
-      hi LineSpotEdgeReplace  guibg=bg guifg=#00ffff
-      hi LineSpotEdgeVisual   guibg=bg guifg=#005f87
-      hi LineSpotEdgeCmdline  guibg=bg guifg=#ffff00
-      hi LineSpotEdgeTerminal guibg=bg guifg=#ffffff
-      
+        if g:line_bonetype==2
+          hi def link LineSpotEdgeNormal   LineModeEdgeNormal
+          hi def link LineSpotEdgeInsert   LineModeEdgeInsert
+          hi def link LineSpotEdgeReplace  LineModeEdgeReplace
+          hi def link LineSpotEdgeVisual   LineModeEdgeVisual
+          hi def link LineSpotEdgeCmdline  LineModeEdgeCmdline
+          hi def link LineSpotEdgeTerminal LineModeEdgeTerminal
+        endif
+      else
+        hi def link LineSpot LineFill
+      endif
+
+    " }
+    " LineCurr {
+
+      if g:line_bonetype
+        hi LineCurr     guibg=#000033 guifg=White
+        if g:line_bonetype==2
+          hi LineCurrEdge guibg=bg    guifg=#000033
+        endif
+      else
+        hi def link LineCurr LineFill
+      endif
+
+    " }
+    " LineInac {
+
+      if g:line_bonetype
+        hi LineInac     guibg=#000011 guifg=#007777
+        if g:line_bonetype==2
+          hi LineInacEdge guibg=bg    guifg=#000011
+        endif
+      else
+        hi def link LineInac LineCurr
+      endif
+
     " }
     " LineFile {
 
-      hi def link LineFile     LineCurr
-      hi def link LineFileEdge LineCurrEdge
+      if g:line_bonetype
+        hi def link LineFile LineCurr
+        if g:line_bonetype==2
+          hi def link LineFileEdge LineCurrEdge
+        endif
+      else
+        hi def link LineFile LineFill
+      endif
 
     " }
     " LineUser {
 
-      hi def link LineUser     LineFile
-      hi def link LineUserEdge LineFileEdge
+      if g:line_bonetype
+        hi def link LineUser LineFile
+        if g:line_bonetype==2
+          hi def link LineUserEdge LineFileEdge
+        endif
+      else
+        hi def link LineUser LineFill
+      endif
 
     " }
     " LineGitx {
 
-      hi LineGits guibg=#555500 | hi LineGitsEdge guifg=#555500
-      hi LineGitm guibg=#440000 | hi LineGitmEdge guifg=#440000
-
-      hi def link LineGitc     LineCurr 
-      hi def link LineGitcEdge LineCurrEdge
+      if g:line_bonetype
+        hi LineGits guibg=#555500 guifg=#000000
+        hi LineGitm guibg=#440000 guifg=#ffffff
+        hi def link LineGitc LineCurr
+        if g:line_bonetype==2
+          hi LineGitsEdge guifg=#555500
+          hi LineGitmEdge guifg=#440000
+          hi def link LineGitcEdge LineCurrEdge
+        endif
+      else
+        hi def link LineGits LineFill
+        hi def link LineGitm LineFill
+        hi def link LineGitc LineFill
+      endif
 
     " }
 
   "}
   " Skeleton {
 
-    call line#skel(1)
+    if !exists('__LINEAUTO__')
+      call line#skel(1)
 
-    call add(g:line_skeleton.head.l,['list',2])
-    call add(g:line_skeleton.head.r,['list',1])
-    call add(g:line_skeleton.head.r,['curr',0,'linespot'])
+      call add(g:line_skeleton.head.l,['list',2])
+      call add(g:line_skeleton.head.r,['list',1])
+      call add(g:line_skeleton.head.r,'%#TypeDef#|')
+      call add(g:line_skeleton.head.r,['curr',0,'LineSpot'])
 
-    call add(g:line_skeleton.feet.l,['git'])
-    call add(g:line_skeleton.feet.l,['list',3])
-    call add(g:line_skeleton.feet.l,' ')
-    call add(g:line_skeleton.feet.l,['file'])
-    call add(g:line_skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
+      "call add(g:line_skeleton.feet.l,['mode'])
+      "call add(g:line_skeleton.feet.l,' ')
+      call add(g:line_skeleton.feet.l,['git'])
+      call add(g:line_skeleton.feet.l,'%#TypeDef#|')
+      call add(g:line_skeleton.feet.l,['list',3])
+      call add(g:line_skeleton.feet.l,'%#TypeDef#|')
+      call add(g:line_skeleton.feet.l,['file'])
+      call add(g:line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
+    endif
 
   "}
 
-" }
+"}
 " zoom {
 
-  set cmdheight=1
-  let zoom_autocmds = 1
-  let zoom_initload = 1
-  let zoom_keepline = 1
-  let zoom_usefloat = 1
-  let zoom_useminus = 1
+set noruler
+"set noshowcmd
+"set noshowmode
+let zoom_autocmds = 1
+let zoom_initload = g:line_initload
+let zoom_initload = 1
+let zoom_keepline = 1
+let zoom_pushcmdl = 1
+let zoom_usefloat = 1
+let zoom_useminus = 1
 
-  let zoom_height = -4
-  let zoom_width  = 80
+let zoom_height = -4
+let zoom_width  = 80
+let zoom_top    = 0
 
-  nmap <silent>mz :Zoom<cr>
+nmap <silent>mz :Zoom<cr>
 
-" }
+"}
 " text {
 
-  nmap maj vip:TextFixs<cr>vip:TextJust 76<cr>{vapoj<vip>
-  vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 76<cr>
+nmap maj vip:TextFixs<cr>vip:TextJust 76<cr>{vapoj<vip>
+vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 76<cr>
 
 "}
 
-" }
+"}
+" vim: nowrap

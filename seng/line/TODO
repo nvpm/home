@@ -1,8 +1,4 @@
 
-  ● print the name of the project onto the tabline in zoom mode ~
-  ● let &l:statusline when not in nvpm.mode & have splits save & restore ~
-  ● make the autocmd to bdel help files ~
-  ● integration w/ flux on the line_colors user variable ~
-  ● in skeleton, include distinction between nvpm loaded or not ~
+  ● ~
 
 vim: ft=help: tw=2

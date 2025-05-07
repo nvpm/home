@@ -1,0 +1,230 @@
+let s:tabs = ''
+
+fu! meta#copy(...) "{
+
+  let list = a:1
+  let dest = a:2
+  for plug in list
+    echo "\n"
+    call meta#SYNC('autoload/'.plug.'.vim' , '../'.dest)
+    call meta#SYNC('plugin/'  .plug.'.vim' , '../'.dest)
+    call meta#SYNC('syntax/'  .plug.'.vim' , '../'.dest)
+    call meta#SYNC('doc/'     .plug.'.txt' , '../'.dest)
+  endfor
+
+endfu "}
+fu! meta#sync(...) "{
+
+  call meta#tabs()
+
+  let msg  = s:tabs..'proj.sync: sync files? [yes/no] '
+  let user = input(msg,'yes','customlist,meta#yesn')
+  if empty(user)||user==?'no'|return 1|else
+    echo "\n"
+    let list = meta#plug()
+    call filter(list,'v:val!="nvpm"')
+    call meta#copy(list,'nvpm')
+    call meta#SYNC('readme/nvpm.md','../nvpm/README.md',1)
+    call meta#SYNC('LICENSE','../nvpm')
+  endif
+
+endfu "}
+fu! meta#SYNC(...) "{
+
+  let orig = a:1
+  let dest = a:2
+  if !exists('a:3')
+    let dest.= '/'..orig
+  endif
+  if !filereadable(orig)|return|endif
+  call mkdir(fnamemodify(dest,':h'),'p')
+  if writefile(readfile(orig,'b'),dest,'b')|return|endif
+
+  let sep  = repeat('1001',5)
+  let file = join(readfile(dest),sep)
+
+  let rgex = ''
+  let rgex.= '\('.sep.'\)*'
+  let rgex.= '\(!NVPMTEST&&\|<!---.*--->\|" vim:.*\)'
+  let rgex.= '\('.sep.'\)*'
+
+  let file = substitute(file,rgex,'','g')
+
+  let file = split(file,sep)
+
+  " remove trailing whitespaces
+  for i in range(len(file))
+    let file[i] = substitute(file[i],'\s*$','','')
+  endfor
+  call writefile(file,dest)
+
+endfu "}
+fu! meta#save(...) "{
+
+  let root = get(a:,1,'nvpm')
+  if root=='nvpm'
+    let root = './'
+  else
+    let root = '../'..root
+  endif
+  call meta#tabs()
+  let status = system('git -C '.root.' status --porcelain')
+  if empty(status)
+    echon s:tabs
+    echohl Visual
+    echon 'Clean Working Directory at ('.root.'). Aborting commit...'
+    echohl None
+    return 0
+  else
+    let status = split(status,"\n")
+    call map(status,'trim(v:val)')
+    let status = s:tabs.. join(status,"\n".s:tabs)
+    echon s:tabs
+    echohl Error
+    echon 'Modified content at ('.root.')'
+    echohl None
+    echo status
+  endif
+
+  echohl Title
+  echo s:tabs..'type commit message'
+  let msg = input(s:tabs..'>>> ')
+  if empty(msg)|return 1|endif
+  echo system('git -C '.root.' add .')
+  echo "\n"
+  let sys = system('git -C '.root.' commit -m "'.msg.'"')
+  let sys = split(sys,"\n")
+  call map(sys,'trim(v:val)')
+  let sys = s:tabs.. join(sys,"\n".s:tabs)
+  ec sys
+
+endfu "}
+fu! meta#push(...) "{
+
+  echo "\n"
+  if meta#save()|return 1|endif
+
+  " retrive token {
+
+    let server = 'gitlab'
+    let server = 'github'
+    let tfile  = $'/iasj/cryp/{server}'
+    let token  = $'/iasj/cryp/{server}.gpg'
+    let prefix = ['',"gitlab-cli-token:"][server=='gitlab']
+    if filereadable(tfile)|call delete(tfile)|endif
+    echo "\n"
+    let gitb = trim(system('git rev-parse --abbrev-ref HEAD'))
+    echohl Title
+    echo s:tabs..'Pushing '..gitb
+    let pass = inputsecret(s:tabs..'type the passphrase: ')
+    if empty(pass)|return 1|endif
+    let command = 'gpg -q --no-symkey-cache --batch --passphrase '
+    let command.= pass..' '..token
+    call system(command)
+    if v:shell_error
+      echon "\n"
+      echon s:tabs
+      echohl Error
+      echon 'Wrong passphrase'
+      echohl None
+      return 1
+    endif
+
+  " }
+  " push w/ token {
+
+    if filereadable(tfile)                                                      
+      let token = readfile(tfile)[0]                                            
+      call delete(tfile)                                                        
+      let url = $'https://{prefix}{token}@{server}.com/nvpm/home'             
+      let flag = '--force '.url.' '.gitb.' --tags'                                  
+      echo "\n"                                                                 
+      echohl NVPMPassed                                                         
+      let sys = system('git push '.flag)                    
+      if v:shell_error
+        echon "\n"
+        echon s:tabs
+        echohl Error
+        echon 'Error during push'
+        echohl None
+        return 1
+      endif
+      let sys = split(sys,"\n")
+      call map(sys,'trim(v:val)')
+      let sys = s:tabs.. join(sys,"\n".s:tabs)
+      ec sys
+      echohl None                                                               
+    endif                                                                       
+
+  " }
+
+endfu "}
+fu! meta#make(...) "{
+
+  echo repeat('-',&columns)
+  let plug = input('menu.make: new plugin name [esc closes it] ')
+  if empty(plug)|return 1|endif
+
+  " create files {
+
+    let plug = tolower(plug)
+    let PLUG = toupper(plug)
+
+    let autoload = [
+    \'" auto/'..plug,
+    \'',
+    \'if !NVPMTEST&&exists("_'..PLUG..'AUTO_")|finish|endif',
+    \'let _'..PLUG..'AUTO_ = 1',
+    \'',
+    \'',
+    \'fu! '.plug.'#'.plug.'(...) "'..repeat(' ',59)..'{',
+    \'endfu "}',
+    \'',
+    \]
+    let plugin = [
+    \'" plug/'..plug,
+    \'" once {',
+    \'',
+    \'if !NVPMTEST&&exists("__'..PLUG..'PLUG__")|finish|endif',
+    \'let __'..PLUG..'PLUG__ = 1',
+    \'',
+    \'" end-once}',
+    \'" cmds {',
+    \'" end-cmds }',
+    \'" acmd {',
+    \'" end-acmd }',
+    \]
+
+    call meta#MAKE(autoload,'nvim/auto/'..plug..'.vim')
+    call meta#MAKE(plugin  ,'nvim/plug/'..plug..'.vim')
+
+  "}
+
+endfu "}
+fu! meta#tabs(...) "{
+
+  let s:tabs = repeat(' ',g:zoom.size.l)
+
+endfu "}
+
+" Helping functions
+fu! meta#MAKE(...) "{
+
+  if len(a:000)<2|return 1|endif
+  let list = a:1
+  let dest = a:2
+  if !filereadable(dest)
+    call mkdir(fnamemodify(dest,':h'),'p')
+    call writefile(list,dest)
+  endif
+
+endfu "}
+fu! meta#yesn(...) "{
+  return ["yes","no"]
+endfu "}
+fu! meta#plug(...) "{
+  let list = readdir('autoload')
+  call map(list,'fnamemodify(v:val,":r")')
+  call add(list,'nvpm')
+  return list
+endfu "}

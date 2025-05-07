@@ -4,32 +4,54 @@
 let s:test = {}
 let s:info = 'default'
 
-
 "}
 " plug {
+fu! s:test.arbo(...) "{
+
+  "so autoload/flux.vim
+  "so syntax/flux.vim
+  "so autoload/arbo.vim
+  "so plugin/arbo.vim
+  so meta/meta.vim
+
+  call meta#sync()
+
+endfu "}
 fu! s:test.line(...) "{
 
-  so pack/autoload/line.vim
-  so pack/plugin/line.vim
+  "so autoload/line.vim
+  "so plugin/line.vim
+  so meta/meta.vim
 
+  call meta#sync()
+  return
+  ec &tabline
+  ec &statusline
+  return
   fu! s:data(...)
     let data = a:2
     if data!=['']
-      "let g:line.git = '%#normal#'.trim(join(data))
-      echo data
-    else
-      "let g:line.git = ''
+      echo join(data)
     endif
-    "call line#draw()
   endfu
-  let cmd = 'pack/auxy/line'
-  let job = jobstart(cmd,{'on_stdout':function('s:data')})
+
+  if exists('s:sock')
+    call chanclose(s:sock)
+    let s:indx=0
+  endif
+  let nvpmcode = 'sock/nvpm.c'
+  let nvpmexec = 'sock/nvpm'
+  "call system('gcc '.nvpmcode.' -o '.nvpmexec)
+  "call system(nvpmexec.' 2 8080&')
+
+  let addr   = 'localhost:8080'
+  let s:sock = sockconnect('tcp',addr,{'on_data':function('s:data')})
 
 endfu "}
 fu! s:test.flux(...) "{
 
-  so pack/autoload/flux.vim
-  so pack/syntax/flux.vim
+  so autoload/flux.vim
+  so syntax/flux.vim
 
   let conf = {}
 
@@ -52,20 +74,15 @@ fu! s:test.flux(...) "{
   call self.pass()
 
 endfu "}
-fu! s:test.nvpm(...) "{
-
-  so pack/autoload/flux.vim
-  so pack/syntax/flux.vim
-  so pack/autoload/nvpm.vim
-  so pack/plugin/nvpm.vim
-
-endfu "}
 fu! s:test.zoom(...) "{
 
-  so pack/autoload/zoom.vim
-  so pack/plugin/zoom.vim
+  so autoload/zoom.vim
+  "so plugin/zoom.vim
 
-  let left = repeat(' ' , g:line.zoom.left )
+  call zoom#test()
+
+  return
+  let left = repeat(' ' ,g:zoom.size.l )
   ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
 
   return
@@ -88,7 +105,7 @@ fu! s:test.zoom(...) "{
 endfu "}
 "}
 " test {
-fu! s:test.eval(...) "{"
+fu! s:test.eval(...) "{
   let file = a:1
   if !filereadable(file)
     return []
@@ -114,9 +131,8 @@ endfu "}
 "}
 " exec {
 
-if 0| so meta/conf.vim |endif
 if 0|call s:test.flux()|endif
-if 0|call s:test.nvpm()|endif
+if 1|call s:test.arbo()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 
