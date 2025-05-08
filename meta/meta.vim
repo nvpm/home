@@ -149,13 +149,13 @@ fu! meta#push(...) "{
   " push w/ token {
 
     if filereadable(tfile)
-      let sys = system(git..'push --force orig '.gitb.' --tags')
+      let sys = system(git..'push --force origin '.gitb.' --tags')
       call delete(tfile)
       let sys = split(sys,"\n")
       call map(sys,'trim(v:val)')
       let sys = s:tabs.. join(sys,"\n".s:tabs)
-      echo "\n\n"
       if v:shell_error
+        echon "\n"
         echon s:tabs
         echohl WarningMsg
         echon 'Error during push'
