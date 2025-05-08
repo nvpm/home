@@ -119,8 +119,10 @@ fu! meta#push(...) "{
   endif
   let repo = ['home','nvpm'][s:root=='../nvpm']
   echo "\n"
+
   if meta#save()|return 1|endif
 
+  call meta#tabs()
   let git = 'git -C '.s:root.' '
 
   " retrive token {
@@ -154,14 +156,13 @@ fu! meta#push(...) "{
       call map(sys,'trim(v:val)')
       let sys = s:tabs.. join(sys,"\n".s:tabs)
       if v:shell_error
-        echon "\n"
-        echon s:tabs
+        echo  "\n"
         echohl WarningMsg
-        echon 'Error during push'
         echon sys
         echohl None
         return 1
       else
+        echo  "\n"
         echohl Normal
         echo sys
         echohl None
