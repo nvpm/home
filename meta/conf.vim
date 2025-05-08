@@ -6,8 +6,8 @@ if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   nmap <silent><F1> <esc>:wall<cr>:MetaInit<cr>
   nmap <silent><F2> <esc>:wall<cr>:MetaSync<cr>
   nmap <silent><F3> <esc>:wall<cr>:MetaMake<cr>
-  nmap <silent>mgc  <esc>:wall<cr>:MetaSave nvpm<cr>
-  nmap <silent>mgp  <esc>:wall<cr>:MetaPush nvpm<cr>
+  nmap <silent>mgc  <esc>:wall<cr>:MetaSave<cr>
+  nmap <silent>mgp  <esc>:wall<cr>:MetaPush<cr>
   com! MetaInit so meta/init.vim
   com! MetaSync call meta#sync()
   com! MetaMake call meta#make()

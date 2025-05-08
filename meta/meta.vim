@@ -61,11 +61,11 @@ fu! meta#SYNC(...) "{
 endfu "}
 fu! meta#save(...) "{
 
-  let root = get(a:,1,'nvpm')
-  if root=='nvpm'
+  let root = get(a:,1,'')
+  if empty(root)
     let root = './'
   else
-    let root = '../'..root
+    let root = '../nvpm'
   endif
   call meta#tabs()
   let status = system('git -C '.root.' status --porcelain')

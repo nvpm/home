@@ -2,7 +2,6 @@
 " init {
 
 let s:test = {}
-let s:info = 'default'
 
 "}
 " plug {
@@ -14,7 +13,7 @@ fu! s:test.arbo(...) "{
   "so plugin/arbo.vim
   so meta/meta.vim
 
-  call meta#sync()
+  MetaSave
 
 endfu "}
 fu! s:test.line(...) "{
