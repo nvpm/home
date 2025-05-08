@@ -1,7 +1,7 @@
 
-home seng
-  project 🯅 seng {
-    loop plugin: nvpm line flux zoom text {
+  home seng
+  project 🯅  seng {
+    loop plugin: arbo line flux zoom text {
       workspace $(plugin):$(plugin) 
         tab misc {
           file todo : TODO     
@@ -22,12 +22,15 @@ home seng
         }
     endl}
   }
-  project  meta = meta{
-    tab  meta
-      file conf:conf.vim
-      file init:init.vim
-      file menu:menu.vim
+  project   meta {
+    tab  meta = meta
+      file meta.vim
+      file conf.vim
+      file init.vim
     tab  help = /usr/share/nvim/runtime/doc
-      file intro.txt
-      ---
+      file api  : api.txt
+      file chan : channel.txt
+      file jobs : job_control.txt
+      file libc = /iasj/snip/tuto/libc.txt
+      file btin : builtin.txt
   }

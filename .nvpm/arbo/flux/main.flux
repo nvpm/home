@@ -1,17 +1,5 @@
 
 
-  project   meta {
-    tab  meta = meta
-      file meta.vim
-      file conf.vim
-      file init.vim
-    tab  help = /usr/share/nvim/runtime/doc
-      file api  : api.txt
-      file chan : channel.txt
-      file jobs : job_control.txt
-      file libc = /iasj/snip/tuto/libc.txt
-      file btin : builtin.txt
-  }
   project   devl {
     workspace  arbo {
       tab  code
@@ -86,4 +74,16 @@
         file  read : readme/text.md
         file  vers : version/text
     }
+  }
+  project   meta {
+    tab  meta = meta
+      file conf.vim
+      file meta.vim
+      file init.vim
+    tab  help = /usr/share/nvim/runtime/doc
+      file api  : api.txt
+      file chan : channel.txt
+      file jobs : job_control.txt
+      file libc = /iasj/snip/tuto/libc.txt
+      file btin : builtin.txt
   }

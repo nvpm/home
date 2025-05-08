@@ -7,15 +7,11 @@ let s:test = {}
 " plug {
 fu! s:test.arbo(...) "{
 
-  "so autoload/flux.vim
-  "so syntax/flux.vim
-  "so autoload/arbo.vim
-  "so plugin/arbo.vim
+  so autoload/flux.vim
+  so syntax/flux.vim
+  so autoload/arbo.vim
+  so plugin/arbo.vim
   
-  so meta/meta.vim
-
-  MetaSave
-
 endfu "}
 fu! s:test.line(...) "{
 

@@ -1,5 +1,5 @@
 
-  ● added a current markers for node ~
+  ● add a current markers for node ~
     ● if for example a list of files like
 
     ----------- example.flux ---------------
@@ -14,7 +14,7 @@
       positions of the blank lines.
 
       This will provide the tools necessary for a more efficient
-      nvpm#edit. It would edit the data structure instead of the 
+      arbo#edit. It would edit the data structure instead of the 
       file itself. Then, on leaving nvim, this DS would be saved
 
   ● skel feature ~
@@ -28,14 +28,6 @@
       ---------------------------------
       This should expand to all files inside lib/ folder
       according to the built-in expand() function
-
-  ● synx ~
-   ● create syntax for single line multiple statement (endline feature)
-     file a,file b,...file n
-   ● incorporate synx/nvpm into synx/flux, and leave it just one syntax file
-     ● fluxkeyw should be made of only the words in lexis
-   ● create autocommands for recognizing flux files
-   ● change syntax for : and = in synx
 
   ● flux#node info field made of multiple ':' splits (make it a list) ~
 

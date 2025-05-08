@@ -7,6 +7,12 @@ let s:vim  = !s:nvim
 "-- main functions --
 fu! arbo#init(...) abort "{ 
 
+endfu "}
+
+finish
+"-- main functions --
+fu! arbo#init(...) abort "{ 
+
   " s:loop   {
 
     let s:loop = {'+':1,'-':-1,'next':+1,'prev':-1}
