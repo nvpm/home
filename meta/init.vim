@@ -11,6 +11,7 @@ fu! s:test.arbo(...) "{
   "so syntax/flux.vim
   "so autoload/arbo.vim
   "so plugin/arbo.vim
+  
   so meta/meta.vim
 
   MetaSave
@@ -18,8 +19,8 @@ fu! s:test.arbo(...) "{
 endfu "}
 fu! s:test.line(...) "{
 
-  "so autoload/line.vim
-  "so plugin/line.vim
+  so autoload/line.vim
+  so plugin/line.vim
   so meta/meta.vim
 
   call meta#sync()

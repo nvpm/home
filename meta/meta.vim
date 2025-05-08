@@ -1,4 +1,5 @@
 let s:tabs = ''
+let s:root = ''
 
 fu! meta#copy(...) "{
 
@@ -61,11 +62,15 @@ fu! meta#SYNC(...) "{
 endfu "}
 fu! meta#save(...) "{
 
-  let root = get(a:,1,'')
-  if empty(root)
-    let root = './'
+  if empty(s:root)
+    let root = get(a:,1,'')
+    if empty(root)
+      let root = './'
+    else
+      let root = '../nvpm'
+    endif
   else
-    let root = '../nvpm'
+    let root = s:root
   endif
   call meta#tabs()
   let status = system('git -C '.root.' status --porcelain')
@@ -89,6 +94,7 @@ fu! meta#save(...) "{
   echohl Title
   echo s:tabs..'type commit message'
   let msg = input(s:tabs..'>>> ')
+  echohl None
   if empty(msg)|return 1|endif
   echo system('git -C '.root.' add .')
   echo "\n"
@@ -101,25 +107,34 @@ fu! meta#save(...) "{
 endfu "}
 fu! meta#push(...) "{
 
+  if !exists('g:NVPMCRYP')
+    echo 'Define g:NVPMCRYP to the gpg gitcredential file path'
+    return 1
+  endif
+  let root = get(a:,1,'home')
+  if empty(root)
+    let s:root = './'
+  else
+    let s:root = '../nvpm'
+  endif
+  let repo = ['home','nvpm'][s:root=='../nvpm']
   echo "\n"
   if meta#save()|return 1|endif
 
+  let git = 'git -C '.s:root.' '
+
   " retrive token {
 
-    let server = 'gitlab'
-    let server = 'github'
-    let tfile  = $'/iasj/cryp/{server}'
-    let token  = $'/iasj/cryp/{server}.gpg'
-    let prefix = ['',"gitlab-cli-token:"][server=='gitlab']
+    let gitb  = trim(system(git.'rev-parse --abbrev-ref HEAD'))
+    let tfile = fnamemodify(g:NVPMCRYP,':p:r')
     if filereadable(tfile)|call delete(tfile)|endif
     echo "\n"
-    let gitb = trim(system('git rev-parse --abbrev-ref HEAD'))
     echohl Title
-    echo s:tabs..'Pushing '..gitb
+    echo s:tabs..'Pushing '..gitb..' to nvpm/'..repo
     let pass = inputsecret(s:tabs..'type the passphrase: ')
     if empty(pass)|return 1|endif
     let command = 'gpg -q --no-symkey-cache --batch --passphrase '
-    let command.= pass..' '..token
+    let command.= pass..' '..g:NVPMCRYP
     call system(command)
     if v:shell_error
       echon "\n"
@@ -133,30 +148,30 @@ fu! meta#push(...) "{
   " }
   " push w/ token {
 
-    if filereadable(tfile)                                                      
-      let token = readfile(tfile)[0]                                            
-      call delete(tfile)                                                        
-      let url = $'https://{prefix}{token}@{server}.com/nvpm/home'             
-      let flag = '--force '.url.' '.gitb.' --tags'                                  
-      echo "\n"                                                                 
-      echohl NVPMPassed                                                         
-      let sys = system('git push '.flag)                    
-      if v:shell_error
-        echon "\n"
-        echon s:tabs
-        echohl Error
-        echon 'Error during push'
-        echohl None
-        return 1
-      endif
+    if filereadable(tfile)
+      let sys = system(git..'push --force orig '.gitb.' --tags')
+      call delete(tfile)
       let sys = split(sys,"\n")
       call map(sys,'trim(v:val)')
       let sys = s:tabs.. join(sys,"\n".s:tabs)
-      ec sys
-      echohl None                                                               
-    endif                                                                       
+      if v:shell_error
+        echon "\n"
+        echon s:tabs
+        echohl WarningMsg
+        echon 'Error during push'
+        echon sys
+        echohl None
+        return 1
+      else
+        echohl Normal
+        echo sys
+        echohl None
+      endif
+    endif
 
   " }
+
+  let s:root = ''
 
 endfu "}
 fu! meta#make(...) "{

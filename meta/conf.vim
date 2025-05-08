@@ -2,17 +2,19 @@
 
 let NVPMTEST = 1
 if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
+  let NVPMCRYP = '/iasj/cryp/git.gpg'
   so meta/meta.vim
   nmap <silent><F1> <esc>:wall<cr>:MetaInit<cr>
   nmap <silent><F2> <esc>:wall<cr>:MetaSync<cr>
   nmap <silent><F3> <esc>:wall<cr>:MetaMake<cr>
   nmap <silent>mgc  <esc>:wall<cr>:MetaSave<cr>
   nmap <silent>mgp  <esc>:wall<cr>:MetaPush<cr>
+  nmap <silent>mgn  <esc>:wall<cr>:MetaPush nvpm<cr>
   com! MetaInit so meta/init.vim
   com! MetaSync call meta#sync()
   com! MetaMake call meta#make()
-  com! -nargs=* -complete=customlist,meta#plug MetaSave call meta#save("<args>")
-  com! -nargs=* -complete=customlist,meta#plug MetaPush call meta#push("<args>")
+  com! -nargs=? -complete=customlist,meta#plug MetaSave call meta#save("<args>")
+  com! -nargs=? -complete=customlist,meta#plug MetaPush call meta#push("<args>")
 endif
 
 "}
