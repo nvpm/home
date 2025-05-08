@@ -125,12 +125,11 @@ fu! meta#push(...) "{
 
   " retrive token {
 
-    let gitb  = trim(system(git.'rev-parse --abbrev-ref HEAD'))
     let tfile = fnamemodify(g:NVPMCRYP,':p:r')
     if filereadable(tfile)|call delete(tfile)|endif
     echo "\n"
     echohl Title
-    echo s:tabs..'Pushing '..gitb..' to nvpm/'..repo
+    echo s:tabs..'Pushing to nvpm/'..repo
     let pass = inputsecret(s:tabs..'type the passphrase: ')
     if empty(pass)|return 1|endif
     let command = 'gpg -q --no-symkey-cache --batch --passphrase '
@@ -149,7 +148,7 @@ fu! meta#push(...) "{
   " push w/ token {
 
     if filereadable(tfile)
-      let sys = system(git..'push --force origin '.gitb.' --tags')
+      let sys = system(git..'push --force origin --all --tags')
       call delete(tfile)
       let sys = split(sys,"\n")
       call map(sys,'trim(v:val)')
