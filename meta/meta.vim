@@ -154,7 +154,7 @@ fu! meta#push(...) "{
       let sys = split(sys,"\n")
       call map(sys,'trim(v:val)')
       let sys = s:tabs.. join(sys,"\n".s:tabs)
-      echo "\n"
+      echo "\n\n"
       if v:shell_error
         echon s:tabs
         echohl WarningMsg
