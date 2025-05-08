@@ -148,7 +148,7 @@ fu! meta#push(...) "{
   " push w/ token {
 
     if filereadable(tfile)
-      let sys = system(git..'push --force --tags origin --all')
+      let sys = system(git..'push --force origin --mirror')
       call delete(tfile)
       let sys = split(sys,"\n")
       call map(sys,'trim(v:val)')
