@@ -1,5 +1,5 @@
 "-- auto/line.vim  --
-if exists('_LINEAUTO_')|finish|endif
+if !exists('NVPMTEST')&&exists('_LINEAUTO_')|finish|endif
 let _LINEAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim

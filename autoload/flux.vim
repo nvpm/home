@@ -1,5 +1,5 @@
 "-- auto/flux.vim  --
-if exists('_FLUXAUTO_')|finish|endif
+if !exists('NVPMTEST')&&exists('_FLUXAUTO_')|finish|endif
 let _FLUXAUTO_=1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim

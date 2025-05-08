@@ -1,5 +1,5 @@
 "-- auto/text.vim  --
-if exists('_TEXTAUTO_')|finish|endif
+if !exists('NVPMTEST')&&exists('_TEXTAUTO_')|finish|endif
 let _TEXTAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim

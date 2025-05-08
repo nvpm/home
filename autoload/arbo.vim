@@ -1,5 +1,5 @@
 "-- auto/arbo.vim  --
-if exists('_ARBOAUTO_')|finish|endif
+if !exists('NVPMTEST')&&exists('_ARBOAUTO_')|finish|endif
 let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim

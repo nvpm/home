@@ -1,5 +1,5 @@
 "-- plug/text.vim  --
-if exists('_TEXTPLUG_')|finish|endif
+if !exists('NVPMTEST')&&exists('_TEXTPLUG_')|finish|endif
 let _TEXTPLUG_ = 1
 
 "-- user commands --

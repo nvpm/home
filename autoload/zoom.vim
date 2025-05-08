@@ -1,5 +1,5 @@
 "-- auto/zoom.vim --
-if exists('_ZOOMAUTO_')|finish|endif
+if !exists('NVPMTEST')&&exists('_ZOOMAUTO_')|finish|endif
 let _ZOOMAUTO_ = 1
 let s:nvim = has('nvim')
 "let s:vim  = !s:nvim

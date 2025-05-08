@@ -1,5 +1,5 @@
 "-- plug/arbo.vim --
-if exists('_ARBOPLUG_')|finish|endif
+if !exists('NVPMTEST')&&exists('_ARBOPLUG_')|finish|endif
 let _ARBOPLUG_ = 1
 
 call arbo#init()|delfunc arbo#init

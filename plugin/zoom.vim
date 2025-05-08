@@ -1,5 +1,5 @@
 "-- plug/zoom.vim --
-if exists('_ZOOMPLUG_')|finish|endif
+if !exists('NVPMTEST')&&exists('_ZOOMPLUG_')|finish|endif
 let _ZOOMPLUG_ = 1
 
 call zoom#init()|delfunc zoom#init
