@@ -154,8 +154,8 @@ fu! meta#push(...) "{
       let sys = split(sys,"\n")
       call map(sys,'trim(v:val)')
       let sys = s:tabs.. join(sys,"\n".s:tabs)
+      echon "\n"
       if v:shell_error
-        echon "\n"
         echon s:tabs
         echohl WarningMsg
         echon 'Error during push'
