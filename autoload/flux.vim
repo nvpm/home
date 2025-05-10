@@ -28,7 +28,7 @@ fu! flux#data(...) abort "{
 
   let tree = flux#tree(list,leng,home)
 
-  if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
+  "if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
@@ -184,7 +184,6 @@ fu! flux#conf(...) abort "{
     let conf.lexis = list
   endif
 
-  "let conf.leaftype = len(conf.lexis)-1
   let conf.leaftype = len(conf.lexis)
 
 endfu "}
@@ -420,9 +419,8 @@ fu! flux#find(...) abort "{
 
   let lexi = a:1
   let keyw = a:2
-  let indx = 0
+  let indx = 1
   for item in lexi
-    let indx+=1
     if type(item)==type([])
       for word in item
         if word==?keyw|return indx|endif
@@ -430,6 +428,7 @@ fu! flux#find(...) abort "{
     else
       if keyw==?item|return indx|endif
     endif
+    let indx+=1
   endfor
   return -1
 

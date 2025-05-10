@@ -53,43 +53,43 @@ let arb.autocmds = 1
 let arb.lexicon  = 'tab | file'
 
 " arbo user variables tree
-"let arbo_maketree = 1
-"let arbo_initload = 1
-"let arbo_autocmds = 1
-"
-"hi fluxvars guifg=#00ff00 gui=bold
-"
-"nmap <silent><space>   :ArboLoop + 3<cr>
-"nmap <silent>m<space>  :ArboLoop - 3<cr>
-"nmap <silent><tab>     :ArboLoop + 2<cr>
-"nmap <silent>m<tab>    :ArboLoop - 2<cr>
-"nmap <silent><BS>      :ArboLoop + 1<cr>
-"nmap <silent><DEL>     :ArboLoop - 1<cr>
-"nmap <silent><C-p>     :ArboLoop - 1<cr>
-"nmap <silent><C-n>     :ArboLoop + 1<cr>
-"nmap <silent><C-i>     :ArboLoop - 0<cr>
-"nmap <silent><C-o>     :ArboLoop - 0<cr>
-"nmap <silent><C-Space> :ArboLoop + 0<cr>
-"nmap <silent>=         :ArboLoop + -1<cr>
-"nmap <silent>-         :ArboLoop - -1<cr>
-"
-"nmap <F8>  <esc>:ArboLoad<space>
-"imap <F8>  <esc>:ArboLoad<space>
-"cmap <F8>  <esc>:ArboLoad<space>
-"nmap <F9>  <esc>:ArboLoad<space>
-"imap <F9>  <esc>:ArboLoad<space>
-"cmap <F9>  <esc>:ArboLoad<space>
-"nmap <F10> <esc>:ArboMake<space>
-"imap <F10> <esc>:ArboMake<space>
-"cmap <F10> <esc>:ArboMake<space>
-"nmap <F11> <esc>:wall<cr>:ArboEdit<cr>
-"imap <F11> <esc>:wall<cr>:ArboEdit<cr>
-"cmap <F11> <esc>:wall<cr>:ArboEdit<cr>
-"nmap <F12> <esc>:wall<cr>:ArboEdit<cr>
-"imap <F12> <esc>:wall<cr>:ArboEdit<cr>
-"cmap <F12> <esc>:wall<cr>:ArboEdit<cr>
-"
-"nmap mt :ArboTerm<cr>i
+let arbo_maketree = 1
+let arbo_initload = 1
+let arbo_autocmds = 1
+
+hi fluxvars guifg=#00ff00 gui=bold
+
+nmap <silent><space>   :ArboLoop + 3<cr>
+nmap <silent>m<space>  :ArboLoop - 3<cr>
+nmap <silent><tab>     :ArboLoop + 2<cr>
+nmap <silent>m<tab>    :ArboLoop - 2<cr>
+nmap <silent><BS>      :ArboLoop + 1<cr>
+nmap <silent><DEL>     :ArboLoop - 1<cr>
+nmap <silent><C-p>     :ArboLoop - 1<cr>
+nmap <silent><C-n>     :ArboLoop + 1<cr>
+nmap <silent><C-i>     :ArboLoop - 0<cr>
+nmap <silent><C-o>     :ArboLoop - 0<cr>
+nmap <silent><C-Space> :ArboLoop + 0<cr>
+nmap <silent>=         :ArboLoop + -1<cr>
+nmap <silent>-         :ArboLoop - -1<cr>
+
+nmap <F8>  <esc>:ArboLoad<space>
+imap <F8>  <esc>:ArboLoad<space>
+cmap <F8>  <esc>:ArboLoad<space>
+nmap <F9>  <esc>:ArboLoad<space>
+imap <F9>  <esc>:ArboLoad<space>
+cmap <F9>  <esc>:ArboLoad<space>
+nmap <F10> <esc>:ArboMake<space>
+imap <F10> <esc>:ArboMake<space>
+cmap <F10> <esc>:ArboMake<space>
+nmap <F11> <esc>:wall<cr>:ArboEdit<cr>
+imap <F11> <esc>:wall<cr>:ArboEdit<cr>
+cmap <F11> <esc>:wall<cr>:ArboEdit<cr>
+nmap <F12> <esc>:wall<cr>:ArboEdit<cr>
+imap <F12> <esc>:wall<cr>:ArboEdit<cr>
+cmap <F12> <esc>:wall<cr>:ArboEdit<cr>
+
+nmap mt :ArboTerm<cr>i
 
 "}
 " line {

@@ -19,7 +19,6 @@ fu! s:test.flux(...) "{
   let conf.lexis = '|||project|workspace|tab|file|||'
 
   let flux = flux#flux(conf)
-  return
   let expt = s:test.eval('test/flux/case.expt')
 
   echon "test/flux: "
