@@ -28,6 +28,8 @@ fu! FLUX#data(...) abort "{
 
   let tree = FLUX#tree(list,leng,home)
 
+  let tree.file = s:conf.file
+
   "if get(s:conf,'fixt',0)|call FLUX#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
@@ -443,9 +445,7 @@ fu! FLUX#show(...) abort "{
   " 1st run
   if a:0==1
     ec repeat('-',54)
-    if has_key(root,'data')
-      ec 'data:' get(root,'data','')
-    endif
+    ec 'file:' get(root,'file','')
     ec 'meta:' get(root,'meta','')
     ec repeat('-',54)
     ec ''
