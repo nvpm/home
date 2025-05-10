@@ -5,12 +5,39 @@ let s:test = {}
 
 "}
 " plug {
+fu! s:test.flux(...) "{
+
+  so autoload/flux.vim
+  "so syntax/flux.vim
+
+  let conf = {}
+
+  let conf.file = 'test/flux/case.flux'
+  let conf.home = 1
+  let conf.fixt = 1
+
+  let conf.lexis = '|||project|workspace|tab|file|||'
+
+  let flux = flux#flux(conf)
+  return
+  let expt = s:test.eval('test/flux/case.expt')
+
+  echon "test/flux: "
+  let diff = flux!=?expt
+  if diff|call self.fail()|call flux#show(flux)|return 1|endif
+  call self.pass()
+
+endfu "}
 fu! s:test.arbo(...) "{
 
+  so meta/conf.vim
   so autoload/flux.vim
   so syntax/flux.vim
   so autoload/arbo.vim
-  so plugin/arbo.vim
+  "so plugin/arbo.vim
+
+  call arbo#INIT()
+  call arbo#LOAD('.nvpm/arbo/flux/seng.flux')
   
 endfu "}
 fu! s:test.line(...) "{
@@ -42,32 +69,6 @@ fu! s:test.line(...) "{
 
   let addr   = 'localhost:8080'
   let s:sock = sockconnect('tcp',addr,{'on_data':function('s:data')})
-
-endfu "}
-fu! s:test.flux(...) "{
-
-  so autoload/flux.vim
-  so syntax/flux.vim
-
-  let conf = {}
-
-  let conf.file = 'test/flux/case.case'
-  let conf.home = 1
-  let conf.fixt = 1
-
-  let conf.lexis = ''
-  let conf.lexis.= '|project proj'
-  let conf.lexis.= '|workspace archive arch'
-  let conf.lexis.= '|tab pack folder fold'
-  let conf.lexis.= '|file buff'
-
-  let flux = flux#flux(conf)
-  let expt = s:test.eval('test/flux/case.expt')
-
-  echon "test/flux: "
-  let diff = flux!=?expt
-  if diff|call self.fail()|call flux#show(flux)|return 1|endif
-  call self.pass()
 
 endfu "}
 fu! s:test.zoom(...) "{
@@ -127,8 +128,8 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.flux()|endif
-if 1|call s:test.arbo()|endif
+if 1|call s:test.flux()|endif
+if 0|call s:test.arbo()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 

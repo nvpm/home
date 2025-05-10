@@ -1,9 +1,27 @@
 
 
   project   devl {
+    workspace ɸ flux {
+      tab  code
+        file auto : autoload/flux.vim
+        -file synx :   syntax/flux.vim
+        file init = meta/init.vim
+      tab  test = test/flux
+        file case : case.flux
+        file expt : case.expt
+      -tab 🯅 seng = seng/flux
+          file TODO     
+          file Issues   
+      -tab  meta
+        file  help : doc/flux.txt
+        file  read : readme/flux.md
+        file  vers : version/flux
+    }
     workspace  arbo {
       tab  code
         file auto : autoload/arbo.vim
+        file conf = meta/conf.vim
+        --
         file plug : plugin/arbo.vim
         file init = meta/init.vim
       tab 🯅 seng = seng/arbo
@@ -14,6 +32,7 @@
         file  read : readme/arbo.md
         file  vers : version/arbo
     }
+    --
     workspace 🭹 line {
       tab  code
         file auto : autoload/line.vim
@@ -41,23 +60,6 @@
         file  vers : version/zoom
 
     }
-    workspace ɸ flux {
-      tab  code
-        file auto : autoload/flux.vim
-        file synx :   syntax/flux.vim
-        file init = meta/init.vim
-      tab  test = test/flux
-        file case : case.flux
-        file expt : case.expt
-      tab 🯅 seng = seng/flux
-          file TODO     
-          file Issues   
-      tab  meta
-        file  help : doc/flux.txt
-        file  read : readme/flux.md
-        file  vers : version/flux
-    }
-    --
     workspace Ⲅ text {
       tab  code
         file auto : autoload/text.vim

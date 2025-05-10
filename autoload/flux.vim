@@ -178,12 +178,14 @@ fu! flux#conf(...) abort "{
     let conf.lexis = split(conf.lexis,'|')
     let list = []
     for type in conf.lexis
+      if empty(type)|continue|endif
       call add(list,split(type,'\s'))
     endfor
     let conf.lexis = list
   endif
 
-  let conf.leaftype = len(conf.lexis)-1
+  "let conf.leaftype = len(conf.lexis)-1
+  let conf.leaftype = len(conf.lexis)
 
 endfu "}
 fu! flux#read(...) abort "{
@@ -416,52 +418,19 @@ fu! flux#find(...) abort "{
   if !exists('a:1')|return -1|endif
   if !exists('a:2')|return -1|endif
 
-  if type(a:1)==type([])
-
-    let lexis = a:1
-    let keyword    = a:2
-    let index      = -1
-    for item in lexis
-      let index+=1
-      if type(item)==type([])
-        for word in item
-          if word==?keyword|return index|endif
-        endfor
-      else
-        if keyword==?item|return index|endif
-      endif
-    endfor
-    return -1
-
-  endif
-  if type(a:1)==type('')
-
-    " old style find method
-    " string  : 'K00 K01 ... K0x | K10 K11 ... K1y | ... | Km0 Km1 ... Kmn'
-    " indexes :           0                 1        ...            m
-    " failure : if seek does not find keyw, -1 is returned
-    if !exists('a:1')||type(a:1)!=type('')|return -1|endif
-    if !exists('a:2')||type(a:2)!=type('')|return -1|endif
-    let strg = a:1
-    let word = a:2
-    let keyw = ''
-    let indx = 0
-    for char in strg
-      if char =~ '\w'|let keyw.=char|continue|endif
-      if char =~ '\s'
-        if keyw==?word|return indx|endif
-        let keyw=''
-        continue
-      endif
-      if char == '|'
-        if keyw==?word|return indx|endif
-        if !empty(keyw)|let indx+=1|let keyw=''|else|continue|endif
-      endif
-    endfor
-    return [-1,indx][keyw==?word]
-
-  endif
-
+  let lexi = a:1
+  let keyw = a:2
+  let indx = 0
+  for item in lexi
+    let indx+=1
+    if type(item)==type([])
+      for word in item
+        if word==?keyw|return indx|endif
+      endfor
+    else
+      if keyw==?item|return indx|endif
+    endif
+  endfor
   return -1
 
 endfu "}

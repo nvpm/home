@@ -1,11 +1,100 @@
 "-- auto/arbo.vim  --
 if !exists('NVPMTEST')&&exists('_ARBOAUTO_')|finish|endif
+if !exists('_FLUXAUTO_')
+  echohl WarningMsg
+  echo 'Arbo: flux plugin not found. Please install it first.'
+  echohl None
+  finish
+endif
 let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
 "-- main functions --
-fu! arbo#init(...) abort "{ 
+fu! arbo#INIT(...) abort "{ 
+
+  let s:arbo = #{list:[],meta:#{leng:0,indx:0}}
+  let s:loop = {'+':1,'-':-1,'next':+1,'prev':-1}
+  let s:file = {}
+  let s:file.root = '.nvpm/arbo/'
+  let s:file.flux = s:file.root..'flux/'
+  let s:file.edit = s:file.root..'edit'
+  let s:file.save = s:file.root..'save'
+
+  let g:arb = get(g:,'arb',{})
+
+  let defaults = {}
+  let defaults.initload = 0
+  let defaults.maketree = 0
+  let defaults.autocmds = 1
+  let defaults.lexicon  = ''
+  let defaults.lexicon .= '|project proj scheme layout book'
+  let defaults.lexicon .= '|workspace arch archive architecture section'
+  let defaults.lexicon .= '|tab folder fold shelf package pack chapter'
+  let defaults.lexicon .= '|file buff buffer path entry node leaf page'
+
+  " extends g:arb with defaults, but keeps user definitions
+  call extend(g:arb,defaults,'keep')
+
+  let g:arb.conf = {}
+  let g:arb.conf.lexis = remove(g:arb,'lexicon')
+  let g:arb.conf.fixt  = 1
+  let g:arb.conf.home  = 1
+  let g:arb.conf.file  = ''
+
+  let g:arb.mode = 0
+
+endfu "}
+fu! arbo#LOAD(...) abort "{
+
+  if !a:0|return 1|endif
+
+  if !filereadable(a:1)|return 2|endif
+
+  let g:arb.conf.file  = a:1
+  let root = flux#flux(g:arb.conf)
+  let list = get(root,'list',[])
+
+  if empty(root)    |return 3|endif
+  if empty(list)    |return 4|endif
+  if arbo#CURR(root)|return 5|endif
+
+  let root.file = a:1
+
+  let indx = 0
+
+  for indx in range(s:arbo.meta.leng)
+    let flux = s:arbo.list[indx]
+    if root.file == flux.file
+      let flux = root
+      break
+    endif
+  endfor
+
+  return
+  if !empty(s:arbo.list)
+  endif
+
+  ec 'root:' keys(root)
+  ec 'meta:' keys(root.meta)
+
+  "let g:arbo.tree.root = root
+  "let g:arbo.tree.file = file
+  "let g:arbo.tree.mode = 1
+  "
+  "if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+  "  let g:line.arbo = 1
+  "  call line#show()
+  "endif
+  "call arbo#save()
+  "call arbo#rend()
+  "if exists('g:zoom.mode')&&g:zoom.mode
+  "  only
+  "  call zoom#show()
+  "endif
+
+endfu "}
+fu! arbo#CURR(...) abort "{
 
 endfu "}
 

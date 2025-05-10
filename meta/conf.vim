@@ -42,44 +42,54 @@ if !has('nvim')
   set hidden
 endif
 
+if exists('g:arb')
+  unlet g:arb
+endif
+
+let arb = {}
+let arb.maketree = 1
+let arb.initload = 1
+let arb.autocmds = 1
+let arb.lexicon  = 'tab | file'
+
 " arbo user variables tree
-let arbo_maketree = 1
-let arbo_initload = 1
-let arbo_autocmds = 1
-
-hi fluxvars guifg=#00ff00 gui=bold
-
-nmap <silent><space>   :ArboLoop + 3<cr>
-nmap <silent>m<space>  :ArboLoop - 3<cr>
-nmap <silent><tab>     :ArboLoop + 2<cr>
-nmap <silent>m<tab>    :ArboLoop - 2<cr>
-nmap <silent><BS>      :ArboLoop + 1<cr>
-nmap <silent><DEL>     :ArboLoop - 1<cr>
-nmap <silent><C-p>     :ArboLoop - 1<cr>
-nmap <silent><C-n>     :ArboLoop + 1<cr>
-nmap <silent><C-i>     :ArboLoop - 0<cr>
-nmap <silent><C-o>     :ArboLoop - 0<cr>
-nmap <silent><C-Space> :ArboLoop + 0<cr>
-nmap <silent>=         :ArboLoop + -1<cr>
-nmap <silent>-         :ArboLoop - -1<cr>
-
-nmap <F8>  <esc>:ArboLoad<space>
-imap <F8>  <esc>:ArboLoad<space>
-cmap <F8>  <esc>:ArboLoad<space>
-nmap <F9>  <esc>:ArboLoad<space>
-imap <F9>  <esc>:ArboLoad<space>
-cmap <F9>  <esc>:ArboLoad<space>
-nmap <F10> <esc>:ArboMake<space>
-imap <F10> <esc>:ArboMake<space>
-cmap <F10> <esc>:ArboMake<space>
-nmap <F11> <esc>:wall<cr>:ArboEdit<cr>
-imap <F11> <esc>:wall<cr>:ArboEdit<cr>
-cmap <F11> <esc>:wall<cr>:ArboEdit<cr>
-nmap <F12> <esc>:wall<cr>:ArboEdit<cr>
-imap <F12> <esc>:wall<cr>:ArboEdit<cr>
-cmap <F12> <esc>:wall<cr>:ArboEdit<cr>
-
-nmap mt :ArboTerm<cr>i
+"let arbo_maketree = 1
+"let arbo_initload = 1
+"let arbo_autocmds = 1
+"
+"hi fluxvars guifg=#00ff00 gui=bold
+"
+"nmap <silent><space>   :ArboLoop + 3<cr>
+"nmap <silent>m<space>  :ArboLoop - 3<cr>
+"nmap <silent><tab>     :ArboLoop + 2<cr>
+"nmap <silent>m<tab>    :ArboLoop - 2<cr>
+"nmap <silent><BS>      :ArboLoop + 1<cr>
+"nmap <silent><DEL>     :ArboLoop - 1<cr>
+"nmap <silent><C-p>     :ArboLoop - 1<cr>
+"nmap <silent><C-n>     :ArboLoop + 1<cr>
+"nmap <silent><C-i>     :ArboLoop - 0<cr>
+"nmap <silent><C-o>     :ArboLoop - 0<cr>
+"nmap <silent><C-Space> :ArboLoop + 0<cr>
+"nmap <silent>=         :ArboLoop + -1<cr>
+"nmap <silent>-         :ArboLoop - -1<cr>
+"
+"nmap <F8>  <esc>:ArboLoad<space>
+"imap <F8>  <esc>:ArboLoad<space>
+"cmap <F8>  <esc>:ArboLoad<space>
+"nmap <F9>  <esc>:ArboLoad<space>
+"imap <F9>  <esc>:ArboLoad<space>
+"cmap <F9>  <esc>:ArboLoad<space>
+"nmap <F10> <esc>:ArboMake<space>
+"imap <F10> <esc>:ArboMake<space>
+"cmap <F10> <esc>:ArboMake<space>
+"nmap <F11> <esc>:wall<cr>:ArboEdit<cr>
+"imap <F11> <esc>:wall<cr>:ArboEdit<cr>
+"cmap <F11> <esc>:wall<cr>:ArboEdit<cr>
+"nmap <F12> <esc>:wall<cr>:ArboEdit<cr>
+"imap <F12> <esc>:wall<cr>:ArboEdit<cr>
+"cmap <F12> <esc>:wall<cr>:ArboEdit<cr>
+"
+"nmap mt :ArboTerm<cr>i
 
 "}
 " line {
@@ -87,12 +97,11 @@ nmap mt :ArboTerm<cr>i
 "let __LINEAUTO__  = 1
 "let __LINEPLUG__  = 1
 let line_keepuser = 0
-let line_initload = g:arbo_initload
 let line_initload = 1
-let line_showmode = 2
+let line_showmode = 3
 let line_gitimode = 2
 let line_gitdelay = &ut
-let line_bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
+let line_bonetype = 0 "0:none,1:normal,2:buttons,3:powerline
 let line_inacedge = ' , '
 let line_curredge = ' , ' " () []   
 if g:line_bonetype==0
@@ -103,154 +112,154 @@ let line_boneedge = ',' "             
 
 nmap <silent>ml :Line<cr><c-l>
 
-  " Colors   {
+" Colors   {
 
-    hi clear tabline
-    hi clear statusline
-    " LineFill {
+  hi clear tabline
+  hi clear statusline
+  " LineFill {
 
-      if g:line_bonetype==2
-        hi def link LineFill Normal
-      else
-        hi def link LineFill DiffChange
-      endif
-
-    " }
-    " LineMode {
-
-      if g:line_bonetype
-        hi LineModeNormal   guibg=#000077 guifg=White
-        hi LineModeInsert   guibg=#ff0000 guifg=White
-        hi LineModeReplace  guibg=#00ffff guifg=Black
-        hi LineModeVisual   guibg=#005f87 guifg=White
-        hi LineModeCmdline  guibg=#ffff00 guifg=Black
-        hi LineModeTerminal guibg=#ffffff guifg=Black
-
-        if g:line_bonetype==2
-          hi LineModeEdgeNormal   guibg=bg guifg=#000077
-          hi LineModeEdgeInsert   guibg=bg guifg=#ff0000
-          hi LineModeEdgeReplace  guibg=bg guifg=#00ffff
-          hi LineModeEdgeVisual   guibg=bg guifg=#005f87
-          hi LineModeEdgeCmdline  guibg=bg guifg=#ffff00
-          hi LineModeEdgeTerminal guibg=bg guifg=#ffffff
-        endif
-      else
-        hi def link ModeSpot LineFill
-      endif
-
-    " }
-    " LineSpot {
-
-      if g:line_bonetype
-        hi def link LineSpotNormal   LineModeNormal
-        hi def link LineSpotInsert   LineModeInsert
-        hi def link LineSpotReplace  LineModeReplace
-        hi def link LineSpotVisual   LineModeVisual
-        hi def link LineSpotCmdline  LineModeCmdline
-        hi def link LineSpotTerminal LineModeTerminal
-
-        if g:line_bonetype==2
-          hi def link LineSpotEdgeNormal   LineModeEdgeNormal
-          hi def link LineSpotEdgeInsert   LineModeEdgeInsert
-          hi def link LineSpotEdgeReplace  LineModeEdgeReplace
-          hi def link LineSpotEdgeVisual   LineModeEdgeVisual
-          hi def link LineSpotEdgeCmdline  LineModeEdgeCmdline
-          hi def link LineSpotEdgeTerminal LineModeEdgeTerminal
-        endif
-      else
-        hi def link LineSpot LineFill
-      endif
-
-    " }
-    " LineCurr {
-
-      if g:line_bonetype
-        hi LineCurr     guibg=#000033 guifg=White
-        if g:line_bonetype==2
-          hi LineCurrEdge guibg=bg    guifg=#000033
-        endif
-      else
-        hi def link LineCurr LineFill
-      endif
-
-    " }
-    " LineInac {
-
-      if g:line_bonetype
-        hi LineInac     guibg=#000011 guifg=#007777
-        if g:line_bonetype==2
-          hi LineInacEdge guibg=bg    guifg=#000011
-        endif
-      else
-        hi def link LineInac LineCurr
-      endif
-
-    " }
-    " LineFile {
-
-      if g:line_bonetype
-        hi def link LineFile LineCurr
-        if g:line_bonetype==2
-          hi def link LineFileEdge LineCurrEdge
-        endif
-      else
-        hi def link LineFile LineFill
-      endif
-
-    " }
-    " LineUser {
-
-      if g:line_bonetype
-        hi def link LineUser LineFile
-        if g:line_bonetype==2
-          hi def link LineUserEdge LineFileEdge
-        endif
-      else
-        hi def link LineUser LineFill
-      endif
-
-    " }
-    " LineGitx {
-
-      if g:line_bonetype
-        hi LineGits guibg=#555500 guifg=#000000
-        hi LineGitm guibg=#440000 guifg=#ffffff
-        hi def link LineGitc LineCurr
-        if g:line_bonetype==2
-          hi LineGitsEdge guifg=#555500
-          hi LineGitmEdge guifg=#440000
-          hi def link LineGitcEdge LineCurrEdge
-        endif
-      else
-        hi def link LineGits LineFill
-        hi def link LineGitm LineFill
-        hi def link LineGitc LineFill
-      endif
-
-    " }
-
-  "}
-  " Skeleton {
-
-    if !exists('__LINEAUTO__')
-      call line#skel(1)
-
-      call add(g:line_skeleton.head.l,['list',2])
-      call add(g:line_skeleton.head.r,['list',1])
-      call add(g:line_skeleton.head.r,'%#TypeDef#|')
-      call add(g:line_skeleton.head.r,['curr',0,'LineSpot'])
-
-      "call add(g:line_skeleton.feet.l,['mode'])
-      "call add(g:line_skeleton.feet.l,' ')
-      call add(g:line_skeleton.feet.l,['git'])
-      call add(g:line_skeleton.feet.l,'%#TypeDef#|')
-      call add(g:line_skeleton.feet.l,['list',3])
-      call add(g:line_skeleton.feet.l,'%#TypeDef#|')
-      call add(g:line_skeleton.feet.l,['file'])
-      call add(g:line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
+    if g:line_bonetype==2
+      hi def link LineFill Normal
+    else
+      hi def link LineFill DiffChange
     endif
 
-  "}
+  " }
+  " LineMode {
+
+    if g:line_bonetype
+      hi LineModeNormal   guibg=#000077 guifg=White
+      hi LineModeInsert   guibg=#ff0000 guifg=White
+      hi LineModeReplace  guibg=#00ffff guifg=Black
+      hi LineModeVisual   guibg=#005f87 guifg=White
+      hi LineModeCmdline  guibg=#ffff00 guifg=Black
+      hi LineModeTerminal guibg=#ffffff guifg=Black
+
+      if g:line_bonetype==2
+        hi LineModeEdgeNormal   guibg=bg guifg=#000077
+        hi LineModeEdgeInsert   guibg=bg guifg=#ff0000
+        hi LineModeEdgeReplace  guibg=bg guifg=#00ffff
+        hi LineModeEdgeVisual   guibg=bg guifg=#005f87
+        hi LineModeEdgeCmdline  guibg=bg guifg=#ffff00
+        hi LineModeEdgeTerminal guibg=bg guifg=#ffffff
+      endif
+    else
+      hi def link ModeSpot LineFill
+    endif
+
+  " }
+  " LineSpot {
+
+    if g:line_bonetype
+      hi def link LineSpotNormal   LineModeNormal
+      hi def link LineSpotInsert   LineModeInsert
+      hi def link LineSpotReplace  LineModeReplace
+      hi def link LineSpotVisual   LineModeVisual
+      hi def link LineSpotCmdline  LineModeCmdline
+      hi def link LineSpotTerminal LineModeTerminal
+
+      if g:line_bonetype==2
+        hi def link LineSpotEdgeNormal   LineModeEdgeNormal
+        hi def link LineSpotEdgeInsert   LineModeEdgeInsert
+        hi def link LineSpotEdgeReplace  LineModeEdgeReplace
+        hi def link LineSpotEdgeVisual   LineModeEdgeVisual
+        hi def link LineSpotEdgeCmdline  LineModeEdgeCmdline
+        hi def link LineSpotEdgeTerminal LineModeEdgeTerminal
+      endif
+    else
+      hi def link LineSpot LineFill
+    endif
+
+  " }
+  " LineCurr {
+
+    if g:line_bonetype
+      hi LineCurr     guibg=#000033 guifg=White
+      if g:line_bonetype==2
+        hi LineCurrEdge guibg=bg    guifg=#000033
+      endif
+    else
+      hi def link LineCurr LineFill
+    endif
+
+  " }
+  " LineInac {
+
+    if g:line_bonetype
+      hi LineInac     guibg=#000011 guifg=#007777
+      if g:line_bonetype==2
+        hi LineInacEdge guibg=bg    guifg=#000011
+      endif
+    else
+      hi def link LineInac LineCurr
+    endif
+
+  " }
+  " LineFile {
+
+    if g:line_bonetype
+      hi def link LineFile LineCurr
+      if g:line_bonetype==2
+        hi def link LineFileEdge LineCurrEdge
+      endif
+    else
+      hi def link LineFile LineFill
+    endif
+
+  " }
+  " LineUser {
+
+    if g:line_bonetype
+      hi def link LineUser LineFile
+      if g:line_bonetype==2
+        hi def link LineUserEdge LineFileEdge
+      endif
+    else
+      hi def link LineUser LineFill
+    endif
+
+  " }
+  " LineGitx {
+
+    if g:line_bonetype
+      hi LineGits guibg=#555500 guifg=#000000
+      hi LineGitm guibg=#440000 guifg=#ffffff
+      hi def link LineGitc LineCurr
+      if g:line_bonetype==2
+        hi LineGitsEdge guifg=#555500
+        hi LineGitmEdge guifg=#440000
+        hi def link LineGitcEdge LineCurrEdge
+      endif
+    else
+      hi def link LineGits LineFill
+      hi def link LineGitm LineFill
+      hi def link LineGitc LineFill
+    endif
+
+  " }
+
+"}
+" Skeleton {
+
+  if !exists('__LINEAUTO__')&&exists('*line#skel')
+    call line#skel(1)
+
+    call add(g:line_skeleton.head.l,['list',2])
+    call add(g:line_skeleton.head.r,['list',1])
+    call add(g:line_skeleton.head.r,'%#TypeDef#|')
+    call add(g:line_skeleton.head.r,['curr',0,'LineSpot'])
+
+    "call add(g:line_skeleton.feet.l,['mode'])
+    "call add(g:line_skeleton.feet.l,' ')
+    call add(g:line_skeleton.feet.l,['git'])
+    call add(g:line_skeleton.feet.l,'%#TypeDef#|')
+    call add(g:line_skeleton.feet.l,['list',3])
+    call add(g:line_skeleton.feet.l,'%#TypeDef#|')
+    call add(g:line_skeleton.feet.l,['file'])
+    call add(g:line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
+  endif
+
+"}
 
 "}
 " zoom {
@@ -259,8 +268,7 @@ set noruler
 "set noshowcmd
 "set noshowmode
 let zoom_autocmds = 1
-let zoom_initload = g:line_initload
-let zoom_initload = 1
+let zoom_initload = 0
 let zoom_keepline = 1
 let zoom_pushcmdl = 1
 let zoom_usefloat = 1
