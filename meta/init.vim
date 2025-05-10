@@ -35,16 +35,9 @@ fu! s:test.arbo(...) "{
   so autoload/ARBO.vim
 
   call ARBO#init()
-  call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  call ARBO#grow('.nvpm/arbo/flux/main.flux')
-  call ARBO#grow('.nvpm/arbo/flux/seng.flux')
+  call ARBO#grow('.nvpm/arbo/flux')
   echo '----------------------------------'
   call ARBO#show()
-  call ARBO#fell('.nvpm/arbo/flux/test.flux')
-  call ARBO#fell('.nvpm/arbo/flux/seng.flux')
-  echo '----------------------------------'
-  call ARBO#show()
-  echo g:ARBO.root.list
 
 endfu "}
 fu! s:test.line(...) "{

@@ -39,6 +39,8 @@ fu! ARBO#init(...) abort "{
   let conf.home  = 1
   let conf.file  = ''
 
+  call FLUX#conf(conf)
+
   let g:ARBO = {}
   let g:ARBO.user = user
   let g:ARBO.conf = conf
@@ -46,12 +48,28 @@ fu! ARBO#init(...) abort "{
   call ARBO#zero()
 
 endfu "}
+fu! ARBO#load(...) abort "{
+
+  let g:ARBO.mode = 1
+
+  call ARBO#curr()
+  "call ARBO#rend()
+
+endfu "}
 fu! ARBO#grow(...) abort "{
 
   if !a:0|return 1|endif
 
-  let file  = a:1
-  let force = get(a:,2)
+  let file = a:1
+  let skip = a:0==2
+
+  if isdirectory(file)
+    for flux in readdir(file)
+      call ARBO#grow(file.'/'.flux,1)
+    endfor
+    call ARBO#load()
+    return
+  endif
 
   if !filereadable(file)|return 2|endif
 
@@ -69,10 +87,7 @@ fu! ARBO#grow(...) abort "{
     let g:ARBO.root.meta.indx = g:ARBO.root.meta.leng-1
   endif
 
-  let g:ARBO.mode = 1
-
-  call ARBO#curr()
-  "call ARBO#rend()
+  if !skip|call ARBO#load()|endif
 
 endfu "}
 fu! ARBO#fell(...) abort "{
