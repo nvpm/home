@@ -43,7 +43,7 @@ fu! ARBO#init(...) abort "{
   let g:ARBO.user = user
   let g:ARBO.conf = conf
   let g:ARBO.mode = 0
-  let g:ARBO.data = #{list:[],meta:#{leng:0,indx:0,type:0}}
+  let g:ARBO.data = #{curr:'',last:'',list:[],meta:#{leng:0,indx:0,type:0}}
 
 endfu "}
 fu! ARBO#find(...) abort "{
@@ -64,21 +64,22 @@ fu! ARBO#grow(...) abort "{
   let file = a:1
   if !filereadable(file)|return 2|endif
 
-  let g:ARBO.conf.file = file
-  let root = FLUX#flux(g:ARBO.conf)
-
-  if empty(root)|return 3|endif
-
   let indx = ARBO#find(file)
   if 1+indx
     let g:ARBO.data.meta.indx = indx
   else
-    call add(g:ARBO.data.list,root)
-    let g:ARBO.data.meta.leng+=1
-    let g:ARBO.data.meta.indx = g:ARBO.data.meta.leng-1
+    let g:ARBO.conf.file = file
+    let root = FLUX#flux(g:ARBO.conf)
+    if empty(root)
+      return 3
+    else
+      call add(g:ARBO.data.list,root)
+      let g:ARBO.data.meta.leng+=1
+      let g:ARBO.data.meta.indx = g:ARBO.data.meta.leng-1
+    endif
   endif
 
-  if ARBO#curr(root)|return 4|endif
+  if ARBO#curr()|return 4|endif
 
   let g:ARBO.mode = 1
 
@@ -100,10 +101,27 @@ fu! ARBO#grow(...) abort "{
   "endif
 
 endfu "}
-fu! ARBO#curr(...) abort "{
+fu! ARBO#fell(...) abort "{
 
 endfu "}
-fu! ARBO#fell(...) abort "{
+
+"-- auxy functions --
+fu! ARBO#curr(...) abort "{
+
+  if !g:ARBO.data.meta.leng|return 1|endif
+
+  let list = g:ARBO.data.list
+  let flux = get(list,g:ARBO.data.meta.indx,[])
+
+  let node = FLUX#seek(flux,g:ARBO.conf.leaftype)
+  let curr = node.list[node.meta.indx].data.info
+  if empty(curr)|return 2|endif
+
+  let g:ARBO.data.last = g:ARBO.data.curr
+  let g:ARBO.data.curr = curr
+
+endfu "}
+fu! ARBO#rend(...) abort "{
 
 endfu "}
 fu! ARBO#show(...) abort "{

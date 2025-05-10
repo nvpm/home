@@ -36,18 +36,8 @@ fu! s:test.arbo(...) "{
 
   call ARBO#init()
   call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  call ARBO#grow('test/flux/case.flux')
-  call ARBO#grow('test/flux/case.flux')
-  call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  call ARBO#grow('test/flux/case.flux')
-  call ARBO#grow('.nvpm/arbo/flux/main.flux')
-  echo g:ARBO.data.meta 
-  for flux in g:ARBO.data.list
-    call FLUX#show(flux)
-  endfor
+  echo string(g:ARBO.data.last)
+  echo string(g:ARBO.data.curr)
 
 endfu "}
 fu! s:test.line(...) "{
