@@ -43,14 +43,14 @@ fu! ARBO#init(...) abort "{
   let g:ARBO.user = user
   let g:ARBO.conf = conf
   let g:ARBO.mode = 0
-  let g:ARBO.data = #{curr:'',last:'',list:[],meta:#{leng:0,indx:0,type:0}}
+  let g:ARBO.root = #{curr:'',last:'',list:[],meta:#{leng:0,indx:0,type:0}}
 
 endfu "}
 fu! ARBO#find(...) abort "{
 
   let file = a:1
   let indx = 0
-  for flux in g:ARBO.data.list
+  for flux in g:ARBO.root.list
     if file==flux.file|return indx|endif
     let indx+=1
   endfor
@@ -66,16 +66,16 @@ fu! ARBO#grow(...) abort "{
 
   let indx = ARBO#find(file)
   if 1+indx
-    let g:ARBO.data.meta.indx = indx
+    let g:ARBO.root.meta.indx = indx
   else
     let g:ARBO.conf.file = file
     let root = FLUX#flux(g:ARBO.conf)
     if empty(root)
       return 3
     else
-      call add(g:ARBO.data.list,root)
-      let g:ARBO.data.meta.leng+=1
-      let g:ARBO.data.meta.indx = g:ARBO.data.meta.leng-1
+      call add(g:ARBO.root.list,root)
+      let g:ARBO.root.meta.leng+=1
+      let g:ARBO.root.meta.indx = g:ARBO.root.meta.leng-1
     endif
   endif
 
@@ -109,23 +109,23 @@ endfu "}
 "-- auxy functions --
 fu! ARBO#curr(...) abort "{
 
-  if !g:ARBO.data.meta.leng|return 1|endif
+  if !g:ARBO.root.meta.leng|return 1|endif
 
-  let list = g:ARBO.data.list
-  let flux = get(list,g:ARBO.data.meta.indx,[])
+  let list = g:ARBO.root.list
+  let flux = get(list,g:ARBO.root.meta.indx,[])
 
   let node = FLUX#seek(flux,g:ARBO.conf.leaftype)
   let curr = node.list[node.meta.indx].data.info
   if empty(curr)|return 2|endif
 
-  let g:ARBO.data.last = g:ARBO.data.curr
-  let g:ARBO.data.curr = curr
+  let g:ARBO.root.last = g:ARBO.root.curr
+  let g:ARBO.root.curr = curr
 
 endfu "}
 fu! ARBO#rend(...) abort "{
 
-  let curr = simplify(g:ARBO.data.curr)
-  let curr = g:ARBO.data.curr
+  let curr = simplify(g:ARBO.root.curr)
+  let curr = g:ARBO.root.curr
   let head = fnamemodify(curr,':h')..'/'
 
   exe 'edit '.curr
@@ -143,7 +143,7 @@ fu! ARBO#show(...) abort "{
 
   for key in keys(g:ARBO)
     if key=='data'
-      echo 'data :' keys(g:ARBO.data)
+      echo 'data :' keys(g:ARBO.root)
       continue
     endif
     let item = g:ARBO[key]
