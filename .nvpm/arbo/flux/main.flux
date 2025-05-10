@@ -1,11 +1,22 @@
 
 
   project   devl {
+    workspace 🭹 line {
+      tab  code
+        file auto : autoload/line.vim
+        file plug : plugin/line.vim
+        file init = meta/init.vim
+      tab 🯅 seng = seng/line
+          file TODO     
+          file Issues   
+      tab  meta
+        file  help : doc/line.txt
+    }
     workspace  arbo {
       tab  code
-        file auto : autoload/ARBO.vim
-        file plug : plugin/ARBO.vim
-        --
+        file auto : autoload/arbo.vim
+        file plug : plugin/arbo.vim
+        file conf = meta/conf.vim
         file init = meta/init.vim
       tab  test = .nvpm/arbo/flux
         file test.flux
@@ -15,12 +26,12 @@
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/ARBO.txt
+        file  help : doc/arbo.txt
     }
     workspace ɸ flux {
       tab  code
-        file auto : autoload/FLUX.vim
-        file synx :   syntax/FLUX.vim
+        file auto : autoload/flux.vim
+        file synx :   syntax/flux.vim
         file init = meta/init.vim
       tab  test = test/flux
         file case : case.flux
@@ -29,35 +40,24 @@
           file TODO     
           file Issues   
       -tab  meta
-        file  help : doc/FLUX.txt
-    }
-    --
-    workspace 🭹 line {
-      tab  code
-        file auto : autoload/LINE.vim
-        file plug : plugin/LINE.vim
-        file init = meta/init.vim
-      tab 🯅 seng = seng/line
-          file TODO     
-          file Issues   
-      tab  meta
-        file  help : doc/LINE.txt
+        file  help : doc/flux.txt
     }
     workspace ▣ zoom {
       tab  code
-        file auto : autoload/ZOOM.vim
-        file plug : plugin/ZOOM.vim
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
         file init = meta/init.vim
       tab 🯅 seng = seng/zoom
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/ZOOM.txt
+        file  help : doc/zoom.txt
     }
+    --
     workspace Ⲅ text {
       tab  code
-        file auto : autoload/TEXT.vim
-        file plug : plugin/TEXT.vim
+        file auto : autoload/text.vim
+        file plug : plugin/text.vim
         file init = meta/init.vim
       tab  test = test/text
         file case : case.case
@@ -66,14 +66,14 @@
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/TEXT.txt
+        file  help : doc/text.txt
     }
   }
   project   meta {
     tab  meta = meta
+      file init.vim
       file conf.vim
       -file meta.vim
-      file init.vim
     tab  help = /usr/share/nvim/runtime/doc
       file api  : api.txt
       file chan : channel.txt

@@ -155,7 +155,7 @@ fu! zoom#show(...) abort "{
     call line#draw()
   endif
 
-  if !s:keepline||(g:zoom.arbo&&!g:arbo.tree.mode)
+  if !s:keepline||(g:zoom.arbo&&!g:arbo.mode)
     set statusline=
     set tabline=
     set showtabline=0
@@ -185,7 +185,7 @@ fu! zoom#hide(...) abort "{
 
   let &cmdheight = s:cmdh
   let &fillchars = s:fill
-  if !s:keepline||(g:zoom.arbo&&!g:arbo.tree.mode)
+  if !s:keepline||(g:zoom.arbo&&!g:arbo.mode)
     let &showtabline = s:topl
     let &laststatus  = s:botl
   endif

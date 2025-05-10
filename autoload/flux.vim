@@ -5,32 +5,32 @@ let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
 "-- main functions --
-fu! FLUX#flux(...) abort "{
+fu! flux#flux(...) abort "{
 
-  if !a:0|return {}|else|let s:conf=FLUX#argv(a:000)|endif
+  if !a:0|return {}|else|let s:conf=flux#argv(a:000)|endif
 
-  call FLUX#conf()
-  call FLUX#read()
-  call FLUX#trim()
-  call FLUX#endl()
-  call FLUX#list()
-  call FLUX#cuts()
-  call FLUX#loop()
-  call FLUX#home()
-  retu FLUX#data()
+  call flux#conf()
+  call flux#read()
+  call flux#trim()
+  call flux#endl()
+  call flux#list()
+  call flux#cuts()
+  call flux#loop()
+  call flux#home()
+  retu flux#data()
 
 endfu "}
-fu! FLUX#data(...) abort "{
+fu! flux#data(...) abort "{
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
   let home = get(s:conf,'HOME','')
 
-  let tree = FLUX#tree(list,leng,home)
+  let tree = flux#tree(list,leng,home)
 
   let tree.file = s:conf.file
 
-  "if get(s:conf,'fixt',0)|call FLUX#fixt(tree,s:conf)|endif
+  "if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
@@ -44,7 +44,7 @@ fu! FLUX#data(...) abort "{
   return tree
 
 endfu "}
-fu! FLUX#fixt(...) abort "{
+fu! flux#fixt(...) abort "{
 
   let root = get(a:000,0,{})
   let conf = get(a:000,1,{})
@@ -55,9 +55,9 @@ fu! FLUX#fixt(...) abort "{
   if has_key(root,'list')&&root.meta.leng
     let leng = root.meta.leng
     let mintype = conf.leaftype
-    let minkeyw = conf.lexis[mintype][0]
+    let minkeyw = conf.lexicon[mintype][0]
     for node in root.list
-      let type = FLUX#find(conf.lexis,node.data.keyw)
+      let type = flux#find(conf.lexicon,node.data.keyw)
       if type<mintype
         let mintype = type
         let minkeyw = node.data.keyw
@@ -66,7 +66,7 @@ fu! FLUX#fixt(...) abort "{
     let indx = 0
     let list = []
     let node = root.list[indx]
-    while indx<root.meta.leng&&FLUX#find(conf.lexis,node.data.keyw)>mintype
+    while indx<root.meta.leng&&flux#find(conf.lexicon,node.data.keyw)>mintype
       call add(list,node)
       let indx+=1
       let node = root.list[indx]
@@ -79,20 +79,20 @@ fu! FLUX#fixt(...) abort "{
       let node.data.info = ''
       let node.meta.leng = len(list)
       let node.meta.indx = 0
-      let node.meta.type = FLUX#find(conf.lexis,list[0].data.keyw)
+      let node.meta.type = flux#find(conf.lexicon,list[0].data.keyw)
       let node.list = list
       let root.list = [node]+root.list[indx:]
       let root.meta.leng = len(root.list)
     endif
     for node in root.list
       if has_key(node,'list')
-        call FLUX#fixt(node,conf)
+        call flux#fixt(node,conf)
       endif
     endfor
   endif
 
 endfu "}
-fu! FLUX#tree(...) abort "{
+fu! flux#tree(...) abort "{
 
   let list = get(a:000,0,[])
   let leng = get(a:000,1,len(list))
@@ -109,15 +109,15 @@ fu! FLUX#tree(...) abort "{
     let node = list[indx]|let indx+=1
     let path = [home,''][node.absl] .. node.data.info
 
-    let node.type = FLUX#find(s:conf.lexis     ,node.data.keyw)
-    let node.tree = FLUX#find(s:conf.lexis[:-2],node.data.keyw)
+    let node.type = flux#find(s:conf.lexicon     ,node.data.keyw)
+    let node.tree = flux#find(s:conf.lexicon[:-2],node.data.keyw)
 
     " recursively handles non-leaf nodes (sub-tree)
     if 1+node.tree
       let init = indx
       while indx<leng
         let item = list[indx]
-        let item.tree = FLUX#find(s:conf.lexis[:-2],item.data.keyw)
+        let item.tree = flux#find(s:conf.lexicon[:-2],item.data.keyw)
         " breaks at next same (or higher) type node
         if 1+item.tree && item.tree<=node.tree
           break
@@ -127,7 +127,7 @@ fu! FLUX#tree(...) abort "{
 
       " extend node fields with.list, indx and leng recursively
       let sublist = list[init:indx-1]
-      let subtree = FLUX#tree(sublist,indx-init,path)
+      let subtree = flux#tree(sublist,indx-init,path)
       call extend(node,subtree)
 
     endif
@@ -168,28 +168,28 @@ fu! FLUX#tree(...) abort "{
   return tree
 
 endfu "}
-fu! FLUX#skel(...) abort "{
+fu! flux#skel(...) abort "{
 endfu "}
 
 "-- conf functions --
-fu! FLUX#conf(...) abort "{
+fu! flux#conf(...) abort "{
 
-  if !a:0|return FLUX#conf(s:conf)|else|let conf=a:1|endif
-  if !has_key(conf,'lexis')|let conf.lexis=''|endif
-  if type(conf.lexis)==type('')
-    let conf.lexis = split(conf.lexis,'|')
+  if !a:0|return flux#conf(s:conf)|else|let conf=a:1|endif
+  if !has_key(conf,'lexicon')|let conf.lexicon=''|endif
+  if type(conf.lexicon)==type('')
+    let conf.lexicon = split(conf.lexicon,'|')
     let list = []
-    for type in conf.lexis
+    for type in conf.lexicon
       if empty(type)|continue|endif
       call add(list,split(type,'\s'))
     endfor
-    let conf.lexis = list
+    let conf.lexicon = list
   endif
 
-  let conf.leaftype = len(conf.lexis)
+  let conf.leaftype = len(conf.lexicon)
 
 endfu "}
-fu! FLUX#read(...) abort "{
+fu! flux#read(...) abort "{
 
   if !has_key(s:conf,'file')|return|endif
   if !empty(s:conf.file)
@@ -206,7 +206,7 @@ fu! FLUX#read(...) abort "{
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! FLUX#trim(...) abort "{
+fu! flux#trim(...) abort "{
 
   if has_key(s:conf,'body')
     let comm = '\c\s*[#{}].*'
@@ -223,7 +223,7 @@ fu! FLUX#trim(...) abort "{
   endif
 
 endfu "}
-fu! FLUX#endl(...) abort "{
+fu! flux#endl(...) abort "{
 
   if has_key(s:conf,'body')
     let endl = '\m\s*,\s*'
@@ -240,13 +240,13 @@ fu! FLUX#endl(...) abort "{
   endif
 
 endfu "}
-fu! FLUX#list(...) abort "{
+fu! flux#list(...) abort "{
 
   let objc = get(a:,1,s:conf)
 
   if type(objc)==type({})
     if has_key(objc,'body')
-      let objc.list = FLUX#list(objc.body)
+      let objc.list = flux#list(objc.body)
       let objc.leng = len(objc.list)
     endif
   endif
@@ -254,20 +254,20 @@ fu! FLUX#list(...) abort "{
     let body = objc
     let list = []
     for line in body
-      let node = FLUX#node(line)
+      let node = flux#node(line)
       call add(list,node)
     endfor
     return list
   endif
 
 endfu "}
-fu! FLUX#cuts(...) abort "{
+fu! flux#cuts(...) abort "{
 
   let objc = get(a:,1,s:conf)
 
   if type(objc)==type({})
     if has_key(objc,'list')
-      let objc.list = FLUX#cuts(objc.list)
+      let objc.list = flux#cuts(objc.list)
       let objc.leng = len(objc.list)
     endif
   endif
@@ -294,7 +294,7 @@ fu! FLUX#cuts(...) abort "{
   endif
 
 endfu "}
-fu! FLUX#loop(...) abort "{
+fu! flux#loop(...) abort "{
 
   if has_key(s:conf,'list')
     let indx = 0
@@ -322,8 +322,8 @@ fu! FLUX#loop(...) abort "{
         let info = empty(node.data.info)?node.data.name:node.data.info
         let name = empty(node.data.info)?'':node.data.name
         let vars = split(info,' ')
-        let vars = FLUX#list(vars)
-        let vars = FLUX#cuts(vars)
+        let vars = flux#list(vars)
+        let vars = flux#cuts(vars)
         for node in vars "{
           if node.cuts==1|continue|endif
           if node.cuts>=2|  break |endif
@@ -349,7 +349,7 @@ fu! FLUX#loop(...) abort "{
   endif
 
 endfu "}
-fu! FLUX#home(...) abort "{
+fu! flux#home(...) abort "{
 
   if has_key(s:conf,'list')&&get(s:conf,'home')
     let indx = 0
@@ -370,12 +370,12 @@ fu! FLUX#home(...) abort "{
   endif
 
 endfu "}
-fu! FLUX#vars(...) abort "{
+fu! flux#vars(...) abort "{
 
 endfu "}
 
 "-- auxy functions --
-fu! FLUX#node(...) abort "{
+fu! flux#node(...) abort "{
 
   let line = get(a:000,0,'')
   let line = ['',line][type(line)==type('')]
@@ -414,7 +414,7 @@ fu! FLUX#node(...) abort "{
   return node
 
 endfu "}
-fu! FLUX#find(...) abort "{
+fu! flux#find(...) abort "{
 
   if !exists('a:1')|return -1|endif
   if !exists('a:2')|return -1|endif
@@ -435,7 +435,7 @@ fu! FLUX#find(...) abort "{
   return -1
 
 endfu "}
-fu! FLUX#show(...) abort "{
+fu! flux#show(...) abort "{
 
   let root = get(a:000,0,{})
   let step = get(a:000,1, 0)
@@ -460,22 +460,22 @@ fu! FLUX#show(...) abort "{
     echon tabs keyw..' '..name..' : '..info..' ' get(node,'meta','')
     echon "\n"
     if has_key(node,'list')
-      call FLUX#show(node,step+2)
+      call flux#show(node,step+2)
     endif
   endfor
 
 endfu "}
-fu! FLUX#argv(...) abort "{
+fu! flux#argv(...) abort "{
   let argv = get(a:000,0,{})
   if type(argv)==type([])
     if len(argv)>1
       return argv
     endif
-    return FLUX#argv(get(argv,0,{}))
+    return flux#argv(get(argv,0,{}))
   endif
   return argv
 endfu "}
-fu! FLUX#seek(...) abort "{
+fu! flux#seek(...) abort "{
 
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
@@ -489,7 +489,7 @@ fu! FLUX#seek(...) abort "{
   if has_key(root,'list')&&root.meta.leng
     let indx = root.meta.indx
     let leng = root.meta.leng
-    return FLUX#seek(root.list[indx%leng],type,code)
+    return flux#seek(root.list[indx%leng],type,code)
   endif
   return {}
 

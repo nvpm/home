@@ -22,8 +22,7 @@ fu! line#init(...) abort "{
 
   let g:line = {}
   let g:line.mode = 1
-  let g:line.arbo = get(g:,'arbo_initload')
-  let g:line.arbo = g:line.arbo&&exists('g:arbo.tree.mode')&&g:arbo.tree.mode
+  let g:line.arbo = 0
   let g:line.zoom = 0
 
   call line#save()
@@ -168,11 +167,11 @@ fu! line#atom(...) abort "{
     let name = ''
 
     if g:line.arbo   "{
-      let node = flux#seek(g:arbo.tree.root,type)
-      if has_key(node,'meta')
+      let node = flux#seek(g:arbo.root,type)
+      if has_key(node,'meta')&&has_key(node,'data')
         let name = node.list[node.meta.indx].data.name
         if (empty(name)||name=='<unnamed>')&&type==0
-          let name = fnamemodify(g:arbo.tree.file,':t')
+          let name = fnamemodify(g:arbo.file,':t')
         endif
       endif
     "}
@@ -200,7 +199,7 @@ fu! line#atom(...) abort "{
     let indx = 0
 
     if g:line.arbo   "{
-      let node = flux#seek(g:arbo.tree.root,type)
+      let node = flux#seek(g:arbo.root,type)
       if has_key(node,'meta')
         let indx = node.meta.indx
         let leng = node.meta.leng

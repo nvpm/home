@@ -4,6 +4,7 @@ let _TEXTAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
+finish
 fu! text#fixs(...) range "{
 
   let init = get(a:000,0,a:firstline)

@@ -6,13 +6,13 @@ call arbo#init()
 
 "-- user commands --
 com! -complete=customlist,arbo#DIRS        -nargs=* ArboMake call arbo#make("<args>")
-com! -complete=customlist,arbo#DIRS        -nargs=1 ArboLoad call arbo#load("<args>")
-com! -complete=customlist,arbo#LOOP -count -nargs=1 ArboLoop call arbo#loop("<args>")
+com! -complete=customlist,arbo#DIRS        -nargs=1 ArboSeed call arbo#seed("<args>")
+com! -complete=customlist,arbo#LOOP -count -nargs=1 ArboJump call arbo#jump("<args>")
 com!                                                ArboEdit call arbo#edit()
 com!                                                ArboTerm call arbo#term()
 
 "-- auto commands  --
-if g:ARBO.user.autocmds
+if g:arbo.user.autocmds
   augroup ARBO
     au!
     au! BufEnter *.flux set ft=flux

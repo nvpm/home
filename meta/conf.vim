@@ -45,39 +45,34 @@ if !has('nvim')
   set hidden
 endif
 
-if exists('g:ARBO')
-  unlet g:ARBO
-endif
-let ARBO = {}
-let ARBO.lexicon  = 'file'
-
-" arbo user variables tree
-let arbo_maketree = 1
-let arbo_initload = 1
-let arbo_autocmds = 0
+let arbo = {}
+let arbo.autocmds = 1
+let arbo.filetree = 1
+let arbo.initload = 1
+let arbo.lexicon  = 'project|workspace|tab|file'
 
 hi fluxvars guifg=#00ff00 gui=bold
 
-nmap <silent><space>   :ArboLoop + 3<cr>
-nmap <silent>m<space>  :ArboLoop - 3<cr>
-nmap <silent><tab>     :ArboLoop + 2<cr>
-nmap <silent>m<tab>    :ArboLoop - 2<cr>
-nmap <silent><BS>      :ArboLoop + 1<cr>
-nmap <silent><DEL>     :ArboLoop - 1<cr>
-nmap <silent><C-p>     :ArboLoop - 1<cr>
-nmap <silent><C-n>     :ArboLoop + 1<cr>
-nmap <silent><C-i>     :ArboLoop - 0<cr>
-nmap <silent><C-o>     :ArboLoop - 0<cr>
-nmap <silent><C-Space> :ArboLoop + 0<cr>
-nmap <silent>=         :ArboLoop + -1<cr>
-nmap <silent>-         :ArboLoop - -1<cr>
+nmap <space>   :ArboJump +4<cr>
+nmap m<space>  :ArboJump -4<cr>
+nmap <tab>     :ArboJump +3<cr>
+nmap m<tab>    :ArboJump -3<cr>
+nmap <BS>      :ArboJump +2<cr>
+nmap <DEL>     :ArboJump -2<cr>
+nmap <C-p>     :ArboJump -2<cr>
+nmap <C-n>     :ArboJump +2<cr>
+nmap <C-i>     :ArboJump -1<cr>
+nmap <C-o>     :ArboJump -1<cr>
+nmap <C-Space> :ArboJump +1<cr>
+nmap =         :ArboJump +0<cr>
+nmap -         :ArboJump -0<cr>
 
-nmap <F8>  <esc>:ArboLoad<space>
-imap <F8>  <esc>:ArboLoad<space>
-cmap <F8>  <esc>:ArboLoad<space>
-nmap <F9>  <esc>:ArboLoad<space>
-imap <F9>  <esc>:ArboLoad<space>
-cmap <F9>  <esc>:ArboLoad<space>
+nmap <F8>  <esc>:ArboSeed<space>
+imap <F8>  <esc>:ArboSeed<space>
+cmap <F8>  <esc>:ArboSeed<space>
+nmap <F9>  <esc>:ArboSeed<space>
+imap <F9>  <esc>:ArboSeed<space>
+cmap <F9>  <esc>:ArboSeed<space>
 nmap <F10> <esc>:ArboMake<space>
 imap <F10> <esc>:ArboMake<space>
 cmap <F10> <esc>:ArboMake<space>
@@ -240,19 +235,18 @@ nmap <silent>ml :Line<cr><c-l>
 "}
 " Skeleton {
 
-  if !exists('__LINEAUTO__')&&exists('*line#skel')
+  if !exists('g:line_skeleton')
+
     call line#skel(1)
 
-    call add(g:line_skeleton.head.l,['list',2])
-    call add(g:line_skeleton.head.r,['list',1])
+    call add(g:line_skeleton.head.l,['list',3])
+    call add(g:line_skeleton.head.r,['list',2])
     call add(g:line_skeleton.head.r,'%#TypeDef#|')
-    call add(g:line_skeleton.head.r,['curr',0,'LineSpot'])
+    call add(g:line_skeleton.head.r,['curr',1,'LineSpot'])
 
-    "call add(g:line_skeleton.feet.l,['mode'])
-    "call add(g:line_skeleton.feet.l,' ')
     call add(g:line_skeleton.feet.l,['git'])
     call add(g:line_skeleton.feet.l,'%#TypeDef#|')
-    call add(g:line_skeleton.feet.l,['list',3])
+    call add(g:line_skeleton.feet.l,['list',4])
     call add(g:line_skeleton.feet.l,'%#TypeDef#|')
     call add(g:line_skeleton.feet.l,['file'])
     call add(g:line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
