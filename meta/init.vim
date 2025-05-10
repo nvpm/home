@@ -34,7 +34,20 @@ fu! s:test.arbo(...) "{
   so syntax/FLUX.vim
   so autoload/ARBO.vim
 
-  echo 'hi'
+  call ARBO#init()
+  call ARBO#grow('.nvpm/arbo/flux/test.flux')
+  call ARBO#grow('.nvpm/arbo/flux/test.flux')
+  call ARBO#grow('test/flux/case.flux')
+  call ARBO#grow('test/flux/case.flux')
+  call ARBO#grow('.nvpm/arbo/flux/test.flux')
+  call ARBO#grow('.nvpm/arbo/flux/test.flux')
+  call ARBO#grow('.nvpm/arbo/flux/test.flux')
+  call ARBO#grow('test/flux/case.flux')
+  call ARBO#grow('.nvpm/arbo/flux/main.flux')
+  echo g:ARBO.data.meta 
+  for flux in g:ARBO.data.list
+    call FLUX#show(flux)
+  endfor
 
 endfu "}
 fu! s:test.line(...) "{

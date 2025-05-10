@@ -1,6 +1,23 @@
 
 
   project   devl {
+    workspace  arbo {
+      tab  code
+        file auto : autoload/ARBO.vim
+        -file conf = meta/conf.vim
+        file init = meta/init.vim
+        --
+        file plug : plugin/ARBO.vim
+      tab  test = .nvpm/arbo/flux
+        file test.flux
+        
+      --
+      tab 🯅 seng = seng/arbo
+          file TODO     
+          file Issues   
+      tab  meta
+        file  help : doc/ARBO.txt
+    }
     workspace ɸ flux {
       tab  code
         file auto : autoload/FLUX.vim
@@ -15,18 +32,7 @@
       -tab  meta
         file  help : doc/FLUX.txt
     }
-    workspace  arbo {
-      tab  code
-        file auto : autoload/ARBO.vim
-        -file conf = meta/conf.vim
-        file plug : plugin/ARBO.vim
-        file init = meta/init.vim
-      tab 🯅 seng = seng/arbo
-          file TODO     
-          file Issues   
-      tab  meta
-        file  help : doc/ARBO.txt
-    }
+    --
     workspace 🭹 line {
       tab  code
         file auto : autoload/LINE.vim

@@ -45,15 +45,11 @@ if !has('nvim')
   set hidden
 endif
 
-if exists('g:arb')
-  unlet g:arb
+if exists('g:ARBO')
+  unlet g:ARBO
 endif
-
-let arb = {}
-let arb.maketree = 1
-let arb.initload = 1
-let arb.autocmds = 1
-let arb.lexicon  = 'tab | file'
+let ARBO = {}
+let ARBO.lexicon  = 'file'
 
 " arbo user variables tree
 let arbo_maketree = 1

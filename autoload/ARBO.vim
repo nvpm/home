@@ -11,17 +11,14 @@ let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
 "-- main functions --
-fu! ARBO#INIT(...) abort "{ 
+fu! ARBO#init(...) abort "{ 
 
-  let s:arbo = #{list:[],meta:#{leng:0,indx:0}}
-  let s:loop = {'+':1,'-':-1,'next':+1,'prev':-1}
+  let s:jump = {'+':1,'-':-1,'next':+1,'prev':-1}
   let s:file = {}
   let s:file.root = '.nvpm/arbo/'
   let s:file.flux = s:file.root..'flux/'
   let s:file.edit = s:file.root..'edit'
   let s:file.save = s:file.root..'save'
-
-  let g:arb = get(g:,'arb',{})
 
   let defaults = {}
   let defaults.initload = 0
@@ -33,50 +30,59 @@ fu! ARBO#INIT(...) abort "{
   let defaults.lexicon .= '|tab folder fold shelf package pack chapter'
   let defaults.lexicon .= '|file buff buffer path entry node leaf page'
 
-  " extends g:arb with defaults, but keeps user definitions
-  call extend(g:arb,defaults,'keep')
+  " manage defaults, but keeps user definitions
+  let user = extend(get(g:,'ARBO',{}),defaults,'keep')
+  
+  let conf = {}
+  let conf.lexis = remove(user,'lexicon')
+  let conf.fixt  = 1
+  let conf.home  = 1
+  let conf.file  = ''
 
-  let g:arb.conf = {}
-  let g:arb.conf.lexis = remove(g:arb,'lexicon')
-  let g:arb.conf.fixt  = 1
-  let g:arb.conf.home  = 1
-  let g:arb.conf.file  = ''
-
-  let g:arb.mode = 0
+  let g:ARBO = {}
+  let g:ARBO.user = user
+  let g:ARBO.conf = conf
+  let g:ARBO.mode = 0
+  let g:ARBO.data = #{list:[],meta:#{leng:0,indx:0,type:0}}
 
 endfu "}
-fu! ARBO#LOAD(...) abort "{
+fu! ARBO#find(...) abort "{
+
+  let file = a:1
+  let indx = 0
+  for flux in g:ARBO.data.list
+    if file==flux.file|return indx|endif
+    let indx+=1
+  endfor
+  return -1
+
+endfu "}
+fu! ARBO#grow(...) abort "{
 
   if !a:0|return 1|endif
 
-  if !filereadable(a:1)|return 2|endif
+  let file = a:1
+  if !filereadable(file)|return 2|endif
 
-  let g:arb.conf.file  = a:1
-  let root = FLUX#flux(g:arb.conf)
-  let list = get(root,'list',[])
+  let g:ARBO.conf.file = file
+  let root = FLUX#flux(g:ARBO.conf)
 
-  if empty(root)    |return 3|endif
-  if empty(list)    |return 4|endif
-  if ARBO#CURR(root)|return 5|endif
+  if empty(root)|return 3|endif
 
-  let root.file = a:1
-
-  let indx = 0
-
-  for indx in range(s:arbo.meta.leng)
-    let flux = s:arbo.list[indx]
-    if root.file == flux.file
-      let flux = root
-      break
-    endif
-  endfor
-
-  return
-  if !empty(s:arbo.list)
+  let indx = ARBO#find(file)
+  if 1+indx
+    let g:ARBO.data.meta.indx = indx
+  else
+    call add(g:ARBO.data.list,root)
+    let g:ARBO.data.meta.leng+=1
+    let g:ARBO.data.meta.indx = g:ARBO.data.meta.leng-1
   endif
 
-  ec 'root:' keys(root)
-  ec 'meta:' keys(root.meta)
+  if ARBO#curr(root)|return 4|endif
+
+  let g:ARBO.mode = 1
+
+  return
 
   "let g:arbo.tree.root = root
   "let g:arbo.tree.file = file
@@ -94,7 +100,18 @@ fu! ARBO#LOAD(...) abort "{
   "endif
 
 endfu "}
-fu! ARBO#CURR(...) abort "{
+fu! ARBO#curr(...) abort "{
+
+endfu "}
+fu! ARBO#fell(...) abort "{
+
+endfu "}
+fu! ARBO#show(...) abort "{
+
+  for key in keys(g:ARBO)
+    let item = g:ARBO[key]
+    echo key..' : '..string(item)
+  endfor
 
 endfu "}
 
