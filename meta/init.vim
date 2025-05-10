@@ -7,8 +7,8 @@ let s:test = {}
 " plug {
 fu! s:test.flux(...) "{
 
-  so autoload/flux.vim
-  "so syntax/flux.vim
+  so autoload/FLUX.vim
+  "so syntax/FLUX.vim
 
   let conf = {}
 
@@ -18,31 +18,28 @@ fu! s:test.flux(...) "{
 
   let conf.lexis = '|||project|workspace|tab|file|||'
 
-  let flux = flux#flux(conf)
+  let flux = FLUX#flux(conf)
   let expt = s:test.eval('test/flux/case.expt')
 
   echon "test/flux: "
   let diff = flux!=?expt
-  if diff|call self.fail()|call flux#show(flux)|return 1|endif
+  if diff|call self.fail()|call FLUX#show(flux)|return 1|endif
   call self.pass()
 
 endfu "}
 fu! s:test.arbo(...) "{
 
   so meta/conf.vim
-  so autoload/flux.vim
-  so syntax/flux.vim
-  so autoload/arbo.vim
-  "so plugin/arbo.vim
+  so autoload/FLUX.vim
+  so syntax/FLUX.vim
+  so autoload/ARBO.vim
 
-  call arbo#INIT()
-  call arbo#LOAD('.nvpm/arbo/flux/seng.flux')
-  
+  echo 'hi'
+
 endfu "}
 fu! s:test.line(...) "{
 
-  so autoload/line.vim
-  so plugin/line.vim
+  so autoload/LINE.vim
   so meta/meta.vim
 
   call meta#sync()
@@ -72,8 +69,7 @@ fu! s:test.line(...) "{
 endfu "}
 fu! s:test.zoom(...) "{
 
-  so autoload/zoom.vim
-  "so plugin/zoom.vim
+  so autoload/ZOOM.vim
 
   call zoom#test()
 
@@ -127,8 +123,8 @@ endfu "}
 "}
 " exec {
 
-if 1|call s:test.flux()|endif
-if 0|call s:test.arbo()|endif
+if 0|call s:test.flux()|endif
+if 1|call s:test.arbo()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 

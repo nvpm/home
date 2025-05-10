@@ -11,7 +11,7 @@ let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
 "-- main functions --
-fu! arbo#INIT(...) abort "{ 
+fu! ARBO#INIT(...) abort "{ 
 
   let s:arbo = #{list:[],meta:#{leng:0,indx:0}}
   let s:loop = {'+':1,'-':-1,'next':+1,'prev':-1}
@@ -45,19 +45,19 @@ fu! arbo#INIT(...) abort "{
   let g:arb.mode = 0
 
 endfu "}
-fu! arbo#LOAD(...) abort "{
+fu! ARBO#LOAD(...) abort "{
 
   if !a:0|return 1|endif
 
   if !filereadable(a:1)|return 2|endif
 
   let g:arb.conf.file  = a:1
-  let root = flux#flux(g:arb.conf)
+  let root = FLUX#flux(g:arb.conf)
   let list = get(root,'list',[])
 
   if empty(root)    |return 3|endif
   if empty(list)    |return 4|endif
-  if arbo#CURR(root)|return 5|endif
+  if ARBO#CURR(root)|return 5|endif
 
   let root.file = a:1
 
@@ -86,21 +86,21 @@ fu! arbo#LOAD(...) abort "{
   "  let g:line.arbo = 1
   "  call line#show()
   "endif
-  "call arbo#save()
-  "call arbo#rend()
+  "call ARBO#save()
+  "call ARBO#rend()
   "if exists('g:zoom.mode')&&g:zoom.mode
   "  only
   "  call zoom#show()
   "endif
 
 endfu "}
-fu! arbo#CURR(...) abort "{
+fu! ARBO#CURR(...) abort "{
 
 endfu "}
 
 finish
 "-- main functions --
-fu! arbo#init(...) abort "{ 
+fu! ARBO#init(...) abort "{ 
 
   " s:loop   {
 
@@ -128,7 +128,7 @@ fu! arbo#init(...) abort "{
     endif
     let s:conf.fixt = 1
     let s:conf.home = 1
-    call flux#conf(s:conf)
+    call FLUX#conf(s:conf)
 
   " }
   " g:arbo   {
@@ -159,15 +159,15 @@ fu! arbo#init(...) abort "{
     if filereadable(s:file.save)
       let flux = get(readfile(s:file.save),0,'')
       if !empty(flux) && filereadable(s:file.flux..flux)
-        call arbo#load(flux)
+        call ARBO#load(flux)
       endif
     endif
   endif
 
 endfu "}
-fu! arbo#load(...) abort "{
+fu! ARBO#load(...) abort "{
 
-  let file = flux#argv(a:000)
+  let file = FLUX#argv(a:000)
 
   if !g:arbo.edit.mode
     let file = s:file.flux..file
@@ -176,12 +176,12 @@ fu! arbo#load(...) abort "{
   if !filereadable(file)|return 1|endif
 
   let s:conf.file = file
-  let root = flux#flux(s:conf)
+  let root = FLUX#flux(s:conf)
   let list = get(root,'list',[])
 
   if empty(root)    |let s:conf.file=''|return 2|endif
   if empty(list)    |let s:conf.file=''|return 3|endif
-  if arbo#curr(root)|let s:conf.file=''|return 4|endif
+  if ARBO#curr(root)|let s:conf.file=''|return 4|endif
 
   let g:arbo.tree.root = root
   let g:arbo.tree.file = file
@@ -191,15 +191,15 @@ fu! arbo#load(...) abort "{
     let g:line.arbo = 1
     call line#show()
   endif
-  call arbo#save()
-  call arbo#rend()
+  call ARBO#save()
+  call ARBO#rend()
   if exists('g:zoom.mode')&&g:zoom.mode
     only
     call zoom#show()
   endif
 
 endfu "}
-fu! arbo#loop(...) abort "{
+fu! ARBO#loop(...) abort "{
 
   if !a:0|return 1|endif
 
@@ -210,14 +210,14 @@ fu! arbo#loop(...) abort "{
 
   if type=='flux'||type=='-1' " flux files iteration {
     if g:arbo.edit.mode|return|endif
-    call arbo#flux()
+    call ARBO#flux()
     if g:arbo.flux.leng
       let flux = g:arbo.flux.list[0]
       if g:arbo.tree.mode
-        call arbo#indx(g:arbo.flux,step)
+        call ARBO#indx(g:arbo.flux,step)
         let flux = g:arbo.flux.list[g:arbo.flux.indx]
       endif
-      return arbo#load(flux)
+      return ARBO#load(flux)
     endif
     return
   endif "}
@@ -227,7 +227,7 @@ fu! arbo#loop(...) abort "{
   let tree = g:arbo.tree.root
 
   if type!='0'&&type!='1'&&type!='2'&&type!='3'
-    let type = flux#find(s:conf.lexis,type)
+    let type = FLUX#find(s:conf.lexis,type)
   else
     let type = str2nr(type)
   endif
@@ -235,17 +235,17 @@ fu! arbo#loop(...) abort "{
   if type<0||type>3|return 1|endif
 
   if g:arbo.tree.mode
-    if type == 2 && g:arbo.edit.mode|call arbo#edit()|endif
-    if type == 1 && g:arbo.edit.mode|call arbo#edit()|endif
-    if type == 0 && g:arbo.edit.mode|call arbo#edit()|endif
+    if type == 2 && g:arbo.edit.mode|call ARBO#edit()|endif
+    if type == 1 && g:arbo.edit.mode|call ARBO#edit()|endif
+    if type == 0 && g:arbo.edit.mode|call ARBO#edit()|endif
     let bufname = bufname()
     if bufname==g:arbo.tree.curr 
-      let node = flux#seek(tree,type)
+      let node = FLUX#seek(tree,type)
       if empty(node)|return 1|endif
-      call arbo#indx(node.meta,step)
+      call ARBO#indx(node.meta,step)
     endif
-    call arbo#curr()
-    call arbo#rend()
+    call ARBO#curr()
+    call ARBO#rend()
   else
     if type == s:conf.leaftype
       if step < 0
@@ -263,12 +263,12 @@ fu! arbo#loop(...) abort "{
   endif
 
 endfu "}
-fu! arbo#edit(...) abort "{
+fu! ARBO#edit(...) abort "{
 
   " loads bufname if in edit mode 
   " only leaves edit mode upon correct load
   if g:arbo.edit.mode
-    let g:arbo.edit.mode = arbo#load(bufname())
+    let g:arbo.edit.mode = ARBO#load(bufname())
     return
   endif
 
@@ -295,17 +295,17 @@ fu! arbo#edit(...) abort "{
 
   call writefile(body,s:file.edit)
   let g:arbo.edit.mode = 1
-  call arbo#load(s:file.edit)
+  call ARBO#load(s:file.edit)
 
 endfu "}
-fu! arbo#save(...) abort "{
+fu! ARBO#save(...) abort "{
 
   if g:arbo.tree.file != s:file.edit
     call writefile([fnamemodify(g:arbo.tree.file,':t')],s:file.save)
   endif
 
 endfu "}
-fu! arbo#term(...) abort "{
+fu! ARBO#term(...) abort "{
 
   if !bufexists(g:arbo.term.buff)
     exec 'buffer|terminal'
@@ -317,7 +317,7 @@ fu! arbo#term(...) abort "{
   endif
 
 endfu "}
-fu! arbo#make(...) abort "{
+fu! ARBO#make(...) abort "{
 
 
   let name = get(a:000,0,'')
@@ -329,7 +329,7 @@ fu! arbo#make(...) abort "{
   endif
 
   call mkdir(s:file.flux,'p')
-  call arbo#flux()
+  call ARBO#flux()
 
   let name = fnamemodify(name,':e')=='flux'?name:fnamemodify(name,':t:r')..'.flux'
 
@@ -357,14 +357,14 @@ fu! arbo#make(...) abort "{
 
   let lines = split(lines,',')
   call writefile(lines,path)
-  call arbo#load(name)
-  call arbo#flux()
-  call arbo#edit()
+  call ARBO#load(name)
+  call ARBO#flux()
+  call ARBO#edit()
 
 endfu "}
 
 "-- auxy functions --
-fu! arbo#curr(...) abort "{
+fu! ARBO#curr(...) abort "{
 
   let root = get(a:,1,g:arbo.tree.root)
   let list = get(root,'list',[])
@@ -372,7 +372,7 @@ fu! arbo#curr(...) abort "{
   if empty(root)|return 1|endif
   if empty(list)|return 2|endif
                                      
-  let node = flux#seek(root,3)
+  let node = FLUX#seek(root,3)
   if empty(node)|return 3|endif
   let curr = node.list[node.meta.indx].data.info
   if empty(curr)|return 4|endif
@@ -380,7 +380,7 @@ fu! arbo#curr(...) abort "{
   let g:arbo.tree.curr = curr
 
 endfu "}
-fu! arbo#rend(...) abort "{
+fu! ARBO#rend(...) abort "{
 
   let curr = simplify(g:arbo.tree.curr)
   let head = fnamemodify(curr,':h')..'/'
@@ -402,7 +402,7 @@ fu! arbo#rend(...) abort "{
   endif
 
 endfu "}
-fu! arbo#indx(...) abort "{
+fu! ARBO#indx(...) abort "{
 
   let meta = a:1
   let step = a:2
@@ -411,12 +411,12 @@ fu! arbo#indx(...) abort "{
   let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
 
 endfu "}
-fu! arbo#show(...) abort "{
+fu! ARBO#show(...) abort "{
 
-  call flux#show(get(a:,1,g:arbo.tree.root))
+  call FLUX#show(get(a:,1,g:arbo.tree.root))
 
 endfu "}
-fu! arbo#flux(...) abort "{
+fu! ARBO#flux(...) abort "{
 
   if isdirectory(s:file.flux)&&empty(g:arbo.flux.list)
     let g:arbo.flux.list = readdir(s:file.flux)
@@ -427,11 +427,11 @@ fu! arbo#flux(...) abort "{
 endfu "}
 
 "-- user functions --
-fu! arbo#DIRS(...) abort "{
+fu! ARBO#DIRS(...) abort "{
   let files = readdir(s:file.flux)
   return files
 endfu "}
-fu! arbo#LOOP(...) abort "{
+fu! ARBO#LOOP(...) abort "{
   let words = [
         \'next',
         \'prev',

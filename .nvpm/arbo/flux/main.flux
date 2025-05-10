@@ -3,8 +3,8 @@
   project   devl {
     workspace ɸ flux {
       tab  code
-        file auto : autoload/flux.vim
-        -file synx :   syntax/flux.vim
+        file auto : autoload/FLUX.vim
+        file synx :   syntax/FLUX.vim
         file init = meta/init.vim
       tab  test = test/flux
         file case : case.flux
@@ -13,57 +13,46 @@
           file TODO     
           file Issues   
       -tab  meta
-        file  help : doc/flux.txt
-        file  read : readme/flux.md
-        file  vers : version/flux
+        file  help : doc/FLUX.txt
     }
     workspace  arbo {
       tab  code
-        file auto : autoload/arbo.vim
-        file conf = meta/conf.vim
-        --
-        file plug : plugin/arbo.vim
+        file auto : autoload/ARBO.vim
+        -file conf = meta/conf.vim
+        file plug : plugin/ARBO.vim
         file init = meta/init.vim
       tab 🯅 seng = seng/arbo
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/arbo.txt
-        file  read : readme/arbo.md
-        file  vers : version/arbo
+        file  help : doc/ARBO.txt
     }
-    --
     workspace 🭹 line {
       tab  code
-        file auto : autoload/line.vim
-        file plug : plugin/line.vim
+        file auto : autoload/LINE.vim
+        file plug : plugin/LINE.vim
         file init = meta/init.vim
       tab 🯅 seng = seng/line
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/line.txt
-        file  read : readme/line.md
-        file  vers : version/line
+        file  help : doc/LINE.txt
     }
     workspace ▣ zoom {
       tab  code
-        file auto : autoload/zoom.vim
-        file plug : plugin/zoom.vim
+        file auto : autoload/ZOOM.vim
+        file plug : plugin/ZOOM.vim
         file init = meta/init.vim
       tab 🯅 seng = seng/zoom
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/zoom.txt
-        file  read : readme/zoom.md
-        file  vers : version/zoom
-
+        file  help : doc/ZOOM.txt
     }
     workspace Ⲅ text {
       tab  code
-        file auto : autoload/text.vim
-        file plug : plugin/text.vim
+        file auto : autoload/TEXT.vim
+        file plug : plugin/TEXT.vim
         file init = meta/init.vim
       tab  test = test/text
         file case : case.case
@@ -72,9 +61,7 @@
           file TODO     
           file Issues   
       tab  meta
-        file  help : doc/text.txt
-        file  read : readme/text.md
-        file  vers : version/text
+        file  help : doc/TEXT.txt
     }
   }
   project   meta {

@@ -50,7 +50,7 @@ fu! meta#save(...) "{
 
   echohl Title
   echo s:tabs..'type commit message'
-  let msg = input(s:tabs..'>>> ')
+  let msg = input(s:tabs)
   echohl None
   if empty(msg)|return 1|endif
   echo system('git -C '.root.' add .')

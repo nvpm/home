@@ -5,6 +5,9 @@ if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   let NVPMCRYP = '/iasj/cryp/git.gpg'
   so meta/meta.vim
   nmap <silent><F1> <esc>:wall<cr>:MetaInit<cr>
+  imap <silent><F1> <esc>:wall<cr>:MetaInit<cr>
+  cmap <silent><F1> <esc>:wall<cr>:MetaInit<cr>
+
   nmap <silent><F2> <esc>:wall<cr>:MetaSync<cr>
   nmap <silent><F3> <esc>:wall<cr>:MetaMake<cr>
   nmap <silent>mgc  <esc>:wall<cr>:MetaSave<cr>
@@ -268,7 +271,7 @@ set noruler
 "set noshowcmd
 "set noshowmode
 let zoom_autocmds = 1
-let zoom_initload = 0
+let zoom_initload = 1
 let zoom_keepline = 1
 let zoom_pushcmdl = 1
 let zoom_usefloat = 1
