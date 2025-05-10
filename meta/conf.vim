@@ -54,7 +54,7 @@ let ARBO.lexicon  = 'file'
 " arbo user variables tree
 let arbo_maketree = 1
 let arbo_initload = 1
-let arbo_autocmds = 1
+let arbo_autocmds = 0
 
 hi fluxvars guifg=#00ff00 gui=bold
 

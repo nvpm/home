@@ -130,7 +130,7 @@ fu! ARBO#rend(...) abort "{
 
   exe 'edit '.curr
 
-  if curr=~'^.*\.flux$'||head==s:file.flux&&&ft!='flux'
+  if (curr=~'^.*\.flux$'||head==s:file.flux)&&&l:ft!='flux'
     setl filetype=flux
     setl commentstring=-%s
   endif
