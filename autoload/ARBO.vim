@@ -42,8 +42,73 @@ fu! ARBO#init(...) abort "{
   let g:ARBO = {}
   let g:ARBO.user = user
   let g:ARBO.conf = conf
-  let g:ARBO.mode = 0
-  let g:ARBO.root = #{curr:'',last:'',list:[],meta:#{leng:0,indx:0,type:0}}
+
+  call ARBO#zero()
+
+endfu "}
+fu! ARBO#grow(...) abort "{
+
+  if !a:0|return 1|endif
+
+  let file  = a:1
+  let force = get(a:,2)
+
+  if !filereadable(file)|return 2|endif
+
+  let g:ARBO.conf.file = file
+  let fluxtree = FLUX#flux(g:ARBO.conf)
+  if empty(fluxtree)|return 3|endif
+
+  let indx = ARBO#find(file)
+  if 1+indx
+    let g:ARBO.root.meta.indx = indx
+    return
+  else
+    call add(g:ARBO.root.list,fluxtree)
+    let g:ARBO.root.meta.leng+=1
+    let g:ARBO.root.meta.indx = g:ARBO.root.meta.leng-1
+  endif
+
+  let g:ARBO.mode = 1
+
+  call ARBO#curr()
+  "call ARBO#rend()
+
+endfu "}
+fu! ARBO#fell(...) abort "{
+
+  if a:0
+    let file = a:1
+    let indx = -1
+    if empty(file)
+      let indx = g:ARBO.root.meta.indx
+    else
+      let indx = ARBO#find(file)
+    endif
+    if 1+indx
+      unlet g:ARBO.root.list[indx]
+      call garbagecollect()
+      let g:ARBO.root.meta.leng-= 1
+      call ARBO#indx(g:ARBO.root.meta,0)
+    endif
+  else
+    call ARBO#zero()
+  endif
+
+
+endfu "}
+fu! ARBO#indx(...) abort "{
+
+  let meta = a:1
+  let step = a:2
+  let meta.indx+= step                    " steps forwards or backwards
+  let meta.indx%= meta.leng               " limits range inside length
+  let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
+
+endfu "}
+
+"-- auxy functions --
+fu! ARBO#flux(...) abort "{
 
 endfu "}
 fu! ARBO#find(...) abort "{
@@ -57,56 +122,6 @@ fu! ARBO#find(...) abort "{
   return -1
 
 endfu "}
-fu! ARBO#grow(...) abort "{
-
-  if !a:0|return 1|endif
-
-  let file = a:1
-  if !filereadable(file)|return 2|endif
-
-  let indx = ARBO#find(file)
-  if 1+indx
-    let g:ARBO.root.meta.indx = indx
-  else
-    let g:ARBO.conf.file = file
-    let root = FLUX#flux(g:ARBO.conf)
-    if empty(root)
-      return 3
-    else
-      call add(g:ARBO.root.list,root)
-      let g:ARBO.root.meta.leng+=1
-      let g:ARBO.root.meta.indx = g:ARBO.root.meta.leng-1
-    endif
-  endif
-
-  let g:ARBO.mode = 1
-
-  call ARBO#curr()
-  call ARBO#rend()
-
-  return
-
-  "let g:arbo.tree.root = root
-  "let g:arbo.tree.file = file
-  "let g:arbo.tree.mode = 1
-  "
-  "if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
-  "  let g:line.arbo = 1
-  "  call line#show()
-  "endif
-  "call ARBO#save()
-  "call ARBO#rend()
-  "if exists('g:zoom.mode')&&g:zoom.mode
-  "  only
-  "  call zoom#show()
-  "endif
-
-endfu "}
-fu! ARBO#fell(...) abort "{
-
-endfu "}
-
-"-- auxy functions --
 fu! ARBO#curr(...) abort "{
 
   if !g:ARBO.root.meta.leng|return 1|endif
@@ -142,13 +157,19 @@ endfu "}
 fu! ARBO#show(...) abort "{
 
   for key in keys(g:ARBO)
-    if key=='data'
-      echo 'data :' keys(g:ARBO.root)
+    if key=='root'
+      echo 'root :' g:ARBO.root.meta
       continue
     endif
     let item = g:ARBO[key]
     echo key..' : '..string(item)
   endfor
+
+endfu "}
+fu! ARBO#zero(...) abort "{
+
+  let g:ARBO.mode = 0
+  let g:ARBO.root = #{curr:'',last:'',list:[],meta:#{leng:0,indx:0,type:0}}
 
 endfu "}
 

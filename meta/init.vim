@@ -2,6 +2,7 @@
 " init {
 
 let s:test = {}
+so meta/conf.vim
 
 "}
 " plug {
@@ -29,14 +30,21 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.arbo(...) "{
 
-  so meta/conf.vim
   so autoload/FLUX.vim
   so syntax/FLUX.vim
   so autoload/ARBO.vim
 
   call ARBO#init()
   call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  "call ARBO#show()
+  call ARBO#grow('.nvpm/arbo/flux/main.flux')
+  call ARBO#grow('.nvpm/arbo/flux/seng.flux')
+  echo '----------------------------------'
+  call ARBO#show()
+  call ARBO#fell('.nvpm/arbo/flux/test.flux')
+  call ARBO#fell('.nvpm/arbo/flux/seng.flux')
+  echo '----------------------------------'
+  call ARBO#show()
+  echo g:ARBO.root.list
 
 endfu "}
 fu! s:test.line(...) "{
