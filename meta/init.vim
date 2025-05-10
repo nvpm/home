@@ -36,8 +36,7 @@ fu! s:test.arbo(...) "{
 
   call ARBO#init()
   call ARBO#grow('.nvpm/arbo/flux/test.flux')
-  echo string(g:ARBO.data.last)
-  echo string(g:ARBO.data.curr)
+  "call ARBO#show()
 
 endfu "}
 fu! s:test.line(...) "{

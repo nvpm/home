@@ -2,7 +2,7 @@
 if !exists('NVPMTEST')&&exists('_ARBOPLUG_')|finish|endif
 let _ARBOPLUG_ = 1
 
-call arbo#init()|delfunc arbo#init
+call arbo#init()
 
 "-- user commands --
 com! -complete=customlist,arbo#DIRS        -nargs=* ArboMake call arbo#make("<args>")
@@ -12,7 +12,7 @@ com!                                                ArboEdit call arbo#edit()
 com!                                                ArboTerm call arbo#term()
 
 "-- auto commands  --
-if get(g:,'arbo_autocmds',1)
+if g:ARBO.user.autocmds
   augroup ARBO
     au!
     au! BufEnter *.flux set ft=flux
@@ -20,4 +20,3 @@ if get(g:,'arbo_autocmds',1)
 endif
 
 " vim: nowrap
-

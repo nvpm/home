@@ -4,10 +4,9 @@
     workspace  arbo {
       tab  code
         file auto : autoload/ARBO.vim
-        -file conf = meta/conf.vim
-        file init = meta/init.vim
-        --
         file plug : plugin/ARBO.vim
+        --
+        file init = meta/init.vim
       tab  test = .nvpm/arbo/flux
         file test.flux
         
@@ -73,7 +72,7 @@
   project   meta {
     tab  meta = meta
       file conf.vim
-      file meta.vim
+      -file meta.vim
       file init.vim
     tab  help = /usr/share/nvim/runtime/doc
       file api  : api.txt

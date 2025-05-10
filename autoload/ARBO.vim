@@ -22,8 +22,8 @@ fu! ARBO#init(...) abort "{
 
   let defaults = {}
   let defaults.initload = 0
-  let defaults.maketree = 0
-  let defaults.autocmds = 1
+  let defaults.filetree = 0
+  let defaults.autocmds = 0
   let defaults.lexicon  = ''
   let defaults.lexicon .= '|project proj scheme layout book'
   let defaults.lexicon .= '|workspace arch archive architecture section'
@@ -79,9 +79,10 @@ fu! ARBO#grow(...) abort "{
     endif
   endif
 
-  if ARBO#curr()|return 4|endif
-
   let g:ARBO.mode = 1
+
+  call ARBO#curr()
+  call ARBO#rend()
 
   return
 
@@ -123,10 +124,28 @@ fu! ARBO#curr(...) abort "{
 endfu "}
 fu! ARBO#rend(...) abort "{
 
+  let curr = simplify(g:ARBO.data.curr)
+  let curr = g:ARBO.data.curr
+  let head = fnamemodify(curr,':h')..'/'
+
+  exe 'edit '.curr
+
+  if curr=~'^.*\.flux$'||head==s:file.flux&&&ft!='flux'
+    setl filetype=flux
+    setl commentstring=-%s
+  endif
+  if g:ARBO.user.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
+    call mkdir(head,'p')
+  endif
+
 endfu "}
 fu! ARBO#show(...) abort "{
 
   for key in keys(g:ARBO)
+    if key=='data'
+      echo 'data :' keys(g:ARBO.data)
+      continue
+    endif
     let item = g:ARBO[key]
     echo key..' : '..string(item)
   endfor

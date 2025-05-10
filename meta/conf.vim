@@ -104,8 +104,8 @@ let line_bonetype = 0 "0:none,1:normal,2:buttons,3:powerline
 let line_inacedge = ' , '
 let line_curredge = ' , ' " () []   
 if g:line_bonetype==0
-  let line_curredge = '[,]'
-  let line_inacedge = ' , '
+  let line_curredge = '%#Normal#( , )'
+  let line_inacedge =          '  ,  '
 endif
 let line_boneedge = ',' "                     
 
