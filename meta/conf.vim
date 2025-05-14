@@ -67,12 +67,12 @@ nmap <C-Space> :ArboJump +1<cr>
 nmap =         :ArboJump +0<cr>
 nmap -         :ArboJump -0<cr>
 
-nmap <F8>  <esc>:ArboSeed<space>
-imap <F8>  <esc>:ArboSeed<space>
-cmap <F8>  <esc>:ArboSeed<space>
-nmap <F9>  <esc>:ArboSeed<space>
-imap <F9>  <esc>:ArboSeed<space>
-cmap <F9>  <esc>:ArboSeed<space>
+nmap <F8>  <esc>:ArboGrow<space>
+imap <F8>  <esc>:ArboGrow<space>
+cmap <F8>  <esc>:ArboGrow<space>
+nmap <F9>  <esc>:ArboGrow<space>
+imap <F9>  <esc>:ArboGrow<space>
+cmap <F9>  <esc>:ArboGrow<space>
 nmap <F10> <esc>:ArboMake<space>
 imap <F10> <esc>:ArboMake<space>
 cmap <F10> <esc>:ArboMake<space>
@@ -261,7 +261,7 @@ set noruler
 "set noshowcmd
 "set noshowmode
 let zoom_autocmds = 1
-let zoom_initload = 0
+let zoom_initload = 1
 let zoom_keepline = 1
 let zoom_pushcmdl = 1
 let zoom_usefloat = 1

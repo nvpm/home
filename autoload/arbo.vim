@@ -168,6 +168,15 @@ fu! arbo#make(...) abort "{
 endfu "}
 fu! arbo#term(...) abort "{
 
+  if !bufexists(g:arbo.term)
+    terminal
+    let g:arbo.term = bufname()
+  endif
+
+  if !empty(matchstr(g:arbo.term,'term://.*'))
+    call execute('edit! '..g:arbo.term)
+  endif
+
 endfu "}
 
 "-- auxy functions --
