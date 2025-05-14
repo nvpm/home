@@ -67,12 +67,12 @@ nmap <C-Space> :ArboJump +1<cr>
 nmap =         :ArboJump +0<cr>
 nmap -         :ArboJump -0<cr>
 
-nmap <F8>  <esc>:ArboGrow<space>
-imap <F8>  <esc>:ArboGrow<space>
-cmap <F8>  <esc>:ArboGrow<space>
-nmap <F9>  <esc>:ArboGrow<space>
-imap <F9>  <esc>:ArboGrow<space>
-cmap <F9>  <esc>:ArboGrow<space>
+nmap <F8>  <esc>:ArboLoad<space>
+imap <F8>  <esc>:ArboLoad<space>
+cmap <F8>  <esc>:ArboLoad<space>
+nmap <F9>  <esc>:ArboLoad<space>
+imap <F9>  <esc>:ArboLoad<space>
+cmap <F9>  <esc>:ArboLoad<space>
 nmap <F10> <esc>:ArboMake<space>
 imap <F10> <esc>:ArboMake<space>
 cmap <F10> <esc>:ArboMake<space>
