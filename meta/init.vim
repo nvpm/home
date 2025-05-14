@@ -35,7 +35,6 @@ fu! s:test.arbo(...) "{
   so autoload/arbo.vim
   "so plugin/arbo.vim
 
-
   call arbo#edit()
   "call arbo#grow('.nvpm/arbo/flux')
 

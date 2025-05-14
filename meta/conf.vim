@@ -95,14 +95,14 @@ let line_initload = 1
 let line_showmode = 3
 let line_gitimode = 2
 let line_gitdelay = &ut
-let line_bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
+let line_bonetype = 0 "0:none,1:normal,2:buttons,3:powerline
 let line_inacedge = ' , '
 let line_curredge = ' , ' " () []   
 if g:line_bonetype==0
-  let line_curredge = '%#Normal#( , )'
-  let line_inacedge =          '  ,  '
+  let line_curredge = '(,)'
+  let line_inacedge = ' , '
 endif
-let line_boneedge = ',' "                     
+let line_boneedge = ',' "                     
 
 nmap <silent>ml :Line<cr><c-l>
 
@@ -245,9 +245,9 @@ nmap <silent>ml :Line<cr><c-l>
     call add(g:line_skeleton.head.r,['curr',1,'LineSpot'])
 
     call add(g:line_skeleton.feet.l,['git'])
-    "call add(g:line_skeleton.feet.l,'%#TypeDef#|')
+    call add(g:line_skeleton.feet.l,' | ')
     call add(g:line_skeleton.feet.l,['list',4])
-    "call add(g:line_skeleton.feet.l,'%#TypeDef#|')
+    call add(g:line_skeleton.feet.l,' | ')
     call add(g:line_skeleton.feet.l,['file'])
     call add(g:line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
   endif

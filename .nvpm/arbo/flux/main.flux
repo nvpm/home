@@ -5,7 +5,7 @@
       tab  code
         file auto : autoload/arbo.vim
         file plug : plugin/arbo.vim
-        file conf = meta/conf.vim
+        --
         file init = meta/init.vim
       tab  test = .nvpm/arbo/flux
         file test.flux
