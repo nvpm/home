@@ -4,7 +4,80 @@ let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
-"-- main functions --
+fu! arbo#edit(...) abort "{
+
+  if !isdirectory('.nvpm')
+    return 1
+  endif
+
+  " loads bufname if in edit mode
+  " only leaves edit mode upon correct load
+  "if g:arbo.mode == 2
+  "  let g:arbo.mode = ARBO#load(bufname())
+  "  return
+  "endif
+
+  " makes the edit file otherwise
+  let fluxes = []
+  if isdirectory(g:arbo.file.flux)
+    let fluxes = readdir(g:arbo.file.flux)
+  endif
+  let body = []
+  let curr = g:arbo.root.list[g:arbo.root.meta.indx].file
+  for file in fluxes
+    let file = g:arbo.file.flux..file
+    let line = 'file '..fnamemodify(file,':t:r')..':'..file
+    if file == curr
+      let body = [line]+body
+      continue
+    endif
+    call add(body,line)
+  endfor
+  let body = ['tab ARBO Edit Mode']+body
+
+  call writefile(body,g:arbo.file.edit)
+  let g:arbo.mode = 2
+  call arbo#grow(g:arbo.file.edit)
+
+endfu "}
+fu! arbo#grow(...) abort "{
+
+  if !a:0|return 1|endif
+
+  let file = a:1
+  let skip = a:0==2
+
+  if g:arbo.mode!=2
+    let file = g:arbo.file.flux..file
+  endif
+
+  if isdirectory(file)
+    for flux in readdir(file)
+      call arbo#grow(file.'/'.flux,1)
+    endfor
+    call arbo#load()
+    return
+  endif
+
+  if !filereadable(file)|return 2|endif
+
+  let g:arbo.flux.file = file
+  let fluxtree = flux#flux(g:arbo.flux)
+  if empty(fluxtree)|return 3|endif
+
+  let indx = arbo#find(file)
+  if 1+indx
+    let g:arbo.root.meta.indx = indx
+    return
+  else
+    call add(g:arbo.root.list,fluxtree)
+    let g:arbo.root.meta.leng+=1
+    let g:arbo.root.meta.indx = g:arbo.root.meta.leng-1
+  endif
+
+  if !skip|call arbo#load()|endif
+
+endfu "}
 fu! arbo#init(...) abort "{
 
   let user = get(g:,'arbo',{})
@@ -48,44 +121,7 @@ fu! arbo#init(...) abort "{
   "endif
 
 endfu "}
-fu! arbo#grow(...) abort "{
-
-  if !a:0|return 1|endif
-
-  let file = a:1
-  let skip = a:0==2
-
-  if g:arbo.mode!=2
-    let file = g:arbo.file.flux..file
-  endif
-
-  if isdirectory(file)
-    for flux in readdir(file)
-      call arbo#grow(file.'/'.flux,1)
-    endfor
-    call arbo#load()
-    return
-  endif
-
-  if !filereadable(file)|return 2|endif
-
-  let g:arbo.flux.file = file
-  let fluxtree = flux#flux(g:arbo.flux)
-  if empty(fluxtree)|return 3|endif
-
-  let indx = arbo#find(file)
-  if 1+indx
-    let g:arbo.root.meta.indx = indx
-    return
-  else
-    call add(g:arbo.root.list,fluxtree)
-    let g:arbo.root.meta.leng+=1
-    let g:arbo.root.meta.indx = g:arbo.root.meta.leng-1
-  endif
-
-  if !skip|call arbo#load()|endif
-
-endfu "}
+"-- main functions --
 fu! arbo#fell(...) abort "{
 
   if a:0
@@ -158,9 +194,6 @@ fu! arbo#jump(...) abort "{
       endif
     endif
   endif
-
-endfu "}
-fu! arbo#edit(...) abort "{
 
 endfu "}
 fu! arbo#make(...) abort "{

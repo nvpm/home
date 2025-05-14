@@ -2,7 +2,7 @@
 " init {
 
 let s:test = {}
-so meta/conf.vim
+"so meta/conf.vim
 
 "}
 " plug {
@@ -36,7 +36,7 @@ fu! s:test.arbo(...) "{
   "so plugin/arbo.vim
 
 
-  call arbo#init()
+  call arbo#edit()
   "call arbo#grow('.nvpm/arbo/flux')
 
 endfu "}
