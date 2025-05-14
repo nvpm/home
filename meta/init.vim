@@ -33,10 +33,10 @@ fu! s:test.arbo(...) "{
   so autoload/flux.vim
   so syntax/flux.vim
   so autoload/arbo.vim
-  so plugin/arbo.vim
+  "so plugin/arbo.vim
 
 
-  "call arbo#init()
+  call arbo#init()
   "call arbo#grow('.nvpm/arbo/flux')
 
 endfu "}
@@ -44,7 +44,6 @@ fu! s:test.line(...) "{
 
   so autoload/line.vim
 
-  call meta#sync()
   return
   ec &tabline
   ec &statusline

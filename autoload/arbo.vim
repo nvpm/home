@@ -42,13 +42,13 @@ fu! arbo#init(...) abort "{
   "  if filereadable(g:arbo.file.save)
   "    let flux = get(readfile(g:arbo.file.save),0,'')
   "    if !empty(flux) && filereadable(g:arbo.file.flux..flux)
-  "      call arbo#seed(flux)
+  "      call arbo#grow(flux)
   "    endif
   "  endif
   "endif
 
 endfu "}
-fu! arbo#seed(...) abort "{
+fu! arbo#grow(...) abort "{
 
   if !a:0|return 1|endif
 
@@ -61,7 +61,7 @@ fu! arbo#seed(...) abort "{
 
   if isdirectory(file)
     for flux in readdir(file)
-      call arbo#seed(file.'/'.flux,1)
+      call arbo#grow(file.'/'.flux,1)
     endfor
     call arbo#load()
     return

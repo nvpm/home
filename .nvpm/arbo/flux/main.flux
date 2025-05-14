@@ -1,17 +1,6 @@
 
 
   project   devl {
-    workspace 🭹 line {
-      tab  code
-        file auto : autoload/line.vim
-        file plug : plugin/line.vim
-        file init = meta/init.vim
-      tab 🯅 seng = seng/line
-          file TODO     
-          file Issues   
-      tab  meta
-        file  help : doc/line.txt
-    }
     workspace  arbo {
       tab  code
         file auto : autoload/arbo.vim
@@ -41,6 +30,17 @@
           file Issues   
       -tab  meta
         file  help : doc/flux.txt
+    }
+    workspace 🭹 line {
+      tab  code
+        file auto : autoload/line.vim
+        file plug : plugin/line.vim
+        file init = meta/init.vim
+      tab 🯅 seng = seng/line
+          file TODO     
+          file Issues   
+      tab  meta
+        file  help : doc/line.txt
     }
     workspace ▣ zoom {
       tab  code
