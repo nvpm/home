@@ -4,42 +4,6 @@ let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
-fu! arbo#edit(...) abort "{
-
-  if !isdirectory('.nvpm')
-    return 1
-  endif
-
-  " loads bufname if in edit mode
-  " only leaves edit mode upon correct load
-  "if g:arbo.mode == 2
-  "  let g:arbo.mode = ARBO#load(bufname())
-  "  return
-  "endif
-
-  " makes the edit file otherwise
-  let fluxes = []
-  if isdirectory(g:arbo.file.flux)
-    let fluxes = readdir(g:arbo.file.flux)
-  endif
-  let body = []
-  let curr = g:arbo.root.list[g:arbo.root.meta.indx].file
-  for file in fluxes
-    let file = g:arbo.file.flux..file
-    let line = 'file '..fnamemodify(file,':t:r')..':'..file
-    if file == curr
-      let body = [line]+body
-      continue
-    endif
-    call add(body,line)
-  endfor
-  let body = ['tab ARBO Edit Mode']+body
-
-  call writefile(body,g:arbo.file.edit)
-  let g:arbo.mode = 2
-  call arbo#grow(g:arbo.file.edit)
-
-endfu "}
 fu! arbo#grow(...) abort "{
 
   if !a:0|return 1|endif
