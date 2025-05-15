@@ -53,35 +53,35 @@ let arbo.lexicon  = 'project|workspace|tab|file'
 
 hi fluxvars guifg=#00ff00 gui=bold
 
-nmap <space>   :ArboJump +4<cr>
-nmap m<space>  :ArboJump -4<cr>
-nmap <tab>     :ArboJump +3<cr>
-nmap m<tab>    :ArboJump -3<cr>
-nmap <BS>      :ArboJump +2<cr>
-nmap <DEL>     :ArboJump -2<cr>
-nmap <C-p>     :ArboJump -2<cr>
-nmap <C-n>     :ArboJump +2<cr>
-nmap <C-i>     :ArboJump -1<cr>
-nmap <C-o>     :ArboJump -1<cr>
-nmap <C-Space> :ArboJump +1<cr>
-nmap =         :ArboJump +0<cr>
-nmap -         :ArboJump -0<cr>
+nmap <silent><space>   :ArboJump +4<cr>
+nmap <silent>m<space>  :ArboJump -4<cr>
+nmap <silent><tab>     :ArboJump +3<cr>
+nmap <silent>m<tab>    :ArboJump -3<cr>
+nmap <silent><BS>      :ArboJump +2<cr>
+nmap <silent><DEL>     :ArboJump -2<cr>
+nmap <silent><C-p>     :ArboJump -2<cr>
+nmap <silent><C-n>     :ArboJump +2<cr>
+nmap <silent><C-i>     :ArboJump -1<cr>
+nmap <silent><C-o>     :ArboJump -1<cr>
+nmap <silent><C-Space> :ArboJump +1<cr>
+nmap <silent>=         :ArboJump +0<cr>
+nmap <silent>-         :ArboJump -0<cr>
 
-nmap <F8>  <esc>:ArboLoad<space>
-imap <F8>  <esc>:ArboLoad<space>
-cmap <F8>  <esc>:ArboLoad<space>
-nmap <F9>  <esc>:ArboLoad<space>
-imap <F9>  <esc>:ArboLoad<space>
-cmap <F9>  <esc>:ArboLoad<space>
+nmap <F8>  <esc>:ArboGrow<space>
+imap <F8>  <esc>:ArboGrow<space>
+cmap <F8>  <esc>:ArboGrow<space>
+nmap <F9>  <esc>:ArboGrow<space>
+imap <F9>  <esc>:ArboGrow<space>
+cmap <F9>  <esc>:ArboGrow<space>
 nmap <F10> <esc>:ArboMake<space>
 imap <F10> <esc>:ArboMake<space>
 cmap <F10> <esc>:ArboMake<space>
-nmap <F11> <esc>:wall<cr>:ArboEdit<cr>
-imap <F11> <esc>:wall<cr>:ArboEdit<cr>
-cmap <F11> <esc>:wall<cr>:ArboEdit<cr>
-nmap <F12> <esc>:wall<cr>:ArboEdit<cr>
-imap <F12> <esc>:wall<cr>:ArboEdit<cr>
-cmap <F12> <esc>:wall<cr>:ArboEdit<cr>
+nmap <silent><F11> <esc>:wall<cr>:ArboEdit<cr>
+imap <silent><F11> <esc>:wall<cr>:ArboEdit<cr>
+cmap <silent><F11> <esc>:wall<cr>:ArboEdit<cr>
+nmap <silent><F12> <esc>:wall<cr>:ArboEdit<cr>
+imap <silent><F12> <esc>:wall<cr>:ArboEdit<cr>
+cmap <silent><F12> <esc>:wall<cr>:ArboEdit<cr>
 
 nmap mt :ArboTerm<cr>i
 
@@ -92,10 +92,10 @@ nmap mt :ArboTerm<cr>i
 "let _LINEPLUG_ = 1
 
 let line_keepuser = 0
-let line_initload = 1
+let line_initload = 0
 let line_showmode = 3
 let line_gitimode = 2
-let line_gitdelay = &ut
+let line_gitdelay = 0
 let line_bonetype = 0 "0:none,1:normal,2:buttons,3:powerline
 let line_inacedge = ' , '
 let line_curredge = ' , ' " () []   

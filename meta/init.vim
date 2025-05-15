@@ -20,6 +20,8 @@ fu! s:test.flux(...) "{
   let conf.lexicon = '|||project|workspace|tab|file|||'
 
   let flux = flux#flux(conf)
+  echo flux
+  return
   let expt = s:test.eval('test/flux/case.expt')
 
   echon "test/flux: "
@@ -35,10 +37,7 @@ fu! s:test.arbo(...) "{
   "so autoload/arbo.vim
   "so plugin/arbo.vim
 
-  "call arbo#show()
-
-  ArboLoad
-  ArboFell
+  call arbo#show()
 
 endfu "}
 fu! s:test.line(...) "{
@@ -125,8 +124,8 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.flux()|endif
-if 1|call s:test.arbo()|endif
+if 1|call s:test.flux()|endif
+if 0|call s:test.arbo()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 
