@@ -35,14 +35,16 @@ fu! arbo#init(...) abort "{
 
   call flux#conf(g:arbo.flux)
 
-  "if !argc()&&g:arbo.user.initload
-  "  if filereadable(g:arbo.file.save)
-  "    let flux = get(readfile(g:arbo.file.save),0,'')
-  "    if !empty(flux) && filereadable(g:arbo.file.flux..flux)
-  "      call arbo#grow(flux)
-  "    endif
-  "  endif
-  "endif
+  if !argc()&&g:arbo.user.initload
+    if filereadable(g:arbo.file.save)
+      let flux = get(readfile(g:arbo.file.save),0,'')
+      let g:arbo = eval(flux)
+      call timer_start(100,{->arbo#line()})
+      "if !empty(flux) && filereadable(g:arbo.file.flux..flux)
+      "  call arbo#load(flux)
+      "endif
+    endif
+  endif
 
 endfu "}
 fu! arbo#edit(...) abort "{
@@ -92,12 +94,10 @@ fu! arbo#load(...) abort "{
 
   call arbo#grow(file)
 
-  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
-    let g:line.arbo = 1
-    call line#show()
-  endif
+  call arbo#line()
   call arbo#curr()
   call arbo#rend()
+  call arbo#save()
 
 endfu "}
 fu! arbo#grow(...) abort "{
@@ -293,6 +293,19 @@ fu! arbo#zero(...) abort "{
   let g:arbo.root.last = ''
   let g:arbo.root.list = []
   let g:arbo.root.meta = #{leng:0,indx:0,type:0}
+
+endfu "}
+fu! arbo#save(...) abort "{
+
+  call writefile([string(g:arbo)],g:arbo.file.save)
+
+endfu "}
+fu! arbo#line(...) abort "{
+
+  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+    let g:line.arbo = 1
+    call line#show()
+  endif
 
 endfu "}
 

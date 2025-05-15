@@ -17,6 +17,7 @@ if g:arbo.user.autocmds
   augroup ARBO
     au!
     au! BufEnter *.flux set ft=flux
+    au! VimLeavePre * call arbo#save()
   augroup END
 endif
 
