@@ -22,7 +22,6 @@
         }
     endl}
   }
-  --
   project   meta {
     tab  meta = meta
       file meta.vim

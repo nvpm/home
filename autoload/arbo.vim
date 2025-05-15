@@ -36,13 +36,12 @@ fu! arbo#init(...) abort "{
   call flux#conf(g:arbo.flux)
 
   if !argc()&&g:arbo.user.initload
+    let g:arbo.user.initload = abs(g:arbo.user.initload)
     if filereadable(g:arbo.file.save)
       let flux = get(readfile(g:arbo.file.save),0,'')
       let g:arbo = eval(flux)
-      call timer_start(100,{->arbo#line()})
-      "if !empty(flux) && filereadable(g:arbo.file.flux..flux)
-      "  call arbo#load(flux)
-      "endif
+      call timer_start(g:arbo.user.initload  ,{->arbo#line()})
+      call timer_start(g:arbo.user.initload+1,{->arbo#rend()})
     endif
   endif
 
@@ -96,7 +95,6 @@ fu! arbo#load(...) abort "{
 
   call arbo#line()
   call arbo#curr()
-  call arbo#rend()
   call arbo#save()
 
 endfu "}
@@ -174,10 +172,7 @@ fu! arbo#jump(...) abort "{
   if g:arbo.mode
     " leaves edit mode
     if g:arbo.mode==2&&type<g:arbo.flux.leaftype
-      for flux in readdir(g:arbo.file.flux)
-        let flux = g:arbo.file.flux..flux
-        exe 'write '..flux
-      endfor
+      write
       call arbo#edit()
       return
     endif
@@ -186,7 +181,6 @@ fu! arbo#jump(...) abort "{
     endif
     " these two perform the JumpBack WorkFlow
     call arbo#curr()
-    call arbo#rend()
   else
     if type == g:arbo.flux.leaftype
       if step < 0
@@ -247,6 +241,8 @@ fu! arbo#curr(...) abort "{
 
   let g:arbo.root.last = g:arbo.root.curr
   let g:arbo.root.curr = curr
+
+  call arbo#rend()
 
 endfu "}
 fu! arbo#rend(...) abort "{
