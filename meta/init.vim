@@ -30,13 +30,15 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.arbo(...) "{
 
-  so autoload/flux.vim
-  so syntax/flux.vim
-  so autoload/arbo.vim
+  "so autoload/flux.vim
+  "so syntax/flux.vim
+  "so autoload/arbo.vim
   "so plugin/arbo.vim
 
-  call arbo#edit()
-  "call arbo#grow('.nvpm/arbo/flux')
+  "call arbo#show()
+
+  ArboLoad
+  ArboFell
 
 endfu "}
 fu! s:test.line(...) "{

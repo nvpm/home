@@ -4,42 +4,86 @@ let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
-fu! arbo#grow(...) abort "{
+fu! arbo#edit(...) abort "{
 
-  if !a:0|return 1|endif
+  if !isdirectory('.nvpm')||!isdirectory(g:arbo.file.flux)
+    return 1
+  endif
+
+  if g:arbo.mode == 2
+    let file = bufname()
+    for flux in g:arbo.root.list
+      if flux.file==g:arbo.file.edit|continue|endif
+      call arbo#grow(flux.file)
+    endfor
+    call arbo#fell(g:arbo.file.edit)
+    call arbo#load(fnamemodify(file,':t'))
+    return
+  endif
+
+  " makes the edit file otherwise
+  let fluxes = readdir(g:arbo.file.flux)
+  let body   = []
+  for file in fluxes
+    let file = g:arbo.file.flux..file
+    let line = 'file '..fnamemodify(file,':t:r')..':'..file
+    let curr = g:arbo.root.list[g:arbo.root.meta.indx].file
+    if file == curr
+      let body = [line]+body
+      continue
+    endif
+    call add(body,line)
+  endfor
+
+  call writefile(body,g:arbo.file.edit)
+  let g:arbo.mode = 2
+  call arbo#load(g:arbo.file.edit)
+
+endfu "}
+fu! arbo#load(...) abort "{
 
   let file = a:1
-  let skip = a:0==2
 
   if g:arbo.mode!=2
     let file = g:arbo.file.flux..file
+    let g:arbo.mode = 1
   endif
+
+  call arbo#grow(file)
+
+  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+    let g:line.arbo = 1
+    call line#show()
+  endif
+  call arbo#curr()
+  call arbo#rend()
+
+endfu "}
+fu! arbo#grow(...) abort "{
+
+  let file = a:1
+
+  if empty(file)|return 1|endif
 
   if isdirectory(file)
-    for flux in readdir(file)
-      call arbo#grow(file.'/'.flux,1)
+    let fluxes = readdir(file)
+    for flux in fluxes
+      call arbo#grow(file.'/'.flux)
     endfor
-    call arbo#load()
-    return
-  endif
-
-  if !filereadable(file)|return 2|endif
-
-  let g:arbo.flux.file = file
-  let fluxtree = flux#flux(g:arbo.flux)
-  if empty(fluxtree)|return 3|endif
-
-  let indx = arbo#find(file)
-  if 1+indx
-    let g:arbo.root.meta.indx = indx
-    return
   else
-    call add(g:arbo.root.list,fluxtree)
-    let g:arbo.root.meta.leng+=1
-    let g:arbo.root.meta.indx = g:arbo.root.meta.leng-1
+    let g:arbo.flux.file = file
+    let fluxtree = flux#flux(g:arbo.flux)
+    if empty(fluxtree)|return 2|endif
+    let indx = arbo#find(file)
+    if 1+indx
+      let g:arbo.root.list[indx] = fluxtree
+    else
+      call add(g:arbo.root.list,fluxtree)
+      let indx = g:arbo.root.meta.leng
+      let g:arbo.root.meta.leng+=1
+    endif
+    let g:arbo.root.meta.indx = indx
   endif
-
-  if !skip|call arbo#load()|endif
 
 endfu "}
 fu! arbo#init(...) abort "{
@@ -63,10 +107,7 @@ fu! arbo#init(...) abort "{
   let g:arbo.flux.home  = 1
   let g:arbo.flux.file  = ''
 
-  let g:arbo.root.curr = ''
-  let g:arbo.root.last = ''
-  let g:arbo.root.list = []
-  let g:arbo.root.meta = #{leng:0,indx:0,type:0}
+  call arbo#zero()
 
   let g:arbo.file.root = '.nvpm/arbo/'
   let g:arbo.file.flux = g:arbo.file.root..'flux/'
@@ -98,15 +139,14 @@ fu! arbo#fell(...) abort "{
     endif
     if 1+indx
       unlet g:arbo.root.list[indx]
-      call garbagecollect()
       let g:arbo.root.meta.leng-= 1
       " just to keep indx inside bounds
       call arbo#indx(g:arbo.root.meta,0)
     endif
   else
-    let g:arbo.mode = 0
-    let g:arbo.root = #{curr:'',last:'',list:[],meta:#{leng:0,indx:0,type:0}}
+    call arbo#zero()
   endif
+  let g:arbo.mode = !!g:arbo.root.meta.leng
 
 endfu "}
 fu! arbo#jump(...) abort "{
@@ -136,6 +176,7 @@ fu! arbo#jump(...) abort "{
     if g:arbo.mode==2&&type<g:arbo.flux.leaftype
       :write
       call arbo#edit()
+      return
     endif
     if g:arbo.root.curr==bufname()
       call arbo#indx(flux#seek(g:arbo.root,type).meta,step)
@@ -150,7 +191,7 @@ fu! arbo#jump(...) abort "{
       else
         exe '::.,.+'.(v:count1-1).'bnext'
       endif
-    elseif type == s:flux.leaftype-1
+    elseif type == g:arbo.flux.leaftype-1
       if step < 0
         exe '::.,.+'.(v:count1-1).'tabprev'
       else
@@ -177,25 +218,13 @@ fu! arbo#term(...) abort "{
 endfu "}
 
 "-- auxy functions --
-fu! arbo#load(...) abort "{
-
-  let g:arbo.mode = 1
-
-  call arbo#curr()
-
-  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
-    let g:line.arbo = 1
-    call line#show()
-  endif
-
-  call arbo#rend()
-
-endfu "}
 fu! arbo#find(...) abort "{
 
   let file = a:1
+  let root = get(a:,2,g:arbo.root)
+
   let indx = 0
-  for flux in g:arbo.root.list
+  for flux in root.list
     if file==flux.file|return indx|endif
     let indx+=1
   endfor
@@ -253,6 +282,14 @@ fu! arbo#show(...) abort "{
     let item = g:arbo[key]
     echo key..' : '..string(item)
   endfor
+
+endfu "}
+fu! arbo#zero(...) abort "{
+
+  let g:arbo.root.curr = ''
+  let g:arbo.root.last = ''
+  let g:arbo.root.list = []
+  let g:arbo.root.meta = #{leng:0,indx:0,type:0}
 
 endfu "}
 

@@ -6,7 +6,7 @@ call arbo#init()
 
 "-- user commands --
 com! -complete=customlist,arbo#DIRS        -nargs=* ArboMake call arbo#make("<args>")
-com! -complete=customlist,arbo#DIRS        -nargs=1 ArboLoad call arbo#load("<args>")
+com! -complete=customlist,arbo#DIRS        -nargs=* ArboLoad call arbo#load("<args>")
 com! -complete=customlist,arbo#DIRS        -nargs=* ArboFell call arbo#fell("<args>")
 com! -complete=customlist,arbo#LOOP -count -nargs=1 ArboJump call arbo#jump("<args>")
 com!                                                ArboEdit call arbo#edit()
