@@ -5,12 +5,12 @@ let _ARBOPLUG_ = 1
 call arbo#init()
 
 "-- user commands --
-com! -complete=customlist,arbo#DIRS        -nargs=* ArboMake call arbo#make("<args>")
-com! -complete=customlist,arbo#DIRS        -nargs=* ArboLoad call arbo#load("<args>")
-com! -complete=customlist,arbo#DIRS        -nargs=* ArboFell call arbo#fell("<args>")
-com! -complete=customlist,arbo#LOOP -count -nargs=1 ArboJump call arbo#jump("<args>")
-com!                                                ArboEdit call arbo#edit()
-com!                                                ArboTerm call arbo#term()
+com! -complete=customlist,arbo#user        -nargs=* ArboMake call arbo#user('make','<args>')
+com! -complete=customlist,arbo#user        -nargs=* ArboLoad call arbo#user('load','<args>')
+com! -complete=customlist,arbo#user        -nargs=* ArboFell call arbo#user('fell','<args>')
+com! -complete=customlist,arbo#user -count -nargs=* ArboJump call arbo#user('jump','<args>')
+com!                                                ArboEdit call arbo#user('edit')
+com!                                                ArboTerm call arbo#user('term')
 
 "-- auto commands  --
 if g:arbo.user.autocmds

@@ -4,6 +4,47 @@ let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
+"-- main functions --
+fu! arbo#init(...) abort "{
+
+  let user = get(g:,'arbo',{})
+
+  let lexicon  = ''
+  let lexicon .= '|project proj scheme layout book'
+  let lexicon .= '|workspace arch archive architecture section'
+  let lexicon .= '|tab folder fold shelf package pack chapter'
+  let lexicon .= '|file buff buffer path entry node leaf page'
+
+  let g:arbo = #{mode:0,user:{},flux:{},root:{},file:{},term:''}
+
+  let g:arbo.user.filetree = get(user,'filetree')
+  let g:arbo.user.initload = get(user,'initload')
+  let g:arbo.user.autocmds = get(user,'autocmds')
+
+  let g:arbo.flux.lexicon  = get(user,'lexicon',lexicon)
+  let g:arbo.flux.fixt  = 1
+  let g:arbo.flux.home  = 1
+  let g:arbo.flux.file  = ''
+
+  call arbo#zero()
+
+  let g:arbo.file.root = '.nvpm/arbo/'
+  let g:arbo.file.flux = g:arbo.file.root..'flux/'
+  let g:arbo.file.edit = g:arbo.file.root..'edit'
+  let g:arbo.file.save = g:arbo.file.root..'save'
+
+  call flux#conf(g:arbo.flux)
+
+  "if !argc()&&g:arbo.user.initload
+  "  if filereadable(g:arbo.file.save)
+  "    let flux = get(readfile(g:arbo.file.save),0,'')
+  "    if !empty(flux) && filereadable(g:arbo.file.flux..flux)
+  "      call arbo#grow(flux)
+  "    endif
+  "  endif
+  "endif
+
+endfu "}
 fu! arbo#edit(...) abort "{
 
   if !isdirectory('.nvpm')||!isdirectory(g:arbo.file.flux)
@@ -86,47 +127,6 @@ fu! arbo#grow(...) abort "{
   endif
 
 endfu "}
-fu! arbo#init(...) abort "{
-
-  let user = get(g:,'arbo',{})
-
-  let lexicon  = ''
-  let lexicon .= '|project proj scheme layout book'
-  let lexicon .= '|workspace arch archive architecture section'
-  let lexicon .= '|tab folder fold shelf package pack chapter'
-  let lexicon .= '|file buff buffer path entry node leaf page'
-
-  let g:arbo = #{mode:0,user:{},flux:{},root:{},file:{},term:''}
-
-  let g:arbo.user.filetree = get(user,'filetree')
-  let g:arbo.user.initload = get(user,'initload')
-  let g:arbo.user.autocmds = get(user,'autocmds')
-
-  let g:arbo.flux.lexicon  = get(user,'lexicon',lexicon)
-  let g:arbo.flux.fixt  = 1
-  let g:arbo.flux.home  = 1
-  let g:arbo.flux.file  = ''
-
-  call arbo#zero()
-
-  let g:arbo.file.root = '.nvpm/arbo/'
-  let g:arbo.file.flux = g:arbo.file.root..'flux/'
-  let g:arbo.file.edit = g:arbo.file.root..'edit'
-  let g:arbo.file.save = g:arbo.file.root..'save'
-
-  call flux#conf(g:arbo.flux)
-
-  "if !argc()&&g:arbo.user.initload
-  "  if filereadable(g:arbo.file.save)
-  "    let flux = get(readfile(g:arbo.file.save),0,'')
-  "    if !empty(flux) && filereadable(g:arbo.file.flux..flux)
-  "      call arbo#grow(flux)
-  "    endif
-  "  endif
-  "endif
-
-endfu "}
-"-- main functions --
 fu! arbo#fell(...) abort "{
 
   if a:0
@@ -151,7 +151,7 @@ fu! arbo#fell(...) abort "{
 endfu "}
 fu! arbo#jump(...) abort "{
 
-  let user = matchlist(a:1,'\([+-]\)\(\w\+\)')
+  let user = matchlist(a:1,'\([+-]\)\(\d\+\)')
 
   if empty(user)
     echohl WarningMsg
@@ -293,20 +293,41 @@ fu! arbo#zero(...) abort "{
 
 endfu "}
 
-"-- user functions --
-fu! arbo#DIRS(...) abort "{
-  let files = readdir(g:arbo.file.flux)
-  return files
-endfu "}
-fu! arbo#LOOP(...) abort "{
-  let words = [
-        \'next',
-        \'prev',
-        \'project',
-        \'workspace',
-        \'tab',
-        \'file',
-  \]
+"-- user function --
+fu! arbo#user(...) abort "{
 
-  return words
+  if a:0==3 " user completions {
+
+    let cmdline = trim(a:000[1])
+    if cmdline=~'\CArboFell'
+      let list = []
+      for flux in g:arbo.root.list
+        call add(list,flux.file)
+      endfor
+      return list
+    endif
+    if cmdline=~'\CArboJump'
+      let list = []
+      for i in range(g:arbo.flux.leaftype+1)
+        call add(list,'+'..i)
+        call add(list,'-'..i)
+      endfor
+      return list
+    endif
+    if cmdline=~'\v\CArbo(Load|Make)'
+      let files = readdir(g:arbo.file.flux)
+      return files
+    endif
+    return ['unknown']
+
+  endif "}
+  if a:0==2 " user functions   {
+
+    let func = a:1
+    let args = a:2
+
+    call arbo#{func}(args)
+
+  endif "}
+
 endfu "}
