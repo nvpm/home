@@ -176,7 +176,7 @@ fu! arbo#jump(...) abort "{
     if g:arbo.mode==2&&type<g:arbo.flux.leaftype
       for flux in readdir(g:arbo.file.flux)
         let flux = g:arbo.file.flux..flux
-        echo 'write '..flux
+        exe 'write '..flux
       endfor
       call arbo#edit()
       return
