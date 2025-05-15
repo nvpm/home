@@ -148,6 +148,7 @@ fu! arbo#fell(...) abort "{
     call arbo#zero()
   endif
   let g:arbo.mode = !!g:arbo.root.meta.leng
+  call arbo#load()
 
 endfu "}
 fu! arbo#jump(...) abort "{
