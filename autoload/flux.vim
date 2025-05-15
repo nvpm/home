@@ -100,7 +100,7 @@ fu! flux#tree(...) abort "{
   let home = [home .. '/',home][empty(home)]
   let indx = 0
 
-  let tree = #{list:[],meta:#{leng:0,indx:0}}
+  let tree = #{list:[],meta:#{leng:0,indx:0,type:-2}}
 
   " loop over conf.list
   while indx<leng
