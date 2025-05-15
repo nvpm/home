@@ -40,8 +40,7 @@ fu! arbo#init(...) abort "{
     if filereadable(g:arbo.file.save)
       let flux = get(readfile(g:arbo.file.save),0,'')
       let g:arbo = eval(flux)
-      call timer_start(g:arbo.user.initload  ,{->arbo#line()})
-      call timer_start(g:arbo.user.initload+1,{->arbo#rend()})
+      call timer_start(g:arbo.user.initload,{->arbo#load()})
     endif
   endif
 
@@ -84,16 +83,20 @@ fu! arbo#edit(...) abort "{
 endfu "}
 fu! arbo#load(...) abort "{
 
-  let file = a:1
-
-  if g:arbo.mode!=2
-    let file = g:arbo.file.flux..file
-    let g:arbo.mode = 1
+  if a:0
+    let file = a:1
+    if g:arbo.mode!=2
+      let file = g:arbo.file.flux..file
+      let g:arbo.mode = 1
+    endif
+    call arbo#grow(file)
   endif
 
-  call arbo#grow(file)
+  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+    let g:line.arbo = 1
+    call line#show()
+  endif
 
-  call arbo#line()
   call arbo#curr()
   call arbo#save()
 
@@ -200,6 +203,41 @@ fu! arbo#jump(...) abort "{
 endfu "}
 fu! arbo#make(...) abort "{
 
+  let name = get(a:000,0,'')
+
+  if empty(name)|return|endif
+  if !isdirectory(g:arbo.file.flux)&&filereadable(g:arbo.file.flux)
+    echohl WarningMsg
+    echo 'ArboMake: Location '..g:arbo.file.flux..' is a file. Remove it first.'
+    echohl None
+    return 1
+  endif
+
+  call mkdir(g:arbo.file.flux,'p')
+
+  let path = g:arbo.file.flux..name
+
+  if 1+arbo#find(path)
+    echohl WarningMsg
+    echo 'ArboMake: flux file ['.name.'] already exists. Choose another name!'
+    echohl None
+    return 2
+  endif
+
+  let name = fnamemodify(name,':e')=='flux'?name:fnamemodify(name,':t:r')..'.flux'
+
+  let lines = ''
+  let lines.= '# arbo new flux file,'
+  let lines.= '# ------------------,'
+  let lines.= '#,'
+  let lines.= '# --> '..name..','
+  let lines.= '#,'
+  let lines.= '#,'
+
+  let lines = split(lines,',')
+  call writefile(lines,path)
+  call arbo#edit()
+
 endfu "}
 fu! arbo#term(...) abort "{
 
@@ -236,8 +274,13 @@ fu! arbo#curr(...) abort "{
   let flux = get(list,g:arbo.root.meta.indx,[])
 
   let node = flux#seek(flux,g:arbo.flux.leaftype)
+
+  if !has_key(node,'meta')|return 2|endif
+  if !has_key(node,'data')|return 2|endif
+  if !has_key(node,'list')|return 2|endif
+
   let curr = node.list[node.meta.indx].data.info
-  if empty(curr)|return 2|endif
+  if empty(curr)|return 3|endif
 
   let g:arbo.root.last = g:arbo.root.curr
   let g:arbo.root.curr = curr
@@ -294,14 +337,6 @@ endfu "}
 fu! arbo#save(...) abort "{
 
   call writefile([string(g:arbo)],g:arbo.file.save)
-
-endfu "}
-fu! arbo#line(...) abort "{
-
-  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
-    let g:line.arbo = 1
-    call line#show()
-  endif
 
 endfu "}
 

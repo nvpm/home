@@ -88,8 +88,9 @@ nmap mt :ArboTerm<cr>i
 "}
 " line {
 
-"let __LINEAUTO__  = 1
-"let __LINEPLUG__  = 1
+"let _LINEAUTO_ = 1
+"let _LINEPLUG_ = 1
+
 let line_keepuser = 0
 let line_initload = 1
 let line_showmode = 3
