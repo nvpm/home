@@ -174,7 +174,10 @@ fu! arbo#jump(...) abort "{
   if g:arbo.mode
     " leaves edit mode
     if g:arbo.mode==2&&type<g:arbo.flux.leaftype
-      :write
+      for flux in readdir(g:arbo.file.flux)
+        let flux = g:arbo.file.flux..flux
+        echo 'write '..flux
+      endfor
       call arbo#edit()
       return
     endif
@@ -321,13 +324,9 @@ fu! arbo#user(...) abort "{
     return ['unknown']
 
   endif "}
-  if a:0==2 " user functions   {
 
-    let func = a:1
-    let args = a:2
-
-    call arbo#{func}(args)
-
-  endif "}
+  let func = a:1
+  let args = get(a:,2,'')
+  call arbo#{func}(args)
 
 endfu "}
