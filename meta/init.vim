@@ -34,10 +34,10 @@ fu! s:test.arbo(...) "{
 
   "so autoload/flux.vim
   "so syntax/flux.vim
-  "so autoload/arbo.vim
+  so autoload/arbo.vim
   "so plugin/arbo.vim
 
-  call arbo#show()
+  call arbo#trim()
 
 endfu "}
 fu! s:test.line(...) "{
@@ -124,8 +124,8 @@ endfu "}
 "}
 " exec {
 
-if 1|call s:test.flux()|endif
-if 0|call s:test.arbo()|endif
+if 0|call s:test.flux()|endif
+if 1|call s:test.arbo()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 

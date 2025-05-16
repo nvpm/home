@@ -35,7 +35,6 @@ fu! arbo#init(...) abort "{
 
   call flux#conf(g:arbo.flux)
 
-  return
   if !argc()&&g:arbo.user.initload
     let g:arbo.user.initload = abs(g:arbo.user.initload)
     if filereadable(g:arbo.file.save)
@@ -77,45 +76,9 @@ fu! arbo#grow(...) abort "{
     let g:arbo.root.meta.indx = indx
   endif
 
-  let g:arbo.mode = !!g:arbo.root.meta.leng
-
-endfu "}
-fu! arbo#trim(...) abort "{
-
-  "if !isdirectory('.nvpm')||!isdirectory(g:arbo.file.flux)
-  "  return 1
-  "endif
-
-  "if g:arbo.mode == 2
-  "  let file = bufname()
-  "  for flux in g:arbo.root.list
-  "    if flux.file==g:arbo.file.edit|continue|endif
-  "    call arbo#grow(flux.file)
-  "  endfor
-  "  call arbo#fell(g:arbo.file.edit)
-  "  call arbo#load(fnamemodify(file,':t'))
-  "  return
-  "endif
-
-  if !g:arbo.root.meta.leng|return 1|endif
-
-  let fluxes = readdir(g:arbo.file.flux)
-  let body   = []
-  for file in fluxes
-    let file = g:arbo.file.flux..file
-    let line = 'file '..fnamemodify(file,':t:r')..':'..file
-    let curr = g:arbo.root.list[g:arbo.root.meta.indx].file
-    if file == curr
-      let body = [line]+body
-      continue
-    endif
-    call add(body,line)
-  endfor
-
-  call writefile(body,g:arbo.file.edit)
-  let g:arbo.mode = 2
-  call arbo#grow(g:arbo.file.edit)
-  call arbo#load()
+  if g:arbo.mode!=2
+    let g:arbo.mode = !!g:arbo.root.meta.leng
+  endif
 
 endfu "}
 fu! arbo#fell(...) abort "{
@@ -191,6 +154,58 @@ fu! arbo#jump(...) abort "{
       endif
     endif
   endif
+
+endfu "}
+fu! arbo#trim(...) abort "{
+
+  if !isdirectory('.nvpm')||!isdirectory(g:arbo.file.flux)
+    return 1
+  endif
+
+  if g:arbo.mode == 2
+    let pick = bufname()
+    if arbo#grow(pick)
+      echohl WarningMsg
+      echo  'ArboTrim: the flux file "'.pick.'" is invalid. Aborting...'
+      echohl None
+      return 1
+    else
+      call arbo#fell(g:arbo.file.edit)
+      call arbo#indx(g:arbo.root.meta,arbo#find(pick),'set index')
+    endif
+    call arbo#load()
+    return
+  endif
+
+  let fluxes = readdir(g:arbo.file.flux)
+  let body   = []
+  for file in fluxes
+    let file = g:arbo.file.flux..file
+    let line = 'file '..fnamemodify(file,':t:r')..':'..file
+    call add(body,line)
+  endfor
+
+  let flux = ''
+  if !empty(g:arbo.root.list)
+    let flux = g:arbo.root.list[g:arbo.root.meta.indx].file
+  endif
+
+  call writefile(body,g:arbo.file.edit)
+  call arbo#grow(g:arbo.file.edit)
+  let g:arbo.mode = 2
+
+  if !empty(flux)
+    let node = flux#seek(g:arbo.root,g:arbo.flux.leaftype)
+    for indx in range(node.meta.leng)
+      let leaf = node.list[indx]
+      if leaf.data.info == flux
+        let node.meta.indx = indx
+        break
+      endif
+    endfor
+  endif
+
+  call arbo#load()
 
 endfu "}
 fu! arbo#make(...) abort "{
@@ -294,6 +309,13 @@ fu! arbo#indx(...) abort "{
 
   let meta = a:1
   let step = a:2
+  let seti = a:0==3
+
+  if seti&&step!=-1
+    let meta.indx = step
+    call arbo#indx(meta,0)
+    return
+  endif
   let meta.indx+= step                    " steps forwards or backwards
   let meta.indx%= meta.leng               " limits range inside length
   let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
@@ -361,6 +383,12 @@ fu! arbo#user(...) abort "{
   let args = get(a:,2,'')
 
   if func=='grow'
+    if g:arbo.mode==2
+      echohl WarningMsg
+      echo  'ArboGrow: leave trim mode first'
+      echohl None
+      return 1
+    endif
     let file = g:arbo.file.flux..args
     if isdirectory(file)
       let fluxes = readdir(file)
@@ -371,6 +399,15 @@ fu! arbo#user(...) abort "{
       call arbo#grow(file)
     endif
     call arbo#load()
+    return
+  endif
+  if func=='fell'
+    if g:arbo.mode==2
+      echohl WarningMsg
+      echo  'ArboFell: leave trim mode first'
+      echohl None
+      return 1
+    endif
     return
   endif
 
