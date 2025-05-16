@@ -29,7 +29,7 @@ if !exists(':ArboTerm') "{
 endif "}
 
 "-- auto commands  --
-if g:arbo.user.autocmds
+if g:arbo.autocmds
   augroup ARBO
     au!
     au! BufEnter *.flux set ft=flux

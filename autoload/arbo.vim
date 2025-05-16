@@ -7,21 +7,25 @@ let s:vim  = !s:nvim
 "-- main functions --
 fu! arbo#init(...) abort "{
 
-  let user = get(g:,'arbo',{})
-
   let lexicon  = ''
   let lexicon .= '|project proj scheme layout book'
   let lexicon .= '|workspace arch archive architecture section'
   let lexicon .= '|tab folder fold shelf package pack chapter'
   let lexicon .= '|file buff buffer path entry node leaf page'
 
-  let g:arbo = #{mode:0,user:{},flux:{},root:{},file:{},term:''}
+  let g:arbo = get(g:,'arbo',{})
+  call extend(g:arbo,#{mode:0,flux:{},root:{},file:{},term:''})
 
-  let g:arbo.user.filetree = get(user,'filetree')
-  let g:arbo.user.initload = get(user,'initload')
-  let g:arbo.user.autocmds = get(user,'autocmds')
+  let g:arbo.filetree = get(g:arbo,'filetree')
+  let g:arbo.initload = get(g:arbo,'initload')
+  let g:arbo.autocmds = get(g:arbo,'autocmds')
 
-  let g:arbo.flux.lexicon  = get(user,'lexicon',lexicon)
+  if has_key(g:arbo,'lexicon')
+    let g:arbo.flux.lexicon = remove(g:arbo,'lexicon')
+  else
+    let g:arbo.flux.lexicon = lexicon
+  endif
+
   let g:arbo.flux.fixt  = 1
   let g:arbo.flux.home  = 1
   let g:arbo.flux.file  = ''
@@ -35,13 +39,14 @@ fu! arbo#init(...) abort "{
 
   call flux#conf(g:arbo.flux)
 
-  if !argc()&&g:arbo.user.initload
-    let g:arbo.user.initload = abs(g:arbo.user.initload)
+  if !argc()&&g:arbo.initload
+    let g:arbo.initload = abs(g:arbo.initload)
     if filereadable(g:arbo.file.save)
       let flux = get(readfile(g:arbo.file.save),0,'')
       let g:arbo = eval(flux)
-      call timer_start(g:arbo.user.initload,{->arbo#load()})
+      call timer_start(g:arbo.initload,{->arbo#load()})
     endif
+    return
   endif
 
 endfu "}
@@ -288,7 +293,7 @@ fu! arbo#rend(...) abort "{
     setl filetype=flux
     setl commentstring=-%s
   endif
-  if g:arbo.user.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
+  if g:arbo.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
     call mkdir(head,'p')
   endif
 

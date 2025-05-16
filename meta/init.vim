@@ -2,7 +2,6 @@
 " init {
 
 let s:test = {}
-"so meta/conf.vim
 
 "}
 " plug {
@@ -32,12 +31,12 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.arbo(...) "{
 
-  "so autoload/flux.vim
-  "so syntax/flux.vim
+  so meta/conf.vim
   so autoload/arbo.vim
   "so plugin/arbo.vim
 
-  call arbo#trim()
+  call arbo#init()
+  call arbo#show()
 
 endfu "}
 fu! s:test.line(...) "{
