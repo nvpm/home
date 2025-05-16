@@ -4,128 +4,6 @@ let _ARBOAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
-fu! arbo#user(...) abort "{
-
-  if a:0==3 " user completions {
-
-    let cmdline = trim(a:000[1])
-    if cmdline=~'\CArboFell'
-      let list = []
-      for flux in g:arbo.root.list
-        if flux.file==g:arbo.file.edit|continue|endif
-        call add(list,flux.file)
-      endfor
-      return list
-    endif
-    if cmdline=~'\CArboJump'
-      let list = []
-      for i in range(g:arbo.flux.leaftype+1)
-        call add(list,'+'..i)
-        call add(list,'-'..i)
-      endfor
-      return list
-    endif
-    if cmdline=~'\v\CArbo(Grow|Make)'
-      let files = readdir(g:arbo.file.flux)
-      return files
-    endif
-    return ['unknown']
-
-  endif "}
-
-  let func = a:1
-  let args = get(a:,2,'')
-
-  if func=='jump' "{
-    let user = matchlist(args,'\([+-]\)\(\d\+\)')
-    if empty(user)
-      echohl WarningMsg
-      echo  'ArboJump: the entry "'.args.'" is invalid'
-      echohl None
-      return 1
-    endif
-    let step = v:count1 * [+1,-1][user[1]=='-']
-    let type = user[2]
-    let type+= 0 "type cast into an integer
-    if type<0||type>g:arbo.flux.leaftype
-      echohl WarningMsg
-      echo  'ArboJump: the entry "'.args.'" is out of bounds'
-      echohl None
-      return 1
-    endif
-    call arbo#jump(step,type)
-    return
-  endif "}
-  if func=='grow' "{
-    if g:arbo.mode==2
-      echohl WarningMsg
-      echo  'ArboGrow: leave trim mode first'
-      echohl None
-      return 1
-    endif
-    let file = g:arbo.file.flux..args
-    if isdirectory(file)
-      let fluxes = readdir(file)
-      for flux in fluxes
-        call arbo#grow(simplify(file.'/'.flux))
-      endfor
-    else
-      call arbo#grow(file)
-    endif
-    call arbo#load()
-    return
-  endif "}
-  if func=='fell' "{
-    if g:arbo.mode==2
-      echohl WarningMsg
-      echo  'ArboFell: leave trim mode first'
-      echohl None
-      return 1
-    endif
-  endif "}
-
-  call arbo#{func}(args)
-
-endfu "}
-fu! arbo#make(...) abort "{
-
-  let name = get(a:000,0,'')
-
-  if empty(name)|return|endif
-  if !isdirectory(g:arbo.file.flux)&&filereadable(g:arbo.file.flux)
-    echohl WarningMsg
-    echo 'ArboMake: Location '..g:arbo.file.flux..' is a file. Remove it first.'
-    echohl None
-    return 1
-  endif
-
-  call mkdir(g:arbo.file.flux,'p')
-
-  let path = g:arbo.file.flux..name
-
-  if 1+arbo#find(path)
-    echohl WarningMsg
-    echo 'ArboMake: flux file ['.name.'] already exists. Choose another name!'
-    echohl None
-    return 2
-  endif
-
-  let name = fnamemodify(name,':e')=='flux'?name:fnamemodify(name,':t:r')..'.flux'
-
-  let lines = ''
-  let lines.= '# arbo new flux file,'
-  let lines.= '# ------------------,'
-  let lines.= '#,'
-  let lines.= '# --> '..name..','
-  let lines.= '#,'
-  let lines.= '#,'
-
-  let lines = split(lines,',')
-  call writefile(lines,path)
-  call arbo#trim()
-
-endfu "}
-
 "-- main functions --
 fu! arbo#init(...) abort "{
 
@@ -322,7 +200,22 @@ fu! arbo#trim(...) abort "{
   call arbo#load()
 
 endfu "}
-"make
+fu! arbo#make(...) abort "{
+
+  let name = get(a:000,0,'')
+
+  let lines = ''
+  let lines.= '# arbo new flux file,'
+  let lines.= '# ------------------,'
+  let lines.= '#,'
+  let lines.= '# --> '..name..','
+  let lines.= '#,'
+
+  let lines = split(lines,',')
+  call writefile(lines,name)
+  call arbo#trim()
+
+endfu "}
 fu! arbo#term(...) abort "{
 
   if !bufexists(g:arbo.term)
@@ -421,3 +314,101 @@ fu! arbo#save(...) abort "{
 endfu "}
 
 "-- user function --
+fu! arbo#user(...) abort "{
+
+  if a:0==3 " user completions {
+
+    let cmdline = trim(a:000[1])
+    if cmdline=~'\CArboFell'
+      let list = []
+      for flux in g:arbo.root.list
+        if flux.file==g:arbo.file.edit|continue|endif
+        call add(list,flux.file)
+      endfor
+      return list
+    endif
+    if cmdline=~'\CArboJump'
+      let list = []
+      for i in range(g:arbo.flux.leaftype+1)
+        call add(list,'+'..i)
+        call add(list,'-'..i)
+      endfor
+      return list
+    endif
+    if cmdline=~'\v\CArboGrow'
+      let files = readdir(g:arbo.file.flux)
+      return files
+    endif
+    return []
+
+  endif "}
+
+  let func = a:1
+  let args = get(a:,2,'')
+
+  if func=='jump' "{
+    let user = matchlist(args,'\([+-]\)\(\d\+\)')
+    if empty(user)
+      echohl WarningMsg
+      echo  'ArboJump: the entry "'.args.'" is invalid'
+      echohl None
+      return 1
+    endif
+    let step = v:count1 * [+1,-1][user[1]=='-']
+    let type = user[2]
+    let type+= 0 "type cast into an integer
+    if type<0||type>g:arbo.flux.leaftype
+      echohl WarningMsg
+      echo  'ArboJump: the entry "'.args.'" is out of bounds'
+      echohl None
+      return 1
+    endif
+    call arbo#jump(step,type)
+    return
+  endif "}
+  if func=='grow' "{
+    if g:arbo.mode==2
+      echohl WarningMsg
+      echo  'ArboGrow: leave trim mode first'
+      echohl None
+      return 1
+    endif
+    let file = g:arbo.file.flux..args
+    if isdirectory(file)
+      let fluxes = readdir(file)
+      for flux in fluxes
+        call arbo#grow(simplify(file.'/'.flux))
+      endfor
+    else
+      call arbo#grow(file)
+    endif
+    call arbo#load()
+    return
+  endif "}
+  if func=='fell' "{
+    if g:arbo.mode==2
+      echohl WarningMsg
+      echo  'ArboFell: leave trim mode first'
+      echohl None
+      return 1
+    endif
+  endif "}
+  if func=='make' "{
+
+    if empty(args)
+      return 1
+    endif
+    call mkdir(g:arbo.file.flux,'p')
+    let flux = g:arbo.file.flux..args
+    if filereadable(flux)
+      echohl WarningMsg
+      echo 'ArboMake: flux file ['.args.'] exists. Choose another name!'
+      echohl None
+      return 1
+    endif
+    let args = flux
+  endif "}
+
+  call arbo#{func}(args)
+
+endfu "}
