@@ -94,8 +94,8 @@ fu! arbo#fell(...) abort "{
     if 1+indx
       unlet g:arbo.root.list[indx]
       let g:arbo.root.meta.leng-= 1
-      " just to keep indx inside bounds
-      call arbo#indx(g:arbo.root.meta,0)
+      " just to keep indx inside bounds, because of new leng
+      call arbo#indx(g:arbo.root.meta)
     endif
   else
     call arbo#zero()
@@ -106,35 +106,20 @@ fu! arbo#fell(...) abort "{
 endfu "}
 fu! arbo#jump(...) abort "{
 
-  let user = matchlist(a:1,'\([+-]\)\(\d\+\)')
-
-  if empty(user)
-    echohl WarningMsg
-    echo  'ArboJump: the entry "'.a:1.'" is invalid'
-    echohl None
-    return 1
-  endif
-
-  let step = v:count1 * [+1,-1][user[1]=='-']
-  let type = user[2]
-  let type+= 0 "type cast into an integer
-
-  if type<0||type>g:arbo.flux.leaftype
-    echohl WarningMsg
-    echo  'ArboJump: the entry "'.a:1.'" is out of bounds'
-    echohl None
-    return 2
-  endif
+  " TODO: make it as such that it jumps to an absolute location too
+  let step = a:1
+  let type = a:2
 
   if g:arbo.mode
-    " leaves edit mode on non-leaf jumps
+    " leaves trim mode on non-leaf jumps
     if g:arbo.mode==2&&type<g:arbo.flux.leaftype
       wall
       call arbo#trim()
       return
     endif
     if g:arbo.root.curr==bufname()
-      call arbo#indx(flux#seek(g:arbo.root,type).meta,step)
+      let meta = flux#seek(g:arbo.root,type).meta
+      call arbo#indx(meta,meta.indx+step)
     endif
     " performs the JumpBack WorkFlow
     call arbo#curr()
@@ -171,7 +156,10 @@ fu! arbo#trim(...) abort "{
       return 1
     else
       call arbo#fell(g:arbo.file.edit)
-      call arbo#indx(g:arbo.root.meta,arbo#find(pick),'set index')
+      let indx = arbo#find(pick)
+      if 1+indx
+        call arbo#indx(g:arbo.root.meta,indx)
+      endif
     endif
     call arbo#load()
     return
@@ -308,15 +296,8 @@ endfu "}
 fu! arbo#indx(...) abort "{
 
   let meta = a:1
-  let step = a:2
-  let seti = a:0==3
 
-  if seti&&step!=-1
-    let meta.indx = step
-    call arbo#indx(meta,0)
-    return
-  endif
-  let meta.indx+= step                    " steps forwards or backwards
+  let meta.indx = get(a:,2,meta.indx)
   let meta.indx%= meta.leng               " limits range inside length
   let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
 
@@ -382,7 +363,27 @@ fu! arbo#user(...) abort "{
   let func = a:1
   let args = get(a:,2,'')
 
-  if func=='grow'
+  if func=='jump' "{
+    let user = matchlist(args,'\([+-]\)\(\d\+\)')
+    if empty(user)
+      echohl WarningMsg
+      echo  'ArboJump: the entry "'.args.'" is invalid'
+      echohl None
+      return 1
+    endif
+    let step = v:count1 * [+1,-1][user[1]=='-']
+    let type = user[2]
+    let type+= 0 "type cast into an integer
+    if type<0||type>g:arbo.flux.leaftype
+      echohl WarningMsg
+      echo  'ArboJump: the entry "'.args.'" is out of bounds'
+      echohl None
+      return 1
+    endif
+    call arbo#jump(step,type)
+    return
+  endif "}
+  if func=='grow' "{
     if g:arbo.mode==2
       echohl WarningMsg
       echo  'ArboGrow: leave trim mode first'
@@ -400,8 +401,8 @@ fu! arbo#user(...) abort "{
     endif
     call arbo#load()
     return
-  endif
-  if func=='fell'
+  endif "}
+  if func=='fell' "{
     if g:arbo.mode==2
       echohl WarningMsg
       echo  'ArboFell: leave trim mode first'
@@ -409,7 +410,7 @@ fu! arbo#user(...) abort "{
       return 1
     endif
     return
-  endif
+  endif "}
 
   call arbo#{func}(args)
 
