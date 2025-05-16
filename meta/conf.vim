@@ -70,20 +70,23 @@ nmap <silent>-         :ArboJump -0<cr>
 nmap <F8>  <esc>:ArboGrow<space>
 imap <F8>  <esc>:ArboGrow<space>
 cmap <F8>  <esc>:ArboGrow<space>
-nmap <F9>  <esc>:ArboGrow<space>
-imap <F9>  <esc>:ArboGrow<space>
-cmap <F9>  <esc>:ArboGrow<space>
+nmap <F9>  <esc>:ArboFell<space>
+imap <F9>  <esc>:ArboFell<space>
+cmap <F9>  <esc>:ArboFell<space>
 nmap <F10> <esc>:ArboMake<space>
 imap <F10> <esc>:ArboMake<space>
 cmap <F10> <esc>:ArboMake<space>
-nmap <silent><F11> <esc>:wall<cr>:ArboEdit<cr>
-imap <silent><F11> <esc>:wall<cr>:ArboEdit<cr>
-cmap <silent><F11> <esc>:wall<cr>:ArboEdit<cr>
-nmap <silent><F12> <esc>:wall<cr>:ArboEdit<cr>
-imap <silent><F12> <esc>:wall<cr>:ArboEdit<cr>
-cmap <silent><F12> <esc>:wall<cr>:ArboEdit<cr>
-
-nmap mt :ArboTerm<cr>i
+nmap <silent><F11> <esc>:wall<cr>:ArboTrim<cr>
+imap <silent><F11> <esc>:wall<cr>:ArboTrim<cr>
+cmap <silent><F11> <esc>:wall<cr>:ArboTrim<cr>
+nmap <silent><F12> <esc>:wall<cr>:ArboTrim<cr>
+imap <silent><F12> <esc>:wall<cr>:ArboTrim<cr>
+cmap <silent><F12> <esc>:wall<cr>:ArboTrim<cr>
+if !has('nvim')
+  nmap <silent>mt <esc>:wall<cr>:ArboTerm<cr>
+else
+  nmap <silent>mt <esc>:wall<cr>:ArboTerm<cr>:startinsert<cr>
+endif
 
 "}
 " line {

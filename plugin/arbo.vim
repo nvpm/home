@@ -21,8 +21,8 @@ if !exists(':ArboJump') "{
   com! -complete=customlist,arbo#user -count -nargs=* 
   \ArboJump call arbo#user('jump','<args>')
 endif "}
-if !exists(':ArboEdit') "{
-  com! ArboEdit call arbo#user('edit')
+if !exists(':ArboTrim') "{
+  com! ArboTrim call arbo#user('trim')
 endif "}
 if !exists(':ArboTerm') "{
   com! ArboTerm call arbo#user('term')

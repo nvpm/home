@@ -80,7 +80,7 @@ fu! arbo#grow(...) abort "{
   let g:arbo.mode = !!g:arbo.root.meta.leng
 
 endfu "}
-fu! arbo#edit(...) abort "{
+fu! arbo#trim(...) abort "{
 
   "if !isdirectory('.nvpm')||!isdirectory(g:arbo.file.flux)
   "  return 1
@@ -167,7 +167,7 @@ fu! arbo#jump(...) abort "{
     " leaves edit mode on non-leaf jumps
     if g:arbo.mode==2&&type<g:arbo.flux.leaftype
       wall
-      call arbo#edit()
+      call arbo#trim()
       return
     endif
     if g:arbo.root.curr==bufname()
@@ -228,7 +228,7 @@ fu! arbo#make(...) abort "{
 
   let lines = split(lines,',')
   call writefile(lines,path)
-  call arbo#edit()
+  call arbo#trim()
 
 endfu "}
 fu! arbo#term(...) abort "{
