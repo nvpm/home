@@ -44,12 +44,12 @@ fu! arbo#init(...) abort "{
     let g:arbo.initload = abs(g:arbo.initload)
     if filereadable(g:arbo.file.save)
       let flux = get(readfile(g:arbo.file.save),0,'')
-      let arbo = eval(flux)
-      if type(arbo)!=4
+      let root = eval(flux)
+      if type(root)!=4
         call delete(g:arbo.file.save)
         return
       endif
-      let g:arbo = arbo
+      let g:arbo.root = root
       if 1+arbo#find(g:arbo.file.edit) 
         call arbo#fell(g:arbo.file.edit)
       endif
@@ -316,7 +316,7 @@ endfu "}
 fu! arbo#save(...) abort "{
 
   if g:arbo.savetree
-    call writefile([string(g:arbo)],g:arbo.file.save)
+    call writefile([string(g:arbo.root)],g:arbo.file.save)
   endif
 
 endfu "}

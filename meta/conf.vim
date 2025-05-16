@@ -47,7 +47,7 @@ endif
 
 let arbo = {}
 let arbo.autocmds = 1
-let arbo.filetree = 1
+let arbo.filetree = 0
 let arbo.savetree = 1
 let arbo.initload = 1
 let arbo.lexicon  = 'project|workspace|tab|file'
