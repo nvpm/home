@@ -31,12 +31,10 @@ fu! s:test.flux(...) "{
 endfu "}
 fu! s:test.arbo(...) "{
 
-  so meta/conf.vim
-  so autoload/arbo.vim
+  "so meta/conf.vim
+  "so autoload/arbo.vim
   "so plugin/arbo.vim
 
-  call arbo#init()
-  call arbo#show()
 
 endfu "}
 fu! s:test.line(...) "{
