@@ -16,9 +16,10 @@ fu! arbo#init(...) abort "{
   let g:arbo = get(g:,'arbo',{})
   call extend(g:arbo,#{mode:0,flux:{},root:{},file:{},term:''})
 
-  let g:arbo.filetree = get(g:arbo,'filetree')
-  let g:arbo.initload = get(g:arbo,'initload')
-  let g:arbo.autocmds = get(g:arbo,'autocmds')
+  let g:arbo.filetree = get(g:arbo,'filetree',0)
+  let g:arbo.savetree = get(g:arbo,'savetree',1)
+  let g:arbo.initload = get(g:arbo,'initload',0)&&g:arbo.savetree
+  let g:arbo.autocmds = get(g:arbo,'autocmds',0)
 
   if has_key(g:arbo,'lexicon')
     let g:arbo.flux.lexicon = remove(g:arbo,'lexicon')
@@ -43,7 +44,12 @@ fu! arbo#init(...) abort "{
     let g:arbo.initload = abs(g:arbo.initload)
     if filereadable(g:arbo.file.save)
       let flux = get(readfile(g:arbo.file.save),0,'')
-      let g:arbo = eval(flux)
+      let arbo = eval(flux)
+      if type(arbo)!=4
+        call delete(g:arbo.file.save)
+        return
+      endif
+      let g:arbo = arbo
       if 1+arbo#find(g:arbo.file.edit) 
         call arbo#fell(g:arbo.file.edit)
       endif
@@ -309,7 +315,9 @@ fu! arbo#zero(...) abort "{
 endfu "}
 fu! arbo#save(...) abort "{
 
-  call writefile([string(g:arbo)],g:arbo.file.save)
+  if g:arbo.savetree
+    call writefile([string(g:arbo)],g:arbo.file.save)
+  endif
 
 endfu "}
 
