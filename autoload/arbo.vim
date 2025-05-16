@@ -161,7 +161,7 @@ fu! arbo#trim(...) abort "{
     let pick = bufname()
     if arbo#grow(pick)
       echohl WarningMsg
-      echo  'ArboTrim: the flux file "'.pick.'" is invalid. Aborting...'
+      echo  'ArboJump: the flux file "'.pick.'" is invalid. Aborting...'
       echohl None
       return 1
     else
@@ -355,6 +355,10 @@ fu! arbo#user(...) abort "{
   let args = get(a:,2,'')
 
   if func=='jump' "{
+    if empty(args)
+      call arbo#trim()
+      return
+    endif
     let user = matchlist(args,'\([+-]\)\(\d\+\)')
     if empty(user)
       echohl WarningMsg

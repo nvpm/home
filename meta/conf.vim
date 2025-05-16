@@ -77,12 +77,9 @@ cmap <F9>  <esc>:ArboFell<space>
 nmap <F10> <esc>:ArboMake<space>
 imap <F10> <esc>:ArboMake<space>
 cmap <F10> <esc>:ArboMake<space>
-nmap <silent><F11> <esc>:wall<cr>:ArboTrim<cr>
-imap <silent><F11> <esc>:wall<cr>:ArboTrim<cr>
-cmap <silent><F11> <esc>:wall<cr>:ArboTrim<cr>
-nmap <silent><F12> <esc>:wall<cr>:ArboTrim<cr>
-imap <silent><F12> <esc>:wall<cr>:ArboTrim<cr>
-cmap <silent><F12> <esc>:wall<cr>:ArboTrim<cr>
+nmap <silent><F12> <esc>:wall<cr>:ArboJump<cr>
+imap <silent><F12> <esc>:wall<cr>:ArboJump<cr>
+cmap <silent><F12> <esc>:wall<cr>:ArboJump<cr>
 if !has('nvim')
   nmap <silent>mt <esc>:wall<cr>:ArboTerm<cr>
 else
