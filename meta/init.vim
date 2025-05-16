@@ -43,6 +43,8 @@ fu! s:test.line(...) "{
 
   so autoload/line.vim
 
+  call line#init()
+
   return
   ec &tabline
   ec &statusline
@@ -124,8 +126,8 @@ endfu "}
 " exec {
 
 if 0|call s:test.flux()|endif
-if 1|call s:test.arbo()|endif
+if 0|call s:test.arbo()|endif
 if 0|call s:test.zoom()|endif
-if 0|call s:test.line()|endif
+if 1|call s:test.line()|endif
 
 "}

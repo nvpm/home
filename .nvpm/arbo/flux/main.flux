@@ -1,6 +1,17 @@
 
 
   project   devl {
+    workspace 🭹 line {
+      tab  code
+        file auto : autoload/line.vim
+        file plug : plugin/line.vim
+        file init = meta/init.vim
+      tab 🯅 seng = seng/line
+          file TODO     
+          file Issues   
+      tab  meta
+        file  help : doc/line.txt
+    }
     workspace  arbo {
       tab  code
         file auto : autoload/arbo.vim
@@ -11,6 +22,18 @@
           file Issues   
       tab  meta
         file  help : doc/arbo.txt
+    }
+    --
+    workspace ▣ zoom {
+      tab  code
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
+        file init = meta/init.vim
+      tab 🯅 seng = seng/zoom
+          file TODO     
+          file Issues   
+      tab  meta
+        file  help : doc/zoom.txt
     }
     workspace ɸ flux {
       tab  code
@@ -26,29 +49,6 @@
       -tab  meta
         file  help : doc/flux.txt
     }
-    workspace 🭹 line {
-      tab  code
-        file auto : autoload/line.vim
-        file plug : plugin/line.vim
-        file init = meta/init.vim
-      tab 🯅 seng = seng/line
-          file TODO     
-          file Issues   
-      tab  meta
-        file  help : doc/line.txt
-    }
-    workspace ▣ zoom {
-      tab  code
-        file auto : autoload/zoom.vim
-        file plug : plugin/zoom.vim
-        file init = meta/init.vim
-      tab 🯅 seng = seng/zoom
-          file TODO     
-          file Issues   
-      tab  meta
-        file  help : doc/zoom.txt
-    }
-    --
     workspace Ⲅ text {
       tab  code
         file auto : autoload/text.vim
@@ -66,8 +66,8 @@
   }
   project   meta {
     tab  meta = meta
-      file init.vim
       file conf.vim
+      file init.vim
       -file meta.vim
     tab  help = /usr/share/nvim/runtime/doc
       file api  : api.txt

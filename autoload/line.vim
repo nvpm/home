@@ -6,21 +6,22 @@ let s:vim  = !s:nvim
 
 fu! line#init(...) abort "{
 
-  let s:initload = get(g: , 'line_initload' ,  0  )
-  let s:showmode = get(g: , 'line_showmode' ,  2  )
-  let s:bonetype = get(g: , 'line_bonetype' ,  1  )
-  let s:skeleton = get(g: , 'line_skeleton' ,  0  )
-  let s:gitimode = get(g: , 'line_gitimode' ,  2  )
-  let s:gitdelay = get(g: , 'line_gitdelay' , &ut )
-  let s:curredge = get(g: , 'line_curredge' , '[,]' )
-  let s:inacedge = get(g: , 'line_inacedge' , ' , ' )
-  let s:boneedge = get(g: , 'line_boneedge' , ',' )
+  let g:line = get(g:,'line',{})
 
-  let s:curredge = split(s:curredge,',',1)
-  let s:inacedge = split(s:inacedge,',',1)
-  let s:boneedge = split(s:boneedge,',',1)
+  let g:line.initload = get(g:line , 'initload' ,  0  )
+  let g:line.showmode = get(g:line , 'showmode' ,  2  )
+  let g:line.bonetype = get(g:line , 'bonetype' ,  1  )
+  let g:line.skeleton = get(g:line , 'skeleton' ,  0  )
+  let g:line.gitimode = get(g:line , 'gitimode' ,  2  )
+  let g:line.gitdelay = get(g:line , 'gitdelay' , &ut )
+  let g:line.curredge = get(g:line , 'curredge' , '[,]' )
+  let g:line.inacedge = get(g:line , 'inacedge' , ' , ' )
+  let g:line.boneedge = get(g:line , 'boneedge' , ',' )
 
-  let g:line = {}
+  let g:line.curredge = split(g:line.curredge,',',1)
+  let g:line.inacedge = split(g:line.inacedge,',',1)
+  let g:line.boneedge = split(g:line.boneedge,',',1)
+
   let g:line.mode = 1
   let g:line.arbo = 0
   let g:line.zoom = 0
@@ -28,34 +29,57 @@ fu! line#init(...) abort "{
   call line#save()
   call line#skel()
 
-  let s:gitimode = (executable('git')&&line#find('git'))*s:gitimode
-
-  call line#zero()
-
-
-  let s:modeinfo          = {}
-  let s:modeinfo.normal   = 'normal'
-  let s:modeinfo.insert   = 'insert'
-  let s:modeinfo.visual   = 'visual'
-  let s:modeinfo.replace  = 'replace'
-  let s:modeinfo.cmdline  = 'cmdline'
-  let s:modeinfo.terminal = 'terminal'
-
-  if s:initload
-    call line#show()
-  endif
-  if !get(g:,'line_keepuser')
-    unlet! g:line_initload
-    unlet! g:line_showmode
-    unlet! g:line_bonetype
-    unlet! g:line_skeleton
-    unlet! g:line_gitimode
-    unlet! g:line_gitdelay
-    unlet! g:line_curredge
-    unlet! g:line_inacedge
-    unlet! g:line_boneedge
-    unlet! g:line_keepuser
-  endif
+  return
+  "let s:initload = get(g: , 'line_initload' ,  0  )
+  "let s:showmode = get(g: , 'line_showmode' ,  2  )
+  "let s:bonetype = get(g: , 'line_bonetype' ,  1  )
+  "let s:skeleton = get(g: , 'line_skeleton' ,  0  )
+  "let s:gitimode = get(g: , 'line_gitimode' ,  2  )
+  "let s:gitdelay = get(g: , 'line_gitdelay' , &ut )
+  "let s:curredge = get(g: , 'line_curredge' , '[,]' )
+  "let s:inacedge = get(g: , 'line_inacedge' , ' , ' )
+  "let s:boneedge = get(g: , 'line_boneedge' , ',' )
+  "
+  "let s:curredge = split(s:curredge,',',1)
+  "let s:inacedge = split(s:inacedge,',',1)
+  "let s:boneedge = split(s:boneedge,',',1)
+  "
+  "let g:line = {}
+  "let g:line.mode = 1
+  "let g:line.arbo = 0
+  "let g:line.zoom = 0
+  "
+  "call line#save()
+  "call line#skel()
+  "
+  "let s:gitimode = (executable('git')&&line#find('git'))*s:gitimode
+  "
+  "call line#zero()
+  "
+  "
+  "let s:modeinfo          = {}
+  "let s:modeinfo.normal   = 'normal'
+  "let s:modeinfo.insert   = 'insert'
+  "let s:modeinfo.visual   = 'visual'
+  "let s:modeinfo.replace  = 'replace'
+  "let s:modeinfo.cmdline  = 'cmdline'
+  "let s:modeinfo.terminal = 'terminal'
+  "
+  "if s:initload
+  "  call line#show()
+  "endif
+  "if !get(g:,'line_keepuser')
+  "  unlet! g:line_initload
+  "  unlet! g:line_showmode
+  "  unlet! g:line_bonetype
+  "  unlet! g:line_skeleton
+  "  unlet! g:line_gitimode
+  "  unlet! g:line_gitdelay
+  "  unlet! g:line_curredge
+  "  unlet! g:line_inacedge
+  "  unlet! g:line_boneedge
+  "  unlet! g:line_keepuser
+  "endif
 
 endfu "}
 fu! line#mode(...) abort "{
@@ -412,8 +436,8 @@ fu! line#show(...) abort "{
     let &laststatus=2+s:nvim
   else
     if s:showmode==0
-      let &laststatus  = s:laststatus
-      let &showtabline = s:showtabline
+      let &laststatus  = g:line.save.laststatus
+      let &showtabline = g:line.save.showtabline
     endif
     if s:showmode>0
       let &laststatus=2+s:nvim
@@ -459,8 +483,12 @@ endfu "}
 "-- auxy functions --
 fu! line#save(...) abort "{
 
-  let s:laststatus  = &laststatus
-  let s:showtabline = &showtabline
+  if !has_key(g:line,'save')
+    let g:line.save = {}
+  endif
+
+  let g:line.save.laststatus  = &laststatus
+  let g:line.save.showtabline = &showtabline
 
 endfu "}
 fu! line#find(...) abort "{
