@@ -12,7 +12,7 @@ fu! arbo#init(...) abort "{
   let g:arbo.initload = get(g:arbo,'initload',0)
   let g:arbo.autocmds = get(g:arbo,'autocmds',0)
   let g:arbo.filetree = get(g:arbo,'filetree',0)
-  let g:arbo.bufflist = get(g:arbo,'bufflist',0)&&g:arbo.initload
+  let g:arbo.savebufs = get(g:arbo,'savebufs',0)&&g:arbo.initload
 
   let g:arbo.flux = {}
   if has_key(g:arbo,'lexicon')
@@ -51,7 +51,7 @@ fu! arbo#init(...) abort "{
         return
       endif
       let g:arbo.root = root
-      if g:arbo.bufflist
+      if g:arbo.savebufs
         call arbo#rend()
         for file in g:arbo.root.bufs
           exec 'badd '..file
@@ -316,7 +316,7 @@ fu! arbo#zero(...) abort "{
   let g:arbo.root.curr = ''
   let g:arbo.root.last = ''
   let g:arbo.root.list = []
-  if g:arbo.bufflist
+  if g:arbo.savebufs
     let g:arbo.root.bufs = []
   endif
   let g:arbo.root.meta = #{leng:0,indx:0,type:0}
@@ -325,7 +325,7 @@ endfu "}
 fu! arbo#save(...) abort "{
 
   if g:arbo.initload
-    if g:arbo.bufflist
+    if g:arbo.savebufs
       let bool = '!empty(v:val)'
       let bool.= '&&buflisted(v:val)'
       let bool.= '&&v:val!~"^.nvpm.*"'
