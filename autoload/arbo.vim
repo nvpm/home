@@ -12,8 +12,7 @@ fu! arbo#init(...) abort "{
   let g:arbo.initload = get(g:arbo,'initload',0)
   let g:arbo.autocmds = get(g:arbo,'autocmds',0)
   let g:arbo.filetree = get(g:arbo,'filetree',0)
-  let g:arbo.savetree = get(g:arbo,'savetree',0)&&g:arbo.initload
-  let g:arbo.bufflist = get(g:arbo,'bufflist',0)&&g:arbo.savetree
+  let g:arbo.bufflist = get(g:arbo,'bufflist',0)&&g:arbo.initload
 
   let g:arbo.flux = {}
   if has_key(g:arbo,'lexicon')
@@ -325,7 +324,7 @@ fu! arbo#zero(...) abort "{
 endfu "}
 fu! arbo#save(...) abort "{
 
-  if g:arbo.savetree
+  if g:arbo.initload
     if g:arbo.bufflist
       let bool = '!empty(v:val)'
       let bool.= '&&buflisted(v:val)'
