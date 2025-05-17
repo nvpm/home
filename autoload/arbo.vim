@@ -16,13 +16,14 @@ fu! arbo#init(...) abort "{
   let g:arbo = get(g:,'arbo',{})
   call extend(g:arbo,#{mode:0,flux:{},root:{},file:{},term:''})
 
-  let g:arbo.filetree = get(g:arbo,'filetree',0)
-  let g:arbo.savetree = get(g:arbo,'savetree',1)
-  let g:arbo.initload = get(g:arbo,'initload',0)&&g:arbo.savetree
+  let g:arbo.initload = get(g:arbo,'initload',0)
   let g:arbo.autocmds = get(g:arbo,'autocmds',0)
+  let g:arbo.filetree = get(g:arbo,'filetree',0)
+  let g:arbo.savetree = get(g:arbo,'savetree',0)&&g:arbo.initload
+  let g:arbo.bufflist = get(g:arbo,'bufflist',0)&&g:arbo.savetree
 
   if has_key(g:arbo,'lexicon')
-    let g:arbo.flux.lexicon = remove(g:arbo,'lexicon')
+    let g:arbo.flux.lexicon = g:arbo.lexicon
   else
     let g:arbo.flux.lexicon = lexicon
   endif
@@ -50,6 +51,12 @@ fu! arbo#init(...) abort "{
         return
       endif
       let g:arbo.root = root
+      if g:arbo.bufflist
+        call arbo#rend()
+        for file in g:arbo.root.bufs
+          exec 'badd '..file
+        endfor
+      endif
       if 1+arbo#find(g:arbo.file.edit) 
         call arbo#fell(g:arbo.file.edit)
       endif
@@ -280,7 +287,7 @@ fu! arbo#rend(...) abort "{
     call mkdir(head,'p')
   endif
 
-endfu "}
+endfu "} 
 fu! arbo#indx(...) abort "{
 
   let meta = a:1
@@ -310,12 +317,25 @@ fu! arbo#zero(...) abort "{
   let g:arbo.root.curr = ''
   let g:arbo.root.last = ''
   let g:arbo.root.list = []
+  if g:arbo.bufflist
+    let g:arbo.root.bufs = []
+  endif
   let g:arbo.root.meta = #{leng:0,indx:0,type:0}
 
 endfu "}
 fu! arbo#save(...) abort "{
 
   if g:arbo.savetree
+    if g:arbo.bufflist
+      let bool = '!empty(v:val)'
+      let bool.= '&&buflisted(v:val)'
+      let bool.= '&&v:val!~"^.nvpm.*"'
+      let bool.= '&&v:val!~"^.git.*"'
+      let bool.= '&&v:val!~"^term:.*"'
+      let list = map(range(1,bufnr('$')),'bufname(v:val)')
+      let list = filter(list,bool)
+      let g:arbo.root.bufs = list
+    endif
     call writefile([string(g:arbo.root)],g:arbo.file.save)
   endif
 

@@ -1,6 +1,6 @@
 
   home seng
-  project 🯅  seng {
+  -project 🯅  seng {
     loop plugin: arbo --line flux zoom text {
       workspace $(plugin):$(plugin) 
         tab misc {

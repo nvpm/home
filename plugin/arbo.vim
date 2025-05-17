@@ -30,6 +30,8 @@ if g:arbo.autocmds
   augroup ARBO
     au!
     au! BufEnter *.flux set ft=flux
-    au! VimLeavePre * call arbo#save()
+    if g:arbo.savetree
+      au! VimLeavePre * call arbo#save()
+    endif
   augroup END
 endif
