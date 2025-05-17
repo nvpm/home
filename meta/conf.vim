@@ -93,7 +93,7 @@ endif
 "let _LINEPLUG_ = 1
 
 let line_keepuser = 0
-let line_initload = 0
+let line_initload = 1
 let line_showmode = 3
 let line_gitimode = 2
 let line_gitdelay = 0

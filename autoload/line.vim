@@ -206,7 +206,7 @@ fu! line#atom(...) abort "{
         let list = node.list
       endif
     "}
-    elseif type==3 "{
+    elseif type==4 "{
       if s:showmode==1
         let list = [bufname()]
         let indx = 0
@@ -218,7 +218,7 @@ fu! line#atom(...) abort "{
         let leng = len(list)
       endif
     "}
-    elseif type==2 "{
+    elseif type==3 "{
     endif "}
 
     let list = line#pack(list,indx,leng,revs,colr)
