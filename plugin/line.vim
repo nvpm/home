@@ -2,7 +2,9 @@
 if !exists('NVPMTEST')&&exists('_LINEPLUG_')|finish|endif
 let _LINEPLUG_ = 1
 
-call line#init()|delfunc line#init
+call line#init()
 
 "-- user commands --
-command! Line call line#line()
+if !exists(':Line') "{
+  com! Line call line#line()
+endif "}

@@ -6,21 +6,22 @@ let s:vim  = !s:nvim
 
 fu! line#init(...) abort "{
 
-  let s:initload = get(g: , 'line_initload' ,  0  )
-  let s:showmode = get(g: , 'line_showmode' ,  2  )
-  let s:bonetype = get(g: , 'line_bonetype' ,  1  )
-  let s:skeleton = get(g: , 'line_skeleton' ,  0  )
-  let s:gitimode = get(g: , 'line_gitimode' ,  2  )
-  let s:gitdelay = get(g: , 'line_gitdelay' , &ut )
-  let s:curredge = get(g: , 'line_curredge' , '[,]' )
-  let s:inacedge = get(g: , 'line_inacedge' , ' , ' )
-  let s:boneedge = get(g: , 'line_boneedge' , ',' )
+  let g:line = get(g:,'line',{})
 
-  let s:curredge = split(s:curredge,',',1)
-  let s:inacedge = split(s:inacedge,',',1)
-  let s:boneedge = split(s:boneedge,',',1)
+  let g:line.initload = get(g:line , 'initload' ,  1  )
+  let g:line.showmode = get(g:line , 'showmode' ,  2  )
+  let g:line.gitimode = get(g:line , 'gitimode' ,  1  )
+  let g:line.gitdelay = get(g:line , 'gitdelay' , &ut )
+  let g:line.bonetype = get(g:line , 'bonetype' ,  0  )
+  let g:line.curredge = get(g:line , 'curredge' , '[,]' )
+  let g:line.inacedge = get(g:line , 'inacedge' , ' , ' )
+  let g:line.boneedge = get(g:line , 'boneedge' , ',' )
+  let g:line.skeleton = get(g:line , 'skeleton' ,  0  )
 
-  let g:line = {}
+  let g:line.curredge = split(g:line.curredge,',',1)
+  let g:line.inacedge = split(g:line.inacedge,',',1)
+  let g:line.boneedge = split(g:line.boneedge,',',1)
+
   let g:line.mode = 1
   let g:line.arbo = 0
   let g:line.zoom = 0
@@ -28,33 +29,28 @@ fu! line#init(...) abort "{
   call line#save()
   call line#skel()
 
-  let s:gitimode = (executable('git')&&line#find('git'))*s:gitimode
+  let g:line.gitimode = (executable('git')&&line#find('git'))*g:line.gitimode
 
   call line#zero()
 
+  let g:line.modeinfo          = {}
+  let g:line.modeinfo.normal   = 'normal'
+  let g:line.modeinfo.insert   = 'insert'
+  let g:line.modeinfo.visual   = 'visual'
+  let g:line.modeinfo.replace  = 'replace'
+  let g:line.modeinfo.cmdline  = 'cmdline'
+  let g:line.modeinfo.terminal = 'terminal'
 
-  let s:modeinfo          = {}
-  let s:modeinfo.normal   = 'normal'
-  let s:modeinfo.insert   = 'insert'
-  let s:modeinfo.visual   = 'visual'
-  let s:modeinfo.replace  = 'replace'
-  let s:modeinfo.cmdline  = 'cmdline'
-  let s:modeinfo.terminal = 'terminal'
-
-  if s:initload
-    call line#show()
+  if !has_key(g:line,'leaftype')
+    if exists('g:arbo.flux.leaftype')
+      let g:line.leaftype = g:arbo.flux.leaftype
+    else
+      let g:line.leaftype = 4
+    endif
   endif
-  if !get(g:,'line_keepuser')
-    unlet! g:line_initload
-    unlet! g:line_showmode
-    unlet! g:line_bonetype
-    unlet! g:line_skeleton
-    unlet! g:line_gitimode
-    unlet! g:line_gitdelay
-    unlet! g:line_curredge
-    unlet! g:line_inacedge
-    unlet! g:line_boneedge
-    unlet! g:line_keepuser
+
+  if g:line.initload
+    call line#show()
   endif
 
 endfu "}
@@ -65,11 +61,11 @@ fu! line#mode(...) abort "{
     let default = a:0==1
     let colr = a:1
     let colr.= hlexists(a:1) ? '' : 'Insert'
-    let info = '%#'..colr..'#'..(default? s:modeinfo.insert : a:2)
-    if s:bonetype==2&&default
+    let info = '%#'..colr..'#'..(default? g:line.modeinfo.insert : a:2)
+    if g:line.bonetype==2&&default
       let edge = '%#'..colr..'Edge#'
-      let left = edge..s:boneedge[0]
-      let right= edge..s:boneedge[1]
+      let left = edge..g:line.boneedge[0]
+      let right= edge..g:line.boneedge[1]
       let info = left..info..right
       ec info
     endif
@@ -78,27 +74,27 @@ fu! line#mode(...) abort "{
     let colr = '%#'..a:1
     let colr.= hlexists(a:1) ? '' : 'Visual'
     let colr.= '#'
-    return colr..(a:0==2 ? a:2 : s:modeinfo.visual)
+    return colr..(a:0==2 ? a:2 : g:line.modeinfo.visual)
   elseif mode=='R'
     let colr = '%#'..a:1
     let colr.= hlexists(a:1) ? '' : 'Replace'
     let colr.= '#'
-    return colr..(a:0==2 ? a:2 : s:modeinfo.replace)
+    return colr..(a:0==2 ? a:2 : g:line.modeinfo.replace)
   elseif mode=~'\(c\|r\|!\)'
     let colr = '%#'..a:1
     let colr.= hlexists(a:1) ? '' : 'Cmdline'
     let colr.= '#'
-    return colr..(a:0==2 ? a:2 : s:modeinfo.cmdline)
+    return colr..(a:0==2 ? a:2 : g:line.modeinfo.cmdline)
   elseif mode=='t'
     let colr = '%#'..a:1
     let colr.= hlexists(a:1) ? '' : 'Terminal'
     let colr.= '#'
-    return colr..(a:0==2 ? a:2 : s:modeinfo.terminal)
+    return colr..(a:0==2 ? a:2 : g:line.modeinfo.terminal)
   else
     let colr = '%#'..a:1
     let colr.= hlexists(a:1) ? '' : 'Normal'
     let colr.= '#'
-    return colr..(a:0==2 ? a:2 : s:modeinfo.normal)
+    return colr..(a:0==2 ? a:2 : g:line.modeinfo.normal)
   endif
 
   "return
@@ -141,10 +137,10 @@ fu! line#pack(...) abort "{
     let info = g:line.arbo?eval('item.data.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     if indx==curr
-      let info = s:curredge[0]..info..s:curredge[1]
+      let info = g:line.curredge[0]..info..g:line.curredge[1]
       let elem = line#mode(colr,info)
     else
-      let info = s:inacedge[0]..info..s:inacedge[1]
+      let info = g:line.inacedge[0]..info..g:line.inacedge[1]
       let elem = line#mode('LineInac',info)
     endif
     call add(pack,elem)
@@ -174,17 +170,14 @@ fu! line#atom(...) abort "{
           let name = fnamemodify(g:arbo.file,':t')
         endif
       endif
-    "}
-    elseif type=='b' "{
-      let name = expand('%:t')
     endif "}
 
     if empty(name)|return ''|endif
     let name = line#mode(colr,name)
-    if s:bonetype==2
+    if g:line.bonetype==2
       let edge = colr.'Edge'
-      let left = line#mode(edge,s:boneedge[0])
-      let right= line#mode(edge,s:boneedge[1])
+      let left = line#mode(edge,g:line.boneedge[0])
+      let right= line#mode(edge,g:line.boneedge[1])
       let name = left..name..right
     endif
     return name
@@ -206,50 +199,50 @@ fu! line#atom(...) abort "{
         let list = node.list
       endif
     "}
-    elseif type==4 "{
-      if s:showmode==1
+    elseif type==g:line.leaftype "{
+      if g:line.showmode==1
         let list = [bufname()]
         let indx = 0
         let leng = 1
-      elseif s:showmode>1
+      elseif g:line.showmode>1
         let list = map(range(1,bufnr('$')),'bufname(v:val)')
         let list = filter(list,'!empty(v:val)&&buflisted(v:val)')
         let indx = match(list,bufname())
         let leng = len(list)
       endif
     "}
-    elseif type==3 "{
+    elseif type==g:line.leaftype-1 "{
     endif "}
 
     let list = line#pack(list,indx,leng,revs,colr)
     if !empty(list)
       let line = join(list,'')
-      if s:bonetype==2
+      if g:line.bonetype==2
         if     leng==1      "{
-          let left = line#mode('LineCurrEdge',s:boneedge[0])
-          let right= line#mode('LineCurrEdge',s:boneedge[1])
+          let left = line#mode('LineCurrEdge',g:line.boneedge[0])
+          let right= line#mode('LineCurrEdge',g:line.boneedge[1])
         "}
         elseif indx==leng-1 "{
           if revs
-            let left = line#mode('LineCurrEdge',s:boneedge[0])
-            let right= line#mode('LineInacEdge',s:boneedge[1])
+            let left = line#mode('LineCurrEdge',g:line.boneedge[0])
+            let right= line#mode('LineInacEdge',g:line.boneedge[1])
           else
-            let left = line#mode('LineInacEdge',s:boneedge[0])
-            let right= line#mode('LineCurrEdge',s:boneedge[1])
+            let left = line#mode('LineInacEdge',g:line.boneedge[0])
+            let right= line#mode('LineCurrEdge',g:line.boneedge[1])
           endif
         "}
         elseif indx==0      "{
           if revs
-            let left = line#mode('LineInacEdge',s:boneedge[0])
-            let right= line#mode('LineCurrEdge',s:boneedge[1])
+            let left = line#mode('LineInacEdge',g:line.boneedge[0])
+            let right= line#mode('LineCurrEdge',g:line.boneedge[1])
           else
-            let left = line#mode('LineCurrEdge',s:boneedge[0])
-            let right= line#mode('LineInacEdge',s:boneedge[1])
+            let left = line#mode('LineCurrEdge',g:line.boneedge[0])
+            let right= line#mode('LineInacEdge',g:line.boneedge[1])
           endif
         "}
         else                "{
-          let left = line#mode('LineInacEdge',s:boneedge[0])
-          let right= line#mode('LineInacEdge',s:boneedge[1])
+          let left = line#mode('LineInacEdge',g:line.boneedge[0])
+          let right= line#mode('LineInacEdge',g:line.boneedge[1])
         endif "}
         let line = left..line..right
       endif
@@ -276,9 +269,9 @@ fu! line#atom(...) abort "{
     endif
     let hi   = '%#'.hi.'#'
     let name = hi..char..' '..name
-    if s:bonetype==2
+    if g:line.bonetype==2
       let edge = '%#LineFileEdge#'
-      let name = edge..s:boneedge[0]..name..edge..s:boneedge[1]
+      let name = edge..g:line.boneedge[0]..name..edge..g:line.boneedge[1]
     endif
     return name
   "}
@@ -289,9 +282,9 @@ fu! line#atom(...) abort "{
   elseif func=='user' "{
     if empty(args)|return ''|endif
     let info = '%#LineUser#'..get(args,0,'')
-    if s:bonetype==2
+    if g:line.bonetype==2
       let edge = '%#LineUserEdge#'
-      let info = edge..s:boneedge[0]..info..edge..s:boneedge[1]
+      let info = edge..g:line.boneedge[0]..info..edge..g:line.boneedge[1]
     endif
     return info
   "}
@@ -306,7 +299,7 @@ fu! line#bone(...) abort "{
       let skel.= bone
     elseif type(bone)==3 " list type
       let func = bone[0]
-      if func=='git'&&s:gitimode
+      if func=='git'&&g:line.gitimode
         let skel.= g:line.git.bone
       else
         let skel.= line#atom(func,bone[1:],a:2)
@@ -320,30 +313,31 @@ endfu "}
 fu! line#skel(...) abort "{
 
   if a:0
-    if !exists('g:line_skeleton')
-      let g:line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    if !has_key(g:,'line')|let g:line = {}|endif
+    if !has_key(g:line,'skeleton')
+      let g:line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
     endif
-  elseif type(s:skeleton)!=4 " dict type
-    let s:skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    call add(s:skeleton.head.l,['list',2])
-    call add(s:skeleton.head.r,['list',1])
-    call add(s:skeleton.head.r,' ')
-    call add(s:skeleton.head.r,['curr',0])
-    call add(s:skeleton.feet.l,['list',3])
-    call add(s:skeleton.feet.l,' ')
-    call add(s:skeleton.feet.l,['git'])
-    call add(s:skeleton.feet.l,' ')
-    call add(s:skeleton.feet.l,['file'])
-    call add(s:skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
-    let s:headl = 1
-    let s:headr = 1
-    let s:feetl = 1
-    let s:feetr = 1
+  elseif type(g:line.skeleton)!=4 " dict type
+    let g:line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    call add(g:line.skeleton.head.l,['list',2])
+    call add(g:line.skeleton.head.r,['list',1])
+    call add(g:line.skeleton.head.r,' ')
+    call add(g:line.skeleton.head.r,['curr',0])
+    call add(g:line.skeleton.feet.l,['list',3])
+    call add(g:line.skeleton.feet.l,' ')
+    call add(g:line.skeleton.feet.l,['git'])
+    call add(g:line.skeleton.feet.l,' ')
+    call add(g:line.skeleton.feet.l,['file'])
+    call add(g:line.skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
+    let g:line.headl = 1
+    let g:line.headr = 1
+    let g:line.feetl = 1
+    let g:line.feetr = 1
   else
-    let s:headl = exists('s:skeleton.head.l')
-    let s:headr = exists('s:skeleton.head.r')
-    let s:feetl = exists('s:skeleton.feet.l')
-    let s:feetr = exists('s:skeleton.feet.r')
+    let g:line.headl = exists('g:line.skeleton.head.l')
+    let g:line.headr = exists('g:line.skeleton.head.r')
+    let g:line.feetl = exists('g:line.skeleton.feet.l')
+    let g:line.feetr = exists('g:line.skeleton.feet.r')
   endif
 
 endfu "}
@@ -352,17 +346,17 @@ endfu "}
 fu! line#head(...) abort "{
 
   let line = ''
-  if s:headl
+  if g:line.headl
     if g:line.zoom
       let line.= '%#Normal#'..repeat(' ',g:zoom.size.l)
     endif
-    let line.= line#bone(s:skeleton.head.l,0)
+    let line.= line#bone(g:line.skeleton.head.l,0)
   endif
 
   let line.= '%='
 
-  if s:headr
-    let line.= line#bone(s:skeleton.head.r,1)
+  if g:line.headr
+    let line.= line#bone(g:line.skeleton.head.r,1)
     if g:line.zoom
       let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
     endif
@@ -377,17 +371,17 @@ fu! line#feet(...) abort "{
 
   let line = ''
 
-  if s:feetl
+  if g:line.feetl
     if g:line.zoom && &laststatus==3
       let line.= '%#Normal#'..repeat(' ',g:zoom.size.l)
     endif
-    let line.= line#bone(s:skeleton.feet.l,0)
+    let line.= line#bone(g:line.skeleton.feet.l,0)
   endif
 
   let line.= '%='
 
-  if s:feetr
-    let line.= line#bone(s:skeleton.feet.r,1)
+  if g:line.feetr
+    let line.= line#bone(g:line.skeleton.feet.r,1)
     if g:line.zoom && &laststatus==3
       let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
     endif
@@ -411,14 +405,14 @@ fu! line#show(...) abort "{
     set showtabline=2
     let &laststatus=2+s:nvim
   else
-    if s:showmode==0
-      let &laststatus  = s:laststatus
-      let &showtabline = s:showtabline
+    if g:line.showmode==0
+      let &laststatus  = g:line.save.laststatus
+      let &showtabline = g:line.save.showtabline
     endif
-    if s:showmode>0
+    if g:line.showmode>0
       let &laststatus=2+s:nvim
     endif
-    if s:showmode>2
+    if g:line.showmode>2
       set showtabline=2
     endif
   endif
@@ -459,26 +453,30 @@ endfu "}
 "-- auxy functions --
 fu! line#save(...) abort "{
 
-  let s:laststatus  = &laststatus
-  let s:showtabline = &showtabline
+  if !has_key(g:line,'save')
+    let g:line.save = {}
+  endif
+
+  let g:line.save.laststatus  = &laststatus
+  let g:line.save.showtabline = &showtabline
 
 endfu "}
 fu! line#find(...) abort "{
 
   let name = a:1
-  if s:feetl&&1+match(s:skeleton.feet.l,name)|return 1|endif
-  if s:feetr&&1+match(s:skeleton.feet.r,name)|return 1|endif
-  if s:headl&&1+match(s:skeleton.head.l,name)|return 1|endif
-  if s:headr&&1+match(s:skeleton.head.r,name)|return 1|endif
+  if g:line.feetl&&1+match(g:line.skeleton.feet.l,name)|return 1|endif
+  if g:line.feetr&&1+match(g:line.skeleton.feet.r,name)|return 1|endif
+  if g:line.headl&&1+match(g:line.skeleton.head.l,name)|return 1|endif
+  if g:line.headr&&1+match(g:line.skeleton.head.r,name)|return 1|endif
 
 endfu "}
 fu! line#zero(...) abort "{
 
   let g:line.git = #{}
   let g:line.git.bone = ''
-  if s:gitimode==1
+  if g:line.gitimode==1
     let g:line.git.timer = 0
-  elseif s:gitimode > 1
+  elseif g:line.gitimode > 1
     let g:line.git.job = 0
   endif
 
@@ -504,20 +502,20 @@ fu! line#data(...) abort "{
 endfu "}
 fu! line#giti(...) abort "{
 
-  if !s:gitimode|return|endif
+  if !g:line.gitimode|return|endif
 
-  if s:gitimode==1 " timer  {
+  if g:line.gitimode==1 " timer  {
     if !g:line.git.timer
-      let s:gitdelay = s:gitdelay<500?500:s:gitdelay
-      let g:line.git.timer=timer_start(s:gitdelay,'line#gitb',{'repeat':-1})
+      let g:line.gitdelay = g:line.gitdelay<500?500:g:line.gitdelay
+      let g:line.git.timer=timer_start(g:line.gitdelay,'line#gitb',{'repeat':-1})
     endif
     return
   endif "end-timer}
-  if s:gitimode==2 " job    {
-    if !exists('s:bash' ) "{
-      let s:gitdelay = s:gitdelay/1000.0
-      let step    = 0.25*s:gitdelay
-      let s:gitdelay-= 2*step
+  if g:line.gitimode==2 " job    {
+    if !exists('g:line.bash' ) "{
+      let g:line.gitdelay = g:line.gitdelay/1000.0
+      let step    = 0.25*g:line.gitdelay
+      let g:line.gitdelay-= 2*step
       let gits = 'git diff --no-ext-diff --cached --shortstat'
       let gitm = 'git diff --shortstat'
       let gitb = 'git rev-parse --abbrev-ref HEAD'
@@ -530,26 +528,26 @@ fu! line#giti(...) abort "{
       let loop.= 'sleep '. step .';'
       let loop.= 'test "$('.gits.')"&&s=1;'
       let loop.= 'echo $b,$m,$s;'
-      let loop.= 'sleep '.s:gitdelay
+      let loop.= 'sleep '.g:line.gitdelay
       let loop.= ';done'
-      let s:bash = ['bash','-c',loop]
-      unlet s:gitdelay
+      let g:line.bash = ['bash','-c',loop]
+      unlet g:line.gitdelay
     endif "}
     let opt = {}
     if s:vim
       if g:line.git.job=~'.*run'|return|endif
       let opt.out_cb = function('line#data')
-      let g:line.git.job = job_start(s:bash,opt)
+      let g:line.git.job = job_start(g:line.bash,opt)
     else
       if g:line.git.job|return|endif
       let opt.on_stdout = function('line#data')
-      let g:line.git.job = jobstart(s:bash,opt)
+      let g:line.git.job = jobstart(g:line.bash,opt)
     endif
     return
   endif "end-job}
-  if s:gitimode==3 " tcp    {
+  if g:line.gitimode==3 " tcp    {
     echo 'tcp gitinfo not yet implemented. Defaulting back as job calls'
-    let s:gitimode = 2
+    let g:line.gitimode = 2
     call line#giti()
     return
   endif "end-tcp}
@@ -557,9 +555,9 @@ fu! line#giti(...) abort "{
 endfu "}
 fu! line#gitb(...) abort "{
 
-  if !s:gitimode|return|endif
+  if !g:line.gitimode|return|endif
 
-  if s:gitimode==1
+  if g:line.gitimode==1
     let gits = 'git diff --no-ext-diff --cached --shortstat'
     let gitm = 'git diff --shortstat'
     let gitb = 'git rev-parse --abbrev-ref HEAD'
@@ -587,10 +585,10 @@ fu! line#gitb(...) abort "{
   else
     let char.= ']'
   endif
-  if s:bonetype==2
+  if g:line.bonetype==2
     let colr = '%#LineGit'.sfix
-    let edgeL= colr.'Edge#'..s:boneedge[0]
-    let edgeR= colr.'Edge#'..s:boneedge[1]
+    let edgeL= colr.'Edge#'..g:line.boneedge[0]
+    let edgeR= colr.'Edge#'..g:line.boneedge[1]
     let colr.= '#'
     let g:line.git.bone = edgeL.colr.' '.g:line.git.branch .char.edgeR
   else
@@ -601,11 +599,11 @@ fu! line#gitb(...) abort "{
 endfu "}
 fu! line#stop(...) abort "{
 
-  if !s:gitimode|return|endif
+  if !g:line.gitimode|return|endif
 
-  if s:gitimode==1
+  if g:line.gitimode==1
     call timer_stop(g:line.git.timer)
-  elseif s:gitimode==2
+  elseif g:line.gitimode==2
     call {s:vim?'job_stop':'jobstop'}(g:line.git.job)
   endif
   call line#zero()
