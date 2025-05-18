@@ -69,9 +69,11 @@ endfu "}
 fu! arbo#load(...) abort "{
 
   if !g:arbo.mode|return|endif
-  if exists('*line#show')&&exists('g:line.mode')&&g:line.mode
+  if exists('g:line.mode')&&g:line.mode
     let g:line.arbo = g:arbo.mode
-    call line#show()
+    if exists('*line#show')
+      call line#show()
+    endif
   endif
 
   call arbo#curr()
