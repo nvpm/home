@@ -34,7 +34,6 @@
       tab  meta
         file  help : doc/zoom.txt
     }
-    --
     workspace ɸ flux {
       tab  code
         file auto : autoload/flux.vim
@@ -49,6 +48,7 @@
       -tab  meta
         file  help : doc/flux.txt
     }
+    --
     workspace Ⲅ text {
       tab  code
         file auto : autoload/text.vim
