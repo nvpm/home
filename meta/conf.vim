@@ -247,16 +247,17 @@ nmap <silent>ml :Line<cr><c-l>
 set noruler
 "set noshowcmd
 "set noshowmode
-let zoom_autocmds = 1
-let zoom_initload = 1
-let zoom_keepline = 1
-let zoom_pushcmdl = 1
-let zoom_usefloat = 1
-let zoom_useminus = 1
 
-let zoom_height = -4
-let zoom_width  = 80
-let zoom_top    = 0
+let zoom = {}
+let zoom.autocmds = 1
+let zoom.initload = 1
+let zoom.keepline = 1
+let zoom.pushcmdl = 1
+let zoom.usefloat = 1
+let zoom.useminus = 1
+let zoom.height = -4
+let zoom.width  = 80
+let zoom.top    = 0
 
 nmap <silent>mz :Zoom<cr>
 

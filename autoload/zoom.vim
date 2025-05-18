@@ -1,15 +1,25 @@
 "-- auto/zoom.vim --
 if !exists('NVPMTEST')&&exists('_ZOOMAUTO_')|finish|endif
 let _ZOOMAUTO_ = 1
-let s:nvim = has('nvim')
-"let s:vim  = !s:nvim
+let g:zoom.nvim = has('nvim')
+"let g:zoom.vim  = !g:zoom.nvim
 
 "-- main functions --
 fu! zoom#init(...) abort "{
 
-  let s:keepline = get(g:,'zoom_keepline')
+  let g:zoom = get(g:,'zoom',{})
+  let g:zoom.initload = get(g:zoom , 'initload' , 0)
+  let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
+  let g:zoom.keepline = get(g:zoom , 'keepline' , 0)
+  let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
+  let g:zoom.usefloat = get(g:zoom , 'usefloat' , 1)
+  let g:zoom.useminus = get(g:zoom , 'useminus' , 1)
+  let g:zoom.height   = get(g:zoom , 'height'   , &lines)
+  let g:zoom.width    = get(g:zoom , 'width'    , &columns)
+  let g:zoom.left     = get(g:zoom , 'left'     , -1)
+  let g:zoom.right    = get(g:zoom , 'right'    , -1)
+  let g:zoom.top      = get(g:zoom , 'top'      , -1)
 
-  let g:zoom        = {}
   let g:zoom.mode   = 0
   let g:zoom.line   = exists('g:_LINEAUTO_')
   let g:zoom.arbo   = exists('g:_ARBOAUTO_')
@@ -27,7 +37,7 @@ fu! zoom#init(...) abort "{
   let g:zoom.colr.VertSplit    = ''
   let g:zoom.none = ''
 
-  if !argc()&&get(g:,'zoom_initload')
+  if !argc()&&g:zoom.initload
     call timer_start(50,{->zoom#show()})
   endif
 
@@ -37,69 +47,63 @@ fu! zoom#calc(...) abort "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  let s:height = get(g:,'zoom_height',totalheight)
-  let s:width  = get(g:,'zoom_width' ,80)
-
-  if get(g:,'zoom_usefloat',1)
-    if type(s:height)==type(3.14)
-      let s:height = s:height*totalheight
-      let s:height = float2nr(s:height)
+  if g:zoom.usefloat
+    if type(g:zoom.height)==type(3.14)
+      let g:zoom.height = g:zoom.height*totalheight
+      let g:zoom.height = float2nr(g:zoom.height)
     endif
-    if type(s:width)==type(3.14)
-      let s:width = s:width*totalwidth
-      let s:width = float2nr(s:width)
+    if type(g:zoom.width)==type(3.14)
+      let g:zoom.width = g:zoom.width*totalwidth
+      let g:zoom.width = float2nr(g:zoom.width)
     endif
   endif
 
-  if get(g:,'zoom_useminus',1)
-    let s:height+= (s:height<=0)*totalheight
-    let s:width += (s:width <=0)*totalwidth
+  if g:zoom.useminus
+    let g:zoom.height+= (g:zoom.height<=0)*totalheight
+    let g:zoom.width += (g:zoom.width <=0)*totalwidth
   endif
 
-  if s:height<totalheight
-    let g:zoom.size.b = totalheight-s:height
+  if g:zoom.height<totalheight
+    let g:zoom.size.b = totalheight-g:zoom.height
     if g:zoom.size.b>3
       let g:zoom.size.t = float2nr(g:zoom.size.b/2)
       let g:zoom.size.b = g:zoom.size.t+g:zoom.size.b%2
     endif
   endif
 
-  if s:width<totalwidth
-    let g:zoom.size.l = totalwidth-s:width
+  if g:zoom.width<totalwidth
+    let g:zoom.size.l = totalwidth-g:zoom.width
     if g:zoom.size.l>3
       let g:zoom.size.r = float2nr(g:zoom.size.l/2)
       let g:zoom.size.l = g:zoom.size.r+g:zoom.size.l%2
     endif
   endif
 
-  " layout definitions {
-
-    let left = get(g:,'zoom_left',-1)
-    if left>=0
-      let diff = g:zoom.size.l-left
-      if diff>0
-        let g:zoom.size.r+= diff
-        let g:zoom.size.l = left
-      endif
-    endif
-    let right = get(g:,'zoom_right',-1)
-    if right>=0
-      let diff = g:zoom.size.r-right
-      if diff>0
-        let g:zoom.size.l+= diff
-        let g:zoom.size.r = right
-      endif
-    endif
-    let top = get(g:,'zoom_top',-1)
-    if top>=0
-      let diff = g:zoom.size.t-top-2*(&ls&&&stal&&s:keepline)
-      if diff>=0
-        let g:zoom.size.b+= diff
-        let g:zoom.size.t = top
-      endif
-    endif
-
-  "}
+  "" layout definitions {
+  "
+  "  if g:zoom.left>=0
+  "    let diff = g:zoom.size.l-g:zoom.left
+  "    if diff>0
+  "      let g:zoom.size.r+= diff
+  "      let g:zoom.size.l = g:zoom.left
+  "    endif
+  "  endif
+  "  if g:zoom.right>=0
+  "    let diff = g:zoom.size.r-g:zoom.right
+  "    if diff>0
+  "      let g:zoom.size.l+= diff
+  "      let g:zoom.size.r = g:zoom.right
+  "    endif
+  "  endif
+  "  if g:zoom.top>=0
+  "    let diff = g:zoom.size.t-g:zoom.top-2*(&ls&&&stal&&g:zoom.keepline)
+  "    if diff>=0
+  "      let g:zoom.size.b+= diff
+  "      let g:zoom.size.t = g:zoom.top
+  "    endif
+  "  endif
+  "
+  ""}
 
 endfu " }
 fu! zoom#pads(...) abort "{
@@ -115,12 +119,12 @@ fu! zoom#pads(...) abort "{
     silent! wincmd p
   endif
   if g:zoom.size.t>1
-    let t = g:zoom.size.t-1-(&showtabline==2&&s:keepline)
+    let t = g:zoom.size.t-1-(&showtabline==2&&g:zoom.keepline)
     silent! exec string(t).'split '.g:zoom.pads.t
     call zoom#buff()
     silent! wincmd p
   endif
-  if get(g:,'zoom_pushcmdl')
+  if g:zoom.pushcmdl
     let &cmdheight = g:zoom.size.b
   else
     if g:zoom.size.b>1
@@ -131,8 +135,8 @@ fu! zoom#pads(...) abort "{
     endif
   endif
 
-  exe 'vertical resize '..s:width
-  exe 'resize '..s:height
+  exe 'vertical resize '..g:zoom.width
+  exe 'resize '..g:zoom.height
 
 endfu " }
 fu! zoom#show(...) abort "{
@@ -155,7 +159,7 @@ fu! zoom#show(...) abort "{
     call line#draw()
   endif
 
-  if !s:keepline||(g:zoom.arbo&&!g:arbo.mode)
+  if !g:zoom.keepline||(g:zoom.arbo&&!g:arbo.mode)
     set statusline=
     set tabline=
     set showtabline=0
@@ -163,7 +167,7 @@ fu! zoom#show(...) abort "{
   endif
 
   exe 'set fillchars=vert:\ '
-  if s:nvim
+  if g:zoom.nvim
     exe 'set fillchars+=horiz:\ '
     exe 'set fillchars+=horizdown:\ '
     exe 'set fillchars+=vertleft:\ '
@@ -183,11 +187,11 @@ fu! zoom#hide(...) abort "{
     let g:line.zoom = 0
   endif
 
-  let &cmdheight = s:cmdh
-  let &fillchars = s:fill
-  if !s:keepline||(g:zoom.arbo&&!g:arbo.mode)
-    let &showtabline = s:topl
-    let &laststatus  = s:botl
+  let &cmdheight = g:zoom.cmdh
+  let &fillchars = g:zoom.fill
+  if !g:zoom.keepline||(g:zoom.arbo&&!g:arbo.mode)
+    let &showtabline = g:zoom.topl
+    let &laststatus  = g:zoom.botl
   endif
 
 endfu "}
@@ -230,10 +234,10 @@ fu! zoom#save(...) abort "{
     endif
   endfor
 
-  let s:cmdh = &cmdheight
-  let s:fill = &fillchars
-  let s:topl = &showtabline
-  let s:botl = &laststatus
+  let g:zoom.cmdh = &cmdheight
+  let g:zoom.fill = &fillchars
+  let g:zoom.topl = &showtabline
+  let g:zoom.botl = &laststatus
 
 endfu "}
 fu! zoom#none(...) abort "{
@@ -290,7 +294,7 @@ fu! zoom#buff(...) abort "{
   let &l:statusline = '%#Normal#'
   exe 'setl fillchars=vert:\ '
   exe 'setl fillchars+=eob:\ '
-  if s:nvim
+  if g:zoom.nvim
     exe 'setl fillchars+=horiz:\ '
     exe 'setl fillchars+=horizdown:\ '
     exe 'setl fillchars+=vertleft:\ '

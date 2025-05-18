@@ -2,13 +2,15 @@
 if !exists('NVPMTEST')&&exists('_ZOOMPLUG_')|finish|endif
 let _ZOOMPLUG_ = 1
 
-call zoom#init()|delfunc zoom#init
+call zoom#init()
 
 "-- user commands --
-command! Zoom call zoom#zoom()
+if !exists(':Zoom') "{
+  com! Zoom call zoom#zoom()
+endif "}
 
 "-- auto commands --
-if get(g:,'zoom_autocmds',1)
+if g:zoom.autocmds
   augroup ZOOM
     au!
     au WinEnter    .nvpm/zoom/* if g:zoom.mode|wincmd p|endif

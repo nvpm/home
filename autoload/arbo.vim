@@ -75,6 +75,10 @@ fu! arbo#load(...) abort "{
       call line#show()
     endif
   endif
+  if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
+    only
+    call zoom#show()
+  endif
 
   call arbo#curr()
   call arbo#rend()
