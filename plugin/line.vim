@@ -5,4 +5,6 @@ let _LINEPLUG_ = 1
 call line#init()
 
 "-- user commands --
-command! Line call line#line()
+if !exists(':Line') "{
+  com! Line call line#line()
+endif "}

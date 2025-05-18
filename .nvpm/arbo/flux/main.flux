@@ -23,7 +23,6 @@
       tab  meta
         file  help : doc/arbo.txt
     }
-    --
     workspace ▣ zoom {
       tab  code
         file auto : autoload/zoom.vim
@@ -35,6 +34,7 @@
       tab  meta
         file  help : doc/zoom.txt
     }
+    --
     workspace ɸ flux {
       tab  code
         file auto : autoload/flux.vim
