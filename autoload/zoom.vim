@@ -79,31 +79,31 @@ fu! zoom#calc(...) abort "{
     endif
   endif
 
-  "" layout definitions {
-  "
-  "  if g:zoom.left>=0
-  "    let diff = g:zoom.size.l-g:zoom.left
-  "    if diff>0
-  "      let g:zoom.size.r+= diff
-  "      let g:zoom.size.l = g:zoom.left
-  "    endif
-  "  endif
-  "  if g:zoom.right>=0
-  "    let diff = g:zoom.size.r-g:zoom.right
-  "    if diff>0
-  "      let g:zoom.size.l+= diff
-  "      let g:zoom.size.r = g:zoom.right
-  "    endif
-  "  endif
-  "  if g:zoom.top>=0
-  "    let diff = g:zoom.size.t-g:zoom.top-2*(&ls&&&stal&&g:zoom.keepline)
-  "    if diff>=0
-  "      let g:zoom.size.b+= diff
-  "      let g:zoom.size.t = g:zoom.top
-  "    endif
-  "  endif
-  "
-  ""}
+  " layout definitions {
+
+    if g:zoom.left>=0
+      let diff = g:zoom.size.l-g:zoom.left
+      if diff>0
+        let g:zoom.size.r+= diff
+        let g:zoom.size.l = g:zoom.left
+      endif
+    endif
+    if g:zoom.right>=0
+      let diff = g:zoom.size.r-g:zoom.right
+      if diff>0
+        let g:zoom.size.l+= diff
+        let g:zoom.size.r = g:zoom.right
+      endif
+    endif
+    if g:zoom.top>=0
+      let diff = g:zoom.size.t-g:zoom.top-2*(&ls&&&stal&&g:zoom.keepline)
+      if diff>=0
+        let g:zoom.size.b+= diff
+        let g:zoom.size.t = g:zoom.top
+      endif
+    endif
+
+  "}
 
 endfu " }
 fu! zoom#pads(...) abort "{
