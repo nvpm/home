@@ -1,4 +1,6 @@
 
+project a,file b
+---
 HOME libm
 
 # a leafless tree dies!

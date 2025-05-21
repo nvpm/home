@@ -49,7 +49,7 @@ let arbo = {}
 let arbo.initload = 1
 let arbo.autocmds = 1
 let arbo.filetree = 1
-let arbo.savebufs = 1
+let arbo.savebufs = 0
 let arbo.lexicon  = 'project|workspace|tab|file'
 
 hi fluxvars guifg=#00ff00 gui=bold
@@ -95,14 +95,17 @@ let line.showmode = 3
 let line.gitimode = 2
 let line.gitdelay = 0
 let line.bonetype = 0 "0:none,1:normal,2:buttons,3:powerline
-let line.curredge = '(,)' " () []   
+let line.curredge = '[,]' " () []   
 let line.inacedge = ' , '
 let line.boneedge = ',' "                     
 let line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
 
 call add(line.skeleton.head.l,['list',3])
 call add(line.skeleton.head.r,['list',2])
-call add(line.skeleton.head.r,['curr',1,'LineSpot'])
+call add(line.skeleton.head.r,'|')
+call add(line.skeleton.head.r,['curr',1])
+call add(line.skeleton.head.r,'%#Normal# @ ')
+call add(line.skeleton.head.r,['curr',0,'LineSpot'])
 
 call add(line.skeleton.feet.l,['git'])
 call add(line.skeleton.feet.l,' | ')

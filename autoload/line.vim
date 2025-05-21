@@ -158,22 +158,27 @@ fu! line#atom(...) abort "{
   let revs = a:3
 
   if     func=='curr' "{
-    let type = get(args,0,-1)
-    let colr = get(args,1,'LineCurr')
+    if !len(args)|return ''|endif
+    let type = args[0]
     let name = ''
-
-    if g:line.arbo   "{
-      let node = flux#seek(g:arbo.root,type)
-      if has_key(node,'meta')&&has_key(node,'data')
-        let name = node.list[node.meta.indx].data.name
-        if (empty(name)||name=='<unnamed>')&&type==0
-          let name = fnamemodify(g:arbo.file,':t')
+    if g:line.arbo "{
+      if type==0
+        let name = g:arbo.root.list[g:arbo.root.meta.indx].file
+        let name = fnamemodify(name,':t')
+      else
+        let node = flux#seek(g:arbo.root,type)
+        if has_key(node,'meta')&&has_key(node,'list')
+          let node = node.list[node.meta.indx]
+          if has_key(node,'data')
+            let name = node.data.name
+          endif
         endif
       endif
     endif "}
-
-    if empty(name)|return ''|endif
-    let name = line#mode(colr,name)
+    if !empty(name)
+      let colr = get(args,1,'LineCurr')
+      let name = line#mode(colr,name)
+    endif
     if g:line.bonetype==2
       let edge = colr.'Edge'
       let left = line#mode(edge,g:line.boneedge[0])
