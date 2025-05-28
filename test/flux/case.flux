@@ -1,5 +1,15 @@
 
-project a,file b
+workspace code {        
+  tab root              
+    file main.c         
+  tab lib : src         
+    buffer lib.c        
+    buffer lib.h        
+}                       
+workspace meta = meta { 
+  buffer install.sh     
+  buffer uninstall.sh   
+}                       
 ---
 HOME libm
 

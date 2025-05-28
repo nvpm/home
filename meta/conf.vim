@@ -247,9 +247,9 @@ nmap <silent>ml :Line<cr><c-l>
 "}
 " zoom {
 
-set noruler
-set noshowcmd
-set noshowmode
+"set noruler
+"set noshowcmd
+"set noshowmode
 
 let zoom = {}
 let zoom.autocmds = 1

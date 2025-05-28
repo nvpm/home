@@ -16,11 +16,10 @@ fu! s:test.flux(...) "{
   let conf.home = 1
   let conf.fixt = 1
 
-  let conf.lexicon = 'project,workspace,tab,file'
+  let conf.lexicon = ',workspace,tab,file buffer'
 
   let flux = flux#flux(conf)
-  let node = flux#seek(flux,1)
-  echo keys(node)
+  echo string(flux)
   return
   let expt = s:test.eval('test/flux/case.expt')
 
