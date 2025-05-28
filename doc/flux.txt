@@ -120,7 +120,7 @@ The example above show a call to the main flux function "flux#flux(...)",
 which returns the tree data-structure described in the flux file. 
 
 Each node of the tree, as well as its subtrees, will be in a form of a
-dictionary that can contain the following keys: info,
+dictionary that may contain the following keys: info, meta, list, and flux.
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
