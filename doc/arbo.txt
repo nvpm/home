@@ -1163,4 +1163,4 @@ care of.
 
   PRESS `zo` TO SEE THE CONTENT, AND `zc` TO CLOSE IT BACK. SEE `:h zo`
 
-vim: ft=help tw=78 isk+=<,>,\:,-,' fdm=marker fmr={,} fdl=0 fen
+vim:tw=78:ts=8:noet:ft=help:norl:

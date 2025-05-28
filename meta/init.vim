@@ -16,7 +16,7 @@ fu! s:test.flux(...) "{
   let conf.home = 1
   let conf.fixt = 1
 
-  let conf.lexicon = '|||project|workspace|tab|file|||'
+  let conf.lexicon = 'project,workspace,tab,file'
 
   let flux = flux#flux(conf)
   let node = flux#seek(flux,1)

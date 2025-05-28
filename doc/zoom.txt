@@ -238,4 +238,4 @@ Discussions and news on Telegram (in Portuguese and English)
 
 }
 ================================================================================
-vim: ft=help tw=78 isk+=<,>,\:,-,' fdm=marker fmr={,} fdl=0 fen
+vim:tw=78:ts=8:noet:ft=help:norl:

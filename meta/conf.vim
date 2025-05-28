@@ -50,7 +50,7 @@ let arbo.initload = 1
 let arbo.autocmds = 1
 let arbo.filetree = 1
 let arbo.savebufs = 0
-let arbo.lexicon  = 'project|workspace|tab|file'
+let arbo.lexicon  = 'project,workspace,tab,file'
 
 hi fluxvars guifg=#00ff00 gui=bold
 
