@@ -1,6 +1,5 @@
 *flux.txt*			      `A parser for the flux markup language`
 
-==============================================================================
 CONTENTS                                          *flux*
 INTRODUCTION		      			  |flux_intro|
 THE FLUX SYNTAX 		                  |flux_syntax|

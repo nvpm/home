@@ -1,24 +1,6 @@
 
 
   project   devl {
-    workspace ɸ flux {
-      tab  meta
-        file  help : doc/flux.txt
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-       -file  nvpm : nvpm.md
-       -file  read : README.md
-      tab  code
-        file auto : autoload/flux.vim
-        file synx :   syntax/flux.vim
-        file init = meta/init.vim
-      --
-      tab  test = test/flux
-        file case : case.flux
-        file expt : case.expt
-      -tab 🯅 seng = seng/flux
-          file TODO     
-          file Issues   
-    }
     workspace  arbo {
       tab  meta
         file  help : doc/arbo.txt
@@ -31,6 +13,24 @@
         file init = meta/init.vim
         --
       tab 🯅 seng = seng/arbo
+          file TODO     
+          file Issues   
+    }
+    workspace ɸ flux {
+      tab  meta
+        file  nvpm : nvpm.md
+        file  help : doc/flux.txt
+       -file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+       -file  read : README.md
+      tab  code
+        file auto : autoload/flux.vim
+        file synx :   syntax/flux.vim
+        file init = meta/init.vim
+      --
+      tab  test = test/flux
+        file case : case.flux
+        file expt : case.expt
+      -tab 🯅 seng = seng/flux
           file TODO     
           file Issues   
     }
