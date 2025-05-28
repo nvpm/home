@@ -19,10 +19,10 @@ fu! arbo#init(...) abort "{
     let g:arbo.flux.lexicon = g:arbo.lexicon
   else
     let g:arbo.flux.lexicon  = ''
-    let g:arbo.flux.lexicon .= '|project proj scheme layout book'
-    let g:arbo.flux.lexicon .= '|workspace arch archive architecture section'
-    let g:arbo.flux.lexicon .= '|tab folder fold shelf package pack chapter'
-    let g:arbo.flux.lexicon .= '|file buff buffer path entry node leaf page'
+    let g:arbo.flux.lexicon .= ',project proj scheme layout book'
+    let g:arbo.flux.lexicon .= ',workspace arch archive architecture section'
+    let g:arbo.flux.lexicon .= ',tab folder fold shelf package pack chapter'
+    let g:arbo.flux.lexicon .= ',file buff buffer path entry node leaf page'
   endif
   let g:arbo.flux.fixt  = 1
   let g:arbo.flux.home  = 1

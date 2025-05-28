@@ -1,0 +1,87 @@
+*flux.txt*	A parser for the flux markup language
+
+==============================================================================
+CONTENTS                                                  *flux*
+01   Introduction		      			  |flux-intro|
+02   The flux syntax 		                          |flux-syntax|
+02.1 Syntax elements 		                          |flux-elements|
+
+==============================================================================
+01 Introduction                                                   *flux-intro*
+
+The flux plugin was created to provide a parsing mechanism for the plugins
+under the nvpm plugin pack. Not all plugins will use it though, but those 
+that do, rely heavily on it. 
+
+This plugin deals with a markup language that describes a tree-like structure
+given a particular context. The resulting of the parsing will be a tree data
+structure in a form of a dictionary.
+
+==============================================================================
+02 The flux syntax                                               *flux-syntax*
+
+The syntax is composed of pre-defined keyword elements, which will define the
+different node leves in the tree. Much like one would write different levels
+of subjects on a piece of paper. Examples later!
+
+The keywords allowed (recognized by) in the parsing will depend on a list of
+words defined by the user. This configuration will also come in a form of a
+dictionary, with the following fields:
+
+- lexicon: The list of words recognized by flux
+- fixt: fixes wrongfully placed nodes
+- home: uses home functionality (for the |arbo| plugin)
+- file: the path to the file where this syntax will be placed
+
+The only reason why the lexicon field exists is to avoid writing a spell
+checker for the language. This way any words that don't belong or even typos
+will just be ignored without giving an error message. This behaviour becomes
+clearer when using the |arbo| plugin.
+==============================================================================
+02.1 Syntax elements					     *flux-elements*
+
+The following is a representation of each valid line of a flux file.
+
+	   ╭──────────────────────────────────────────────╮
+	   │ modifier keyword <kname> [:=] <kvalue> [#{}] │
+	   │    m        k       n    s        v      c   │
+	   ╰──────────────────────────────────────────────╯
+	   m: the element modifier     
+	   k: the keyword itself       
+	   n: the name for that keyword
+	   s: the separator            
+	   v: the value for that keyword
+	   c: the comments (# ...)     
+
+And the best way to explain the usage is with a practical example. Say we want
+to describe the placement of files in a project. For the sake of this example,
+let's consider a simple C project, with 3 files, say: main.c, main.h, and
+Makefile. In this case, a valid flux file used by the |arbo| plugin is:
+
+            - project.flux  -
+	   ╭───────────────────────╮
+	   │  file main.c          │
+	   │  file main.h          │
+	   │  file make: Makefile  │
+	   ╰───────────────────────╯
+
+in this case the file 'Makefile' was given a name (make). This will be usefull
+for the visual feedback of the |arbo| plugin, and possibly others too.
+==============================================================================
+02.2 Configuration                                          *flux-configuration*
+
+To further explain the syntax, here follows the explanation on how to properly 
+use the flux plugin:
+
+```vimscript
+  let conf = {}
+  let conf.file = 'main.flux'
+  let conf.lexicon = 'foo,bar'
+
+  let data = flux#flux(conf)
+```
+
+
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:
