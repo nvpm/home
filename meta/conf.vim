@@ -256,9 +256,7 @@ let zoom.autocmds = 1
 let zoom.initload = 1
 let zoom.keepline = 1
 let zoom.pushcmdl = 1
-let zoom.usefloat = 1
-let zoom.useminus = 1
-let zoom.height = -4
+let zoom.height = -1
 let zoom.width  = 80
 let zoom.top    = 0
 

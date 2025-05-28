@@ -12,8 +12,6 @@ fu! zoom#init(...) abort "{
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
   let g:zoom.keepline = get(g:zoom , 'keepline' , 0)
   let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
-  let g:zoom.usefloat = get(g:zoom , 'usefloat' , 1)
-  let g:zoom.useminus = get(g:zoom , 'useminus' , 1)
   let g:zoom.height   = get(g:zoom , 'height'   , &lines)
   let g:zoom.width    = get(g:zoom , 'width'    , &columns)
   let g:zoom.left     = get(g:zoom , 'left'     , -1)
@@ -38,7 +36,7 @@ fu! zoom#init(...) abort "{
   let g:zoom.none = ''
 
   if !argc()&&g:zoom.initload
-    call timer_start(50,{->zoom#show()})
+    call timer_start(g:zoom.initload,{->zoom#show()})
   endif
 
 endfu "}
@@ -47,21 +45,17 @@ fu! zoom#calc(...) abort "{
   let totalheight = &lines
   let totalwidth  = &columns
 
-  if g:zoom.usefloat
-    if type(g:zoom.height)==type(3.14)
-      let g:zoom.height = g:zoom.height*totalheight
-      let g:zoom.height = float2nr(g:zoom.height)
-    endif
-    if type(g:zoom.width)==type(3.14)
-      let g:zoom.width = g:zoom.width*totalwidth
-      let g:zoom.width = float2nr(g:zoom.width)
-    endif
+  if type(g:zoom.height)==type(3.14)
+    let g:zoom.height = g:zoom.height*totalheight
+    let g:zoom.height = float2nr(g:zoom.height)
+  endif
+  if type(g:zoom.width)==type(3.14)
+    let g:zoom.width = g:zoom.width*totalwidth
+    let g:zoom.width = float2nr(g:zoom.width)
   endif
 
-  if g:zoom.useminus
-    let g:zoom.height+= (g:zoom.height<=0)*totalheight
-    let g:zoom.width += (g:zoom.width <=0)*totalwidth
-  endif
+  let g:zoom.height+= (g:zoom.height<=0)*totalheight
+  let g:zoom.width += (g:zoom.width <=0)*totalwidth
 
   if g:zoom.height<totalheight
     let g:zoom.size.b = totalheight-g:zoom.height

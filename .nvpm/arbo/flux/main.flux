@@ -37,7 +37,6 @@
       -tab  meta
         file  help : doc/flux.txt
     }
-    --
     workspace ▣ zoom {
       tab  code
         file auto : autoload/zoom.vim
@@ -49,6 +48,7 @@
       tab  meta
         file  help : doc/zoom.txt
     }
+    --
     workspace Ⲅ text {
       tab  code
         file auto : autoload/text.vim
@@ -66,9 +66,9 @@
   }
   project   meta {
     tab  meta = meta
-      file meta.vim
       file conf.vim
-      -file init.vim
+      file init.vim
+      -file meta.vim
     tab  help = /usr/share/nvim/runtime/doc
       file api  : api.txt
       file chan : channel.txt
