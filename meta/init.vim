@@ -19,6 +19,8 @@ fu! s:test.flux(...) "{
   let conf.lexicon = 'project,workspace,tab,file'
 
   let flux = flux#flux(conf)
+  call flux#show(flux)
+  return
   let node = flux#seek(flux,1)
   echo keys(node)
   return

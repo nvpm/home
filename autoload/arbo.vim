@@ -208,7 +208,7 @@ fu! arbo#trim(...) abort "{
     let node = flux#seek(g:arbo.root,g:arbo.flux.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
-      if leaf.data.info == flux
+      if leaf.info.info == flux
         let node.meta.indx = indx
         break
       endif
@@ -270,7 +270,7 @@ fu! arbo#curr(...) abort "{
 
   let node = flux#seek(root,g:arbo.flux.leaftype)
   if empty(node)|return 1|endif
-  let curr = node.list[node.meta.indx].data.info
+  let curr = node.list[node.meta.indx].info.info
   if empty(curr)|return 1|endif
 
   let g:arbo.root.last = g:arbo.root.curr

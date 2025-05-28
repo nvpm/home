@@ -57,16 +57,16 @@ fu! flux#fixt(...) abort "{
     let mintype = conf.leaftype
     let minkeyw = conf.lexicon[mintype][0]
     for node in root.list
-      let type = flux#find(conf.lexicon,node.data.keyw)
+      let type = flux#find(conf.lexicon,node.info.keyw)
       if type<mintype
         let mintype = type
-        let minkeyw = node.data.keyw
+        let minkeyw = node.info.keyw
       endif
     endfor
     let indx = 0
     let list = []
     let node = root.list[indx]
-    while indx<root.meta.leng&&flux#find(conf.lexicon,node.data.keyw)>mintype
+    while indx<root.meta.leng&&flux#find(conf.lexicon,node.info.keyw)>mintype
       call add(list,node)
       let indx+=1
       let node = root.list[indx]
@@ -74,12 +74,12 @@ fu! flux#fixt(...) abort "{
     if indx
       let next = root.list[indx]
       let node = #{data:{},meta:{}}
-      let node.data.keyw = minkeyw
-      let node.data.name = '<unnamed>'
-      let node.data.info = ''
+      let node.info.keyw = minkeyw
+      let node.info.name = '<unnamed>'
+      let node.info.info = ''
       let node.meta.leng = len(list)
       let node.meta.indx = 0
-      let node.meta.type = flux#find(conf.lexicon,list[0].data.keyw)
+      let node.meta.type = flux#find(conf.lexicon,list[0].info.keyw)
       let node.list = list
       let root.list = [node]+root.list[indx:]
       let root.meta.leng = len(root.list)
@@ -107,17 +107,17 @@ fu! flux#tree(...) abort "{
 
     " catches node from given nodelist
     let node = list[indx]|let indx+=1
-    let path = [home,''][node.absl] .. node.data.info
+    let path = [home,''][node.absl] .. node.info.info
 
-    let node.type = flux#find(s:conf.lexicon     ,node.data.keyw)
-    let node.tree = flux#find(s:conf.lexicon[:-2],node.data.keyw)
+    let node.type = flux#find(s:conf.lexicon     ,node.info.keyw)
+    let node.tree = flux#find(s:conf.lexicon[:-2],node.info.keyw)
 
     " recursively handles non-leaf nodes (sub-tree)
     if 1+node.tree
       let init = indx
       while indx<leng
         let item = list[indx]
-        let item.tree = flux#find(s:conf.lexicon[:-2],item.data.keyw)
+        let item.tree = flux#find(s:conf.lexicon[:-2],item.info.keyw)
         " breaks at next same (or higher) type node
         if 1+item.tree && item.tree<=node.tree
           break
@@ -147,11 +147,11 @@ fu! flux#tree(...) abort "{
 
     " handles home for leaf nodes
     if -1==node.tree && get(s:conf,'home')
-      let info = empty(node.data.info)?node.data.name:node.data.info
-      let node.data.info = [home .. info,info][node.absl]
-      let node.data.info = simplify(node.data.info)
-     "let node.data.info = substitute(node.data.info,'//','/','g')
-     "let node.data.info = substitute(node.data.info,'/$','','')
+      let info = empty(node.info.info)?node.info.name:node.info.info
+      let node.info.info = [home .. info,info][node.absl]
+      let node.info.info = simplify(node.info.info)
+     "let node.info.info = substitute(node.info.info,'//','/','g')
+     "let node.info.info = substitute(node.info.info,'/$','','')
     endif
 
     " remove unnecessary node-fields
@@ -279,7 +279,7 @@ fu! flux#cuts(...) abort "{
     while indx<leng
       let node = objc[indx]|let indx+=1
       if node.cuts>=3|break|endif
-      let stda = empty(node.data.keyw..node.data.name..node.data.info)
+      let stda = empty(node.info.keyw..node.info.name..node.info.info)
       if stda && node.cuts
         let cuts = node.cuts
         continue
@@ -303,14 +303,14 @@ fu! flux#loop(...) abort "{
     let s:conf.leng = 0
     while indx<leng
       let node = s:conf.list[indx]|let indx+=1
-      if node.data.keyw !=? 'loop'
+      if node.info.keyw !=? 'loop'
         call add(list,node)
         let s:conf.leng+=1
       else " found loop keyword {
         let loop = []
         while indx<leng
           let item = s:conf.list[indx]|let indx+=1
-          if item.data.keyw==?'endl'|break|endif
+          if item.info.keyw==?'endl'|break|endif
           if node.cuts|continue|endif
           call add(loop,item)
         endwhile
@@ -319,23 +319,23 @@ fu! flux#loop(...) abort "{
           let s:conf.list[indx].cuts = 2
           continue
         endif
-        let info = empty(node.data.info)?node.data.name:node.data.info
-        let name = empty(node.data.info)?'':node.data.name
+        let info = empty(node.info.info)?node.info.name:node.info.info
+        let name = empty(node.info.info)?'':node.info.name
         let vars = split(info,' ')
         let vars = flux#list(vars)
         let vars = flux#cuts(vars)
         for node in vars "{
           if node.cuts==1|continue|endif
           if node.cuts>=2|  break |endif
-          let var = node.data.keyw
+          let var = node.info.keyw
           for item in loop
             let info = deepcopy(item)
             if empty(name)
-              let info.data.name = substitute(info.data.name,'$_',var,'g')
-              let info.data.info = substitute(info.data.info,'$_',var,'g')
+              let info.info.name = substitute(info.info.name,'$_',var,'g')
+              let info.info.info = substitute(info.info.info,'$_',var,'g')
             else
-              let info.data.name = substitute(info.data.name,'$('..name..')',var,'g')
-              let info.data.info = substitute(info.data.info,'$('..name..')',var,'g')
+              let info.info.name = substitute(info.info.name,'$('..name..')',var,'g')
+              let info.info.info = substitute(info.info.info,'$('..name..')',var,'g')
             endif
             if node.cuts
               let info.cuts = node.cuts
@@ -358,10 +358,10 @@ fu! flux#home(...) abort "{
     let s:conf.leng = 0
     while indx<leng
       let node = s:conf.list[indx]|let indx+=1
-      if node.data.keyw==?'home'
+      if node.info.keyw==?'home'
         if node.cuts==1|continue|endif
         if node.cuts==2|  break |endif
-        let s:conf.HOME = empty(node.data.info)?node.data.name:node.data.info
+        let s:conf.HOME = empty(node.info.info)?node.info.name:node.info.info
         continue
       endif
       call add(list,node)|let s:conf.leng+=1
@@ -406,10 +406,10 @@ fu! flux#node(...) abort "{
   let node.cuts = len(cuts)
   let node.absl = absl=='='
 
-  let node.data = {}
-  let node.data.keyw = keyw
-  let node.data.name = name
-  let node.data.info = info
+  let node.info = {}
+  let node.info.keyw = keyw
+  let node.info.name = name
+  let node.info.info = info
 
   return node
 
@@ -452,9 +452,9 @@ fu! flux#show(...) abort "{
   endif
   " recursive run loop over nodes
   for node in list
-    let name = get(node.data,'name','')
-    let info = get(node.data,'info','')
-    let keyw = get(node.data,'keyw','')
+    let name = get(node.info,'name','')
+    let info = get(node.info,'info','')
+    let keyw = get(node.info,'keyw','')
     let name = [name,"''"][empty(name)]
     let info = [info,"''"][empty(info)]
     echon tabs keyw..' '..name..' : '..info..' ' get(node,'meta','')
