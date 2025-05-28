@@ -38,7 +38,7 @@ checker for the language. This way any words that don't belong or even typos
 will just be ignored without giving an error message. This behaviour becomes
 clearer when using the |arbo| plugin.
 ==============================================================================
-02.1 Syntax elements 		                          *flux-elements*
+02.1 Syntax elements					     *flux-elements*
 
 The following is a representation of each valid line of a flux file.
 
@@ -68,18 +68,20 @@ Makefile. In this case, a valid flux file used by the |arbo| plugin is:
 in this case the file 'Makefile' was given a name (make). This will be usefull
 for the visual feedback of the |arbo| plugin, and possibly others too.
 ==============================================================================
-03 Configuration                                          *flux-configuration*
+02.2 Configuration                                          *flux-configuration*
 
 To further explain the syntax, here follows the explanation on how to properly 
 use the flux plugin:
 
 ```vimscript
   let conf = {}
-  let conf.file = 'project.flux'
-  let conf.lexicon = 'project'
+  let conf.file = 'main.flux'
+  let conf.lexicon = 'foo,bar'
 
-  let flux = flux#flux(conf)
+  let data = flux#flux(conf)
 ```
+
+
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
