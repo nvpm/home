@@ -177,7 +177,7 @@ fu! flux#conf(...) abort "{
   if !a:0|return flux#conf(s:conf)|else|let conf=a:1|endif
   if !has_key(conf,'lexicon')|let conf.lexicon=''|endif
   if type(conf.lexicon)==type('')
-    let conf.lexicon = split(conf.lexicon,'|')
+    let conf.lexicon = split(conf.lexicon,',')
     let list = []
     for type in conf.lexicon
       if empty(type)|continue|endif
