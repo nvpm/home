@@ -34,6 +34,21 @@
           file TODO     
           file Issues   
     }
+    workspace ▣ zoom {
+      tab  meta
+        file  help : doc/zoom.txt
+        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+       -file  nvpm : nvpm.md
+       -file  read : README.md
+      tab  code
+        file auto : autoload/zoom.vim
+        file plug : plugin/zoom.vim
+        file init = meta/init.vim
+      --
+      tab 🯅 seng = seng/zoom
+          file TODO     
+          file Issues   
+    }
     --
     workspace 🭹 line {
       tab  meta
@@ -47,21 +62,6 @@
         file init = meta/init.vim
         --
       tab 🯅 seng = seng/line
-          file TODO     
-          file Issues   
-    }
-    workspace ▣ zoom {
-      tab  meta
-        file  help : doc/zoom.txt
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-       -file  nvpm : nvpm.md
-       -file  read : README.md
-      tab  code
-        file auto : autoload/zoom.vim
-        file plug : plugin/zoom.vim
-        file init = meta/init.vim
-      --
-      tab 🯅 seng = seng/zoom
           file TODO     
           file Issues   
     }

@@ -1,4 +1,4 @@
-*flux.txt*	A parser for the flux markup language
+*flux.txt*			      `A parser for the flux markup language`
 
 ==============================================================================
 CONTENTS                                                  *flux*
@@ -9,9 +9,12 @@ CONTENTS                                                  *flux*
 ==============================================================================
 01 Introduction                                                   *flux-intro*
 
+Note: In order to properly understand the usage of this plugin, the reader may
+      need to go back and forth in this document.
+
 The flux plugin was created to provide a parsing mechanism for the plugins
-under the nvpm plugin pack. Not all plugins will use it though, but those 
-that do, rely heavily on it. 
+under the nvpm plugin pack. Not all plugins will use it though, but those
+that do, will rely heavily on it.
 
 This plugin deals with a markup language that describes a tree-like structure
 given a particular context. The resulting of the parsing will be a tree data
@@ -37,6 +40,7 @@ The only reason why the lexicon field exists is to avoid writing a spell
 checker for the language. This way any words that don't belong or even typos
 will just be ignored without giving an error message. This behaviour becomes
 clearer when using the |arbo| plugin.
+
 ==============================================================================
 02.1 Syntax elements					     *flux-elements*
 
@@ -46,12 +50,12 @@ The following is a representation of each valid line of a flux file.
 	   │ modifier keyword <kname> [:=] <kvalue> [#{}] │
 	   │    m        k       n    s        v      c   │
 	   ╰──────────────────────────────────────────────╯
-	   m: the element modifier     
-	   k: the keyword itself       
+	   m: the element modifier
+	   k: the keyword itself
 	   n: the name for that keyword
-	   s: the separator            
+	   s: the separator
 	   v: the value for that keyword
-	   c: the comments (# ...)     
+	   c: the comments (# ...)
 
 And the best way to explain the usage is with a practical example. Say we want
 to describe the placement of files in a project. For the sake of this example,
@@ -67,21 +71,56 @@ Makefile. In this case, a valid flux file used by the |arbo| plugin is:
 
 in this case the file 'Makefile' was given a name (make). This will be usefull
 for the visual feedback of the |arbo| plugin, and possibly others too.
+
 ==============================================================================
 02.2 Configuration                                          *flux-configuration*
 
-To further explain the syntax, here follows the explanation on how to properly 
+To further explain the syntax, here follows the explanation on how to properly
 use the flux plugin:
 
 ```vimscript
   let conf = {}
-  let conf.file = 'main.flux'
+  let conf.file = 'foobar.flux'
   let conf.lexicon = 'foo,bar'
 
   let data = flux#flux(conf)
 ```
 
+in this case, only the words "foo" and "bar" will be accepted as valid
+keywords in the flux file "main.flux". Moreover, note that foo and bar are
+separeted by comma. This means that foo takes precedence over bar, in the
+context of a tree. The following is an example of a valid flux file that
+considers the configuration above:
 
+            - foobar.flux -
+	   ╭──────────────────────╮
+	   │  foo foo-01 : val1   │
+	   │    bar b01 : bar 1   │
+	   │    bar b02 = bar 2   │
+	   │                      │
+	   │  foo foo-02 : val2   │
+	   │    bar code          │
+	   ╰──────────────────────╯
+
+the indentation is a strong give away of what's gonna happen. In this case,
+the bar keywords will belong to the foo elements in the tree. This can be
+pictured when dealing with files and directories, foo is the folder and bar is
+the file in this case.
+
+Also, in the vimscript configuration, there is a call to the "flux#flux"
+function. The returned value is a dictionary data structure containing the
+information described in the flux file above, plus important meta data about
+the information itself, such as: index, length, type of keywords, etc. Again,
+this will be further explained in the following chapters in this document.
+
+==============================================================================
+03 The returned data structure                            *flux-data-structure*
+
+The example above show a call to the main flux function "flux#flux(...)",
+which returns the tree data-structure described in the flux file. 
+
+Each node of the tree, as well as its subtrees, will be in a form of a
+dictionary that can contain the following keys: info,
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
