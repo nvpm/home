@@ -104,7 +104,7 @@ call add(line.skeleton.head.l,['list',3])
 call add(line.skeleton.head.r,['list',2])
 call add(line.skeleton.head.r,'|')
 call add(line.skeleton.head.r,['curr',1])
-call add(line.skeleton.head.r,'%#Normal# @ ')
+call add(line.skeleton.head.r,' @ ')
 call add(line.skeleton.head.r,['curr',0,'LineSpot'])
 
 call add(line.skeleton.feet.l,['git'])

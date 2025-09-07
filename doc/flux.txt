@@ -1,15 +1,16 @@
 *flux.txt*			      `A parser for the flux markup language`
 
 CONTENTS                                          *flux*
-INTRODUCTION		      			  |flux_intro|
-THE FLUX SYNTAX 		                  |flux_syntax|
-SYNTAX ELEMENTS 		                  |flux_elements|
-SYNTAX CONFIGURATION                              |flux_syntax_config|
-THE LEXICON CONFIGURATION                         |flux_lexicon|
-THE FLUX DATA STRUCTURE                           |flux_data_structure|
-DATA STRUCTURE EXAMPLE                            |flux_data_example|
+INTRODUCTION		      			  |flux-intro|
+THE FLUX SYNTAX 		                  |flux-syntax|
+SYNTAX ELEMENTS 		                  |flux-syntax-elements|
+SYNTAX CONFIGURATION                              |flux-syntax-config|
+THE LEXICON CONFIGURATION                         |flux-lexicon|
+THE TRIM MECHANISM                                |flux-tree-trimming|
+THE FLUX DATA STRUCTURE                           |flux-data-structure|
+DATA STRUCTURE EXAMPLE                            |flux-data-example|
 
-INTRODUCTION                                                   *flux_intro*
+INTRODUCTION                                                   *flux-intro*
 
 Note: In order to properly understand the usage of this plugin, the reader may
       need to go back and forth in this document.
@@ -22,7 +23,7 @@ This plugin deals with a markup language that describes a tree-like structure
 given a particular context. The resulting of the parsing will be a tree data
 structure in a form of a dictionary.
 
-THE FLUX SYNTAX                                               *flux_syntax*
+THE FLUX SYNTAX                                               *flux-syntax*
 
 The syntax is composed of pre-defined keyword elements, which will define the
 different node leves in the tree. Much like one would write different levels
@@ -40,14 +41,14 @@ concepts:
 - `root node` is the node at the base of the tree (where it all begins).
   Note: in this case the root node is in fact a tree node
 
-SYNTAX ELEMENTS	      				              *flux_elements*
+SYNTAX ELEMENTS	      			     *flux-syntax-elements*
 
 The following is a general form of each valid line of a flux file.
 
-	   ╭──────────────────────────────────────────────╮
-	   │ modifier keyword <kname> [:=] <kvalue> [#{}] │
-	   │    m        k       n    s        v      c   │
-	   ╰──────────────────────────────────────────────╯
+	   ╭────────────────────────────────────────────────╮
+	   │ [modifier] keyword <name> [[:=] <value> [#{}]] │
+	   │      m        k      n      s      v      c    │
+	   ╰────────────────────────────────────────────────╯
 	   m: the element modifier
 	   k: the keyword itself (case insensitive)
 	   n: the name for that keyword
@@ -64,13 +65,15 @@ Makefile. In this case, a valid flux file used by the |arbo| plugin is:
 	   ╭───────────────────────╮
 	   │  file main.c          │
 	   │  file main.h          │
-	   │  file make: Makefile  │
+	   │ -file make: Makefile  │
 	   ╰───────────────────────╯
 
-in this case the file 'Makefile' was given a name (make). This will be usefull
-for the visual feedback of the |arbo| plugin, and possibly others too.
+in this case the file 'Makefile' was given a name (make). This will be useful
+for the visual feedback of the |arbo| plugin, and possibly others too. It's
+also important to notice that the Makefile entry has a '-' modifier. More on
+that later.
 
-SYNTAX CONFIGURATION                                 *flux_syntax_config*
+SYNTAX CONFIGURATION                                 *flux-syntax-config*
 
 The configuration of flux is not done by global variables read at startup.
 Flux is a call on-demand kinda plugin, which means its only called by other
@@ -81,7 +84,7 @@ each call. This dictionary should contain three keys: file, syntax, and
 lexicon.
 
 - `file`    : is the file to be parsed
-- `syntax`  : the syntax used (default 'plain')
+- `syntax`  : the syntax used (default 'plain') * yet to be implemented!
 - `lexicon` : the list of keywords recognized by flux
 
   This variable describes not only the words, but order of precedence in which
@@ -100,34 +103,34 @@ lexicon.
   here "foo" elements will contain a list of "bar" element, and never the other
   way around.
 
-                                                             *flux_number_type*
+                                                             *flux-number-type*
   Also, this defines the number type of an element. which is the order in which
   the word appear in the lexicon: 1:foo, 2:bar. In fact, the same example
   above could also be done as follows:
 
   ```vimscript
     let conf = {}
-    let conf.file = 'foobar.flux'
+    let conf.file = 'foobar.flux' " number type: 0
     let conf.lexicon = [['foo'],['bar']]
-	   ...
+	   ...             1       2
   ```
 
   which is the form flux actually uses. Note: the 0 number type will be used
   for the flux file itself.
 
-THE LEXICON CONFIGURATION                                      *flux_lexicon*
+THE LEXICON CONFIGURATION                                      *flux-lexicon*
 
 The main syntax for the lexicon is:
 
 - `string format`
 
-    "KW11 KW12 ... KW1n , ... , KWm1 KWm2 ... KWmn"
-	     |	  |     |           |
-	     |	  v     v           |
-	     |	   comma            |
-	     |                            |
-	     +-> number type: 1           +-> number type: m
-
+    "KW11 KW12 ... KW1n , ... , KWm1 KWm2 ... KWmp"
+	        |	|     |            |
+	        |	v     v            |
+	        |	 comma             |
+	        |                          |
+	        +-> number type: 1         +-> number type: m
+                    length: n                  length: p
 - `list format`
 
     [["KW11","KW12",...,"KW1n"],...,["KWm1","KWm2",...,"KWmn"]]
@@ -146,7 +149,7 @@ The following are valid forms for the lexicon key:
 
 Note: The only reason why the lexicon field exists is to avoid writing a spell
 checker for the language. This way any words that don't belong or even typos
-will just be ignored without giving an error message. This behaviour becomes
+will simply be ignored without giving an error message. This behaviour becomes
 clearer when using the |arbo| plugin.
 
 To further explain the syntax,
@@ -166,7 +169,328 @@ keywords in the flux file "main.flux". Moreover, note that foo and bar are
 separeted by comma. This means that foo takes precedence over bar, in the
 context of a tree.
 
-THE FLUX DATA STRUCTURE                            *flux_data_structure*
+THE TRIM MECHANISM                                 *flux-tree-trimming*
+
+This feature allows the user to trim certain nodes of the tree data-structure
+without removing, or commenting out, their listed elements from the flux file.
+This is particularly useful when you don't want things to make it to the final
+data-structure, but want to keep those things saved in the flux file for
+later use.
+
+It's done by inserting dash characters before any element in the flux file.
+The number of dashes tells the flux engine how deep the trim should go. As
+for now, there are three level of trimming.
+
+The following is the lexicon configuration used in the examples for this
+feature.
+
+```vimscript
+
+  let conf = {}
+  let conf.lexicon = 'workspace, tab , file'
+
+```
+
+1) single trims: " - keyword name ..."                 *flux-single-trims*
+
+This trim-level trims just the node after it. In the following flux file, the
+entry "-file make: Makefile" tells flux that the node called "make" should
+not be parsed, and therefore not be present in the resulting data-structure.
+
+╭───────────────────────╮
+│          ...          │
+│  file main.c          │
+│  file main.h          │
+│ -file make: Makefile  │ <- Note the dash character
+│          ...          │
+╰───────────────────────╯
+
+also, any higher level nodes can be trimmed this way. Consider the following:
+
+╭─────────────────╮                ╭─────────────────╮
+│           ...   │                │           ...   │
+│  TAB main       │                │  TAB main       │
+│    file main.c  │                │    file main.c  │
+│    file main.h  │                │    file main.h  │
+│                 │                │                 │
+│ -TAB math       │ equivalent to  │ #TAB math       │
+│    file math.c  │ commenting out │ #  file math.c  │
+│    file math.h  │                │ #  file math.h  │
+│                 │                │                 │
+│  TAB logic      │                │  TAB logic      │
+│    file logic.c │                │    file logic.c │
+│    file logic.h │                │    file logic.h │
+│           ...   │                │           ...   │
+╰─────────────────╯                ╰─────────────────╯
+
+2) double trims: " -- keyword name ..."                 *flux-double-trims*
+
+This trim-level tells flux to ignore a range of nodes, up until the next same
+, or higher, level node, or even the end of the file. For example:
+
+● until the next same level node, in this case "tab"
+╭───────────────╮               ╭───────────────╮
+│      ...      │               │      ...      │
+│  TAB          │               │  TAB          │
+│    file one   │               │    file one   │
+│  --file two   │      is       │   -file two   │
+│    file three │ equivalent to │   -file three │
+│    file four  │ single trims  │   -file four  │
+│               │               │               │
+│  TAB          │               │  TAB          │
+│    file foo   │               │    file foo   │
+│    file bar   │               │    file bar   │
+│      ...      │               │      ...      │
+╰───────────────╯               ╰───────────────╯
+
+● until the next higher level node, in this case "workspace"
+╭────────────────────╮               ╭────────────────────╮
+│        ...         │               │        ...         │
+│ WORKSPACE numbers  │               │ WORKSPACE numbers  │
+│   Tab              │               │   Tab              │
+│     file one       │               │     file one       │
+│   --file two       │               │    -file two       │
+│     file three     │ equivalent to │    -file three     │
+│                    │ single trims  │                    │
+│ WORKSPACE words    │               │ WORKSPACE words    │
+│   Tab              │               │   Tab              │
+│     file apples    │               │     file apples    │
+│     file oranges   │               │     file oranges   │
+│        ...         │               │        ...         │
+╰────────────────────╯               ╰────────────────────╯
+
+● non-leaf nodes double trims
+ ╭─────────────────╮         ╭─────────────────╮         ╭─────────────────╮
+ │       ...       │         │       ...       │         │       ...       │
+ │  Tab numbers    │         │  Tab numbers    │         │  Tab numbers    │
+ │    file one     │         │    file one     │         │    file one     │
+ │    file two     │         │    file two     │         │    file two     │
+ │                 │         │                 │         │                 │
+ │--Tab words      │         │ -Tab words      │         │# Tab words      │
+ │    file apples  │         │    file apples  │         │#   file apples  │
+ │   -file oranges │ same as │   -file oranges │         │#   file oranges │
+ │                 │ single  │                 │ same as │#                │
+ │  Tab countries  │ trims   │ -Tab countries  │         │# Tab countries  │
+ │    file Brazil  │         │    file Brazil  │         │#   file Brazil  │
+ │    file Japan   │         │    file Japan   │         │#   file Japan   │
+ │    file Mexico  │         │    file Mexico  │         │#   file Mexico  │
+ │                 │         │                 │         │                 │
+ │ WORKSPACE any   │         │ WORKSPACE any   │         │ WORKSPACE any   │
+ │        ...      │         │        ...      │         │        ...      │
+ ╰─────────────────╯         ╰─────────────────╯         ╰─────────────────╯
+
+  NOTE: The double trim by-passes the single trim. Note the "oranges" entry!
+
+							   *flux-triple-trims*
+3) triple trims ("finish" feature): " --- keyword name ..."
+
+This is the simplest of them all to understand. This feature simply ignores
+anything after it, regardless of its placement. It works the same as the
+"finish" keyword in Vimscript, or even the "exit" in BASH scripts.
+
+Also, any number of dash characters can be used from 3 dashes,
+
+"---", "----", or even "-----------------------------"
+
+This will be particularly useful in standalone trims |flux-standalone-trims|.
+
+Example:
+
+╭───────────────╮         ╭────────────────╮         ╭────────────────╮
+│      ...      │         │       ...      │         │       ...      │
+│   file one    │         │    file one    │ or even │    file one    │
+│   file two    │         │    file two    │         │    file two    │
+│---file three  │ same as │#   file three  │         ╰────────────────╯
+│   file four   │         │#   file four   │             end of file
+│               │         │#               │
+│WORKSPACE      │         │# WORKSPACE     │
+│      ...      │         │#      ...      │
+╰───────────────╯         ╰────────────────╯
+
+NOTE: a double trim applied onto an upper-most-level node (in this case a
+workspace) works exactly as a triple trim. Example:
+
+╭──────────────────╮         ╭───────────────────╮         ╭───────────────╮
+│                  │         │                   │         │               │
+│  WORKSPACE one   │         │   WORKSPACE one   │         │ WORKSPACE one │
+│        ...       │         │         ...       │ or even │       ...     │
+│  WORKSPACE two   │         │   WORKSPACE two   │         │ WORKSPACE two │
+│        ...       │ same as │         ...       │         │       ...     │
+│--WORKSPACE three │         │---WORKSPACE three │         ╰───────────────╯
+│        ...       │         │         ...       │            end of file
+│  WORKSPACE four  │         │   WORKSPACE four  │        
+│        ...       │         │         ...       │        
+╰──────────────────╯         ╰───────────────────╯        
+
+STANDALONE TRIMS			          *flux-standalone-trims*
+
+A very user-friendly way of trimming the tree is to place the dash characters
+alone in the lines before the nodes you want to trim. Examples:
+
+		  ╭────────────────────╮         ╭────────────────────╮
+		  │        ...         │         │        ...         │
+		  │   Tab              │         │   Tab              │
+		  │     file one       │         │     file one       │
+	       -> │     --             │         │   --file two       │ 
+		  │     file two       │ same as │     file three     │ 
+		  │     file three     │         │                    │ 
+		  │                    │         │ WORKSPACE words    │ 
+		  │ WORKSPACE words    │         │        ...         │ 
+		  │        ...         │         ╰────────────────────╯ 
+		  ╰────────────────────╯         
+
+and, as mentioned in the |flux-triple-trims|,
+
+╭──────────────────╮
+│                  │
+│  WORKSPACE one   │
+│        ...       │
+│  WORKSPACE two   │
+│        ...       │
+│                  │
+│  -------------   │ <- trims from here
+│                  │
+│  WORKSPACE three │
+│        ...       │
+│  WORKSPACE four  │
+│        ...       │
+╰──────────────────╯
+
+NOTE: the standalone trim feature was indeed implement for the convenience of
+using native commands, such as "dd" followed by "p", when editing flux files.
+Example:
+
+     before                    after
+╭───────────────╮        ╭───────────────╮
+│      ...      │        │      ...      │
+│   file one    │        │   file one    │
+│   file two    │        │   file two    │
+│   --          │ <- ddp │   file three  │
+│   file three  │        │   --          │
+│   file four   │        │   file four   │
+│      ...      │        │      ...      │
+╰───────────────╯        ╰───────────────╯
+
+MULTIPLE STANDALONE TRIMS	           *flux-multiple-standalone-trims*
+
+Although useless, multiple standalone trims can be used. In this case, the trim
+that comes first overwrites all others. Example:
+
+╭───────────────╮         ╭───────────────╮
+│      ...      │         │      ...      │
+│   file one    │         │   file one    │
+│   file two    │         │   file two    │
+│   --          │ same as │   --          │
+│   -           │         │   file three  │ 
+│   file three  │         │   file four   │ 
+│   file four   │         │      ...      │ 
+│      ...      │         ╰───────────────╯ 
+╰───────────────╯         
+
+THE LOOP STATEMENT				    *flux-loop-statement*
+
+It is in fact possible to perform loops in flux. Although flux was thought to
+be a human-readable non-programming language, sometimes the application can
+offer patterns that accomodates a looping mechanism. For example, say we have 
+a C library project with the following file structure: 
+
+  .
+  ├── main.c
+  ├── makefile
+  └── src
+      ├── logic.c
+      ├── logic.h
+      ├── math.c
+      ├── math.h
+      ├── ui.c
+      └── ui.h
+
+in this case, the directory "src" and its files offer a unique pattern that
+can be exploited when writing a flux file used by the arbo plugin. The
+uniqueness rests upon the fact that, since it's a C library project, all the
+modules will/should be written in files named "<module>.c" for the code, and
+"<module>.h" for the header macros anc such. As the modules increase in number
+during development, the respective flux file will increase proportionaly. 
+
+The following is the syntax for the loop mechanism. Also, the scenario above
+will be used in the examples:
+
+THE LOOP SYNTAX					    *flux-loop-syntax*
+
+The following is a general form of a loop statement in flux:
+
+	   ╭───────────────────────────────────────────────╮
+	   │                          	                   │
+	   │ [modifier] loop [<iterator>] [:] <list> [#{}] │
+	   │     m        l       i        s     L     c   │
+	   │                                               │
+	   │                     ...                       │
+	   │                                               │
+	   │                 <loop-body>                   │
+	   │                                               │
+	   │                     ...                       │
+	   │                                               │
+	   │ endl [#{}]                                    │
+	   │  e     c                                      │
+	   │                                               │
+	   ╰───────────────────────────────────────────────╯
+	   m: the loop modifier
+	   l: the loop keyword (case insensitive: loop,Loop,LOOP,etc)
+	   L: the optional loop iterator name, used in the loop's body
+	   s: the separator
+	   L: the list of strings to be iterated over
+	   e: the end-of-loop statement
+	   c: the comments (# ...)
+
+and the behaviour is the same as one would find in various programming
+languages, such as C, python, etc. i.e., the iterator variable loops over the
+values in the list, and whenever the iterator name is found in the loop's
+body, it's replaced by the current value of the iteration.
+
+Considering the C library project mentioned, and its file structure, in the
+context of the nvpm arbo plugin, the following could be a valid example of a
+flux file to be used, when loop is concerned:
+
+  FILE STRUCTURE    
+  .                 
+  ├── main.c        
+  ├── makefile      
+  └── src           
+      ├── logic.c   
+      ├── logic.h   
+      ├── math.c    
+      ├── math.h    
+      ├── ui.c      
+      └── ui.h      
+                    
+ ╭─────╮                      
+ │     │                      
+ │ workspace code    │        
+ │   tab main  │              
+ │     file main: main.c   │  
+ │     file make: makefile │  
+ │     │                      
+ │   tab lib: src  │          
+ │	                      │  
+ │                         │  
+ │                         │  
+ │                         │  
+ │                         │  
+ │                         │  
+ ╰─────╯                      
+
+
+                    
+                    
+                    
+
+
+
+
+
+
+
+THE FLUX DATA STRUCTURE                            *flux-data-structure*
 
 The example above shows a call to the main flux function "flux#flux(...)",
 which returns the tree data-structure described in the flux file.
@@ -174,7 +498,7 @@ which returns the tree data-structure described in the flux file.
 Each node of the tree, as well as its subtrees, will be in a form of a
 dictionary that may contain the following keys: file, info, meta, and list.
 
-- `file`:                                                *flux_data_file*
+- `file`:                                                *flux-data-file*
     type: string
 
     Stores the path to the flux file used when supplying the configuration
@@ -182,7 +506,7 @@ dictionary that may contain the following keys: file, info, meta, and list.
 
     This is only used in the root node of the tree
 
-- `info`:                                                *flux_data_info*
+- `info`:                                                *flux-data-info*
     type: dictionary
     keys: keyw, name, and info
 
@@ -203,14 +527,14 @@ dictionary that may contain the following keys: file, info, meta, and list.
 	      │                                               │
 	      ╰───────────────────────────────────────────────╯
 
-- `meta`:                                                *flux_data_meta*
+- `meta`:                                                *flux-data-meta*
     type: dictionary
     keys: type, leng, and indx
 
-    Composed of the meta information regarding the list (|flux_data_list|) of
+    Composed of the meta information regarding the list (|flux-data-list|) of
     subnodes (children), in a given node.
 
-    Consider the same example in |flux_data_info|, and that the lexicon use is
+    Consider the same example in |flux-data-info|, and that the lexicon use is
     of the form "tab,file". Then, the resulting meta field will be something
     like this:
 
@@ -224,14 +548,14 @@ dictionary that may contain the following keys: file, info, meta, and list.
     and it's currently placed at the first file element.
 
 
-- `list`:                                                *flux_data_list*
+- `list`:                                                *flux-data-list*
     type: list
     items: dictionary nodes
 
     Composed of the subnodes in the tree a.k.a children. Its length, type of
-    nodes, and current index are described in |flux_data_meta
+    nodes, and current index are described in |flux-data-meta
 
-DATA STRUCTURE EXAMPLE                                *flux_data_example*
+DATA STRUCTURE EXAMPLE                                *flux-data-example*
 
   Consider the following scenario.
 

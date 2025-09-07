@@ -1,5 +1,6 @@
 
-  ● change lexis->lexicon ~
+  ● change names of plugins flux->arbo and arbo->nvpm ~
+  ● flux: change feature name cuts -> trim ~
   ● separate fluxconf into individual variables ~
   ● deal with conf/menu.vim  ~
   ● init gith plugin ~

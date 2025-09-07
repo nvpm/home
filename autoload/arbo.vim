@@ -24,6 +24,7 @@ fu! arbo#init(...) abort "{
     let g:arbo.flux.lexicon .= ',tab folder fold shelf package pack chapter'
     let g:arbo.flux.lexicon .= ',file buff buffer path entry node leaf page'
   endif
+  " these will be gone once the flux synx var is implemented
   let g:arbo.flux.fixt  = 1
   let g:arbo.flux.home  = 1
   let g:arbo.flux.file  = ''
