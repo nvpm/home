@@ -1,5 +1,43 @@
 
 
+  project   help {
+    workspace ɸ flux {
+        file  help : doc/flux.txt
+        --
+        file  nvpm : nvpm.md
+        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+        file  read : README.md
+    }
+    workspace  arbo {
+        file  help : doc/arbo.txt
+        --
+        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+        file  nvpm : nvpm.md
+        file  read : README.md
+    }
+    workspace ▣ zoom {
+        file  help : doc/zoom.txt
+        --
+        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+        file  nvpm : nvpm.md
+        file  read : README.md
+    }
+    --
+    workspace 🭹 line {
+        file  help : doc/line.txt
+        --
+        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+        file  nvpm : nvpm.md
+        file  read : README.md
+    }
+    workspace Ⲅ text {
+        file  help : doc/text.txt
+        --
+        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+        file  nvpm : nvpm.md
+        file  read : README.md
+    }
+  }
   project   devl {
     workspace  arbo {
       tab  code
@@ -57,45 +95,7 @@
         file Issues   
     }
   }
-  project   help {
-    workspace  arbo {
-        file  help : doc/arbo.txt
-        --
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-        file  nvpm : nvpm.md
-        file  read : README.md
-    }
-    workspace ɸ flux {
-        file  help : doc/flux.txt
-        --
-        file  nvpm : nvpm.md
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-        file  read : README.md
-    }
-    workspace ▣ zoom {
-        file  help : doc/zoom.txt
-        --
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-        file  nvpm : nvpm.md
-        file  read : README.md
-    }
-    --
-    workspace 🭹 line {
-        file  help : doc/line.txt
-        --
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-        file  nvpm : nvpm.md
-        file  read : README.md
-    }
-    workspace Ⲅ text {
-        file  help : doc/text.txt
-        --
-        file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
-        file  nvpm : nvpm.md
-        file  read : README.md
-    }
-  }
-  --
+  -------------
   project   meta {
     tab  meta = meta
       file conf.vim

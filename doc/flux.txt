@@ -318,9 +318,9 @@ workspace) works exactly as a triple trim. Example:
 │        ...       │ same as │         ...       │         │       ...     │
 │--WORKSPACE three │         │---WORKSPACE three │         ╰───────────────╯
 │        ...       │         │         ...       │            end of file
-│  WORKSPACE four  │         │   WORKSPACE four  │        
-│        ...       │         │         ...       │        
-╰──────────────────╯         ╰───────────────────╯        
+│  WORKSPACE four  │         │   WORKSPACE four  │
+│        ...       │         │         ...       │
+╰──────────────────╯         ╰───────────────────╯
 
 STANDALONE TRIMS			          *flux-standalone-trims*
 
@@ -331,13 +331,13 @@ alone in the lines before the nodes you want to trim. Examples:
 		  │        ...         │         │        ...         │
 		  │   Tab              │         │   Tab              │
 		  │     file one       │         │     file one       │
-	       -> │     --             │         │   --file two       │ 
-		  │     file two       │ same as │     file three     │ 
-		  │     file three     │         │                    │ 
-		  │                    │         │ WORKSPACE words    │ 
-		  │ WORKSPACE words    │         │        ...         │ 
-		  │        ...         │         ╰────────────────────╯ 
-		  ╰────────────────────╯         
+	       -> │     --             │         │   --file two       │
+		  │     file two       │ same as │     file three     │
+		  │     file three     │         │                    │
+		  │                    │         │ WORKSPACE words    │
+		  │ WORKSPACE words    │         │        ...         │
+		  │        ...         │         ╰────────────────────╯
+		  ╰────────────────────╯
 
 and, as mentioned in the |flux-triple-trims|,
 
@@ -381,18 +381,18 @@ that comes first overwrites all others. Example:
 │   file one    │         │   file one    │
 │   file two    │         │   file two    │
 │   --          │ same as │   --          │
-│   -           │         │   file three  │ 
-│   file three  │         │   file four   │ 
-│   file four   │         │      ...      │ 
-│      ...      │         ╰───────────────╯ 
-╰───────────────╯         
+│   -           │         │   file three  │
+│   file three  │         │   file four   │
+│   file four   │         │      ...      │
+│      ...      │         ╰───────────────╯
+╰───────────────╯
 
 THE LOOP STATEMENT				    *flux-loop-statement*
 
 It is in fact possible to perform loops in flux. Although flux was thought to
 be a human-readable non-programming language, sometimes the application can
-offer patterns that accomodates a looping mechanism. For example, say we have 
-a C library project with the following file structure: 
+offer patterns that accomodates a looping mechanism. For example, say we have
+a C library project with the following file structure:
 
   .
   ├── main.c
@@ -410,7 +410,7 @@ can be exploited when writing a flux file used by the arbo plugin. The
 uniqueness rests upon the fact that, since it's a C library project, all the
 modules will/should be written in files named "<module>.c" for the code, and
 "<module>.h" for the header macros anc such. As the modules increase in number
-during development, the respective flux file will increase proportionaly. 
+during development, the respective flux file will increase proportionaly.
 
 The following is the syntax for the loop mechanism. Also, the scenario above
 will be used in the examples:
@@ -451,45 +451,39 @@ Considering the C library project mentioned, and its file structure, in the
 context of the nvpm arbo plugin, the following could be a valid example of a
 flux file to be used, when loop is concerned:
 
-  FILE STRUCTURE    
-  .                 
-  ├── main.c        
-  ├── makefile      
-  └── src           
-      ├── logic.c   
-      ├── logic.h   
-      ├── math.c    
-      ├── math.h    
-      ├── ui.c      
-      └── ui.h      
-                    
- ╭─────╮                      
- │     │                      
- │ workspace code    │        
- │   tab main  │              
- │     file main: main.c   │  
- │     file make: makefile │  
- │     │                      
- │   tab lib: src  │          
- │	                      │  
- │                         │  
- │                         │  
- │                         │  
- │                         │  
- │                         │  
- ╰─────╯                      
-
-
-                    
-                    
-                    
-
-
-
-
-
-
-
+         	       	   FILE STRUCTURE
+        		       	.
+        		       	├── main.c
+        		       	├── makefile
+        		       	└── src
+        		       	    ├── logic.c
+        		       	    ├── logic.h
+        		       	    ├── math.c
+        		       	    ├── math.h
+        		       	    ├── ui.c
+        		       	    └── ui.h
+   
+╭─────────────────────────────────╮         ╭─────────────────────────╮
+│                                 │         │                         │
+│ workspace code                  │         │ workspace code          │
+│   tab main                      │         │   tab main              │
+│     file main: main.c           │         │     file main: main.c   │
+│     file make: makefile         │         │     file make: makefile │
+│                                 │         │                         │
+│   loop module : ui logic math { │ same as │   tab ui: src           │
+│     tab $(module): src          │         │     file ui.c           │
+│	 file $(module).c         │         │     file ui.h           │
+│	 file $(module).h         │         │                         │
+│   endl }                        │         │   tab logic: src        │
+│                                 │         │     file logic.c        │
+╰─────────────────────────────────╯         │     file logic.h        │
+                                            │                         │
+                                            │   tab math: src         │
+                                            │     file math.c         │
+                                            │     file math.h         │
+                                            │                         │
+                                            ╰─────────────────────────╯
+                             
 THE FLUX DATA STRUCTURE                            *flux-data-structure*
 
 The example above shows a call to the main flux function "flux#flux(...)",

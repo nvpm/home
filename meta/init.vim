@@ -1,7 +1,7 @@
 " meta/init.vim
 " init {
 
-let s:test = {}
+
 
 "}
 " plug {
