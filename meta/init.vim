@@ -1,7 +1,7 @@
 " meta/init.vim
 " init {
 
-let s:test = {}
+
 
 "}
 " plug {
@@ -16,13 +16,10 @@ fu! s:test.flux(...) "{
   let conf.home = 1
   let conf.fixt = 1
 
-  let conf.lexicon = 'project,workspace,tab,file'
+  let conf.lexicon = ',workspace,tab,file buffer'
 
   let flux = flux#flux(conf)
-  call flux#show(flux)
-  return
-  let node = flux#seek(flux,1)
-  echo keys(node)
+  echo string(flux)
   return
   let expt = s:test.eval('test/flux/case.expt')
 
@@ -74,11 +71,13 @@ fu! s:test.zoom(...) "{
 
   so autoload/zoom.vim
 
-  call zoom#test()
+  "call zoom#test()
 
-  return
+  "return
   let left = repeat(' ' ,g:zoom.size.l )
   ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
+  ec left..string(g:zoom.size)
+
 
   return
 
@@ -126,9 +125,9 @@ endfu "}
 "}
 " exec {
 
-if 1|call s:test.flux()|endif
+if 0|call s:test.flux()|endif
 if 0|call s:test.arbo()|endif
-if 0|call s:test.zoom()|endif
+if 1|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 
 "}

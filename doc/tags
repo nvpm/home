@@ -1,7 +1,15 @@
 Zoom	zoom.txt	/*Zoom*
-flux-intro	flux.txt	/*flux-intro*
-flux-syntax	flux.txt	/*flux-syntax*
+flux	flux.txt	/*flux*
 flux.txt	flux.txt	/*flux.txt*
+flux_configuration	flux.txt	/*flux_configuration*
+flux_data_file	flux.txt	/*flux_data_file*
+flux_data_info	flux.txt	/*flux_data_info*
+flux_data_list	flux.txt	/*flux_data_list*
+flux_data_meta	flux.txt	/*flux_data_meta*
+flux_data_structure	flux.txt	/*flux_data_structure*
+flux_elements	flux.txt	/*flux_elements*
+flux_intro	flux.txt	/*flux_intro*
+flux_syntax	flux.txt	/*flux_syntax*
 g:nvpm_line_bottomcenter	arbo.txt	/*g:nvpm_line_bottomcenter*
 g:nvpm_line_bottomright	arbo.txt	/*g:nvpm_line_bottomright*
 g:nvpm_line_closure	arbo.txt	/*g:nvpm_line_closure*
@@ -15,7 +23,6 @@ g:nvpm_local_dir	arbo.txt	/*g:nvpm_local_dir*
 g:nvpm_maketree	arbo.txt	/*g:nvpm_maketree*
 g:nvpm_new_project_edit_mode	arbo.txt	/*g:nvpm_new_project_edit_mode*
 nvpm	arbo.txt	/*nvpm*
-nvpm	flux.txt	/*nvpm*
 nvpm-NVPMEditProjects	arbo.txt	/*nvpm-NVPMEditProjects*
 nvpm-NVPMLineSwap	arbo.txt	/*nvpm-NVPMLineSwap*
 nvpm-NVPMLoadProject	arbo.txt	/*nvpm-NVPMLoadProject*
