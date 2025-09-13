@@ -45,16 +45,22 @@ SYNTAX ELEMENTS	      			     *flux-syntax-elements*
 
 The following is a general form of each valid line of a flux file.
 
-	   ╭────────────────────────────────────────────────╮
-	   │ [modifier] keyword <name> [[:=] <value> [#{}]] │
-	   │      m        k      n      s      v      c    │
-	   ╰────────────────────────────────────────────────╯
-	   m: the element modifier
-	   k: the keyword itself (case insensitive)
-	   n: the name for that keyword
-	   s: the separator
-	   v: the value for that keyword
-	   c: the comments (# ...)
+  ╭────────────────────────────────────────────────╮
+  │ [modifier] keyword <name> [[:=] <value> [#{}]] │
+  │      m        k      n      s      v      c    │
+  ╰────────────────────────────────────────────────╯
+  m: the element modifier
+     For now it's just the trimming mechanism. More on |flux-tree-trimming|.
+
+  k: the keyword itself (case insensitive)
+     A name for the keyword defined in the lexicon (|flux-lexicon|). It has to
+     match the pattern [a-zA-Z0-9_].
+
+  n: the name for that keyword
+  s: the separator
+  v: the value for that keyword
+  c: the comments (# ...)
+
 
 And the best way to explain the usage is with a practical example. Say we want
 to describe the placement of files in a project. For the sake of this example,
@@ -187,7 +193,7 @@ feature.
 ```vimscript
 
   let conf = {}
-  let conf.lexicon = 'workspace, tab , file'
+  let conf.lexicon = 'workspace , tab , file'
 
 ```
 
