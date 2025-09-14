@@ -33,7 +33,7 @@ fu! nvpm#init(...) abort "{
   let g:nvpm.mode = 0
   let g:nvpm.term = ''
 
-  let g:nvpm.root = {}
+  let g:nvpm.tree = {}
   call nvpm#zero()
 
   let g:nvpm.file = {}
@@ -51,17 +51,17 @@ fu! nvpm#init(...) abort "{
         call delete(g:nvpm.file.save)
         return
       endif
-      let g:nvpm.root = root
+      let g:nvpm.tree = root
       "if g:nvpm.savebufs
       "  call nvpm#rend()
-      "  for file in g:nvpm.root.bufs
+      "  for file in g:nvpm.tree.bufs
       "    exec 'badd '..file
       "  endfor
       "endif
       if 1+nvpm#find(g:nvpm.file.edit) 
         call nvpm#fell(g:nvpm.file.edit)
       endif
-      let g:nvpm.mode = !!g:nvpm.root.meta.leng
+      let g:nvpm.mode = !!g:nvpm.tree.meta.leng
       call timer_start(g:nvpm.initload,{->nvpm#load()})
     endif
   endif
@@ -96,15 +96,15 @@ fu! nvpm#grow(...) abort "{
     if empty(root)||empty(get(root,'list'))|return 2|endif
     let indx = nvpm#find(file)
     if 1+indx
-      let g:nvpm.root.list[indx] = root
+      let g:nvpm.tree.list[indx] = root
     else
-      call add(g:nvpm.root.list,root)
-      let indx = g:nvpm.root.meta.leng
-      let g:nvpm.root.meta.leng+=1
+      call add(g:nvpm.tree.list,root)
+      let indx = g:nvpm.tree.meta.leng
+      let g:nvpm.tree.meta.leng+=1
     endif
-    let g:nvpm.root.meta.indx = indx
+    let g:nvpm.tree.meta.indx = indx
   endif
-  let g:nvpm.mode = !!g:nvpm.root.meta.leng
+  let g:nvpm.mode = !!g:nvpm.tree.meta.leng
 
 endfu "}
 fu! nvpm#fell(...) abort "{
@@ -115,15 +115,15 @@ fu! nvpm#fell(...) abort "{
     let file = a:1
     let indx = nvpm#find(file)
     if 1+indx
-      unlet g:nvpm.root.list[indx]
-      let g:nvpm.root.meta.leng-= 1
+      unlet g:nvpm.tree.list[indx]
+      let g:nvpm.tree.meta.leng-= 1
       " just to keep indx inside bounds, because of new leng
-      call nvpm#indx(g:nvpm.root.meta)
+      call nvpm#indx(g:nvpm.tree.meta)
     else
       return 1
     endif
   endif
-  let g:nvpm.mode = !!g:nvpm.root.meta.leng
+  let g:nvpm.mode = !!g:nvpm.tree.meta.leng
   call nvpm#load()
 
 endfu "}
@@ -140,8 +140,8 @@ fu! nvpm#jump(...) abort "{
       call nvpm#trim()
       return
     endif
-    if g:nvpm.root.curr==bufname()
-      let meta = arbo#seek(g:nvpm.root,type).meta
+    if g:nvpm.tree.curr==bufname()
+      let meta = arbo#seek(g:nvpm.tree,type).meta
       call nvpm#indx(meta,meta.indx+step)
     endif
     " performs the JumpBack WorkFlow
@@ -181,7 +181,7 @@ fu! nvpm#trim(...) abort "{
       call nvpm#fell(g:nvpm.file.edit)
       let indx = nvpm#find(pick)
       if 1+indx
-        call nvpm#indx(g:nvpm.root.meta,indx)
+        call nvpm#indx(g:nvpm.tree.meta,indx)
       endif
     endif
     call nvpm#load()
@@ -197,8 +197,8 @@ fu! nvpm#trim(...) abort "{
   endfor
 
   let arbo = ''
-  if !empty(g:nvpm.root.list)
-    let arbo = g:nvpm.root.list[g:nvpm.root.meta.indx].file
+  if !empty(g:nvpm.tree.list)
+    let arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
   endif
 
   call writefile(body,g:nvpm.file.edit)
@@ -206,7 +206,7 @@ fu! nvpm#trim(...) abort "{
   let g:nvpm.mode = 2
 
   if !empty(arbo)
-    let node = arbo#seek(g:nvpm.root,g:nvpm.arbo.leaftype)
+    let node = arbo#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
       if leaf.info.info == arbo
@@ -252,7 +252,7 @@ endfu "}
 fu! nvpm#find(...) abort "{
 
   let file = a:1
-  let root = get(a:,2,g:nvpm.root)
+  let root = get(a:,2,g:nvpm.tree)
 
   let indx = 0
   for arbo in root.list
@@ -264,7 +264,7 @@ fu! nvpm#find(...) abort "{
 endfu "}
 fu! nvpm#curr(...) abort "{
 
-  let root = g:nvpm.root
+  let root = g:nvpm.tree
   let list = get(root,'list',[])
 
   if empty(root)||empty(list)|return 1|endif
@@ -274,13 +274,13 @@ fu! nvpm#curr(...) abort "{
   let curr = node.list[node.meta.indx].info.info
   if empty(curr)|return 1|endif
 
-  let g:nvpm.root.last = g:nvpm.root.curr
-  let g:nvpm.root.curr = curr
+  let g:nvpm.tree.last = g:nvpm.tree.curr
+  let g:nvpm.tree.curr = curr
 
 endfu "}
 fu! nvpm#rend(...) abort "{
 
-  let curr = g:nvpm.root.curr
+  let curr = g:nvpm.tree.curr
   let head = fnamemodify(curr,':h')..'/'
 
   exe 'edit '.curr
@@ -307,8 +307,8 @@ fu! nvpm#show(...) abort "{
 
   for key in keys(g:nvpm)
     if key=='root'
-      echo 'root :' g:nvpm.root.meta
-      for arbo in g:nvpm.root.list
+      echo 'root :' g:nvpm.tree.meta
+      for arbo in g:nvpm.tree.list
         echo '  '..arbo.file
       endfor
       continue
@@ -320,13 +320,13 @@ fu! nvpm#show(...) abort "{
 endfu "}
 fu! nvpm#zero(...) abort "{
 
-  let g:nvpm.root.curr = ''
-  let g:nvpm.root.last = ''
-  let g:nvpm.root.list = []
+  let g:nvpm.tree.curr = ''
+  let g:nvpm.tree.last = ''
+  let g:nvpm.tree.list = []
   "if g:nvpm.savebufs
-  "  let g:nvpm.root.bufs = []
+  "  let g:nvpm.tree.bufs = []
   "endif
-  let g:nvpm.root.meta = #{leng:0,indx:0,type:0}
+  let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
 
 endfu "}
 fu! nvpm#save(...) abort "{
@@ -340,9 +340,9 @@ fu! nvpm#save(...) abort "{
     "  let bool.= '&&v:val!~"^term:.*"'
     "  let list = map(range(1,bufnr('$')),'bufname(v:val)')
     "  let list = filter(list,bool)
-    "  let g:nvpm.root.bufs = list
+    "  let g:nvpm.tree.bufs = list
     "endif
-    call writefile([string(g:nvpm.root)],g:nvpm.file.save)
+    call writefile([string(g:nvpm.tree)],g:nvpm.file.save)
   endif
 
 endfu "}
@@ -355,7 +355,7 @@ fu! nvpm#user(...) abort "{
     let cmdline = trim(a:000[1])
     if cmdline=~'\CNvpmFell'
       let list = []
-      for arbo in g:nvpm.root.list
+      for arbo in g:nvpm.tree.list
         if arbo.file==g:nvpm.file.edit|continue|endif
         call add(list,arbo.file)
       endfor

@@ -163,10 +163,10 @@ fu! line#atom(...) abort "{
     let name = ''
     if g:line.nvpm "{
       if type==0
-        let name = g:nvpm.root.list[g:nvpm.root.meta.indx].file
+        let name = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
         let name = fnamemodify(name,':t')
       else
-        let node = arbo#seek(g:nvpm.root,type)
+        let node = arbo#seek(g:nvpm.tree,type)
         if has_key(node,'meta')&&has_key(node,'list')
           let node = node.list[node.meta.indx]
           if has_key(node,'info')
@@ -197,7 +197,7 @@ fu! line#atom(...) abort "{
     let indx = 0
 
     if g:line.nvpm   "{
-      let node = arbo#seek(g:nvpm.root,type)
+      let node = arbo#seek(g:nvpm.tree,type)
       if has_key(node,'meta')
         let indx = node.meta.indx
         let leng = node.meta.leng

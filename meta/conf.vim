@@ -49,7 +49,7 @@ let nvpm = {}
 let nvpm.initload = 1
 let nvpm.autocmds = 1
 let nvpm.filetree = 1
-let nvpm.savebufs = 0
+"let nvpm.savebufs = 0
 let nvpm.lexicon  = 'project,workspace,tab,file'
 
 hi arbovars guifg=#00ff00 gui=bold
@@ -255,7 +255,7 @@ nmap <silent>ml :Line<cr><c-l>
 
 let zoom = {}
 let zoom.autocmds = 1
-let zoom.initload = 1
+let zoom.initload = 0
 let zoom.keepline = 1
 let zoom.pushcmdl = 1
 let zoom.height = -4
