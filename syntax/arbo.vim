@@ -1,11 +1,11 @@
 " Vim syntax file
-" Language: flux
+" Language: arbo
 " Maintainer: @iasj
 
 if exists("b:current_syntax")
   finish
 else
-  let b:current_syntax = "flux"
+  let b:current_syntax = "arbo"
   syntax clear
 endif
 
@@ -16,11 +16,11 @@ fu! s:main()
 
 " main {{{3
 
-  let c  = 'syn cluster flux'
-  let k  = 'syn keyword flux'
-  let r  = 'syn  region flux'
-  let m  = 'syn   match flux'
-  let h  = 'hi def link flux'
+  let c  = 'syn cluster arbo'
+  let k  = 'syn keyword arbo'
+  let r  = 'syn  region arbo'
+  let m  = 'syn   match arbo'
+  let h  = 'hi def link arbo'
   let cd = ' contained '
   let ct = ' contains='
 
@@ -33,14 +33,14 @@ fu! s:main()
   exe m.'vars /'.vars.'/'   .cd|exe h.'vars Title'
   exe m.'sepr /'.sepr.'/'   .cd|exe h.'vars Normal'
 
-  exe m.'cut3 '.cut3|exe h.'cut3 fluxcomm'
-  exe m.'cuts '.cuts|exe h.'cuts fluxcomm'
+  exe m.'cut3 '.cut3|exe h.'cut3 arbocomm'
+  exe m.'cuts '.cuts|exe h.'cuts arbocomm'
 
 " }}}
-" flux {{{3
+" arbo {{{3
 
   let keyw = '\(^\|,\)\s*\w\+\s*'
-  exe m.'keyw /'.keyw.'/'.cd.ct.'fluxsepr'|exe h.'keyw Keyword'
+  exe m.'keyw /'.keyw.'/'.cd.ct.'arbosepr'|exe h.'keyw Keyword'
 
   let sep  = '[:=]'
   let name = '/'
@@ -49,11 +49,11 @@ fu! s:main()
   let name.= sep
   let name.= '/'
   let name.= cd
-  let name.= ct.'fluxkeyw,fluxsepr,fluxvars'
+  let name.= ct.'arbokeyw,arbosepr,arbovars'
   exe m.'name '.name|exe h.'name Normal'
 
   let line = '/^.*$/'
-  let line.= ct.'fluxkeyw,fluxsepr,fluxname,fluxvars,fluxcomm,fluxcut3,fluxcuts'
+  let line.= ct.'arbokeyw,arbosepr,arboname,arbovars,arbocomm,arbocut3,arbocuts'
   exe m.'line '.line|exe h.'line Constant'
 
 " }}}
@@ -63,31 +63,31 @@ fu! s:main()
   let keyw = '^\s*loop'
   let loop = '/'.keyw.'\s\+/'
   let endl = '/^\s*endl\s*'.comm.'*$/'
-  let endl.= ct.'fluxcomm'
-  let cut1 = '/\('.keyw.'\s\+\|'.sep.'\s*\)\=-\+\s*\w\+/'.cd.ct.'fluxlkeyw,fluxsepr'
-  let cut2 = '/\('.keyw.'\s\+\|'.sep.'\s*\)\=--\+.*$/'.cd.ct.'fluxlkeyw,fluxsepr'
+  let endl.= ct.'arbocomm'
+  let cut1 = '/\('.keyw.'\s\+\|'.sep.'\s*\)\=-\+\s*\w\+/'.cd.ct.'arbolkeyw,arbosepr'
+  let cut2 = '/\('.keyw.'\s\+\|'.sep.'\s*\)\=--\+.*$/'.cd.ct.'arbolkeyw,arbosepr'
   let lcut = ' start=/^\s*--*\s*\n*\s*loop/'
   let lcut.= '   end=/^\s*endl.*$/'
-  let lcut.= ct.'fluxcut3'
+  let lcut.= ct.'arbocut3'
 
   exe m.'lkeyw '.loop|exe h.'lkeyw Title'
-  exe m.'lendl '.endl|exe h.'lendl fluxlkeyw'
-  exe m.'lcut1 '.cut1|exe h.'lcut1 fluxcomm'
-  exe m.'lcut2 '.cut2|exe h.'lcut2 fluxcomm'
-  exe r.'lcuts '.lcut|exe h.'lcuts fluxcomm'
+  exe m.'lendl '.endl|exe h.'lendl arbolkeyw'
+  exe m.'lcut1 '.cut1|exe h.'lcut1 arbocomm'
+  exe m.'lcut2 '.cut2|exe h.'lcut2 arbocomm'
+  exe r.'lcuts '.lcut|exe h.'lcuts arbocomm'
 
   let name = '/'.keyw.'\s\+\w\+\s*'.sep.'/'
   let name.= cd
-  let name.= ct.'fluxlkeyw,fluxsepr'
-  exe m.'lname '.name|exe h.'lname fluxvars'
+  let name.= ct.'arbolkeyw,arbosepr'
+  exe m.'lname '.name|exe h.'lname arbovars'
 
   let head = '/'.keyw.'\s\+.*$/'
-  let head.= ct.'fluxlkeyw,fluxsepr,fluxlname,fluxlcut1,fluxlcut2,fluxcomm'
-  exe m.'lhead '.head|exe h.'lhead fluxline'
+  let head.= ct.'arbolkeyw,arbosepr,arbolname,arbolcut1,arbolcut2,arbocomm'
+  exe m.'lhead '.head|exe h.'lhead arboline'
 
   exe m.'lnone /'.keyw.'\s\+-*\s*\w*s*'.sep.'\=\s*--\_.*endl.*$/'
   exe m.'lnone /^.*'.sep.'\(\s*-\s*\w\+\s*\)*\s*--\_.*endl.*$/'
-  exe h.'lnone fluxcomm'
+  exe h.'lnone arbocomm'
 
   exe m.'lbadf /'.keyw.'\s*-\+\s*\w*s*'.sep.'.*$/'
   exe h.'lbadf Error'
@@ -98,8 +98,8 @@ fu! s:main()
 " lexis {
 
 let lexis = []
-if exists('g:nvpm.flux.lexicon')
-  let lexis = g:nvpm.flux.lexicon
+if exists('g:nvpm.arbo.lexicon')
+  let lexis = g:nvpm.arbo.lexicon
 endif
 
 " }
@@ -121,8 +121,8 @@ for i in range(len(lexis))
   let c1 = join(cut1,'\|')
   let c2 = join(cut2,'\|')
 
-  let syn = r..'flux'..i
-  let hi  = h..'flux'..i
+  let syn = r..'arbo'..i
+  let hi  = h..'arbo'..i
 
   let cpre  = '^\s*-\{-1,2}\s*\n*\s*-*'
   let c1pre =  '^\s*-\s*\n*\s*-*'
@@ -141,16 +141,16 @@ for i in range(len(lexis))
   let cpat1 = m..i..'cut1 '..c1patt
   let cpat2 = m..i..'cut2 '..c2patt
 
-  exe cpatt..ct..'fluxlendl,fluxlcuts,fluxlhead'
-  exe cpat1..ct..'fluxlendl,fluxlcuts,fluxlhead'
-  exe cpat2..ct..'fluxlendl,fluxlcuts,fluxlhead,fluxcut3'
+  exe cpatt..ct..'arbolendl,arbolcuts,arbolhead'
+  exe cpat1..ct..'arbolendl,arbolcuts,arbolhead'
+  exe cpat2..ct..'arbolendl,arbolcuts,arbolhead,arbocut3'
 
   "exe h..i..'cuts Error'
-  "exe h..i..'cut1 fluxcomm'
+  "exe h..i..'cut1 arbocomm'
   "exe h..i..'cut2 SpellBad'
-  exe h..i..'cuts fluxcomm'
-  exe h..i..'cut1 fluxcomm'
-  exe h..i..'cut2 fluxcomm'
+  exe h..i..'cuts arbocomm'
+  exe h..i..'cut1 arbocomm'
+  exe h..i..'cut2 arbocomm'
 
 endfor "}
 
@@ -160,3 +160,4 @@ syntax sync minlines=100
 endfu|call s:main()|delfunc s:main
 
 " vim: nowrap sw=2 sts=2 ts=8 noet fdm=marker:
+

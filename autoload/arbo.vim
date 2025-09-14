@@ -1,36 +1,36 @@
-"-- auto/flux.vim  --
-if !exists('NVPMTEST')&&exists('_FLUXAUTO_')|finish|endif
-let _FLUXAUTO_=1
+"-- auto/arbo.vim  --
+if !exists('NVPMTEST')&&exists('_ARBOAUTO_')|finish|endif
+let _ARBOAUTO_=1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
 "-- main functions --
-fu! flux#flux(...) abort "{
+fu! arbo#arbo(...) abort "{
 
-  if !a:0|return {}|else|let s:conf=flux#argv(a:000)|endif
+  if !a:0|return {}|else|let s:conf=arbo#argv(a:000)|endif
 
-  call flux#conf()
-  call flux#read()
-  call flux#trim()
-  call flux#endl()
-  call flux#list()
-  call flux#cuts()
-  call flux#loop()
-  call flux#home()
-  retu flux#data()
+  call arbo#conf()
+  call arbo#read()
+  call arbo#trim()
+  call arbo#endl()
+  call arbo#list()
+  call arbo#cuts()
+  call arbo#loop()
+  call arbo#home()
+  retu arbo#data()
 
 endfu "}
-fu! flux#data(...) abort "{
+fu! arbo#data(...) abort "{
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
   let home = get(s:conf,'HOME','')
 
-  let tree = flux#tree(list,leng,home)
+  let tree = arbo#tree(list,leng,home)
 
   let tree.file = s:conf.file
 
-  "if get(s:conf,'fixt',0)|call flux#fixt(tree,s:conf)|endif
+  "if get(s:conf,'fixt',0)|call arbo#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
@@ -44,7 +44,7 @@ fu! flux#data(...) abort "{
   return tree
 
 endfu "}
-fu! flux#fixt(...) abort "{
+fu! arbo#fixt(...) abort "{
 
   let root = get(a:000,0,{})
   let conf = get(a:000,1,{})
@@ -57,7 +57,7 @@ fu! flux#fixt(...) abort "{
     let mintype = conf.leaftype
     let minkeyw = conf.lexicon[mintype][0]
     for node in root.list
-      let type = flux#find(conf.lexicon,node.info.keyw)
+      let type = arbo#find(conf.lexicon,node.info.keyw)
       if type<mintype
         let mintype = type
         let minkeyw = node.info.keyw
@@ -66,7 +66,7 @@ fu! flux#fixt(...) abort "{
     let indx = 0
     let list = []
     let node = root.list[indx]
-    while indx<root.meta.leng&&flux#find(conf.lexicon,node.info.keyw)>mintype
+    while indx<root.meta.leng&&arbo#find(conf.lexicon,node.info.keyw)>mintype
       call add(list,node)
       let indx+=1
       let node = root.list[indx]
@@ -79,20 +79,20 @@ fu! flux#fixt(...) abort "{
       let node.info.info = ''
       let node.meta.leng = len(list)
       let node.meta.indx = 0
-      let node.meta.type = flux#find(conf.lexicon,list[0].info.keyw)
+      let node.meta.type = arbo#find(conf.lexicon,list[0].info.keyw)
       let node.list = list
       let root.list = [node]+root.list[indx:]
       let root.meta.leng = len(root.list)
     endif
     for node in root.list
       if has_key(node,'list')
-        call flux#fixt(node,conf)
+        call arbo#fixt(node,conf)
       endif
     endfor
   endif
 
 endfu "}
-fu! flux#tree(...) abort "{
+fu! arbo#tree(...) abort "{
 
   let list = get(a:000,0,[])
   let leng = get(a:000,1,len(list))
@@ -109,15 +109,15 @@ fu! flux#tree(...) abort "{
     let node = list[indx]|let indx+=1
     let path = [home,''][node.absl] .. node.info.info
 
-    let node.type = flux#find(s:conf.lexicon     ,node.info.keyw)
-    let node.tree = flux#find(s:conf.lexicon[:-2],node.info.keyw)
+    let node.type = arbo#find(s:conf.lexicon     ,node.info.keyw)
+    let node.tree = arbo#find(s:conf.lexicon[:-2],node.info.keyw)
 
     " recursively handles non-leaf nodes (sub-tree)
     if 1+node.tree
       let init = indx
       while indx<leng
         let item = list[indx]
-        let item.tree = flux#find(s:conf.lexicon[:-2],item.info.keyw)
+        let item.tree = arbo#find(s:conf.lexicon[:-2],item.info.keyw)
         " breaks at next same (or higher) type node
         if 1+item.tree && item.tree<=node.tree
           break
@@ -127,7 +127,7 @@ fu! flux#tree(...) abort "{
 
       " extend node fields with.list, indx and leng recursively
       let sublist = list[init:indx-1]
-      let subtree = flux#tree(sublist,indx-init,path)
+      let subtree = arbo#tree(sublist,indx-init,path)
       call extend(node,subtree)
 
     endif
@@ -168,13 +168,13 @@ fu! flux#tree(...) abort "{
   return tree
 
 endfu "}
-fu! flux#skel(...) abort "{
+fu! arbo#skel(...) abort "{
 endfu "}
 
 "-- conf functions --
-fu! flux#conf(...) abort "{
+fu! arbo#conf(...) abort "{
 
-  if !a:0|return flux#conf(s:conf)|else|let conf=a:1|endif
+  if !a:0|return arbo#conf(s:conf)|else|let conf=a:1|endif
   if !has_key(conf,'lexicon')|let conf.lexicon=''|endif
   if type(conf.lexicon)==type('')
     let conf.lexicon = split(conf.lexicon,',')
@@ -189,7 +189,7 @@ fu! flux#conf(...) abort "{
   let conf.leaftype = len(conf.lexicon)
 
 endfu "}
-fu! flux#read(...) abort "{
+fu! arbo#read(...) abort "{
 
   if !has_key(s:conf,'file')|return|endif
   if !empty(s:conf.file)
@@ -206,7 +206,7 @@ fu! flux#read(...) abort "{
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! flux#trim(...) abort "{
+fu! arbo#trim(...) abort "{
 
   if has_key(s:conf,'body')
     let comm = '\c\s*[#{}].*'
@@ -223,7 +223,7 @@ fu! flux#trim(...) abort "{
   endif
 
 endfu "}
-fu! flux#endl(...) abort "{
+fu! arbo#endl(...) abort "{
 
   if has_key(s:conf,'body')
     let endl = '\m\s*,\s*'
@@ -240,13 +240,13 @@ fu! flux#endl(...) abort "{
   endif
 
 endfu "}
-fu! flux#list(...) abort "{
+fu! arbo#list(...) abort "{
 
   let objc = get(a:,1,s:conf)
 
   if type(objc)==type({})
     if has_key(objc,'body')
-      let objc.list = flux#list(objc.body)
+      let objc.list = arbo#list(objc.body)
       let objc.leng = len(objc.list)
     endif
   endif
@@ -254,20 +254,20 @@ fu! flux#list(...) abort "{
     let body = objc
     let list = []
     for line in body
-      let node = flux#node(line)
+      let node = arbo#node(line)
       call add(list,node)
     endfor
     return list
   endif
 
 endfu "}
-fu! flux#cuts(...) abort "{
+fu! arbo#cuts(...) abort "{
 
   let objc = get(a:,1,s:conf)
 
   if type(objc)==type({})
     if has_key(objc,'list')
-      let objc.list = flux#cuts(objc.list)
+      let objc.list = arbo#cuts(objc.list)
       let objc.leng = len(objc.list)
     endif
   endif
@@ -294,7 +294,7 @@ fu! flux#cuts(...) abort "{
   endif
 
 endfu "}
-fu! flux#loop(...) abort "{
+fu! arbo#loop(...) abort "{
 
   if has_key(s:conf,'list')
     let indx = 0
@@ -322,8 +322,8 @@ fu! flux#loop(...) abort "{
         let info = empty(node.info.info)?node.info.name:node.info.info
         let name = empty(node.info.info)?'':node.info.name
         let vars = split(info,' ')
-        let vars = flux#list(vars)
-        let vars = flux#cuts(vars)
+        let vars = arbo#list(vars)
+        let vars = arbo#cuts(vars)
         for node in vars "{
           if node.cuts==1|continue|endif
           if node.cuts>=2|  break |endif
@@ -349,7 +349,7 @@ fu! flux#loop(...) abort "{
   endif
 
 endfu "}
-fu! flux#home(...) abort "{
+fu! arbo#home(...) abort "{
 
   if has_key(s:conf,'list')&&get(s:conf,'home')
     let indx = 0
@@ -370,12 +370,12 @@ fu! flux#home(...) abort "{
   endif
 
 endfu "}
-fu! flux#vars(...) abort "{
+fu! arbo#vars(...) abort "{
 
 endfu "}
 
 "-- auxy functions --
-fu! flux#node(...) abort "{
+fu! arbo#node(...) abort "{
 
   let line = get(a:000,0,'')
   let line = ['',line][type(line)==type('')]
@@ -414,7 +414,7 @@ fu! flux#node(...) abort "{
   return node
 
 endfu "}
-fu! flux#find(...) abort "{
+fu! arbo#find(...) abort "{
 
   if !exists('a:1')|return -1|endif
   if !exists('a:2')|return -1|endif
@@ -435,7 +435,7 @@ fu! flux#find(...) abort "{
   return -1
 
 endfu "}
-fu! flux#show(...) abort "{
+fu! arbo#show(...) abort "{
 
   let root = get(a:000,0,{})
   let step = get(a:000,1, 0)
@@ -460,22 +460,22 @@ fu! flux#show(...) abort "{
     echon tabs keyw..' '..name..' : '..info..' ' get(node,'meta','')
     echon "\n"
     if has_key(node,'list')
-      call flux#show(node,step+2)
+      call arbo#show(node,step+2)
     endif
   endfor
 
 endfu "}
-fu! flux#argv(...) abort "{
+fu! arbo#argv(...) abort "{
   let argv = get(a:000,0,{})
   if type(argv)==type([])
     if len(argv)>1
       return argv
     endif
-    return flux#argv(get(argv,0,{}))
+    return arbo#argv(get(argv,0,{}))
   endif
   return argv
 endfu "}
-fu! flux#seek(...) abort "{
+fu! arbo#seek(...) abort "{
 
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
@@ -489,9 +489,10 @@ fu! flux#seek(...) abort "{
   if has_key(root,'list')&&root.meta.leng
     let indx = root.meta.indx
     let leng = root.meta.leng
-    return flux#seek(root.list[indx%leng],type,code)
+    return arbo#seek(root.list[indx%leng],type,code)
   endif
   return {}
 
 endfu "}
+
 

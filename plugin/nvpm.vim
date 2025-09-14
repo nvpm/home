@@ -29,7 +29,7 @@ endif "}
 if g:nvpm.autocmds
   augroup NVPM
     au!
-    au! BufEnter *.flux set ft=flux
+    au! BufEnter *.arbo set ft=arbo
     if g:nvpm.initload
       au! VimLeavePre * call nvpm#save()
     endif

@@ -5,27 +5,27 @@
 
 "}
 " plug {
-fu! s:test.flux(...) "{
+fu! s:test.arbo(...) "{
 
-  so autoload/flux.vim
-  "so syntax/flux.vim
+  so autoload/arbo.vim
+  "so syntax/arbo.vim
 
   let conf = {}
 
-  let conf.file = 'test/flux/case.flux'
+  let conf.file = 'test/arbo/case.arbo'
   let conf.home = 1
   let conf.fixt = 1
 
   let conf.lexicon = ',workspace,tab,file buffer'
 
-  let flux = flux#flux(conf)
-  echo string(flux)
+  let arbo = arbo#arbo(conf)
+  echo string(arbo)
   return
-  let expt = s:test.eval('test/flux/case.expt')
+  let expt = s:test.eval('test/arbo/case.expt')
 
-  echon "test/flux: "
-  let diff = flux!=?expt
-  if diff|call self.fail()|call flux#show(flux)|return 1|endif
+  echon "test/arbo: "
+  let diff = arbo!=?expt
+  if diff|call self.fail()|call arbo#show(arbo)|return 1|endif
   call self.pass()
 
 endfu "}
@@ -125,7 +125,7 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.flux()|endif
+if 0|call s:test.arbo()|endif
 if 0|call s:test.nvpm()|endif
 if 1|call s:test.zoom()|endif
 if 0|call s:test.line()|endif

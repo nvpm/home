@@ -1,7 +1,7 @@
 |bugs|
   ● [bug] jump non-existing node ~
     When a node doesn't exists, and user tries to jump between that node type, 
-    and error is displayed regarding the 'meta' field in the flux data 
+    and error is displayed regarding the 'meta' field in the arbo data 
     structure. 
     ------------------------------
     Error detected while processing function nvpm#user[53]..nvpm#jump:

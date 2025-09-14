@@ -1,16 +1,12 @@
 
-  ● change names of plugins flux->arbo and arbo->nvpm ~
-    arbo->nvpm done!
-
-
-  ● flux: change feature name cuts -> trim ~
-  ● separate fluxconf into individual variables ~
+  ● arbo: change feature name cuts -> trim ~
+  ● separate arboconf into individual variables ~
   ● deal with conf/menu.vim  ~
   ● init gith plugin ~
   ● init seng plugin ~
   ● init iris plugin ~
   ● cont text plugin ~
   ● cont nvpm plugin ~
-  ● remove flux#argv. It's confusing & unnecessary ~
+  ● remove arbo#argv. It's confusing & unnecessary ~
 
 vim: ft=help: tw=2

@@ -1,16 +1,16 @@
 
-  ● redo flux#fixt ~
+  ● redo arbo#fixt ~
   ● add a current markers for node ~
     ● if for example a list of files like
 
-    ----------- example.flux ---------------
+    ----------- example.arbo ---------------
       file a.txt
      >file b.txt # will be shown 1st
       file c.txt
       file d.txt
     ----------------------------------------
 
-  ● make flux remember flux file structure ~
+  ● make arbo remember arbo file structure ~
     ● save comments, block-brackets,tabs, and the
       positions of the blank lines.
 
@@ -19,17 +19,17 @@
       file itself. Then, on leaving nvim, this DS would be saved
 
   ● skel feature ~
-  ● flux#flux accepts a conf.dir in the place of conf.file ~
+  ● arbo#arbo accepts a conf.dir in the place of conf.file ~
   ● var-replace ~
   ● folder expr for non-leaf nodes ~
     ● for example:
-      ----------- test.flux -----------
+      ----------- test.arbo -----------
         tab code: lib/*.c
         tab head: lib/*.h
       ---------------------------------
       This should expand to all files inside lib/ folder
       according to the built-in expand() function
 
-  ● flux#node info field made of multiple ':' splits (make it a list) ~
+  ● arbo#node info field made of multiple ':' splits (make it a list) ~
 
 vim: ft=help: tw=2

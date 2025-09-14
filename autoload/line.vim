@@ -42,8 +42,8 @@ fu! line#init(...) abort "{
   let g:line.modeinfo.terminal = 'terminal'
 
   if !has_key(g:line,'leaftype')
-    if exists('g:nvpm.flux.leaftype')
-      let g:line.leaftype = g:nvpm.flux.leaftype
+    if exists('g:nvpm.arbo.leaftype')
+      let g:line.leaftype = g:nvpm.arbo.leaftype
     else
       let g:line.leaftype = 4
     endif
@@ -166,7 +166,7 @@ fu! line#atom(...) abort "{
         let name = g:nvpm.root.list[g:nvpm.root.meta.indx].file
         let name = fnamemodify(name,':t')
       else
-        let node = flux#seek(g:nvpm.root,type)
+        let node = arbo#seek(g:nvpm.root,type)
         if has_key(node,'meta')&&has_key(node,'list')
           let node = node.list[node.meta.indx]
           if has_key(node,'info')
@@ -197,7 +197,7 @@ fu! line#atom(...) abort "{
     let indx = 0
 
     if g:line.nvpm   "{
-      let node = flux#seek(g:nvpm.root,type)
+      let node = arbo#seek(g:nvpm.root,type)
       if has_key(node,'meta')
         let indx = node.meta.indx
         let leng = node.meta.leng

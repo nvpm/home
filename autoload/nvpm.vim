@@ -14,21 +14,21 @@ fu! nvpm#init(...) abort "{
   let g:nvpm.filetree = get(g:nvpm,'filetree',0)
   let g:nvpm.savebufs = get(g:nvpm,'savebufs',0)&&g:nvpm.initload
 
-  let g:nvpm.flux = {}
+  let g:nvpm.arbo = {}
   if has_key(g:nvpm,'lexicon')
-    let g:nvpm.flux.lexicon = g:nvpm.lexicon
+    let g:nvpm.arbo.lexicon = g:nvpm.lexicon
   else
-    let g:nvpm.flux.lexicon  = ''
-    let g:nvpm.flux.lexicon .= ',project proj scheme layout book'
-    let g:nvpm.flux.lexicon .= ',workspace arch archive architecture section'
-    let g:nvpm.flux.lexicon .= ',tab folder fold shelf package pack chapter'
-    let g:nvpm.flux.lexicon .= ',file buff buffer path entry node leaf page'
+    let g:nvpm.arbo.lexicon  = ''
+    let g:nvpm.arbo.lexicon .= ',project proj scheme layout book'
+    let g:nvpm.arbo.lexicon .= ',workspace arch archive architecture section'
+    let g:nvpm.arbo.lexicon .= ',tab folder fold shelf package pack chapter'
+    let g:nvpm.arbo.lexicon .= ',file buff buffer path entry node leaf page'
   endif
-  " these will be gone once the flux synx var is implemented
-  let g:nvpm.flux.fixt  = 1
-  let g:nvpm.flux.home  = 1
-  let g:nvpm.flux.file  = ''
-  call flux#conf(g:nvpm.flux)
+  " these will be gone once the arbo synx var is implemented
+  let g:nvpm.arbo.fixt  = 1
+  let g:nvpm.arbo.home  = 1
+  let g:nvpm.arbo.file  = ''
+  call arbo#conf(g:nvpm.arbo)
 
   let g:nvpm.mode = 0
   let g:nvpm.term = ''
@@ -38,15 +38,15 @@ fu! nvpm#init(...) abort "{
 
   let g:nvpm.file = {}
   let g:nvpm.file.root = '.nvpm/nvpm/'
-  let g:nvpm.file.flux = g:nvpm.file.root..'flux/'
+  let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
   let g:nvpm.file.edit = g:nvpm.file.root..'edit'
   let g:nvpm.file.save = g:nvpm.file.root..'save'
 
   if !argc()&&g:nvpm.initload
     let g:nvpm.initload = abs(g:nvpm.initload)
     if filereadable(g:nvpm.file.save)
-      let flux = get(readfile(g:nvpm.file.save),0,'')
-      let root = eval(flux)
+      let arbo = get(readfile(g:nvpm.file.save),0,'')
+      let root = eval(arbo)
       if type(root)!=4
         call delete(g:nvpm.file.save)
         return
@@ -91,8 +91,8 @@ fu! nvpm#grow(...) abort "{
   let file = a:1
 
   if empty(file)||!filereadable(file)|return 1|else
-    let g:nvpm.flux.file = file
-    let root = flux#flux(g:nvpm.flux)
+    let g:nvpm.arbo.file = file
+    let root = arbo#arbo(g:nvpm.arbo)
     if empty(root)||empty(get(root,'list'))|return 2|endif
     let indx = nvpm#find(file)
     if 1+indx
@@ -135,26 +135,26 @@ fu! nvpm#jump(...) abort "{
 
   if g:nvpm.mode
     " leaves trim mode on non-leaf jumps
-    if g:nvpm.mode==2&&type<g:nvpm.flux.leaftype
+    if g:nvpm.mode==2&&type<g:nvpm.arbo.leaftype
       wall
       call nvpm#trim()
       return
     endif
     if g:nvpm.root.curr==bufname()
-      let meta = flux#seek(g:nvpm.root,type).meta
+      let meta = arbo#seek(g:nvpm.root,type).meta
       call nvpm#indx(meta,meta.indx+step)
     endif
     " performs the JumpBack WorkFlow
     call nvpm#curr()
     call nvpm#rend()
   else
-    if type == g:nvpm.flux.leaftype
+    if type == g:nvpm.arbo.leaftype
       if step < 0
         exe '::.,.+'.(v:count1-1).'bprev'
       else
         exe '::.,.+'.(v:count1-1).'bnext'
       endif
-    elseif type == g:nvpm.flux.leaftype-1
+    elseif type == g:nvpm.arbo.leaftype-1
       if step < 0
         exe '::.,.+'.(v:count1-1).'tabprev'
       else
@@ -166,7 +166,7 @@ fu! nvpm#jump(...) abort "{
 endfu "}
 fu! nvpm#trim(...) abort "{
 
-  if !isdirectory('.nvpm')||!isdirectory(g:nvpm.file.flux)
+  if !isdirectory('.nvpm')||!isdirectory(g:nvpm.file.arbo)
     return 1
   endif
 
@@ -174,7 +174,7 @@ fu! nvpm#trim(...) abort "{
     let pick = bufname()
     if nvpm#grow(pick)
       echohl WarningMsg
-      echo  'NvpmJump: the flux file "'.pick.'" is invalid. Aborting...'
+      echo  'NvpmJump: the arbo file "'.pick.'" is invalid. Aborting...'
       echohl None
       return 1
     else
@@ -188,28 +188,28 @@ fu! nvpm#trim(...) abort "{
     return
   endif
 
-  let fluxes = readdir(g:nvpm.file.flux)
+  let arbos = readdir(g:nvpm.file.arbo)
   let body   = []
-  for file in fluxes
-    let file = g:nvpm.file.flux..file
+  for file in arbos
+    let file = g:nvpm.file.arbo..file
     let line = 'file '..fnamemodify(file,':t:r')..':'..file
     call add(body,line)
   endfor
 
-  let flux = ''
+  let arbo = ''
   if !empty(g:nvpm.root.list)
-    let flux = g:nvpm.root.list[g:nvpm.root.meta.indx].file
+    let arbo = g:nvpm.root.list[g:nvpm.root.meta.indx].file
   endif
 
   call writefile(body,g:nvpm.file.edit)
   call nvpm#grow(g:nvpm.file.edit)
   let g:nvpm.mode = 2
 
-  if !empty(flux)
-    let node = flux#seek(g:nvpm.root,g:nvpm.flux.leaftype)
+  if !empty(arbo)
+    let node = arbo#seek(g:nvpm.root,g:nvpm.arbo.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
-      if leaf.info.info == flux
+      if leaf.info.info == arbo
         let node.meta.indx = indx
         break
       endif
@@ -224,7 +224,7 @@ fu! nvpm#make(...) abort "{
   let name = get(a:000,0,'')
 
   let lines = ''
-  let lines.= '# nvpm new flux file,'
+  let lines.= '# nvpm new arbo file,'
   let lines.= '# ------------------,'
   let lines.= '#,'
   let lines.= '# --> '..name..','
@@ -255,8 +255,8 @@ fu! nvpm#find(...) abort "{
   let root = get(a:,2,g:nvpm.root)
 
   let indx = 0
-  for flux in root.list
-    if file==flux.file|return indx|endif
+  for arbo in root.list
+    if file==arbo.file|return indx|endif
     let indx+=1
   endfor
   return -1
@@ -269,7 +269,7 @@ fu! nvpm#curr(...) abort "{
 
   if empty(root)||empty(list)|return 1|endif
 
-  let node = flux#seek(root,g:nvpm.flux.leaftype)
+  let node = arbo#seek(root,g:nvpm.arbo.leaftype)
   if empty(node)|return 1|endif
   let curr = node.list[node.meta.indx].info.info
   if empty(curr)|return 1|endif
@@ -285,8 +285,8 @@ fu! nvpm#rend(...) abort "{
 
   exe 'edit '.curr
 
-  if (curr=~'^.*\.flux$'||head==g:nvpm.file.flux)&&&l:ft!='flux'
-    setl filetype=flux
+  if (curr=~'^.*\.arbo$'||head==g:nvpm.file.arbo)&&&l:ft!='arbo'
+    setl filetype=arbo
     setl commentstring=-%s
   endif
   if g:nvpm.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
@@ -308,8 +308,8 @@ fu! nvpm#show(...) abort "{
   for key in keys(g:nvpm)
     if key=='root'
       echo 'root :' g:nvpm.root.meta
-      for flux in g:nvpm.root.list
-        echo '  '..flux.file
+      for arbo in g:nvpm.root.list
+        echo '  '..arbo.file
       endfor
       continue
     endif
@@ -355,22 +355,22 @@ fu! nvpm#user(...) abort "{
     let cmdline = trim(a:000[1])
     if cmdline=~'\CNvpmFell'
       let list = []
-      for flux in g:nvpm.root.list
-        if flux.file==g:nvpm.file.edit|continue|endif
-        call add(list,flux.file)
+      for arbo in g:nvpm.root.list
+        if arbo.file==g:nvpm.file.edit|continue|endif
+        call add(list,arbo.file)
       endfor
       return list
     endif
     if cmdline=~'\CNvpmJump'
       let list = []
-      for i in range(g:nvpm.flux.leaftype+1)
+      for i in range(g:nvpm.arbo.leaftype+1)
         call add(list,'+'..i)
         call add(list,'-'..i)
       endfor
       return list
     endif
     if cmdline=~'\CNvpmGrow'
-      let files = readdir(g:nvpm.file.flux)
+      let files = readdir(g:nvpm.file.arbo)
       return files
     endif
     return []
@@ -395,7 +395,7 @@ fu! nvpm#user(...) abort "{
     let step = v:count1 * [+1,-1][user[1]=='-']
     let type = user[2]
     let type+= 0 "type cast into an integer
-    if type<0||type>g:nvpm.flux.leaftype
+    if type<0||type>g:nvpm.arbo.leaftype
       echohl WarningMsg
       echo  'NvpmJump: the entry "'.args.'" is out of bounds'
       echohl None
@@ -411,11 +411,11 @@ fu! nvpm#user(...) abort "{
       echohl None
       return 1
     endif
-    let file = g:nvpm.file.flux..args
+    let file = g:nvpm.file.arbo..args
     if isdirectory(file)
-      let fluxes = readdir(file)
-      for flux in fluxes
-        call nvpm#grow(simplify(file.'/'.flux))
+      let arbos = readdir(file)
+      for arbo in arbos
+        call nvpm#grow(simplify(file.'/'.arbo))
       endfor
     else
       call nvpm#grow(file)
@@ -436,15 +436,15 @@ fu! nvpm#user(...) abort "{
     if empty(args)
       return 1
     endif
-    call mkdir(g:nvpm.file.flux,'p')
-    let flux = g:nvpm.file.flux..args
-    if filereadable(flux)
+    call mkdir(g:nvpm.file.arbo,'p')
+    let arbo = g:nvpm.file.arbo..args
+    if filereadable(arbo)
       echohl WarningMsg
-      echo 'NvpmMake: flux file ['.args.'] exists. Choose another name!'
+      echo 'NvpmMake: arbo file ['.args.'] exists. Choose another name!'
       echohl None
       return 1
     endif
-    let args = flux
+    let args = arbo
   endif "}
 
   call nvpm#{func}(args)

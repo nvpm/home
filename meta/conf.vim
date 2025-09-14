@@ -52,7 +52,7 @@ let nvpm.filetree = 1
 let nvpm.savebufs = 0
 let nvpm.lexicon  = 'project,workspace,tab,file'
 
-hi fluxvars guifg=#00ff00 gui=bold
+hi arbovars guifg=#00ff00 gui=bold
 
 nmap <silent><space>   :NvpmJump +4<cr>
 nmap <silent>m<space>  :NvpmJump -4<cr>

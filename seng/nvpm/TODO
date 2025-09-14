@@ -1,10 +1,10 @@
 
-  ● GLOBAL FLUX DIRECTORY ~
-  ● LOAD A FLUX FILE FROM ANYWHERE ~
-  ● SPECIAL KEY-MAPS TO HELP EDIT FLUX FILES ~
+  ● GLOBAL ARBO DIRECTORY ~
+  ● LOAD A ARBO FILE FROM ANYWHERE ~
+  ● SPECIAL KEY-MAPS TO HELP EDIT ARBO FILES ~
   ● SPLITS ~
   ● NODE FINDER ~
-  ● LOVED FLUX FILES ~
+  ● LOVED ARBO FILES ~
   ● NVPM MENU ~
   ● NVPM INFO ~
   ● SEVERAL WILD TERMINALS ~
@@ -12,7 +12,7 @@
   ● float windows for edit mode nd terminal ~
     ● nvim only
   ● remake the term keyword support  ~
-  ● develop global flux files and skelletons  ~
-    ● needs flux#skel() method first
+  ● develop global arbo files and skelletons  ~
+    ● needs arbo#skel() method first
 
 vim: ft=help: tw=2
