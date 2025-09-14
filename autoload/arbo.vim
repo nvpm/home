@@ -30,7 +30,7 @@ fu! arbo#data(...) abort "{
 
   let tree.file = s:conf.file
 
-  "if get(s:conf,'fixt',0)|call arbo#fixt(tree,s:conf)|endif
+  if get(s:conf,'fixt',0)|call arbo#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
@@ -63,6 +63,7 @@ fu! arbo#fixt(...) abort "{
         let minkeyw = node.info.keyw
       endif
     endfor
+
     let indx = 0
     let list = []
     let node = root.list[indx]

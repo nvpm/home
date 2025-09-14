@@ -1,9 +1,31 @@
+# from here it requires fixtree feature twice
+    file main: main.c   # main routine
+    file make: makefile
 
-year 1912
-  event titanic
-year 1914
-  event 1st ww
-year 1939
-  event 2nd ww
-year 2001
-  event WTC NY
+  loop logic -math physics
+  tab $_:src,file $_.c,file $_.h
+  endl
+
+  -
+  loop string file --ui window misc
+  tab $_:src,file $_.c,file $_.h
+  endl
+
+-------------
+WORKSPACE meta {
+    file read:README.md
+    file clog:changelog
+  tab bin: bin
+    file install.sh
+   -file uninstall.sh
+    file deploy.sh
+}
+WORKSPACE {
+  file user: user.txt
+  file dev : developer.txt
+  file api : api.txt
+}
+
+#leafless tree dies!
+workspace,tab
+

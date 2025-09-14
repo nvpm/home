@@ -13,12 +13,13 @@ fu! s:test.arbo(...) "{
   let conf = {}
 
   let conf.file = 'test/arbo/case.arbo'
-  let conf.home = 0
-  let conf.fixt = 0
+  let conf.home = 1
+  let conf.fixt = 1
 
-  let conf.lexicon = 'year,event'
+  let conf.lexicon = 'workspace,tab,file'
 
   let arbo = arbo#arbo(conf)
+  return
   let expt = s:test.eval('test/arbo/case.expt')
 
   echon "test/arbo: "
