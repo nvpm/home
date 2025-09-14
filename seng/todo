@@ -1,5 +1,7 @@
 
   ● change names of plugins flux->arbo and arbo->nvpm ~
+    arbo->nvpm done!
+
 
   ● flux: change feature name cuts -> trim ~
   ● separate fluxconf into individual variables ~

@@ -98,8 +98,8 @@ fu! s:main()
 " lexis {
 
 let lexis = []
-if exists('g:arbo.flux.lexicon')
-  let lexis = g:arbo.flux.lexicon
+if exists('g:nvpm.flux.lexicon')
+  let lexis = g:nvpm.flux.lexicon
 endif
 
 " }

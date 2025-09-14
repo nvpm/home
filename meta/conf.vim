@@ -39,51 +39,51 @@ hi clear Visual      |hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=
 hi clear NonText     |hi NonText     ctermfg=0 guifg=#555555
 
 "}
-" arbo {
+" nvpm {
 
 if !has('nvim')
   set hidden
 endif
 
-let arbo = {}
-let arbo.initload = 1
-let arbo.autocmds = 1
-let arbo.filetree = 1
-let arbo.savebufs = 0
-let arbo.lexicon  = 'project,workspace,tab,file'
+let nvpm = {}
+let nvpm.initload = 1
+let nvpm.autocmds = 1
+let nvpm.filetree = 1
+let nvpm.savebufs = 0
+let nvpm.lexicon  = 'project,workspace,tab,file'
 
 hi fluxvars guifg=#00ff00 gui=bold
 
-nmap <silent><space>   :ArboJump +4<cr>
-nmap <silent>m<space>  :ArboJump -4<cr>
-nmap <silent><tab>     :ArboJump +3<cr>
-nmap <silent>m<tab>    :ArboJump -3<cr>
-nmap <silent><BS>      :ArboJump +2<cr>
-nmap <silent><DEL>     :ArboJump -2<cr>
-nmap <silent><C-p>     :ArboJump -2<cr>
-nmap <silent><C-n>     :ArboJump +2<cr>
-nmap <silent><C-i>     :ArboJump -1<cr>
-nmap <silent><C-o>     :ArboJump -1<cr>
-nmap <silent><C-Space> :ArboJump +1<cr>
-nmap <silent>=         :ArboJump +0<cr>
-nmap <silent>-         :ArboJump -0<cr>
+nmap <silent><space>   :NvpmJump +4<cr>
+nmap <silent>m<space>  :NvpmJump -4<cr>
+nmap <silent><tab>     :NvpmJump +3<cr>
+nmap <silent>m<tab>    :NvpmJump -3<cr>
+nmap <silent><BS>      :NvpmJump +2<cr>
+nmap <silent><DEL>     :NvpmJump -2<cr>
+nmap <silent><C-p>     :NvpmJump -2<cr>
+nmap <silent><C-n>     :NvpmJump +2<cr>
+nmap <silent><C-i>     :NvpmJump -1<cr>
+nmap <silent><C-o>     :NvpmJump -1<cr>
+nmap <silent><C-Space> :NvpmJump +1<cr>
+nmap <silent>=         :NvpmJump +0<cr>
+nmap <silent>-         :NvpmJump -0<cr>
 
-nmap <F8>  <esc>:ArboGrow<space>
-imap <F8>  <esc>:ArboGrow<space>
-cmap <F8>  <esc>:ArboGrow<space>
-nmap <F9>  <esc>:ArboFell<space>
-imap <F9>  <esc>:ArboFell<space>
-cmap <F9>  <esc>:ArboFell<space>
-nmap <F10> <esc>:ArboMake<space>
-imap <F10> <esc>:ArboMake<space>
-cmap <F10> <esc>:ArboMake<space>
-nmap <silent><F12> <esc>:wall<cr>:ArboJump<cr>
-imap <silent><F12> <esc>:wall<cr>:ArboJump<cr>
-cmap <silent><F12> <esc>:wall<cr>:ArboJump<cr>
+nmap <F8>  <esc>:NvpmGrow<space>
+imap <F8>  <esc>:NvpmGrow<space>
+cmap <F8>  <esc>:NvpmGrow<space>
+nmap <F9>  <esc>:NvpmFell<space>
+imap <F9>  <esc>:NvpmFell<space>
+cmap <F9>  <esc>:NvpmFell<space>
+nmap <F10> <esc>:NvpmMake<space>
+imap <F10> <esc>:NvpmMake<space>
+cmap <F10> <esc>:NvpmMake<space>
+nmap <silent><F12> <esc>:wall<cr>:NvpmJump<cr>
+imap <silent><F12> <esc>:wall<cr>:NvpmJump<cr>
+cmap <silent><F12> <esc>:wall<cr>:NvpmJump<cr>
 if !has('nvim')
-  nmap <silent>mt <esc>:wall<cr>:ArboTerm<cr>
+  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
 else
-  nmap <silent>mt <esc>:wall<cr>:ArboTerm<cr>:startinsert<cr>
+  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>:startinsert<cr>
 endif
 
 "}

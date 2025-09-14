@@ -20,7 +20,7 @@ fu! zoom#init(...) abort "{
 
   let g:zoom.mode   = 0
   let g:zoom.line   = exists('g:_LINEAUTO_')
-  let g:zoom.arbo   = exists('g:_ARBOAUTO_')
+  let g:zoom.nvpm   = exists('g:_NVPMAUTO_')
   let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0  }
   let g:zoom.pads   = #{}
   let g:zoom.pads.l = '.nvpm/zoom/l'
@@ -153,7 +153,7 @@ fu! zoom#show(...) abort "{
     call line#draw()
   endif
 
-  if !g:zoom.keepline||(g:zoom.arbo&&!g:arbo.mode)
+  if !g:zoom.keepline||(g:zoom.nvpm&&!g:nvpm.mode)
     set statusline=
     set tabline=
     set showtabline=0
@@ -183,7 +183,7 @@ fu! zoom#hide(...) abort "{
 
   let &cmdheight = g:zoom.cmdh
   let &fillchars = g:zoom.fill
-  if !g:zoom.keepline||(g:zoom.arbo&&!g:arbo.mode)
+  if !g:zoom.keepline||(g:zoom.nvpm&&!g:nvpm.mode)
     let &showtabline = g:zoom.topl
     let &laststatus  = g:zoom.botl
   endif

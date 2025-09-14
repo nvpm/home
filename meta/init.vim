@@ -29,11 +29,11 @@ fu! s:test.flux(...) "{
   call self.pass()
 
 endfu "}
-fu! s:test.arbo(...) "{
+fu! s:test.nvpm(...) "{
 
   "so meta/conf.vim
-  "so autoload/arbo.vim
-  "so plugin/arbo.vim
+  "so autoload/nvpm.vim
+  "so plugin/nvpm.vim
 
 
 endfu "}
@@ -126,7 +126,7 @@ endfu "}
 " exec {
 
 if 0|call s:test.flux()|endif
-if 0|call s:test.arbo()|endif
+if 0|call s:test.nvpm()|endif
 if 1|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 

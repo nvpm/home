@@ -65,7 +65,7 @@ The following is a general form of each valid line of a flux file.
 And the best way to explain the usage is with a practical example. Say we want
 to describe the placement of files in a project. For the sake of this example,
 let's consider a simple C project, with 3 files, say: main.c, main.h, and
-Makefile. In this case, a valid flux file used by the |arbo| plugin is:
+Makefile. In this case, a valid flux file used by the |nvpm| plugin is:
 
             - project.flux  -
 	   ╭───────────────────────╮
@@ -75,7 +75,7 @@ Makefile. In this case, a valid flux file used by the |arbo| plugin is:
 	   ╰───────────────────────╯
 
 in this case the file 'Makefile' was given a name (make). This will be useful
-for the visual feedback of the |arbo| plugin, and possibly others too. It's
+for the visual feedback of the |nvpm| plugin, and possibly others too. It's
 also important to notice that the Makefile entry has a '-' modifier. More on
 that later.
 
@@ -156,7 +156,7 @@ The following are valid forms for the lexicon key:
 Note: The only reason why the lexicon field exists is to avoid writing a spell
 checker for the language. This way any words that don't belong or even typos
 will simply be ignored without giving an error message. This behaviour becomes
-clearer when using the |arbo| plugin.
+clearer when using the |nvpm| plugin.
 
 To further explain the syntax,
 
@@ -412,7 +412,7 @@ a C library project with the following file structure:
       └── ui.h
 
 in this case, the directory "src" and its files offer a unique pattern that
-can be exploited when writing a flux file used by the arbo plugin. The
+can be exploited when writing a flux file used by the nvpm plugin. The
 uniqueness rests upon the fact that, since it's a C library project, all the
 modules will/should be written in files named "<module>.c" for the code, and
 "<module>.h" for the header macros anc such. As the modules increase in number
@@ -454,7 +454,7 @@ values in the list, and whenever the iterator name is found in the loop's
 body, it's replaced by the current value of the iteration.
 
 Considering the C library project mentioned, and its file structure, in the
-context of the nvpm arbo plugin, the following could be a valid example of a
+context of the nvpm nvpm plugin, the following could be a valid example of a
 flux file to be used, when loop is concerned:
 
          	       	   FILE STRUCTURE

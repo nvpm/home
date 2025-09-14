@@ -23,7 +23,7 @@ fu! line#init(...) abort "{
   let g:line.boneedge = split(g:line.boneedge,',',1)
 
   let g:line.mode = 1
-  let g:line.arbo = 0
+  let g:line.nvpm = 0
   let g:line.zoom = 0
 
   call line#save()
@@ -42,8 +42,8 @@ fu! line#init(...) abort "{
   let g:line.modeinfo.terminal = 'terminal'
 
   if !has_key(g:line,'leaftype')
-    if exists('g:arbo.flux.leaftype')
-      let g:line.leaftype = g:arbo.flux.leaftype
+    if exists('g:nvpm.flux.leaftype')
+      let g:line.leaftype = g:nvpm.flux.leaftype
     else
       let g:line.leaftype = 4
     endif
@@ -134,7 +134,7 @@ fu! line#pack(...) abort "{
 
   for indx in range(leng)
     let item = list[indx]
-    let info = g:line.arbo?eval('item.info.name'):fnamemodify(item,':t:r')
+    let info = g:line.nvpm?eval('item.info.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     if indx==curr
       let info = g:line.curredge[0]..info..g:line.curredge[1]
@@ -161,15 +161,15 @@ fu! line#atom(...) abort "{
     if !len(args)|return ''|endif
     let type = args[0]
     let name = ''
-    if g:line.arbo "{
+    if g:line.nvpm "{
       if type==0
-        let name = g:arbo.root.list[g:arbo.root.meta.indx].file
+        let name = g:nvpm.root.list[g:nvpm.root.meta.indx].file
         let name = fnamemodify(name,':t')
       else
-        let node = flux#seek(g:arbo.root,type)
+        let node = flux#seek(g:nvpm.root,type)
         if has_key(node,'meta')&&has_key(node,'list')
           let node = node.list[node.meta.indx]
-          if has_key(node,'data')
+          if has_key(node,'info')
             let name = node.info.name
           endif
         endif
@@ -196,8 +196,8 @@ fu! line#atom(...) abort "{
     let leng = 0
     let indx = 0
 
-    if g:line.arbo   "{
-      let node = flux#seek(g:arbo.root,type)
+    if g:line.nvpm   "{
+      let node = flux#seek(g:nvpm.root,type)
       if has_key(node,'meta')
         let indx = node.meta.indx
         let leng = node.meta.leng
@@ -406,7 +406,7 @@ fu! line#show(...) abort "{
 
   call line#giti()
 
-  if g:line.arbo
+  if g:line.nvpm
     set showtabline=2
     let &laststatus=2+s:nvim
   else
