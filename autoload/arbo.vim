@@ -11,7 +11,7 @@ fu! arbo#arbo(...) abort "{
 
   call arbo#conf()
   call arbo#read()
-  call arbo#trim()
+  call arbo#comm()
   call arbo#endl()
   call arbo#list()
   call arbo#cuts()
@@ -206,7 +206,7 @@ fu! arbo#read(...) abort "{
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! arbo#trim(...) abort "{
+fu! arbo#comm(...) abort "{
 
   if has_key(s:conf,'body')
     let comm = '\c\s*[#{}].*'
