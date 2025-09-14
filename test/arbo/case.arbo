@@ -1,42 +1,9 @@
 
-workspace code {        
-  tab root              
-    file main.c         
-  tab lib : src         
-    buffer lib.c        
-    buffer lib.h        
-}                       
-workspace meta = meta { 
-  buffer install.sh     
-  buffer uninstall.sh   
-}                       
----
-HOME libm
-
-# a leafless tree dies!
-fold,pack,--,file,file
-
-  Folder root
-    File main.c
-    File Makefile
-    entry config # this should be ignored (not in conf)
-
-loop complex matrix -- number binary hexa string file {
-  TAB $_:lib
-    File $_.c
-    File $_.h
-endl }
-  
-Archive meta {
-  Folder root@..
-    File readme.txt
-    --
-    File license
-    File version
-
-  Folder scripts@../scripts
-    File init.sh
-    --
-    File ~/makefile.mk
-    File trash.sh
-}
+year 1912
+  event titanic
+year 1914
+  event 1st ww
+year 1939
+  event 2nd ww
+year 2001
+  event WTC NY

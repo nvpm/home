@@ -3,14 +3,11 @@
     workspace ɸ arbo {
       tab  code
         file auto : autoload/arbo.vim
-        file synx :   syntax/arbo.vim
+       -file synx :   syntax/arbo.vim
         file init = meta/init.vim
       tab  test = test/arbo
         file case : case.arbo
         file expt : case.expt
-      tab 🯅 seng = seng/arbo
-        file TODO     
-        file Issues   
     }
     workspace  nvpm {
       tab  code
@@ -38,9 +35,6 @@
       tab  test = test/zoom
         file case : case.arbo
         file expt : case.expt
-      tab 🯅 seng = seng/zoom
-        file TODO     
-        file Issues   
     }
     --
     workspace Ⲅ text {
@@ -48,9 +42,6 @@
         file auto : autoload/text.vim
         file plug : plugin/text.vim
         file init = meta/init.vim
-      tab 🯅 seng = seng/text
-        file TODO     
-        file Issues   
     }
   }
   project   meta {
@@ -65,6 +56,7 @@
       file libc = /iasj/snip/tuto/libc.txt
       file btin : builtin.txt
   }
+  ---
   project   help {
     workspace ɸ arbo {
         file  help : doc/arbo.txt

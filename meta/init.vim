@@ -1,7 +1,7 @@
 " meta/init.vim
 " init {
 
-
+let s:test = {}                                                                 
 
 "}
 " plug {
@@ -13,14 +13,12 @@ fu! s:test.arbo(...) "{
   let conf = {}
 
   let conf.file = 'test/arbo/case.arbo'
-  let conf.home = 1
-  let conf.fixt = 1
+  let conf.home = 0
+  let conf.fixt = 0
 
-  let conf.lexicon = ',workspace,tab,file buffer'
+  let conf.lexicon = 'year,event'
 
   let arbo = arbo#arbo(conf)
-  echo string(arbo)
-  return
   let expt = s:test.eval('test/arbo/case.expt')
 
   echon "test/arbo: "
@@ -125,9 +123,9 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.arbo()|endif
+if 1|call s:test.arbo()|endif
 if 0|call s:test.nvpm()|endif
-if 1|call s:test.zoom()|endif
+if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 
 "}

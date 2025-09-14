@@ -12,7 +12,7 @@ fu! nvpm#init(...) abort "{
   let g:nvpm.initload = get(g:nvpm,'initload',0)
   let g:nvpm.autocmds = get(g:nvpm,'autocmds',0)
   let g:nvpm.filetree = get(g:nvpm,'filetree',0)
-  let g:nvpm.savebufs = get(g:nvpm,'savebufs',0)&&g:nvpm.initload
+  "let g:nvpm.savebufs = get(g:nvpm,'savebufs',0)&&g:nvpm.initload
 
   let g:nvpm.arbo = {}
   if has_key(g:nvpm,'lexicon')
@@ -52,12 +52,12 @@ fu! nvpm#init(...) abort "{
         return
       endif
       let g:nvpm.root = root
-      if g:nvpm.savebufs
-        call nvpm#rend()
-        for file in g:nvpm.root.bufs
-          exec 'badd '..file
-        endfor
-      endif
+      "if g:nvpm.savebufs
+      "  call nvpm#rend()
+      "  for file in g:nvpm.root.bufs
+      "    exec 'badd '..file
+      "  endfor
+      "endif
       if 1+nvpm#find(g:nvpm.file.edit) 
         call nvpm#fell(g:nvpm.file.edit)
       endif
@@ -323,25 +323,25 @@ fu! nvpm#zero(...) abort "{
   let g:nvpm.root.curr = ''
   let g:nvpm.root.last = ''
   let g:nvpm.root.list = []
-  if g:nvpm.savebufs
-    let g:nvpm.root.bufs = []
-  endif
+  "if g:nvpm.savebufs
+  "  let g:nvpm.root.bufs = []
+  "endif
   let g:nvpm.root.meta = #{leng:0,indx:0,type:0}
 
 endfu "}
 fu! nvpm#save(...) abort "{
 
   if g:nvpm.initload
-    if g:nvpm.savebufs
-      let bool = '!empty(v:val)'
-      let bool.= '&&buflisted(v:val)'
-      let bool.= '&&v:val!~"^.nvpm.*"'
-      let bool.= '&&v:val!~"^.git.*"'
-      let bool.= '&&v:val!~"^term:.*"'
-      let list = map(range(1,bufnr('$')),'bufname(v:val)')
-      let list = filter(list,bool)
-      let g:nvpm.root.bufs = list
-    endif
+    "if g:nvpm.savebufs
+    "  let bool = '!empty(v:val)'
+    "  let bool.= '&&buflisted(v:val)'
+    "  let bool.= '&&v:val!~"^.nvpm.*"'
+    "  let bool.= '&&v:val!~"^.git.*"'
+    "  let bool.= '&&v:val!~"^term:.*"'
+    "  let list = map(range(1,bufnr('$')),'bufname(v:val)')
+    "  let list = filter(list,bool)
+    "  let g:nvpm.root.bufs = list
+    "endif
     call writefile([string(g:nvpm.root)],g:nvpm.file.save)
   endif
 
