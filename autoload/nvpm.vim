@@ -1,11 +1,11 @@
 "-- auto/nvpm.vim  --
 if !exists('NVPMTEST')&&exists('_NVPMAUTO_')|finish|endif
 let _NVPMAUTO_ = 1
-let s:nvim = has('nvim')
-let s:vim  = !s:nvim
+"let s:nvim = has('nvim')
+"let s:vim  = !s:nvim
 
 "-- main functions --
-fu! nvpm#init(...) abort "{
+fu! nvpm#init(...) abort "{ user variables & startup routines
 
   let g:nvpm = get(g:,'nvpm',{})
 
@@ -67,7 +67,7 @@ fu! nvpm#init(...) abort "{
   endif
 
 endfu "}
-fu! nvpm#load(...) abort "{
+fu! nvpm#load(...) abort "{ loading mechanisms (line,zoom,rend,curr,save)
 
   if !g:nvpm.mode|return|endif
   if exists('g:line.mode')&&g:line.mode
@@ -86,7 +86,7 @@ fu! nvpm#load(...) abort "{
   call nvpm#save()
 
 endfu "}
-fu! nvpm#grow(...) abort "{
+fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
 
   let file = a:1
 
@@ -107,7 +107,7 @@ fu! nvpm#grow(...) abort "{
   let g:nvpm.mode = !!g:nvpm.tree.meta.leng
 
 endfu "}
-fu! nvpm#fell(...) abort "{
+fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
 
   if !a:0||empty(a:1)
     call nvpm#zero()
@@ -127,7 +127,7 @@ fu! nvpm#fell(...) abort "{
   call nvpm#load()
 
 endfu "}
-fu! nvpm#jump(...) abort "{
+fu! nvpm#jump(...) abort "{ jumps between nodes
 
   " TODO: make it as such that it jumps to an absolute location too
   let step = a:1
@@ -164,7 +164,7 @@ fu! nvpm#jump(...) abort "{
   endif
 
 endfu "}
-fu! nvpm#trim(...) abort "{
+fu! nvpm#trim(...) abort "{ trim mode routine (soon to be called 'edit mode')
 
   if !isdirectory('.nvpm')||!isdirectory(g:nvpm.file.arbo)
     return 1
@@ -219,7 +219,7 @@ fu! nvpm#trim(...) abort "{
   call nvpm#load()
 
 endfu "}
-fu! nvpm#make(...) abort "{
+fu! nvpm#make(...) abort "{ makes new arbo file and enters trim mode on it
 
   let name = get(a:000,0,'')
 
@@ -235,7 +235,7 @@ fu! nvpm#make(...) abort "{
   call nvpm#trim()
 
 endfu "}
-fu! nvpm#term(...) abort "{
+fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
   if !bufexists(g:nvpm.term)
     terminal
@@ -249,7 +249,7 @@ fu! nvpm#term(...) abort "{
 endfu "}
 
 "-- auxy functions --
-fu! nvpm#find(...) abort "{
+fu! nvpm#find(...) abort "{ looks for a given arbo file in the nvpm tree
 
   let file = a:1
   let root = get(a:,2,g:nvpm.tree)
@@ -262,7 +262,7 @@ fu! nvpm#find(...) abort "{
   return -1
 
 endfu "}
-fu! nvpm#curr(...) abort "{
+fu! nvpm#curr(...) abort "{ calculates the current leaf node in the nvpm tree
 
   let root = g:nvpm.tree
   let list = get(root,'list',[])
@@ -278,7 +278,7 @@ fu! nvpm#curr(...) abort "{
   let g:nvpm.tree.curr = curr
 
 endfu "}
-fu! nvpm#rend(...) abort "{
+fu! nvpm#rend(...) abort "{ renders the current leaf node
 
   let curr = g:nvpm.tree.curr
   let head = fnamemodify(curr,':h')..'/'
@@ -294,7 +294,7 @@ fu! nvpm#rend(...) abort "{
   endif
 
 endfu "} 
-fu! nvpm#indx(...) abort "{
+fu! nvpm#indx(...) abort "{ sets/limits a new index to a given meta field
 
   let meta = a:1
 
@@ -303,7 +303,7 @@ fu! nvpm#indx(...) abort "{
   let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
 
 endfu "}
-fu! nvpm#show(...) abort "{
+fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
 
   for key in keys(g:nvpm)
     if key=='root'
@@ -318,7 +318,7 @@ fu! nvpm#show(...) abort "{
   endfor
 
 endfu "}
-fu! nvpm#zero(...) abort "{
+fu! nvpm#zero(...) abort "{ resets the nvpm tree
 
   let g:nvpm.tree.curr = ''
   let g:nvpm.tree.last = ''
@@ -329,7 +329,7 @@ fu! nvpm#zero(...) abort "{
   let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
 
 endfu "}
-fu! nvpm#save(...) abort "{
+fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
   if g:nvpm.initload
     "if g:nvpm.savebufs
@@ -348,7 +348,7 @@ fu! nvpm#save(...) abort "{
 endfu "}
 
 "-- user function --
-fu! nvpm#user(...) abort "{
+fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
 
   if a:0==3 " user completions {
 

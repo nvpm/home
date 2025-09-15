@@ -1,14 +1,15 @@
 "-- auto/arbo.vim  --
 if !exists('NVPMTEST')&&exists('_ARBOAUTO_')|finish|endif
 let _ARBOAUTO_=1
-let s:nvim = has('nvim')
-let s:vim  = !s:nvim
+"let s:nvim = has('nvim')
+"let s:vim  = !s:nvim
 
 "-- main functions --
-fu! arbo#arbo(...) abort "{
+fu! arbo#arbo(...) abort "{ main arbo routine
 
   if !a:0|return {}|else|let s:conf=arbo#argv(a:000)|endif
 
+  " Note: do not to change this sequence!
   call arbo#conf()
   call arbo#read()
   call arbo#comm()
@@ -20,7 +21,7 @@ fu! arbo#arbo(...) abort "{
   retu arbo#data()
 
 endfu "}
-fu! arbo#data(...) abort "{
+fu! arbo#data(...) abort "{ builds the arbo Data Structure (DS)
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
@@ -44,7 +45,7 @@ fu! arbo#data(...) abort "{
   return tree
 
 endfu "}
-fu! arbo#fixt(...) abort "{
+fu! arbo#fixt(...) abort "{ fixes some user mistakes in the DS
 
   let root = get(a:000,0,{})
   let conf = get(a:000,1,{})
@@ -95,7 +96,7 @@ fu! arbo#fixt(...) abort "{
   endif
 
 endfu "}
-fu! arbo#tree(...) abort "{
+fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
 
   let list = get(a:000,0,[])
   let leng = get(a:000,1,len(list))
@@ -171,11 +172,9 @@ fu! arbo#tree(...) abort "{
   return tree
 
 endfu "}
-fu! arbo#skel(...) abort "{
-endfu "}
 
 "-- conf functions --
-fu! arbo#conf(...) abort "{
+fu! arbo#conf(...) abort "{ rectifies configuration dictionary
 
   if !a:0|return arbo#conf(s:conf)|else|let conf=a:1|endif
   if !has_key(conf,'lexicon')|let conf.lexicon=''|endif
@@ -192,7 +191,7 @@ fu! arbo#conf(...) abort "{
   let conf.leaftype = len(conf.lexicon)
 
 endfu "}
-fu! arbo#read(...) abort "{
+fu! arbo#read(...) abort "{ reads the arbo file
 
   if !has_key(s:conf,'file')|return|endif
   if !empty(s:conf.file)
@@ -209,7 +208,7 @@ fu! arbo#read(...) abort "{
   let s:conf.leng = len(s:conf.body)
 
 endfu "}
-fu! arbo#comm(...) abort "{
+fu! arbo#comm(...) abort "{ ignores comments and empty lines
 
   if has_key(s:conf,'body')
     let comm = '\c\s*[#{}].*'
@@ -226,7 +225,7 @@ fu! arbo#comm(...) abort "{
   endif
 
 endfu "}
-fu! arbo#endl(...) abort "{
+fu! arbo#endl(...) abort "{ splits end-of-line characters
 
   if has_key(s:conf,'body')
     let endl = '\m\s*,\s*'
@@ -243,7 +242,7 @@ fu! arbo#endl(...) abort "{
   endif
 
 endfu "}
-fu! arbo#list(...) abort "{
+fu! arbo#list(...) abort "{ transforms conf.body into list of nodes
 
   let objc = get(a:,1,s:conf)
 
@@ -264,7 +263,7 @@ fu! arbo#list(...) abort "{
   endif
 
 endfu "}
-fu! arbo#cuts(...) abort "{
+fu! arbo#cuts(...) abort "{ standalone and triple trims features
 
   let objc = get(a:,1,s:conf)
 
@@ -297,7 +296,7 @@ fu! arbo#cuts(...) abort "{
   endif
 
 endfu "}
-fu! arbo#loop(...) abort "{
+fu! arbo#loop(...) abort "{ looping mechanism
 
   if has_key(s:conf,'list')
     let indx = 0
@@ -352,7 +351,7 @@ fu! arbo#loop(...) abort "{
   endif
 
 endfu "}
-fu! arbo#home(...) abort "{
+fu! arbo#home(...) abort "{ homing mechanism
 
   if has_key(s:conf,'list')&&get(s:conf,'home')
     let indx = 0
@@ -373,12 +372,9 @@ fu! arbo#home(...) abort "{
   endif
 
 endfu "}
-fu! arbo#vars(...) abort "{
-
-endfu "}
 
 "-- auxy functions --
-fu! arbo#node(...) abort "{
+fu! arbo#node(...) abort "{ parses a line into a valid node
 
   let line = get(a:000,0,'')
   let line = ['',line][type(line)==type('')]
@@ -417,7 +413,7 @@ fu! arbo#node(...) abort "{
   return node
 
 endfu "}
-fu! arbo#find(...) abort "{
+fu! arbo#find(...) abort "{ returns the number type of a given keyword
 
   if !exists('a:1')|return -1|endif
   if !exists('a:2')|return -1|endif
@@ -438,7 +434,7 @@ fu! arbo#find(...) abort "{
   return -1
 
 endfu "}
-fu! arbo#show(...) abort "{
+fu! arbo#show(...) abort "{ pretty-prints a given node
 
   let root = get(a:000,0,{})
   let step = get(a:000,1, 0)
@@ -468,7 +464,7 @@ fu! arbo#show(...) abort "{
   endfor
 
 endfu "}
-fu! arbo#argv(...) abort "{
+fu! arbo#argv(...) abort "{ gets the last argument from a:000 (almost obsolete)
   let argv = get(a:000,0,{})
   if type(argv)==type([])
     if len(argv)>1
@@ -478,7 +474,7 @@ fu! arbo#argv(...) abort "{
   endif
   return argv
 endfu "}
-fu! arbo#seek(...) abort "{
+fu! arbo#seek(...) abort "{ looks for the current node of a given number type
 
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
@@ -497,5 +493,3 @@ fu! arbo#seek(...) abort "{
   return {}
 
 endfu "}
-
-
