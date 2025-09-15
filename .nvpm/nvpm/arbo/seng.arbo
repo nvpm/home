@@ -2,7 +2,7 @@
   home seng
 
   project 🯅  seng {
-    loop plugin: nvpm line arbo zoom text {
+    loop plugin: arbo nvpm -- line zoom text {
       workspace $(plugin):$(plugin) 
         tab misc {
           file todo : TODO     

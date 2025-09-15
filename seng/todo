@@ -1,5 +1,4 @@
 
-  ● arbo: change feature name cuts -> trim ~
   ● separate arboconf into individual variables ~
   ● deal with conf/menu.vim  ~
   ● init gith plugin ~

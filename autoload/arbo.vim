@@ -15,7 +15,7 @@ fu! arbo#arbo(...) abort "{ main arbo routine
   call arbo#comm()
   call arbo#endl()
   call arbo#list()
-  call arbo#cuts()
+  call arbo#trim()
   call arbo#loop()
   call arbo#home()
   retu arbo#data()
@@ -139,9 +139,9 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     " skips non-matching nodes
     if node.type<0|continue|endif
 
-    " handles cut-tree functionality
-    if node.cuts==1|continue|endif
-    if node.cuts==2| break  |endif
+    " handles trim functionality
+    if node.trim==1|continue|endif
+    if node.trim==2| break  |endif
 
     " a leafless tree perishes
     if empty(get(node,'list','leafless'))|continue|endif
@@ -159,7 +159,7 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     endif
 
     " remove unnecessary node-fields
-    unlet node.cuts
+    unlet node.trim
     unlet node.tree
     unlet node.absl
     unlet node.type
@@ -263,32 +263,32 @@ fu! arbo#list(...) abort "{ transforms conf.body into list of nodes
   endif
 
 endfu "}
-fu! arbo#cuts(...) abort "{ standalone and triple trims features
+fu! arbo#trim(...) abort "{ standalone and triple trims features
 
   let objc = get(a:,1,s:conf)
 
   if type(objc)==type({})
     if has_key(objc,'list')
-      let objc.list = arbo#cuts(objc.list)
+      let objc.list = arbo#trim(objc.list)
       let objc.leng = len(objc.list)
     endif
   endif
   if type(objc)==type([])
     let leng = len(objc)
-    let cuts = 0
+    let trim = 0
     let indx = 0
     let newlist = []
     while indx<leng
       let node = objc[indx]|let indx+=1
-      if node.cuts>=3|break|endif
+      if node.trim>=3|break|endif
       let stda = empty(node.info.keyw..node.info.name..node.info.info)
-      if stda && node.cuts
-        let cuts = node.cuts
+      if stda && node.trim
+        let trim = node.trim
         continue
       endif
-      if cuts
-        let node.cuts = cuts
-        let cuts = 0
+      if trim
+        let node.trim = trim
+        let trim = 0
       endif
       call add(newlist,node)
     endwhile
@@ -313,22 +313,22 @@ fu! arbo#loop(...) abort "{ looping mechanism
         while indx<leng
           let item = s:conf.list[indx]|let indx+=1
           if item.info.keyw==?'endl'|break|endif
-          if node.cuts|continue|endif
+          if node.trim|continue|endif
           call add(loop,item)
         endwhile
-        if node.cuts==1|continue|endif
-        if node.cuts==2
-          let s:conf.list[indx].cuts = 2
+        if node.trim==1|continue|endif
+        if node.trim==2
+          let s:conf.list[indx].trim = 2
           continue
         endif
         let info = empty(node.info.info)?node.info.name:node.info.info
         let name = empty(node.info.info)?'':node.info.name
         let vars = split(info,' ')
         let vars = arbo#list(vars)
-        let vars = arbo#cuts(vars)
+        let vars = arbo#trim(vars)
         for node in vars "{
-          if node.cuts==1|continue|endif
-          if node.cuts>=2|  break |endif
+          if node.trim==1|continue|endif
+          if node.trim>=2|  break |endif
           let var = node.info.keyw
           for item in loop
             let info = deepcopy(item)
@@ -339,8 +339,8 @@ fu! arbo#loop(...) abort "{ looping mechanism
               let info.info.name = substitute(info.info.name,'$('..name..')',var,'g')
               let info.info.info = substitute(info.info.info,'$('..name..')',var,'g')
             endif
-            if node.cuts
-              let info.cuts = node.cuts
+            if node.trim
+              let info.trim = node.trim
             endif
             call add(list,info)|let s:conf.leng+=1
           endfor
@@ -361,8 +361,8 @@ fu! arbo#home(...) abort "{ homing mechanism
     while indx<leng
       let node = s:conf.list[indx]|let indx+=1
       if node.info.keyw==?'home'
-        if node.cuts==1|continue|endif
-        if node.cuts==2|  break |endif
+        if node.trim==1|continue|endif
+        if node.trim==2|  break |endif
         let s:conf.HOME = empty(node.info.info)?node.info.name:node.info.info
         continue
       endif
@@ -382,7 +382,7 @@ fu! arbo#node(...) abort "{ parses a line into a valid node
   let rgex = '^\v *(-*) *(\w*) *(.*)$'
   let info = matchlist(line,rgex)
 
-  let cuts = info[1]
+  let trim = info[1]
   let keyw = info[2]
   let info = info[3]
 
@@ -402,7 +402,7 @@ fu! arbo#node(...) abort "{ parses a line into a valid node
     let info = trim(info[1])
   endif
 
-  let node.cuts = len(cuts)
+  let node.trim = len(trim)
   let node.absl = absl=='='
 
   let node.info = {}
