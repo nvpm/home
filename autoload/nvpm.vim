@@ -19,10 +19,10 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
     let g:nvpm.arbo.lexicon = g:nvpm.lexicon
   else
     let g:nvpm.arbo.lexicon  = ''
-    let g:nvpm.arbo.lexicon .= ',project proj scheme layout book'
-    let g:nvpm.arbo.lexicon .= ',workspace arch archive architecture section'
-    let g:nvpm.arbo.lexicon .= ',tab folder fold shelf package pack chapter'
-    let g:nvpm.arbo.lexicon .= ',file buff buffer path entry node leaf page'
+    let g:nvpm.arbo.lexicon .= ',project scheme layout root'
+    let g:nvpm.arbo.lexicon .= ',workspace archive trunk'
+    let g:nvpm.arbo.lexicon .= ',tab folder shelf package branch'
+    let g:nvpm.arbo.lexicon .= ',file buffer path entry leaf'
   endif
   " these will be gone once the arbo synx var is implemented
   let g:nvpm.arbo.fixt  = 1
