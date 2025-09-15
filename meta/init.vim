@@ -1,7 +1,7 @@
 " meta/init.vim
 " init {
 
-let s:test = {}                                                                 
+let s:test = {}
 
 "}
 " plug {
@@ -12,19 +12,19 @@ fu! s:test.arbo(...) "{
 
   let conf = {}
 
-  let conf.file = 'test/arbo/case.arbo'
-  let conf.home = 1
-  let conf.fixt = 1
-
+  let conf.file    = 'test/arbo/case.arbo'
+  let conf.home    = 1
+  let conf.fixt    = 1
   let conf.lexicon = 'workspace,tab,file'
 
-  let arbo = arbo#arbo(conf)
-  return
+  let case = arbo#arbo(conf)
   let expt = s:test.eval('test/arbo/case.expt')
+  "echo case.list[0].meta
+  "return
 
   echon "test/arbo: "
-  let diff = arbo!=?expt
-  if diff|call self.fail()|call arbo#show(arbo)|return 1|endif
+  let diff = case!=?expt
+  if diff|call self.fail()|call arbo#show(case)|return 1|endif
   call self.pass()
 
 endfu "}

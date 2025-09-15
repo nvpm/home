@@ -1,18 +1,18 @@
-# from here it requires fixtree feature twice
     file main: main.c   # main routine
     file make: makefile
-
-  loop logic -math physics
-  tab $_:src,file $_.c,file $_.h
-  endl
+    # entry 'buff' does not belong in lexicon. Therefore not included.
+    buff .gitignore
 
   -
   loop string file --ui window misc
   tab $_:src,file $_.c,file $_.h
   endl
 
--------------
-WORKSPACE meta {
+  loop logic -math physics
+  tab $_:src,file $_.c,file $_.h # single line entries
+  endl
+
+workspace meta {
     file read:README.md
     file clog:changelog
   tab bin: bin
@@ -20,12 +20,13 @@ WORKSPACE meta {
    -file uninstall.sh
     file deploy.sh
 }
-WORKSPACE {
+workspace :doc { Workspace skips tabs. Goes directly to leaf nodes
   file user: user.txt
-  file dev : developer.txt
+  file dev : dev.txt
   file api : api.txt
 }
 
 #leafless tree dies!
 workspace,tab
+
 

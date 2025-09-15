@@ -55,7 +55,7 @@ fu! arbo#fixt(...) abort "{
   if has_key(root,'list')&&root.meta.leng
     let leng = root.meta.leng
     let mintype = conf.leaftype
-    let minkeyw = conf.lexicon[mintype][0]
+    let minkeyw = conf.lexicon[mintype-1][0]
     for node in root.list
       let type = arbo#find(conf.lexicon,node.info.keyw)
       if type<mintype
@@ -67,6 +67,7 @@ fu! arbo#fixt(...) abort "{
     let indx = 0
     let list = []
     let node = root.list[indx]
+    " while bounded & curr node type is inside a non-leaf node
     while indx<root.meta.leng&&arbo#find(conf.lexicon,node.info.keyw)>mintype
       call add(list,node)
       let indx+=1
@@ -74,13 +75,14 @@ fu! arbo#fixt(...) abort "{
     endwhile
     if indx
       let next = root.list[indx]
-      let node = #{data:{},meta:{}}
+      let node = #{info:{},meta:{}}
       let node.info.keyw = minkeyw
-      let node.info.name = '<unnamed>'
+      let node.info.name = '<fixed>'
       let node.info.info = ''
       let node.meta.leng = len(list)
       let node.meta.indx = 0
-      let node.meta.type = arbo#find(conf.lexicon,list[0].info.keyw)
+      "let node.meta.type = arbo#find(conf.lexicon,list[0].info.keyw)
+      let node.meta.type = mintype+1
       let node.list = list
       let root.list = [node]+root.list[indx:]
       let root.meta.leng = len(root.list)

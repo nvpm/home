@@ -1,43 +1,60 @@
-#{meta:#{leng:2,type:1,indx:0},
-  list:[
-    #{data:#{keyw:'Archive',name:'<unnamed>',info:''},
-      meta:#{leng:3,type:2,indx:0},
-      list:[
-        #{data:#{keyw:'Folder',name:'root',info:''}, 
-          meta:#{leng:2,type:3,indx:0},      
+#{file: 'test/arbo/case.arbo',
+  meta: #{leng: 3, type: 1, indx: 0},
+  list: [
+    #{info: #{keyw:'workspace',name:'<fixed>',info:''},
+      meta: #{leng: 3, type: 2, indx: 0},
+      list: [
+        #{info: #{keyw:'tab',name:'<fixed>',info:''   },
+          meta: #{leng: 2, type: 3, indx: 0},
           list:[
-          #{data:#{keyw:'File',name:'main.c'  ,info:'libm/main.c'}},
-          #{data:#{keyw:'File',name:'Makefile',info:'libm/Makefile'}},
-        ]},
-        #{data:#{keyw:'TAB',name:'complex',info:'lib'}, 
-          meta:#{leng:2,type:3,indx:0},      
+            #{info:#{keyw:'file',name:'main',info:'main.c'  }},
+            #{info:#{keyw:'file',name:'make',info:'makefile'}},
+          ]
+        },
+        #{info: #{keyw:'tab',name:'logic'  ,info:'src'},
+          meta: #{leng: 2, type: 3, indx: 0},
           list:[
-          #{data:#{keyw:'File',name:'complex.c',info:'libm/lib/complex.c'}},
-          #{data:#{keyw:'File',name:'complex.h',info:'libm/lib/complex.h'}},
-        ]},
-        #{data:#{keyw:'TAB',name:'matrix',info:'lib'}, 
-          meta:#{leng:2,type:3,indx:0},      
+            #{info:#{keyw:'file',name:'logic.c',info:'src/logic.c'}},
+            #{info:#{keyw:'file',name:'logic.h',info:'src/logic.h'}},
+          ]
+        },
+        #{info: #{keyw:'tab',name:'physics',info:'src'},
+          meta: #{leng: 2, type: 3, indx: 0},
           list:[
-          #{data:#{keyw:'File',name:'matrix.c',info:'libm/lib/matrix.c'}},
-          #{data:#{keyw:'File',name:'matrix.h',info:'libm/lib/matrix.h'}},
-        ]},
-    ]},
-    #{data:#{keyw:'Archive',name:'meta',info:''},
-      meta:#{leng:2,type:2,indx:0},
-      list:[
-      #{data:#{keyw:'Folder',name:'root',info:'..'}, 
-        meta:#{leng:1,type:3,indx:0},      
-        list:[
-        #{data:#{keyw:'File',name:'readme.txt',info:'../readme.txt'}},
-             ]
-      },
-      #{data:#{keyw:'Folder',name:'scripts',info:'../scripts'}, 
-        meta:#{leng:1,type:3,indx:0},      
-        list:[
-        #{data:#{keyw:'File',name:'init.sh',info:'../scripts/init.sh'}},
-             ]
-      },
-    ]},
-]}
+            #{info:#{keyw:'file',name:'physics.c',info:'src/physics.c'}},
+            #{info:#{keyw:'file',name:'physics.h',info:'src/physics.h'}},
+          ]
+        },
+      ]
+    },
+    #{info: #{keyw:'workspace',name:'meta',info:''},
+      meta: #{leng: 2, type: 2, indx: 0},
+      list: [
+        #{info: #{keyw:'tab',name:'<fixed>',info:''   },
+          meta: #{leng: 2, type: 3, indx: 0},
+          list:[
+            #{info:#{keyw:'file',name:'read',info:'README.md'}},
+            #{info:#{keyw:'file',name:'clog',info:'changelog'}},
+          ]
+        },
+        #{info: #{keyw:'tab',name:'bin'    ,info:'bin'},
+          meta: #{leng: 2, type: 3, indx: 0},
+          list:[
+            #{info:#{keyw:'file',name:'install.sh',info:'bin/install.sh'}},
+            #{info:#{keyw:'file',name:'deploy.sh' ,info:'bin/deploy.sh' }},
+          ]
+        },
+      ]
+    },
+    #{info: #{keyw:'workspace',name:''       ,info:'doc'},
+      meta: #{leng: 3, type: 3, indx: 0},
+      list: [
+        #{info:#{keyw:'file',name:'user',info:'doc/user.txt'}},
+        #{info:#{keyw:'file',name:'dev' ,info:'doc/dev.txt' }},
+        #{info:#{keyw:'file',name:'api' ,info:'doc/api.txt' }},
+      ]
+    },
+  ]
+}
 
 " vim: ft=vim
