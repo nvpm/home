@@ -5,7 +5,7 @@ let g:zoom.nvim = has('nvim')
 "let g:zoom.vim  = !g:zoom.nvim
 
 "-- main functions --
-fu! zoom#init(...) abort "{
+fu! zoom#init(...) abort "{ user variables & startup routines
 
   let g:zoom = get(g:,'zoom',{})
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
@@ -40,7 +40,7 @@ fu! zoom#init(...) abort "{
   endif
 
 endfu "}
-fu! zoom#calc(...) abort "{
+fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
   let totalheight = &lines
   let totalwidth  = &columns
@@ -100,7 +100,7 @@ fu! zoom#calc(...) abort "{
   "}
 
 endfu " }
-fu! zoom#pads(...) abort "{
+fu! zoom#pads(...) abort "{ splits the view with padding buffers
 
   if g:zoom.size.l>1
     silent! exec string(g:zoom.size.l-1).'vsplit '.g:zoom.pads.l
@@ -133,7 +133,7 @@ fu! zoom#pads(...) abort "{
   exe 'resize '..g:zoom.height
 
 endfu " }
-fu! zoom#show(...) abort "{
+fu! zoom#show(...) abort "{ enters zoom mode
 
   if a:0&&!g:zoom.mode|return|endif
 
@@ -169,7 +169,7 @@ fu! zoom#show(...) abort "{
   endif
 
 endfu "}
-fu! zoom#hide(...) abort "{
+fu! zoom#hide(...) abort "{ leaves zoom mode
 
   call zoom#seth()
   call zoom#zero()
@@ -189,7 +189,7 @@ fu! zoom#hide(...) abort "{
   endif
 
 endfu "}
-fu! zoom#zoom(...) abort "{
+fu! zoom#zoom(...) abort "{ swaps between modes (toggle switch)
 
   if g:zoom.mode
     call zoom#hide()
@@ -201,7 +201,7 @@ fu! zoom#zoom(...) abort "{
 endfu "}
 
 "-- auxy functions --
-fu! zoom#geth(...) abort "{
+fu! zoom#geth(...) abort "{ get highlight arguments from hi-group
 
   let name = a:1
   let args = ''
@@ -218,7 +218,7 @@ fu! zoom#geth(...) abort "{
   return args
 
 endfu "}
-fu! zoom#save(...) abort "{
+fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
 
   for name in keys(g:zoom.colr)
     if empty(g:zoom.colr[name])
@@ -234,7 +234,7 @@ fu! zoom#save(...) abort "{
   let g:zoom.botl = &laststatus
 
 endfu "}
-fu! zoom#none(...) abort "{
+fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
 
   if empty(g:zoom.none) "{
     let args = zoom#geth('Normal')
@@ -261,7 +261,7 @@ fu! zoom#none(...) abort "{
   endfor
 
 endfu "}
-fu! zoom#seth(...) abort "{
+fu! zoom#seth(...) abort "{ sets hi-groups to saved hi info (zoom#save)
 
   for name in keys(g:zoom.colr)
     exe 'hi clear '..name
@@ -275,7 +275,7 @@ fu! zoom#seth(...) abort "{
   endfor
 
 endfu "}
-fu! zoom#buff(...) abort "{
+fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
   silent! setl nomodifiable
   silent! setl nonumber
@@ -296,22 +296,14 @@ fu! zoom#buff(...) abort "{
   endif
 
 endfu " }
-fu! zoom#test(...) abort "{
-
-  hi normal
-  for name in keys(g:zoom.colr)
-    exe 'hi '..name
-  endfor
-
-endfu "}
-fu! zoom#zero(...) abort "{
+fu! zoom#zero(...) abort "{ resets the size variable
 
   let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
 
 endfu "}
 
 "-- auto functions --
-fu! zoom#help(...) abort "{
+fu! zoom#help(...) abort "{ conforms the help and man buffers
 
   let bufname=bufname()
 
@@ -334,7 +326,7 @@ fu! zoom#help(...) abort "{
   endif
 
 endfu "}
-fu! zoom#term(...) abort "{
+fu! zoom#term(...) abort "{ conforms terminal buffers
 
   if bufname()=~'^.*git.*$'
     call input(repeat(' ',g:zoom.size.l).'Press enter/esc to close it')

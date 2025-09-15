@@ -4,7 +4,8 @@ let _LINEAUTO_ = 1
 let s:nvim = has('nvim')
 let s:vim  = !s:nvim
 
-fu! line#init(...) abort "{
+"-- main functions --
+fu! line#init(...) abort "{ user variables & startup routines
 
   let g:line = get(g:,'line',{})
 
@@ -54,7 +55,66 @@ fu! line#init(...) abort "{
   endif
 
 endfu "}
-fu! line#mode(...) abort "{
+fu! line#draw(...) abort "{ sets both tab and status lines
+  if !g:line.mode|return|endif
+  call line#head()
+  call line#feet()
+endfu "}
+fu! line#show(...) abort "{ renders both lines into view
+
+  call line#giti()
+
+  if g:line.nvpm
+    set showtabline=2
+    let &laststatus=2+s:nvim
+  else
+    if g:line.showmode==0
+      let &laststatus  = g:line.save.laststatus
+      let &showtabline = g:line.save.showtabline
+    endif
+    if g:line.showmode>0
+      let &laststatus=2+s:nvim
+    endif
+    if g:line.showmode>2
+      set showtabline=2
+    endif
+  endif
+
+  let g:line.mode = 1
+
+  augroup LINE
+    au!
+    au BufEnter,ModeChanged,BufDelete * call line#draw()
+    au VimLeavePre * call line#stop()
+  augroup END
+
+endfu "}
+fu! line#hide(...) abort "{ hides both lines from the user's view
+
+  call line#save()
+
+  set showtabline=0
+  set laststatus=0
+  set statusline=
+  set tabline=
+
+  let g:line.mode = 0
+  call line#stop()
+
+endfu "}
+fu! line#line(...) abort "{ swaps both lines on and off (toggle switch)
+
+  if g:line.mode
+    call line#hide()
+  else
+    call line#show()
+    call line#draw()
+  endif
+
+endfu "}
+
+"-- skel functions --
+fu! line#mode(...) abort "{ colorizes an atom based on current vim mode
 
   let mode = mode()
   if mode=='i'
@@ -123,7 +183,7 @@ fu! line#mode(...) abort "{
   "return '%#'..a:1..'Normal#'     .. a:2
 
 endfu "}
-fu! line#pack(...) abort "{
+fu! line#pack(...) abort "{ packs multiple atoms together
 
   let list = a:1
   let curr = a:2
@@ -149,7 +209,7 @@ fu! line#pack(...) abort "{
   return revs?reverse(pack):pack
 
 endfu "}
-fu! line#atom(...) abort "{
+fu! line#atom(...) abort "{ builds an atom based on functions and arguments
 
   if a:0!=3|return ''|endif
 
@@ -296,7 +356,7 @@ fu! line#atom(...) abort "{
   endif
 
 endfu "}
-fu! line#bone(...) abort "{
+fu! line#bone(...) abort "{ creates a bone type
 
   let skel = ''
   for bone in a:1
@@ -315,7 +375,7 @@ fu! line#bone(...) abort "{
   return skel
 
 endfu "}
-fu! line#skel(...) abort "{
+fu! line#skel(...) abort "{ conforms or creates the skeleton variable
 
   if a:0
     if !has_key(g:,'line')|let g:line = {}|endif
@@ -346,9 +406,7 @@ fu! line#skel(...) abort "{
   endif
 
 endfu "}
-
-"-- main functions --
-fu! line#head(...) abort "{
+fu! line#head(...) abort "{ builds the tabline (the head)
 
   let line = ''
   if g:line.headl
@@ -372,7 +430,7 @@ fu! line#head(...) abort "{
   endif
 
 endfu "}
-fu! line#feet(...) abort "{
+fu! line#feet(...) abort "{ builds the statusline (the feet)
 
   let line = ''
 
@@ -397,66 +455,9 @@ fu! line#feet(...) abort "{
   endif
 
 endfu "}
-fu! line#draw(...) abort "{
-  if !g:line.mode|return|endif
-  call line#head()
-  call line#feet()
-endfu "}
-fu! line#show(...) abort "{
-
-  call line#giti()
-
-  if g:line.nvpm
-    set showtabline=2
-    let &laststatus=2+s:nvim
-  else
-    if g:line.showmode==0
-      let &laststatus  = g:line.save.laststatus
-      let &showtabline = g:line.save.showtabline
-    endif
-    if g:line.showmode>0
-      let &laststatus=2+s:nvim
-    endif
-    if g:line.showmode>2
-      set showtabline=2
-    endif
-  endif
-
-  let g:line.mode = 1
-
-  augroup LINE
-    au!
-    au BufEnter,ModeChanged,BufDelete * call line#draw()
-    au VimLeavePre * call line#stop()
-  augroup END
-
-endfu "}
-fu! line#hide(...) abort "{
-
-  call line#save()
-
-  set showtabline=0
-  set laststatus=0
-  set statusline=
-  set tabline=
-
-  let g:line.mode = 0
-  call line#stop()
-
-endfu "}
-fu! line#line(...) abort "{
-
-  if g:line.mode
-    call line#hide()
-  else
-    call line#show()
-    call line#draw()
-  endif
-
-endfu "}
 
 "-- auxy functions --
-fu! line#save(...) abort "{
+fu! line#save(...) abort "{ saves vim's related variables
 
   if !has_key(g:line,'save')
     let g:line.save = {}
@@ -466,7 +467,7 @@ fu! line#save(...) abort "{
   let g:line.save.showtabline = &showtabline
 
 endfu "}
-fu! line#find(...) abort "{
+fu! line#find(...) abort "{ checks if bone is in the skeleton
 
   let name = a:1
   if g:line.feetl&&1+match(g:line.skeleton.feet.l,name)|return 1|endif
@@ -475,7 +476,7 @@ fu! line#find(...) abort "{
   if g:line.headr&&1+match(g:line.skeleton.head.r,name)|return 1|endif
 
 endfu "}
-fu! line#zero(...) abort "{
+fu! line#zero(...) abort "{ resets the git variable
 
   let g:line.git = #{}
   let g:line.git.bone = ''
@@ -486,7 +487,7 @@ fu! line#zero(...) abort "{
   endif
 
 endfu "}
-fu! line#data(...) abort "{
+fu! line#data(...) abort "{ sets the git data from stream
 
   if type(a:2)==1 " string in vim
     let data = a:2
@@ -505,7 +506,7 @@ fu! line#data(...) abort "{
   endif
 
 endfu "}
-fu! line#giti(...) abort "{
+fu! line#giti(...) abort "{ sets the timer, job, or tcp connection for git info
 
   if !g:line.gitimode|return|endif
 
@@ -558,7 +559,7 @@ fu! line#giti(...) abort "{
   endif "end-tcp}
 
 endfu "}
-fu! line#gitb(...) abort "{
+fu! line#gitb(...) abort "{ builds the git bone
 
   if !g:line.gitimode|return|endif
 
@@ -602,7 +603,7 @@ fu! line#gitb(...) abort "{
   endif
 
 endfu "}
-fu! line#stop(...) abort "{
+fu! line#stop(...) abort "{ stops the timer, job, or tcp connection
 
   if !g:line.gitimode|return|endif
 

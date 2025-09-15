@@ -70,13 +70,9 @@ fu! s:test.zoom(...) "{
 
   so autoload/zoom.vim
 
-  "call zoom#test()
-
-  "return
   let left = repeat(' ' ,g:zoom.size.l )
   ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
   ec left..string(g:zoom.size)
-
 
   return
 
