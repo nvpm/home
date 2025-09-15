@@ -6,6 +6,5 @@
   ● init iris plugin ~
   ● cont text plugin ~
   ● cont nvpm plugin ~
-  ● remove arbo#argv. It's confusing & unnecessary ~
 
 vim: ft=help: tw=2

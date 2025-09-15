@@ -27,7 +27,6 @@
         file case : case.arbo
         file expt : case.expt
     }
-    --
     workspace ɸ arbo {
       tab  code
         file auto : autoload/arbo.vim
@@ -37,6 +36,7 @@
         file case : case.arbo
         file expt : case.expt
     }
+    --
     workspace Ⲅ text {
       tab  code
         file auto : autoload/text.vim

@@ -7,7 +7,7 @@ let _ARBOAUTO_=1
 "-- main functions --
 fu! arbo#arbo(...) abort "{ main arbo routine
 
-  if !a:0|return {}|else|let s:conf=arbo#argv(a:000)|endif
+  if !a:0|return {}|else|let s:conf=a:1|endif
 
   " Note: do not to change this sequence!
   call arbo#conf()
@@ -463,16 +463,6 @@ fu! arbo#show(...) abort "{ pretty-prints a given node
     endif
   endfor
 
-endfu "}
-fu! arbo#argv(...) abort "{ gets the last argument from a:000 (almost obsolete)
-  let argv = get(a:000,0,{})
-  if type(argv)==type([])
-    if len(argv)>1
-      return argv
-    endif
-    return arbo#argv(get(argv,0,{}))
-  endif
-  return argv
 endfu "}
 fu! arbo#seek(...) abort "{ looks for the current node of a given number type
 
