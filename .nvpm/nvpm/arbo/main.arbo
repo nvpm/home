@@ -1,4 +1,3 @@
-
   project   devl {
     workspace  nvpm {
      tab  code
@@ -27,7 +26,7 @@
         file case : case.arbo
         file expt : case.expt
     }
-    workspace ɸ arbo {
+    workspace  arbo {
       tab  code
         file auto : autoload/arbo.vim
        -file synx :   syntax/arbo.vim
@@ -58,7 +57,7 @@
   }
   ---
   project   help {
-    workspace ɸ arbo {
+    workspace  arbo {
         file  help : doc/arbo.txt
         --
         file  nvpm : nvpm.md

@@ -235,10 +235,9 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
         endif
       endif
     endif "}
-    if !empty(name)
-      let colr = get(args,1,'LineCurr')
-      let name = line#mode(colr,name)
-    endif
+    if empty(name)|return ''|endif
+    let colr = get(args,1,'LineCurr')
+    let name = line#mode(colr,name)
     if g:line.bonetype==2
       let edge = colr.'Edge'
       let left = line#mode(edge,g:line.boneedge[0])
