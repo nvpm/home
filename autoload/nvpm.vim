@@ -141,12 +141,15 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
       return
     endif
     if g:nvpm.tree.curr==bufname()
-      let meta = arbo#seek(g:nvpm.tree,type).meta
-      call nvpm#indx(meta,meta.indx+step)
+      let node = arbo#seek(g:nvpm.tree,type)
+      if !has_key(node,'meta')|return 1|endif
+      call nvpm#indx(node.meta,node.meta.indx+step)
     endif
+
     " performs the JumpBack WorkFlow
     call nvpm#curr()
     call nvpm#rend()
+
   else
     if type == g:nvpm.arbo.leaftype
       if step < 0

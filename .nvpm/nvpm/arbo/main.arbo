@@ -1,16 +1,7 @@
 
   project   devl {
-    workspace ɸ arbo {
-      tab  code
-        file auto : autoload/arbo.vim
-       -file synx :   syntax/arbo.vim
-        file init = meta/init.vim
-      tab  test = test/arbo
-        file case : case.arbo
-        file expt : case.expt
-    }
     workspace  nvpm {
-      tab  code
+     tab  code
         file auto : autoload/nvpm.vim
         file plug : plugin/nvpm.vim
         file init = meta/init.vim
@@ -37,6 +28,15 @@
         file expt : case.expt
     }
     --
+    workspace ɸ arbo {
+      tab  code
+        file auto : autoload/arbo.vim
+       -file synx :   syntax/arbo.vim
+        file init = meta/init.vim
+      tab  test = test/arbo
+        file case : case.arbo
+        file expt : case.expt
+    }
     workspace Ⲅ text {
       tab  code
         file auto : autoload/text.vim

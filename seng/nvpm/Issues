@@ -1,4 +1,8 @@
 |bugs|
+  ● [bug] ~
+  ● [bug] ~
+
+|fixed|
   ● [bug] jump non-existing node ~
     When a node doesn't exists, and user tries to jump between that node type, 
     and error is displayed regarding the 'meta' field in the arbo data 
@@ -8,10 +12,6 @@
     line   14:
     E716: Key not present in Dictionary: "meta"
     ------------------------------
-  ● [bug] ~
-  ● [bug] ~
-
-|fixed|
   ●  ~
   ●  ~
   ●  ~
