@@ -1,8 +1,8 @@
 "-- auto/zoom.vim --
 if !exists('NVPMTEST')&&exists('_ZOOMAUTO_')|finish|endif
 let _ZOOMAUTO_ = 1
-let g:zoom.nvim = has('nvim')
-"let g:zoom.vim  = !g:zoom.nvim
+let s:nvim = has('nvim')
+"let s:vim  = !s:nvim
 
 "-- main functions --
 fu! zoom#init(...) abort "{ user variables & startup routines
@@ -161,7 +161,7 @@ fu! zoom#show(...) abort "{ enters zoom mode
   endif
 
   exe 'set fillchars=vert:\ '
-  if g:zoom.nvim
+  if s:nvim
     exe 'set fillchars+=horiz:\ '
     exe 'set fillchars+=horizdown:\ '
     exe 'set fillchars+=vertleft:\ '
@@ -288,7 +288,7 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
   let &l:statusline = '%#Normal#'
   exe 'setl fillchars=vert:\ '
   exe 'setl fillchars+=eob:\ '
-  if g:zoom.nvim
+  if s:nvim
     exe 'setl fillchars+=horiz:\ '
     exe 'setl fillchars+=horizdown:\ '
     exe 'setl fillchars+=vertleft:\ '
