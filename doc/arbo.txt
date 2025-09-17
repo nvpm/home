@@ -44,7 +44,7 @@ concepts:
 SYNTAX ELEMENTS	      			     *arbo-syntax-elements*
 
 The following is a general form of a valid line in an arbo file.
-
+>
   ╭────────────────────────────────────────────────╮
   │ [modifier] keyword <name> [[:=] <value> [#{}]] │
   │      m        k      n      s      v      c    │
@@ -61,18 +61,16 @@ The following is a general form of a valid line in an arbo file.
   v: the value for that keyword
   c: the comments (# ...)
 
-
 And the best way to explain the usage is with a practical example. Say we want
 to describe the placement of files in a project. For the sake of this example,
 let's consider a simple C project, with 3 files, say: main.c, main.h, and
 Makefile. In this case, a valid arbo file used by the |nvpm| plugin is:
-
-            - project.arbo  -
-	   ╭───────────────────────╮
-	   │  file main.c          │
-	   │  file main.h          │
-	   │ -file make: Makefile  │
-	   ╰───────────────────────╯
+>
+  ╭───────────────────────╮
+  │  file main.c          │
+  │  file main.h          │
+  │ -file make: Makefile  │
+  ╰───────────────────────╯
 
 in this case the file 'Makefile' was given a name (make). This will be useful
 for the visual feedback of the |nvpm| plugin, and possibly others too. It's
@@ -98,29 +96,28 @@ lexicon.
   contained in which.
 
   This order is defined by a comma-separated string. For example:
-
+>
   ```vimscript
     let conf = {}
     let conf.file = 'foobar.arbo'
     let conf.lexicon = 'foo,bar'
 	   ...
   ```
-
+<
   here "foo" elements will contain a list of "bar" element, and never the other
   way around.
-
                                                              *arbo-number-type*
   Also, this defines the number type of an element. which is the order in which
   the word appear in the lexicon: 1:foo, 2:bar. In fact, the same example
   above could also be done as follows:
-
+>
   ```vimscript
     let conf = {}
     let conf.file = 'foobar.arbo' " number type: 0
     let conf.lexicon = [['foo'],['bar']]
 	   ...             1       2
   ```
-
+<
   which is the form arbo actually uses. Note: the 0 number type will be used
   for the arbo file itself.
 
@@ -128,27 +125,28 @@ THE LEXICON CONFIGURATION                                      *arbo-lexicon*
 
 The main syntax for the lexicon is:
 
-- `string format`
+- STRING FORMAT >
 
-    "KW11 KW12 ... KW1n , ... , KWm1 KWm2 ... KWmp"
-	        |	|     |            |
-	        |	v     v            |
-	        |	 comma             |
-	        |                          |
-	        +-> number type: 1         +-> number type: m
-                    length: n                  length: p
-- `list format`
+  "KW11 KW12 ... KW1n , ... , KWm1 KWm2 ... KWmp"
+	      |	|     |            |
+	      |	v     v            |
+	      |	 comma             |
+	      |                          |
+	      +-> number type: 1         +-> number type: m
+		  length: n                  length: p
+<
+- LIST FORMAT >
 
-    [["KW11","KW12",...,"KW1n"],...,["KWm1","KWm2",...,"KWmn"]]
+  [["KW11","KW12",...,"KW1n"],...,["KWm1","KWm2",...,"KWmp"]]
 		  1                               m
-
+<
 where {KWij} matches the following regex [a-z0-9_].
 
 The following are valid forms for the lexicon key:
-
+>
   ```vimscript
   let conf = {}
-  let conf.lexicon = 'workspace , tab folder, buff file'
+  let conf.lexicon = '  workspace  ,  tab   folder  ,  buff   file'
   let conf.lexicon = [['workspace'],['tab','folder'],['buff','file']]
 	 ...              " 1             2                 3
   ```
@@ -159,16 +157,16 @@ will simply be ignored without giving an error message. This behaviour becomes
 clearer when using the |nvpm| plugin.
 
 To further explain the syntax,
-
-                                 ||   - foobar.arbo -
-```vimscript                     ||   ╭──────────────────────╮
-  let conf = {}                  ||   │  foo foo-01 : val1   │
-  let conf.file = 'foobar.arbo'  ||   │    bar b01 : bar 1   │
-  let conf.lexicon = 'foo,bar'   ||   │    bar b02 = bar 2   │
-                                 ||   │                      │
-  let data = arbo#arbo(conf)     ||   │  foo foo-02 : val2   │
-```                              ||   │    bar code          │
-                                 ||   ╰──────────────────────╯
+>
+				   ||   - foobar.arbo -
+  ```vimscript                     ||   ╭──────────────────────╮
+    let conf = {}                  ||   │  foo foo-01 : val1   │
+    let conf.file = 'foobar.arbo'  ||   │    bar b01 : bar 1   │
+    let conf.lexicon = 'foo,bar'   ||   │    bar b02 = bar 2   │
+				   ||   │                      │
+    let data = arbo#arbo(conf)     ||   │  foo foo-02 : val2   │
+  ```                              ||   │    bar code          │
+				   ||   ╰──────────────────────╯
 
 in this case, only the words "foo" and "bar" will be accepted as valid
 keywords in the arbo file "main.arbo". Moreover, note that foo and bar are
@@ -189,45 +187,45 @@ for now, there are three level of trimming.
 
 The following is the lexicon configuration used in the examples for this
 feature.
-
-```vimscript
+>
+  ```vimscript
 
   let conf = {}
   let conf.lexicon = 'workspace , tab , file'
 
-```
+  ```
 
 1) single trims: " - keyword name ..."                 *arbo-single-trims*
 
 This trim-level trims just the node after it. In the following arbo file, the
 entry "-file make: Makefile" tells arbo that the node called "make" should
 not be parsed, and therefore not be present in the resulting data-structure.
-
-╭───────────────────────╮
-│          ...          │
-│  file main.c          │
-│  file main.h          │
-│ -file make: Makefile  │ <- Note the dash character
-│          ...          │
-╰───────────────────────╯
+>
+  ╭───────────────────────╮
+  │          ...          │
+  │  file main.c          │
+  │  file main.h          │
+  │ -file make: Makefile  │ <- Note the dash character
+  │          ...          │
+  ╰───────────────────────╯
 
 also, any higher level nodes can be trimmed this way. Consider the following:
-
-╭─────────────────╮                ╭─────────────────╮
-│           ...   │                │           ...   │
-│  TAB main       │                │  TAB main       │
-│    file main.c  │                │    file main.c  │
-│    file main.h  │                │    file main.h  │
-│                 │                │                 │
-│ -TAB math       │ equivalent to  │ #TAB math       │
-│    file math.c  │ commenting out │ #  file math.c  │
-│    file math.h  │                │ #  file math.h  │
-│                 │                │                 │
-│  TAB logic      │                │  TAB logic      │
-│    file logic.c │                │    file logic.c │
-│    file logic.h │                │    file logic.h │
-│           ...   │                │           ...   │
-╰─────────────────╯                ╰─────────────────╯
+>
+  ╭─────────────────╮                ╭─────────────────╮
+  │           ...   │                │           ...   │
+  │  TAB main       │                │  TAB main       │
+  │    file main.c  │                │    file main.c  │
+  │    file main.h  │                │    file main.h  │
+  │                 │                │                 │
+  │ -TAB math       │ equivalent to  │ #TAB math       │
+  │    file math.c  │ commenting out │ #  file math.c  │
+  │    file math.h  │                │ #  file math.h  │
+  │                 │                │                 │
+  │  TAB logic      │                │  TAB logic      │
+  │    file logic.c │                │    file logic.c │
+  │    file logic.h │                │    file logic.h │
+  │           ...   │                │           ...   │
+  ╰─────────────────╯                ╰─────────────────╯
 
 2) double trims: " -- keyword name ..."                 *arbo-double-trims*
 
@@ -235,57 +233,60 @@ This trim-level tells arbo to ignore a range of nodes, up until the next same
 , or higher, level node, or even the end of the file. For example:
 
 ● until the next same level node, in this case "tab"
-╭───────────────╮               ╭───────────────╮
-│      ...      │               │      ...      │
-│  TAB          │               │  TAB          │
-│    file one   │               │    file one   │
-│  --file two   │      is       │   -file two   │
-│    file three │ equivalent to │   -file three │
-│    file four  │ single trims  │   -file four  │
-│               │               │               │
-│  TAB          │               │  TAB          │
-│    file foo   │               │    file foo   │
-│    file bar   │               │    file bar   │
-│      ...      │               │      ...      │
-╰───────────────╯               ╰───────────────╯
+>
+  ╭───────────────╮               ╭───────────────╮
+  │      ...      │               │      ...      │
+  │  TAB          │               │  TAB          │
+  │    file one   │               │    file one   │
+  │  --file two   │               │   -file two   │
+  │    file three │ equivalent to │   -file three │
+  │    file four  │ single trims  │   -file four  │
+  │               │               │               │
+  │  TAB          │               │  TAB          │
+  │    file foo   │               │    file foo   │
+  │    file bar   │               │    file bar   │
+  │      ...      │               │      ...      │
+  ╰───────────────╯               ╰───────────────╯
 
 ● until the next higher level node, in this case "workspace"
-╭────────────────────╮               ╭────────────────────╮
-│        ...         │               │        ...         │
-│ WORKSPACE numbers  │               │ WORKSPACE numbers  │
-│   Tab              │               │   Tab              │
-│     file one       │               │     file one       │
-│   --file two       │               │    -file two       │
-│     file three     │ equivalent to │    -file three     │
-│                    │ single trims  │                    │
-│ WORKSPACE words    │               │ WORKSPACE words    │
-│   Tab              │               │   Tab              │
-│     file apples    │               │     file apples    │
-│     file oranges   │               │     file oranges   │
-│        ...         │               │        ...         │
-╰────────────────────╯               ╰────────────────────╯
+>
+  ╭────────────────────╮               ╭────────────────────╮
+  │        ...         │               │        ...         │
+  │ WORKSPACE numbers  │               │ WORKSPACE numbers  │
+  │   Tab              │               │   Tab              │
+  │     file one       │               │     file one       │
+  │   --file two       │               │    -file two       │
+  │     file three     │ equivalent to │    -file three     │
+  │                    │ single trims  │                    │
+  │ WORKSPACE words    │               │ WORKSPACE words    │
+  │   Tab              │               │   Tab              │
+  │     file apples    │               │     file apples    │
+  │     file oranges   │               │     file oranges   │
+  │        ...         │               │        ...         │
+  ╰────────────────────╯               ╰────────────────────╯
 
 ● non-leaf nodes double trims
- ╭─────────────────╮         ╭─────────────────╮         ╭─────────────────╮
- │       ...       │         │       ...       │         │       ...       │
- │  Tab numbers    │         │  Tab numbers    │         │  Tab numbers    │
- │    file one     │         │    file one     │         │    file one     │
- │    file two     │         │    file two     │         │    file two     │
- │                 │         │                 │         │                 │
- │--Tab words      │         │ -Tab words      │         │# Tab words      │
- │    file apples  │         │    file apples  │         │#   file apples  │
- │   -file oranges │ same as │   -file oranges │         │#   file oranges │
- │                 │ single  │                 │ same as │#                │
- │  Tab countries  │ trims   │ -Tab countries  │         │# Tab countries  │
- │    file Brazil  │         │    file Brazil  │         │#   file Brazil  │
- │    file Japan   │         │    file Japan   │         │#   file Japan   │
- │    file Mexico  │         │    file Mexico  │         │#   file Mexico  │
- │                 │         │                 │         │                 │
- │ WORKSPACE any   │         │ WORKSPACE any   │         │ WORKSPACE any   │
- │        ...      │         │        ...      │         │        ...      │
- ╰─────────────────╯         ╰─────────────────╯         ╰─────────────────╯
+>
+  ╭─────────────────╮         ╭─────────────────╮         ╭─────────────────╮
+  │       ...       │         │       ...       │         │       ...       │
+  │  Tab numbers    │         │  Tab numbers    │         │  Tab numbers    │
+  │    file one     │         │    file one     │         │    file one     │
+  │    file two     │         │    file two     │         │    file two     │
+  │                 │         │                 │         │                 │
+  │--Tab words      │         │ -Tab words      │         │# Tab words      │
+  │    file apples  │         │    file apples  │         │#   file apples  │
+  │   -file oranges │ same as │   -file oranges │         │#   file oranges │
+  │                 │ single  │                 │ same as │#                │
+  │  Tab countries  │ trims   │ -Tab countries  │         │# Tab countries  │
+  │    file Brazil  │         │    file Brazil  │         │#   file Brazil  │
+  │    file Japan   │         │    file Japan   │         │#   file Japan   │
+  │    file Mexico  │         │    file Mexico  │         │#   file Mexico  │
+  │                 │         │                 │         │                 │
+  │ WORKSPACE any   │         │ WORKSPACE any   │         │ WORKSPACE any   │
+  │        ...      │         │        ...      │         │        ...      │
+  ╰─────────────────╯         ╰─────────────────╯         ╰─────────────────╯
 
-  NOTE: The double trim by-passes the single trim. Note the "oranges" entry!
+NOTE: The double trim by-passes the single trim. Note the "oranges" entry!
 
 							   *arbo-triple-trims*
 3) triple trims ("finish" feature): " --- keyword name ..."
@@ -295,103 +296,103 @@ anything after it, regardless of its placement. It works the same as the
 "finish" keyword in Vimscript, or even the "exit" in BASH scripts.
 
 Also, any number of dash characters can be used from 3 dashes,
-
-"---", "----", or even "-----------------------------"
+>
+  "---", "----", or even "-----------------------------"
 
 This will be particularly useful in standalone trims |arbo-standalone-trims|.
 
 Example:
-
-╭───────────────╮         ╭────────────────╮         ╭────────────────╮
-│      ...      │         │       ...      │         │       ...      │
-│   file one    │         │    file one    │ or even │    file one    │
-│   file two    │         │    file two    │         │    file two    │
-│---file three  │ same as │#   file three  │         ╰────────────────╯
-│   file four   │         │#   file four   │             end of file
-│               │         │#               │
-│WORKSPACE      │         │# WORKSPACE     │
-│      ...      │         │#      ...      │
-╰───────────────╯         ╰────────────────╯
+>
+  ╭───────────────╮         ╭────────────────╮         ╭────────────────╮
+  │      ...      │         │       ...      │         │       ...      │
+  │   file one    │         │    file one    │ or even │    file one    │
+  │   file two    │         │    file two    │         │    file two    │
+  │---file three  │ same as │#   file three  │         ╰────────────────╯
+  │   file four   │         │#   file four   │             end of file
+  │               │         │#               │
+  │WORKSPACE      │         │# WORKSPACE     │
+  │      ...      │         │#      ...      │
+  ╰───────────────╯         ╰────────────────╯
 
 NOTE: a double trim applied onto an upper-most-level node (in this case a
 workspace) works exactly as a triple trim. Example:
-
-╭──────────────────╮         ╭───────────────────╮         ╭───────────────╮
-│                  │         │                   │         │               │
-│  WORKSPACE one   │         │   WORKSPACE one   │         │ WORKSPACE one │
-│        ...       │         │         ...       │ or even │       ...     │
-│  WORKSPACE two   │         │   WORKSPACE two   │         │ WORKSPACE two │
-│        ...       │ same as │         ...       │         │       ...     │
-│--WORKSPACE three │         │---WORKSPACE three │         ╰───────────────╯
-│        ...       │         │         ...       │            end of file
-│  WORKSPACE four  │         │   WORKSPACE four  │
-│        ...       │         │         ...       │
-╰──────────────────╯         ╰───────────────────╯
+>
+  ╭──────────────────╮         ╭───────────────────╮         ╭───────────────╮
+  │                  │         │                   │         │               │
+  │  WORKSPACE one   │         │   WORKSPACE one   │         │ WORKSPACE one │
+  │        ...       │         │         ...       │ or even │       ...     │
+  │  WORKSPACE two   │         │   WORKSPACE two   │         │ WORKSPACE two │
+  │        ...       │ same as │         ...       │         │       ...     │
+  │--WORKSPACE three │         │---WORKSPACE three │         ╰───────────────╯
+  │        ...       │         │         ...       │            end of file
+  │  WORKSPACE four  │         │   WORKSPACE four  │
+  │        ...       │         │         ...       │
+  ╰──────────────────╯         ╰───────────────────╯
 
 STANDALONE TRIMS			          *arbo-standalone-trims*
 
 A very user-friendly way of trimming the tree is to place the dash characters
 alone in the lines before the nodes you want to trim. Examples:
-
-		  ╭────────────────────╮         ╭────────────────────╮
-		  │        ...         │         │        ...         │
-		  │   Tab              │         │   Tab              │
-		  │     file one       │         │     file one       │
-	       -> │     --             │         │   --file two       │
-		  │     file two       │ same as │     file three     │
-		  │     file three     │         │                    │
-		  │                    │         │ WORKSPACE words    │
-		  │ WORKSPACE words    │         │        ...         │
-		  │        ...         │         ╰────────────────────╯
-		  ╰────────────────────╯
+>
+     ╭────────────────────╮         ╭────────────────────╮
+     │        ...         │         │        ...         │
+     │   Tab              │         │   Tab              │
+     │     file one       │         │     file one       │
+  -> │     --             │         │   --file two       │
+     │     file two       │ same as │     file three     │
+     │     file three     │         │                    │
+     │                    │         │ WORKSPACE words    │
+     │ WORKSPACE words    │         │        ...         │
+     │        ...         │         ╰────────────────────╯
+     ╰────────────────────╯
 
 and, as mentioned in the |arbo-triple-trims|,
-
-╭──────────────────╮
-│                  │
-│  WORKSPACE one   │
-│        ...       │
-│  WORKSPACE two   │
-│        ...       │
-│                  │
-│  -------------   │ <- trims from here
-│                  │
-│  WORKSPACE three │
-│        ...       │
-│  WORKSPACE four  │
-│        ...       │
-╰──────────────────╯
+>
+  ╭──────────────────╮
+  │                  │
+  │  WORKSPACE one   │
+  │        ...       │
+  │  WORKSPACE two   │
+  │        ...       │
+  │                  │
+  │  -------------   │ <- trims from here
+  │                  │
+  │  WORKSPACE three │
+  │        ...       │
+  │  WORKSPACE four  │
+  │        ...       │
+  ╰──────────────────╯
 
 NOTE: the standalone trim feature was indeed implement for the convenience of
 using native commands, such as "dd" followed by "p", when editing arbo files.
 Example:
-
-     before                    after
-╭───────────────╮        ╭───────────────╮
-│      ...      │        │      ...      │
-│   file one    │        │   file one    │
-│   file two    │        │   file two    │
-│   --          │ <- ddp │   file three  │
-│   file three  │        │   --          │
-│   file four   │        │   file four   │
-│      ...      │        │      ...      │
-╰───────────────╯        ╰───────────────╯
+>
+       before                    after
+  ╭───────────────╮        ╭───────────────╮
+  │      ...      │        │      ...      │
+  │   file one    │        │   file one    │
+  │   file two    │        │   file two    │
+  │   --          │ <- ddp │   file three  │
+  │   file three  │        │   --          │
+  │   file four   │        │   file four   │
+  │      ...      │        │      ...      │
+  ╰───────────────╯        ╰───────────────╯
 
 MULTIPLE STANDALONE TRIMS	           *arbo-multiple-standalone-trims*
 
 Although useless, multiple standalone trims can be used. In this case, the trim
 that comes first overwrites all others. Example:
-
-╭───────────────╮         ╭───────────────╮
-│      ...      │         │      ...      │
-│   file one    │         │   file one    │
-│   file two    │         │   file two    │
-│   --          │ same as │   --          │
-│   -           │         │   file three  │
-│   file three  │         │   file four   │
-│   file four   │         │      ...      │
-│      ...      │         ╰───────────────╯
-╰───────────────╯
+>
+  ╭───────────────╮         ╭───────────────╮
+  │      ...      │         │      ...      │
+  │   file one    │         │   file one    │
+  │   file two    │         │   file two    │
+  │   --          │ same as │   --          │
+  │   -           │         │   file three  │
+  │   file three  │         │   file four   │
+  │   file four   │         │      ...      │
+  │      ...      │         ╰───────────────╯
+  ╰───────────────╯
 
 THE LOOP STATEMENT				    *arbo-loop-statement*
 
@@ -399,7 +400,7 @@ It is in fact possible to perform loops in arbo. Although arbo was thought to
 be a human-readable non-programming language, sometimes the application can
 offer patterns that accomodates a looping mechanism. For example, say we have
 a C library project with the following file structure:
-
+>
   .
   ├── main.c
   ├── makefile
@@ -412,7 +413,7 @@ a C library project with the following file structure:
       └── ui.h
 
 in this case, the directory "src" and its files offer a unique pattern that
-can be exploited when writing a arbo file used by the nvpm plugin. The
+can be exploited when writing an arbo file used by the nvpm plugin. The
 uniqueness rests upon the fact that, since it's a C library project, all the
 modules will/should be written in files named "<module>.c" for the code, and
 "<module>.h" for the header macros anc such. As the modules increase in number
@@ -424,29 +425,25 @@ will be used in the examples:
 THE LOOP SYNTAX					    *arbo-loop-syntax*
 
 The following is a general form of a loop statement in arbo:
-
-	   ╭───────────────────────────────────────────────╮
-	   │                          	                   │
-	   │ [modifier] loop [<iterator>] [:] <list> [#{}] │
-	   │     m        l       i        s     L     c   │
-	   │                                               │
-	   │                     ...                       │
-	   │                                               │
-	   │                 <loop-body>                   │
-	   │                                               │
-	   │                     ...                       │
-	   │                                               │
-	   │ endl [#{}]                                    │
-	   │  e     c                                      │
-	   │                                               │
-	   ╰───────────────────────────────────────────────╯
-	   m: the loop modifier
-	   l: the loop keyword (case insensitive: loop,Loop,LOOP,etc)
-	   L: the optional loop iterator name, used in the loop's body
-	   s: the separator
-	   L: the list of strings to be iterated over
-	   e: the end-of-loop statement
-	   c: the comments (# ...)
+>
+  ╭───────────────────────────────────────────────╮
+  │                                               │
+  │ [modifier] loop [<iterator>] [:] <list> [#{}] │
+  │     m        l       i        s     L     c   │
+  │                     ...                       │
+  │                 <loop-body>                   │
+  │                     ...                       │
+  │ endl [#{}]                                    │
+  │  e     c                                      │
+  │                                               │
+  ╰───────────────────────────────────────────────╯
+  m: the loop modifier
+  l: the loop keyword (case insensitive: loop,Loop,LOOP,etc)
+  L: the optional loop iterator name, used in the loop's body
+  s: the separator
+  L: the list of strings to be iterated over
+  e: the end-of-loop statement
+  c: the comments (# ...)
 
 and the behaviour is the same as one would find in various programming
 languages, such as C, python, etc. i.e., the iterator variable loops over the
@@ -456,40 +453,40 @@ body, it's replaced by the current value of the iteration.
 Considering the C library project mentioned, and its file structure, in the
 context of the nvpm nvpm plugin, the following could be a valid example of a
 arbo file to be used, when loop is concerned:
+>
+ FILE STRUCTURE
+ .
+ ├── main.c
+ ├── makefile
+ └── src
+     ├── logic.c
+     ├── logic.h
+     ├── math.c
+     ├── math.h
+     ├── ui.c
+     └── ui.h
 
-         	       	   FILE STRUCTURE
-        		       	.
-        		       	├── main.c
-        		       	├── makefile
-        		       	└── src
-        		       	    ├── logic.c
-        		       	    ├── logic.h
-        		       	    ├── math.c
-        		       	    ├── math.h
-        		       	    ├── ui.c
-        		       	    └── ui.h
-   
-╭─────────────────────────────────╮         ╭─────────────────────────╮
-│                                 │         │                         │
-│ workspace code                  │         │ workspace code          │
-│   tab main                      │         │   tab main              │
-│     file main: main.c           │         │     file main: main.c   │
-│     file make: makefile         │         │     file make: makefile │
-│                                 │         │                         │
-│   loop module : ui logic math { │ same as │   tab ui: src           │
-│     tab $(module): src          │         │     file ui.c           │
-│	 file $(module).c         │         │     file ui.h           │
-│	 file $(module).h         │         │                         │
-│   endl }                        │         │   tab logic: src        │
-│                                 │         │     file logic.c        │
-╰─────────────────────────────────╯         │     file logic.h        │
-                                            │                         │
-                                            │   tab math: src         │
-                                            │     file math.c         │
-                                            │     file math.h         │
-                                            │                         │
-                                            ╰─────────────────────────╯
-                             
+  ╭─────────────────────────────────╮         ╭─────────────────────────╮
+  │                                 │         │                         │
+  │ workspace code                  │         │ workspace code          │
+  │   tab main                      │         │   tab main              │
+  │     file main: main.c           │         │     file main: main.c   │
+  │     file make: makefile         │         │     file make: makefile │
+  │                                 │         │                         │
+  │   loop module : ui logic math { │ same as │   tab ui: src           │
+  │     tab $(module): src          │         │     file ui.c           │
+  │	 file $(module).c           │         │     file ui.h           │
+  │	 file $(module).h           │         │                         │
+  │   endl }                        │         │   tab logic: src        │
+  │                                 │         │     file logic.c        │
+  ╰─────────────────────────────────╯         │     file logic.h        │
+					      │                         │
+					      │   tab math: src         │
+					      │     file math.c         │
+					      │     file math.h         │
+					      │                         │
+					      ╰─────────────────────────╯
+
 THE ARBO DATA STRUCTURE                            *arbo-data-structure*
 
 The example above shows a call to the main arbo function "arbo#arbo(...)",
@@ -498,77 +495,74 @@ which returns the tree data-structure described in the arbo file.
 Each node of the tree, as well as its subtrees, will be in a form of a
 dictionary that may contain the following keys: file, info, meta, and list.
 
-- `file`:                                                *arbo-data-file*
-    type: string
+* `file`                                                 *arbo-data-file*
+  type: string
 
-    Stores the path to the arbo file used when supplying the configuration
-    variable to arbo#arbo.
+  Stores the path to the arbo file used when supplying the configuration
+  variable to `arbo#arbo`. This is only used in the root of the tree.
 
-    This is only used in the root node of the tree
+* `info`                                                 *arbo-data-info*
+  type: dictionary
+  keys: keyw, name, and info
 
-- `info`:                                                *arbo-data-info*
-    type: dictionary
-    keys: keyw, name, and info
+  Composed of the information described in an arbo element. Its fields are:
+  keyw, name, and info. Say we have an element that decribes a file node:
+>
+  ╭────────────────────────────────────╮
+  │                                    │
+  │ file main : main.c # the main file │
+  │                                    │
+  ╰────────────────────────────────────╯
+<
+  in this case, its `info` dictionary field will be
+>
+  ╭───────────────────────────────────────────────╮
+  │                                               │
+  │ {'keyw':'file','name':'main','info':'main.c'} │
+  │                                               │
+  ╰───────────────────────────────────────────────╯
 
-    Composed of the information described in a arbo element. Its fields are:
-    keyw, name, and info. Say we have an element that decribes a file node:
+* `meta`                                                 *arbo-data-meta*
+  type: dictionary
+  keys: type, leng, and indx
 
-		    ╭────────────────────────────────────╮
-		    │                                    │
-		    │ file main : main.c # the main file │
-		    │                                    │
-		    ╰────────────────────────────────────╯
+  Composed of the meta information regarding the list (|arbo-data-list|) of
+  subnodes (children), in a given node. In other words, the `meta` field is
+  only present if the `list` field is, which happens in non-leaf nodes.
 
-    in this case, its "info" dictionary field will be
+  Consider the same example in |arbo-data-info|, and that the lexicon in use is
+  of the form "tab,file". Then, the resulting meta field will be something
+  like this:
+>
+  ╭──────────────────────────────╮
+  │                              │
+  │ {'type':2,'leng':3,'indx':0} │
+  │                              │
+  ╰──────────────────────────────╯
+<
+  this means the list field has three elements of type 2 (file elements),
+  and it's currently placed at the first file element.
 
-	      ╭───────────────────────────────────────────────╮
-	      │                                               │
-	      │ {'keyw':'file','name':'main','info':'main.c'} │
-	      │                                               │
-	      ╰───────────────────────────────────────────────╯
+* `list`                                                 *arbo-data-list*
+  type : list
+  items: dictionary nodes
 
-- `meta`:                                                *arbo-data-meta*
-    type: dictionary
-    keys: type, leng, and indx
-
-    Composed of the meta information regarding the list (|arbo-data-list|) of
-    subnodes (children), in a given node.
-
-    Consider the same example in |arbo-data-info|, and that the lexicon use is
-    of the form "tab,file". Then, the resulting meta field will be something
-    like this:
-
-		   ╭──────────────────────────────╮
-		   │                              │
-		   │ {'type':2,'leng':3,'indx':0} │
-		   │                              │
-		   ╰──────────────────────────────╯
-
-    this means the list field has three elements of type 2 (file elements),
-    and it's currently placed at the first file element.
-
-
-- `list`:                                                *arbo-data-list*
-    type: list
-    items: dictionary nodes
-
-    Composed of the subnodes in the tree a.k.a children. Its length, type of
-    nodes, and current index are described in |arbo-data-meta
+  Composed of the subnodes in the tree, a.k.a children. Its length, type of
+  nodes, and current index are described in |arbo-data-meta
 
 DATA STRUCTURE EXAMPLE                                *arbo-data-example*
 
-  Consider the following scenario.
-
-  1) the configuration fed to arbo#arbo is of the form:
-
-	╭────────────────────────────────────────────────────────────╮
-	│                                                            │
-	│ {'file':'code.arbo','lexicon':'workspace,tab,buffer file'} │
-	│                                                            │
-	╰────────────────────────────────────────────────────────────╯
-
-  2) the content arbo file "code.arbo" is:
-
+Consider the following scenario. The configuration fed to arbo#arbo is of the 
+form:
+>
+  ╭────────────────────────────────────────────────────────────╮
+  │                                                            │
+  │ {'file':'code.arbo','lexicon':'workspace,tab,buffer file'} │
+  │                                                            │
+  ╰────────────────────────────────────────────────────────────╯
+<
+and the content of the arbo file "code.arbo" is:
+>
   ╭───────────────────────╮
   │ WORKSPACE code        │
   │   tab root            │
@@ -581,6 +575,11 @@ DATA STRUCTURE EXAMPLE                                *arbo-data-example*
   │   buffer install.sh   │
   │                       │
   ╰───────────────────────╯
+<
+Then, following is the resulting data structure returned by the call
+`arbo#arbo(conf)`:
+
+  TODO: dictionaries in vimscript #{...}
 
 { file: test/arbo/case.arbo,
   meta: {leng: 2, type: 1, indx : 0},

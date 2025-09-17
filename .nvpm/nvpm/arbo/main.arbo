@@ -68,7 +68,7 @@
     workspace  arbo {
       tab  code
         file auto : autoload/arbo.vim
-       -file synx :   syntax/arbo.vim
+        file synx :   syntax/arbo.vim
         file init = meta/init.vim
       tab  test = test/arbo
         file case : case.arbo
@@ -82,7 +82,6 @@
         file init = meta/init.vim
     }
   }
-  ---
   project   meta {
     tab  meta = meta
       file conf.vim
