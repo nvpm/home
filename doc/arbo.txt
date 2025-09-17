@@ -1,32 +1,69 @@
 *arbo.txt*			      `A parser for the arbo markup language`
 
 CONTENTS                                          *arbo*
-INTRODUCTION		      			  |arbo-intro|
-THE ARBO SYNTAX 		                  |arbo-syntax|
-SYNTAX ELEMENTS 		                  |arbo-syntax-elements|
-SYNTAX CONFIGURATION                              |arbo-syntax-config|
-THE LEXICON CONFIGURATION                         |arbo-lexicon|
-THE TRIM MECHANISM                                |arbo-tree-trimming|
-THE ARBO DATA STRUCTURE                           |arbo-data-structure|
-DATA STRUCTURE EXAMPLE                            |arbo-data-example|
+
+Introduction		      			  |arbo-intro|
+The Arbo Syntax 		                  |arbo-syntax|
+Syntax Configuration                              |arbo-syntax-config|
+The Lexicon Configuration                         |arbo-lexicon|
+The Trim Mechanism                                |arbo-tree-trimming|
+The Arbo Data Structure                           |arbo-data-structure|
+Data Structure Example                            |arbo-data-example|
 
 INTRODUCTION                                                   *arbo-intro*
 
 Note: In order to properly understand the usage of this plugin, the reader may
       need to go back and forth in this document.
 
-The arbo plugin was created to provide a parsing mechanism for the plugins
-under the nvpm plugin pack. Not all plugins will use it though, but those
-that do, will rely heavily on it.
+The nvpm/arbo plugin was created with the purpose of providing a parsing
+mechanism for the `arbo` markup language, which is defined in this document.
 
-This plugin deals with a markup language that describes a tree-like structure
-given a particular context. The resulting of the parsing will be a tree data
-structure in a form of a dictionary.
+This language offers a simplified way to obtain a tree data-structure from a
+human-readable file, following the `arbo` syntax. However, do not get your
+hopes up thinking this language will rival other languages such as YAML, JSON
+or even XML. No, that wasn't the point here!
+
+The point was to provide a markup language that can be used inside the scope
+of the nvpm/* plugins. Theses plugins will then have a mechanism to store meta
+data, and other important information, in various contexts.
+
+Note: for now, only the nvpm/nvpm plugins uses it, but other nvpm/* plugins
+will too in the future.
+
+And you may be wondering: why not just use languages such as YAML or XML?
+Well, simply because of the following reasons:
+
+1) to avoid depending on other projects; 
+2) to avoid bloatware: 
+
+   Even if there is an YAML or XML plugin developed in Vimscrip, not all
+   functionalities features of such languages will be used by the nvpm/* 
+   plugins.
+
+3) the conveniences that come from reason (1):
+
+  If a nvpm/* plugin needs the arbo language to have a specific feature, we
+  won't need to wait for those languages to evolve. We can simply develop it
+  in Vimscript and be done with it.
+
+Also, although the arbo language can be used in various contexts, it's features 
+were thought to be used in the nvpm/* plugins. This also has the benefit of 
+keeping the language as clean as possible, by only having what the nvpm/* 
+plugins need, as opposed to the huge set of contexts that YAML or XML can be 
+used. Again, reason (2).
+
+As we will see, the arbo language works in a different manner. No spell check
+mechanisms were developed in the nvpm/arbo plugin. Instead, the user (human or
+plugin) needs to first define what is called a `lexicon`, which is the set of
+"allowed" keywords in the arbo file.
+
+This was done for the sake simplicity. This way, any keywords that don't belong
+in the lexicon will simply be ignored by the parsing routines.
 
 THE ARBO SYNTAX                                               *arbo-syntax*
 
 The syntax is composed of pre-defined keyword elements, which will define the
-different node leves in the tree. Much like one would write different levels
+different node levels in the tree. Much like one would write different levels
 of subjects on a piece of paper. Examples later!
 
 The tree data-structure, returned by arbo, will explore the following
@@ -36,12 +73,10 @@ concepts:
   children branching from them.
 
 - `tree node` is the node that has children, which can be either a leaf
-  node or yet another tree node.
+  node or yet another tree node. They will also be called non-leaf nodes.
 
 - `root node` is the node at the base of the tree (where it all begins).
   Note: in this case the root node is in fact a tree node
-
-SYNTAX ELEMENTS	      			     *arbo-syntax-elements*
 
 The following is a general form of a valid line in an arbo file.
 >
@@ -50,11 +85,11 @@ The following is a general form of a valid line in an arbo file.
   │      m        k      n      s      v      c    │
   ╰────────────────────────────────────────────────╯
   m: the element modifier
-     For now it's just the trimming mechanism. More on |arbo-tree-trimming|.
+     For now it's just the trimming mechanism.
 
   k: the keyword itself (case insensitive)
-     A name for the keyword defined in the lexicon (|arbo-lexicon|). It has to
-     match the pattern [a-zA-Z0-9_].
+     A name for the keyword defined in the lexicon. It has to match the pattern
+     [a-zA-Z0-9_].
 
   n: the name for that keyword
   s: the separator
