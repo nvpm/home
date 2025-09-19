@@ -2,8 +2,8 @@
     workspace  nvpm {
         file  help : doc/nvpm.txt
         file  nvpm : ../nvpm/doc/nvpm.txt
-        --
         file  vimh = /usr/share/nvim/runtime/doc/helphelp.txt
+        --
         file  nvpm : nvpm.md
         file  read : README.md
     }
