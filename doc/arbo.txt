@@ -204,10 +204,10 @@ In order to understand the `home` and `fixt` fields, the syntax for arbo files
 has to be explained. The following is a general form of a valid line in an 
 arbo file:
 >
-  ╭───────────────────────────────╮
-  │ [modifier] keyword info [#{}]]│
-  │      m        k      i    c   │
-  ╰───────────────────────────────╯
+  ╭───────────────────────────────────────╮
+  │ [modifier] keyword info  [,] [#{}]]   │
+  │      m        k      i    e    c      │
+  ╰───────────────────────────────────────╯
   m: the element modifier
      For now it's just the trimming mechanism.
 
@@ -215,8 +215,40 @@ arbo file:
      A keyword defined in the lexicon. It has to match the pattern [a-zA-Z0-9_].
 
   i: the information held by that keyword entry
+  e: the end-of-line character
   c: in-line comments
+
+And the following are examples of arbo files with their respective lexicon
+lists:
+>
+    lexicon: "tab,file"        lexicon: "year, event"            
+    ╭─────────────────╮        ╭──────────────────────────────╮ 
+    │           ...   │        │  year 1912                   │ 
+    │  TAB main       │        │    event Titanic's shipwreck │
+    │    file main.c  │        │  year 1914                   │
+    │   -file main.h  │        │    event Start of 1st WW     │
+    │                 │        │  year 1918                   │
+    │ -TAB math       │        │    event End of 1st WW       │
+    │    file math.c  │        │  year 1939                   │
+    │    file math.h  │        │    event Start of 2nd WW     │
+    ╰─────────────────╯        │               ...            │
+                               ╰──────────────────────────────╯
+			  
+		 lexicon: "country, city"         		     
+		 ╭────────────────────────╮
+		 │  country USA {         │
+		 │    city New York       │
+		 │    city Los Angeles    │
+		 │    city Detroit        │
+		 │  }                     │
+		 │  country Brazil {      │
+		 │    city São Paulo      │
+		 │    city Rio de Janeiro │
+		 │    city Florianópolis  │
+		 │  }                     │       		   
+		 ╰────────────────────────╯ 
+<
+Note: the indentation shown above is optional.
 
 
 vim:tw=78:ts=8:noet:ft=help:norl:
-
