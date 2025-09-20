@@ -516,3 +516,19 @@ fu! arbo#seek(...) abort "{ looks for the current node of a given number type
   return {}
 
 endfu "}
+fu! arbo#indx(...) abort "{ sets/limits a new index to a given meta field
+
+  if !a:0||type(a:1)!=type({})|return 1|endif
+
+  let node = a:1
+
+  if has_key(node,'meta')
+    let meta = node.meta
+    let meta.indx = get(a:,2,meta.indx)
+    if has_key(meta,'leng')
+      let meta.indx%= meta.leng               " limits range inside length
+      let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
+    endif
+  endif
+
+endfu "}

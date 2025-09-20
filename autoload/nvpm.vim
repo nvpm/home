@@ -116,7 +116,7 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
       unlet g:nvpm.tree.list[indx]
       let g:nvpm.tree.meta.leng-= 1
       " just to keep indx inside bounds, because of new leng
-      call nvpm#indx(g:nvpm.tree.meta)
+      call arbo#indx(g:nvpm.tree)
     else
       return 1
     endif
@@ -141,7 +141,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     if g:nvpm.tree.curr==bufname()
       let node = arbo#seek(g:nvpm.tree,type)
       if !has_key(node,'meta')|return 1|endif
-      call nvpm#indx(node.meta,node.meta.indx+step)
+      call arbo#indx(node,node.meta.indx+step)
     endif
 
     " performs the JumpBack WorkFlow
@@ -182,7 +182,7 @@ fu! nvpm#trim(...) abort "{ trim mode routine (soon to be called 'edit mode')
       call nvpm#fell(g:nvpm.file.edit)
       let indx = nvpm#find(pick)
       if 1+indx
-        call nvpm#indx(g:nvpm.tree.meta,indx)
+        call arbo#indx(g:nvpm.tree,indx)
       endif
     endif
     call nvpm#load()
@@ -295,15 +295,6 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
   endif
 
 endfu "} 
-fu! nvpm#indx(...) abort "{ sets/limits a new index to a given meta field
-
-  let meta = a:1
-
-  let meta.indx = get(a:,2,meta.indx)
-  let meta.indx%= meta.leng               " limits range inside length
-  let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
-
-endfu "}
 fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
 
   for key in keys(g:nvpm)
