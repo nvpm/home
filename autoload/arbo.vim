@@ -37,7 +37,7 @@ fu! arbo#data(...) abort "{ builds the arbo Data Structure (DS)
   let tree.file = s:conf.file
   let tree.synx = s:conf.syntax
 
-  if get(s:conf,'fixt',0)|call arbo#fixt(tree,s:conf)|endif
+  if get(s:conf,'fixtree',0)|call arbo#fixt(tree,s:conf)|endif
 
   " leave conf the way it was
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
@@ -206,7 +206,7 @@ fu! arbo#conf(...) abort "{ rectifies configuration dictionary
     let conf.home = 0
   elseif conf.syntax ==? 'nvpm'
     let conf.home = 1
-    let conf.fixt = 1
+    let conf.fixtree = 1
   endif
 
   let conf.leaftype = len(conf.lexicon)
