@@ -1,615 +1,254 @@
 *arbo.txt*			      `A parser for the arbo markup language`
 
 CONTENTS                                          *arbo*
-INTRODUCTION		      			  |arbo-intro|
-THE ARBO SYNTAX 		                  |arbo-syntax|
-SYNTAX ELEMENTS 		                  |arbo-syntax-elements|
-SYNTAX CONFIGURATION                              |arbo-syntax-config|
-THE LEXICON CONFIGURATION                         |arbo-lexicon|
-THE TRIM MECHANISM                                |arbo-tree-trimming|
-THE ARBO DATA STRUCTURE                           |arbo-data-structure|
-DATA STRUCTURE EXAMPLE                            |arbo-data-example|
+
+Introduction		      			  |arbo-intro|
+The Arbo Syntax 		                  |arbo-syntax|
+Syntax Configuration                              |arbo-syntax-config|
+The Lexicon Configuration                         |arbo-lexicon|
+The Trim Mechanism                                |arbo-tree-trimming|
+The Arbo Data Structure                           |arbo-data-structure|
+Data Structure Example                            |arbo-data-example|
 
 INTRODUCTION                                                   *arbo-intro*
 
 Note: In order to properly understand the usage of this plugin, the reader may
       need to go back and forth in this document.
 
-The arbo plugin was created to provide a parsing mechanism for the plugins
-under the nvpm plugin pack. Not all plugins will use it though, but those
-that do, will rely heavily on it.
+The nvpm/arbo plugin was created with the purpose of providing a parsing
+mechanism for the `arbo` markup language, which is defined in this document.
 
-This plugin deals with a markup language that describes a tree-like structure
-given a particular context. The resulting of the parsing will be a tree data
-structure in a form of a dictionary.
+This language offers a simplified way to obtain a tree data-structure from a
+human-readable file, following the `arbo` syntax. However, do not get your
+hopes up thinking this language will rival other languages such as YAML, JSON
+or even XML. No, that wasn't the point here!
+
+The point was to provide a markup language that can be used inside the scope
+of the nvpm/* plugins. Theses plugins will then have a mechanism to store meta
+data, and other important information, in various contexts.
+
+Note: for now, only the nvpm/nvpm plugins uses it, but other nvpm/* plugins
+will too in the future.
+
+And you may be wondering: why not just use languages such as YAML or XML?
+Well, simply because of the following reasons:
+
+1) to avoid depending on other projects;
+2) to avoid bloatware:
+
+   Even if there is an YAML or XML plugin developed in Vimscrip, not all
+   functionalities features of such languages will be used by the nvpm/*
+   plugins.
+
+3) the conveniences that come from reason (1):
+
+  If a nvpm/* plugin needs the arbo language to have a specific feature, we
+  won't need to wait for those languages to evolve. We can simply develop it
+  in Vimscript and be done with it.
+
+Also, although the arbo language can be used in various contexts, it's features
+were thought to be used in the nvpm/* plugins. This also has the benefit of
+keeping the language as clean as possible, by only having what the nvpm/*
+plugins need, as opposed to the huge set of contexts that YAML or XML can be
+used. Again, reason (2).
+
+As we will see, the arbo language works in a different manner. No spell check
+mechanisms were developed in the nvpm/arbo plugin. Instead, the user (human or
+plugin) needs to first define what is called a `lexicon`, which is the set of
+"allowed" keywords in the arbo file.
+
+This was done for the sake simplicity. This way, any keywords that don't belong
+in the lexicon will simply be ignored by the parsing routines.
 
 THE ARBO SYNTAX                                               *arbo-syntax*
 
-The syntax is composed of pre-defined keyword elements, which will define the
-different node leves in the tree. Much like one would write different levels
-of subjects on a piece of paper. Examples later!
+The syntax for each line of an arbo file is composed of pre-defined keywords
+followed by the information for that keyword.
 
-The tree data-structure, returned by arbo, will explore the following
-concepts:
+As mentioned before, those keywords are listed in the lexicon, which is the list
+of allowed keywords. In this way, the arbo parser will only recognize lines
+that begin with those keywords and ignore all other lines that start with
+other words that don't belong.
+======================
+* The Configuration Dictionary                      *arbo-config-dict*
 
-- `leaf node` is the node at the end of a tree. They will not have any
-  children branching from them.
+It's unlikely that an end user will ever need to directly use the arbo plugin,
+since it was meant to be used by other applications. That's why it does not
+provide any user commands. Instead, it works by function call. And despite
+having many functions, a single function call is enough to parse an arbo file.
 
-- `tree node` is the node that has children, which can be either a leaf
-  node or yet another tree node.
+This function is called `arbo#arbo(...)`, and it takes a single configuration
+dictionary. For now, the following are the allowed fields of this dictionary:
 
-- `root node` is the node at the base of the tree (where it all begins).
-  Note: in this case the root node is in fact a tree node
+- `file`   : the full path to the arbo file to be parsed;
+- `lexicon`: the list of allowed keywords as mentioned before;
+- `home`   : the flag that allows for the homming mechanism, used by the
+	   nvpm/nvpm plugin;
+- `fixt`   : the flag that tells arbo to fix user mistakes in the arbo file.
 
-SYNTAX ELEMENTS	      			     *arbo-syntax-elements*
+The following is a complete example:
+>
+  ...
+  let arboconf = {}
+  let arboconf.file = 'example.arbo'
+  let arboconf.home = 0
+  let arboconf.fixt = 0
+  let arboconf.lexicon = ['foo','bar']
 
-The following is a general form of a valid line in an arbo file.
+  let arbodata = arbo#arbo(arboconf)
+  ...
 
-  ╭────────────────────────────────────────────────╮
-  │ [modifier] keyword <name> [[:=] <value> [#{}]] │
-  │      m        k      n      s      v      c    │
-  ╰────────────────────────────────────────────────╯
-  m: the element modifier
-     For now it's just the trimming mechanism. More on |arbo-tree-trimming|.
+The following is the explanation of each element in the example above.
+======================
+1) the lexicon:                                  *arbo-config-lexicon*
 
-  k: the keyword itself (case insensitive)
-     A name for the keyword defined in the lexicon (|arbo-lexicon|). It has to
-     match the pattern [a-zA-Z0-9_].
+This field defines an order of hierarchy in which the keywords should be
+interpreted. In the example above, "foo" keywords will have precedence over
+"bar" keywords, in the arbo file. This means that the "bar" entries are
+interpreted as children of the "foo" ones. This will become clear later!
 
-  n: the name for that keyword
-  s: the separator
-  v: the value for that keyword
-  c: the comments (# ...)
+Also, there are two ways you can write a lexicon fields: in either string or
+list formats. The following is the general syntax for both ways:
 
+- string format >
 
-And the best way to explain the usage is with a practical example. Say we want
-to describe the placement of files in a project. For the sake of this example,
-let's consider a simple C project, with 3 files, say: main.c, main.h, and
-Makefile. In this case, a valid arbo file used by the |nvpm| plugin is:
+  "KW11 KW12 ... KW1n , ... , KWm1 KWm2 ... KWmp"
+	      |	      |     |            |
+	      |	      v     v            |
+	      |	       comma             |
+	      |                          |
+	      +-> number type: 1         +-> number type: m
+		  length: n                  length: p
+<
+- list format >
 
-            - project.arbo  -
-	   ╭───────────────────────╮
-	   │  file main.c          │
-	   │  file main.h          │
-	   │ -file make: Makefile  │
-	   ╰───────────────────────╯
-
-in this case the file 'Makefile' was given a name (make). This will be useful
-for the visual feedback of the |nvpm| plugin, and possibly others too. It's
-also important to notice that the Makefile entry has a '-' modifier. More on
-that later.
-
-SYNTAX CONFIGURATION                                 *arbo-syntax-config*
-
-The configuration of arbo is not done by global variables read at startup.
-arbo is a call on-demand kinda plugin, which means its only called by other
-plugins when they need it.
-
-Each client plugin will pass a dictionary configuration variable to arbo at
-each call. This dictionary should contain three keys: file, syntax, and
-lexicon.
-
-- `file`    : is the file to be parsed
-- `syntax`  : the syntax used (default 'plain') * yet to be implemented!
-- `lexicon` : the list of keywords recognized by arbo
-
-  This variable describes not only the words, but order of precedence in which
-  a node is to be parsed. In other words, it describes which elements will be
-  contained in which.
-
-  This order is defined by a comma-separated string. For example:
-
-  ```vimscript
-    let conf = {}
-    let conf.file = 'foobar.arbo'
-    let conf.lexicon = 'foo,bar'
-	   ...
-  ```
-
-  here "foo" elements will contain a list of "bar" element, and never the other
-  way around.
-
-                                                             *arbo-number-type*
-  Also, this defines the number type of an element. which is the order in which
-  the word appear in the lexicon: 1:foo, 2:bar. In fact, the same example
-  above could also be done as follows:
-
-  ```vimscript
-    let conf = {}
-    let conf.file = 'foobar.arbo' " number type: 0
-    let conf.lexicon = [['foo'],['bar']]
-	   ...             1       2
-  ```
-
-  which is the form arbo actually uses. Note: the 0 number type will be used
-  for the arbo file itself.
-
-THE LEXICON CONFIGURATION                                      *arbo-lexicon*
-
-The main syntax for the lexicon is:
-
-- `string format`
-
-    "KW11 KW12 ... KW1n , ... , KWm1 KWm2 ... KWmp"
-	        |	|     |            |
-	        |	v     v            |
-	        |	 comma             |
-	        |                          |
-	        +-> number type: 1         +-> number type: m
-                    length: n                  length: p
-- `list format`
-
-    [["KW11","KW12",...,"KW1n"],...,["KWm1","KWm2",...,"KWmn"]]
+  [["KW11","KW12",...,"KW1n"],...,["KWm1","KWm2",...,"KWmp"]]
 		  1                               m
-
+<
 where {KWij} matches the following regex [a-z0-9_].
 
-The following are valid forms for the lexicon key:
+Note: the string format was created for convenience as we will see later.
+======================
+1.1) the number type (NT):                  *arbo-config-lexicon-number-type*
 
+This concept allows the client plugins to have a numeric way of knowing the
+order of hierarchy in which the keywords are defined. In mathematical terms,
+the number type a keyword is defined as follows:
+>
+  For every keyword {KWij}, where 1<=i and i<=n => Number type = i
+======================
+1.2) lexicon examples:                         *arbo-config-lexicon-examples*
+
+The following is the default lexicon used by the nvpm/nvpm plugin:
+
+  In string format >
   ```vimscript
-  let conf = {}
-  let conf.lexicon = 'workspace , tab folder, buff file'
-  let conf.lexicon = [['workspace'],['tab','folder'],['buff','file']]
-	 ...              " 1             2                 3
+  let nvpm = {}
+  let nvpm.lexicon  = ""
+  let nvpm.lexicon .= ",project scheme layout root"      "number type: 1
+  let nvpm.lexicon .= ",workspace archive trunk"         "number type: 2
+  let nvpm.lexicon .= ",tab folder shelf package branch" "number type: 3
+  let nvpm.lexicon .= ",file buffer path entry leaf"     "number type: 4
   ```
+<
+  In list format >
+  ```vimscript
+  let nvpm = {}
+  let nvpm.lexicon  = []
+  let nvpm.lexicon += ["project","scheme","layout","root"]        "NT: 1
+  let nvpm.lexicon += ["workspace","archive","trunk"]             "NT: 2
+  let nvpm.lexicon += ["tab","folder","shelf","package","branch"] "NT: 3
+  let nvpm.lexicon += ["file","buffer","path","entry","leaf"]     "NT: 4
+
+  echo nvpm.lexicon[0][2] " echoes "scheme"
+  echo nvpm.lexicon[2][3] " echoes "shelf"
+  ```
+<
+The following, is lexicon for countries, states, and cities:
+>
+  ```vimscript
+  let places = {}
+  let places.lexicon = "country, state, city"
+  let places.lexicon = ["country","state","city"]
+  ```                      
+<
+Another for events:
+>
+  ```vimscript
+  let events = {}
+  let events.lexicon = "year, month, event"
+  ```                      
+<
+Notes: 
+  1) any number of leading or trailing or in between spaces or commas will be 
+     ignored in the string format.
+
+  2) the last element in the lexicon list is always called leaf keywords,
+     which will relate to the leaf nodes of the tree data-structure returned
+     by `arbo#arbo(...)`.
+     
+  3) if you consider 0 <= i < len(lexicon), then the number type of
+  lexicon[i][j] equals i+1.
+======================
+2) the file:                                  *arbo-config-file*
+
+The file filds is self explanatory. Is the path to the file to be parsed. It
+can be any ASCII file, with any extension, but at least in the nvpm/* plugins,
+they'll have `*.arbo` extensions.
+
+For now, only files can be parsed.
+======================
+2.1) the arbo file syntax:                          *arbo-file-syntax*
+
+In order to understand the `home` and `fixt` fields, the syntax for arbo files 
+has to be explained. The following is a general form of a valid line in an 
+arbo file:
+>
+  ╭───────────────────────────────────────╮
+  │ [modifier] keyword info  [,] [#{}]]   │
+  │      m        k      i    e    c      │
+  ╰───────────────────────────────────────╯
+  m: the element modifier
+     For now it's just the trimming mechanism.
+
+  k: the keyword itself (case insensitive)
+     A keyword defined in the lexicon. It has to match the pattern [a-zA-Z0-9_].
+
+  i: the information held by that keyword entry
+  e: the end-of-line character
+  c: in-line comments
+
+And the following are examples of arbo files with their respective lexicon
+lists:
+>
+    lexicon: "tab,file"        lexicon: "year, event"            
+    ╭─────────────────╮        ╭──────────────────────────────╮ 
+    │           ...   │        │  year 1912                   │ 
+    │  TAB main       │        │    event Titanic's shipwreck │
+    │    file main.c  │        │  year 1914                   │
+    │   -file main.h  │        │    event Start of 1st WW     │
+    │                 │        │  year 1918                   │
+    │ -TAB math       │        │    event End of 1st WW       │
+    │    file math.c  │        │  year 1939                   │
+    │    file math.h  │        │    event Start of 2nd WW     │
+    ╰─────────────────╯        │               ...            │
+                               ╰──────────────────────────────╯
+			  
+		 lexicon: "country, city"         		     
+		 ╭────────────────────────╮
+		 │  country USA {         │
+		 │    city New York       │
+		 │    city Los Angeles    │
+		 │    city Detroit        │
+		 │  }                     │
+		 │  country Brazil {      │
+		 │    city São Paulo      │
+		 │    city Rio de Janeiro │
+		 │    city Florianópolis  │
+		 │  }                     │       		   
+		 ╰────────────────────────╯ 
+<
+Note: the indentation shown above is optional.
 
-Note: The only reason why the lexicon field exists is to avoid writing a spell
-checker for the language. This way any words that don't belong or even typos
-will simply be ignored without giving an error message. This behaviour becomes
-clearer when using the |nvpm| plugin.
-
-To further explain the syntax,
-
-                                 ||   - foobar.arbo -
-```vimscript                     ||   ╭──────────────────────╮
-  let conf = {}                  ||   │  foo foo-01 : val1   │
-  let conf.file = 'foobar.arbo'  ||   │    bar b01 : bar 1   │
-  let conf.lexicon = 'foo,bar'   ||   │    bar b02 = bar 2   │
-                                 ||   │                      │
-  let data = arbo#arbo(conf)     ||   │  foo foo-02 : val2   │
-```                              ||   │    bar code          │
-                                 ||   ╰──────────────────────╯
-
-in this case, only the words "foo" and "bar" will be accepted as valid
-keywords in the arbo file "main.arbo". Moreover, note that foo and bar are
-separeted by comma. This means that foo takes precedence over bar, in the
-context of a tree.
-
-THE TRIM MECHANISM                                 *arbo-tree-trimming*
-
-This feature allows the user to trim certain nodes of the tree data-structure
-without removing, or commenting out, their listed elements from the arbo file.
-This is particularly useful when you don't want things to make it to the final
-data-structure, but want to keep those things saved in the arbo file for
-later use.
-
-It's done by inserting dash characters before any element in the arbo file.
-The number of dashes tells the arbo engine how deep the trim should go. As
-for now, there are three level of trimming.
-
-The following is the lexicon configuration used in the examples for this
-feature.
-
-```vimscript
-
-  let conf = {}
-  let conf.lexicon = 'workspace , tab , file'
-
-```
-
-1) single trims: " - keyword name ..."                 *arbo-single-trims*
-
-This trim-level trims just the node after it. In the following arbo file, the
-entry "-file make: Makefile" tells arbo that the node called "make" should
-not be parsed, and therefore not be present in the resulting data-structure.
-
-╭───────────────────────╮
-│          ...          │
-│  file main.c          │
-│  file main.h          │
-│ -file make: Makefile  │ <- Note the dash character
-│          ...          │
-╰───────────────────────╯
-
-also, any higher level nodes can be trimmed this way. Consider the following:
-
-╭─────────────────╮                ╭─────────────────╮
-│           ...   │                │           ...   │
-│  TAB main       │                │  TAB main       │
-│    file main.c  │                │    file main.c  │
-│    file main.h  │                │    file main.h  │
-│                 │                │                 │
-│ -TAB math       │ equivalent to  │ #TAB math       │
-│    file math.c  │ commenting out │ #  file math.c  │
-│    file math.h  │                │ #  file math.h  │
-│                 │                │                 │
-│  TAB logic      │                │  TAB logic      │
-│    file logic.c │                │    file logic.c │
-│    file logic.h │                │    file logic.h │
-│           ...   │                │           ...   │
-╰─────────────────╯                ╰─────────────────╯
-
-2) double trims: " -- keyword name ..."                 *arbo-double-trims*
-
-This trim-level tells arbo to ignore a range of nodes, up until the next same
-, or higher, level node, or even the end of the file. For example:
-
-● until the next same level node, in this case "tab"
-╭───────────────╮               ╭───────────────╮
-│      ...      │               │      ...      │
-│  TAB          │               │  TAB          │
-│    file one   │               │    file one   │
-│  --file two   │      is       │   -file two   │
-│    file three │ equivalent to │   -file three │
-│    file four  │ single trims  │   -file four  │
-│               │               │               │
-│  TAB          │               │  TAB          │
-│    file foo   │               │    file foo   │
-│    file bar   │               │    file bar   │
-│      ...      │               │      ...      │
-╰───────────────╯               ╰───────────────╯
-
-● until the next higher level node, in this case "workspace"
-╭────────────────────╮               ╭────────────────────╮
-│        ...         │               │        ...         │
-│ WORKSPACE numbers  │               │ WORKSPACE numbers  │
-│   Tab              │               │   Tab              │
-│     file one       │               │     file one       │
-│   --file two       │               │    -file two       │
-│     file three     │ equivalent to │    -file three     │
-│                    │ single trims  │                    │
-│ WORKSPACE words    │               │ WORKSPACE words    │
-│   Tab              │               │   Tab              │
-│     file apples    │               │     file apples    │
-│     file oranges   │               │     file oranges   │
-│        ...         │               │        ...         │
-╰────────────────────╯               ╰────────────────────╯
-
-● non-leaf nodes double trims
- ╭─────────────────╮         ╭─────────────────╮         ╭─────────────────╮
- │       ...       │         │       ...       │         │       ...       │
- │  Tab numbers    │         │  Tab numbers    │         │  Tab numbers    │
- │    file one     │         │    file one     │         │    file one     │
- │    file two     │         │    file two     │         │    file two     │
- │                 │         │                 │         │                 │
- │--Tab words      │         │ -Tab words      │         │# Tab words      │
- │    file apples  │         │    file apples  │         │#   file apples  │
- │   -file oranges │ same as │   -file oranges │         │#   file oranges │
- │                 │ single  │                 │ same as │#                │
- │  Tab countries  │ trims   │ -Tab countries  │         │# Tab countries  │
- │    file Brazil  │         │    file Brazil  │         │#   file Brazil  │
- │    file Japan   │         │    file Japan   │         │#   file Japan   │
- │    file Mexico  │         │    file Mexico  │         │#   file Mexico  │
- │                 │         │                 │         │                 │
- │ WORKSPACE any   │         │ WORKSPACE any   │         │ WORKSPACE any   │
- │        ...      │         │        ...      │         │        ...      │
- ╰─────────────────╯         ╰─────────────────╯         ╰─────────────────╯
-
-  NOTE: The double trim by-passes the single trim. Note the "oranges" entry!
-
-							   *arbo-triple-trims*
-3) triple trims ("finish" feature): " --- keyword name ..."
-
-This is the simplest of them all to understand. This feature simply ignores
-anything after it, regardless of its placement. It works the same as the
-"finish" keyword in Vimscript, or even the "exit" in BASH scripts.
-
-Also, any number of dash characters can be used from 3 dashes,
-
-"---", "----", or even "-----------------------------"
-
-This will be particularly useful in standalone trims |arbo-standalone-trims|.
-
-Example:
-
-╭───────────────╮         ╭────────────────╮         ╭────────────────╮
-│      ...      │         │       ...      │         │       ...      │
-│   file one    │         │    file one    │ or even │    file one    │
-│   file two    │         │    file two    │         │    file two    │
-│---file three  │ same as │#   file three  │         ╰────────────────╯
-│   file four   │         │#   file four   │             end of file
-│               │         │#               │
-│WORKSPACE      │         │# WORKSPACE     │
-│      ...      │         │#      ...      │
-╰───────────────╯         ╰────────────────╯
-
-NOTE: a double trim applied onto an upper-most-level node (in this case a
-workspace) works exactly as a triple trim. Example:
-
-╭──────────────────╮         ╭───────────────────╮         ╭───────────────╮
-│                  │         │                   │         │               │
-│  WORKSPACE one   │         │   WORKSPACE one   │         │ WORKSPACE one │
-│        ...       │         │         ...       │ or even │       ...     │
-│  WORKSPACE two   │         │   WORKSPACE two   │         │ WORKSPACE two │
-│        ...       │ same as │         ...       │         │       ...     │
-│--WORKSPACE three │         │---WORKSPACE three │         ╰───────────────╯
-│        ...       │         │         ...       │            end of file
-│  WORKSPACE four  │         │   WORKSPACE four  │
-│        ...       │         │         ...       │
-╰──────────────────╯         ╰───────────────────╯
-
-STANDALONE TRIMS			          *arbo-standalone-trims*
-
-A very user-friendly way of trimming the tree is to place the dash characters
-alone in the lines before the nodes you want to trim. Examples:
-
-		  ╭────────────────────╮         ╭────────────────────╮
-		  │        ...         │         │        ...         │
-		  │   Tab              │         │   Tab              │
-		  │     file one       │         │     file one       │
-	       -> │     --             │         │   --file two       │
-		  │     file two       │ same as │     file three     │
-		  │     file three     │         │                    │
-		  │                    │         │ WORKSPACE words    │
-		  │ WORKSPACE words    │         │        ...         │
-		  │        ...         │         ╰────────────────────╯
-		  ╰────────────────────╯
-
-and, as mentioned in the |arbo-triple-trims|,
-
-╭──────────────────╮
-│                  │
-│  WORKSPACE one   │
-│        ...       │
-│  WORKSPACE two   │
-│        ...       │
-│                  │
-│  -------------   │ <- trims from here
-│                  │
-│  WORKSPACE three │
-│        ...       │
-│  WORKSPACE four  │
-│        ...       │
-╰──────────────────╯
-
-NOTE: the standalone trim feature was indeed implement for the convenience of
-using native commands, such as "dd" followed by "p", when editing arbo files.
-Example:
-
-     before                    after
-╭───────────────╮        ╭───────────────╮
-│      ...      │        │      ...      │
-│   file one    │        │   file one    │
-│   file two    │        │   file two    │
-│   --          │ <- ddp │   file three  │
-│   file three  │        │   --          │
-│   file four   │        │   file four   │
-│      ...      │        │      ...      │
-╰───────────────╯        ╰───────────────╯
-
-MULTIPLE STANDALONE TRIMS	           *arbo-multiple-standalone-trims*
-
-Although useless, multiple standalone trims can be used. In this case, the trim
-that comes first overwrites all others. Example:
-
-╭───────────────╮         ╭───────────────╮
-│      ...      │         │      ...      │
-│   file one    │         │   file one    │
-│   file two    │         │   file two    │
-│   --          │ same as │   --          │
-│   -           │         │   file three  │
-│   file three  │         │   file four   │
-│   file four   │         │      ...      │
-│      ...      │         ╰───────────────╯
-╰───────────────╯
-
-THE LOOP STATEMENT				    *arbo-loop-statement*
-
-It is in fact possible to perform loops in arbo. Although arbo was thought to
-be a human-readable non-programming language, sometimes the application can
-offer patterns that accomodates a looping mechanism. For example, say we have
-a C library project with the following file structure:
-
-  .
-  ├── main.c
-  ├── makefile
-  └── src
-      ├── logic.c
-      ├── logic.h
-      ├── math.c
-      ├── math.h
-      ├── ui.c
-      └── ui.h
-
-in this case, the directory "src" and its files offer a unique pattern that
-can be exploited when writing a arbo file used by the nvpm plugin. The
-uniqueness rests upon the fact that, since it's a C library project, all the
-modules will/should be written in files named "<module>.c" for the code, and
-"<module>.h" for the header macros anc such. As the modules increase in number
-during development, the respective arbo file will increase proportionaly.
-
-The following is the syntax for the loop mechanism. Also, the scenario above
-will be used in the examples:
-
-THE LOOP SYNTAX					    *arbo-loop-syntax*
-
-The following is a general form of a loop statement in arbo:
-
-	   ╭───────────────────────────────────────────────╮
-	   │                          	                   │
-	   │ [modifier] loop [<iterator>] [:] <list> [#{}] │
-	   │     m        l       i        s     L     c   │
-	   │                                               │
-	   │                     ...                       │
-	   │                                               │
-	   │                 <loop-body>                   │
-	   │                                               │
-	   │                     ...                       │
-	   │                                               │
-	   │ endl [#{}]                                    │
-	   │  e     c                                      │
-	   │                                               │
-	   ╰───────────────────────────────────────────────╯
-	   m: the loop modifier
-	   l: the loop keyword (case insensitive: loop,Loop,LOOP,etc)
-	   L: the optional loop iterator name, used in the loop's body
-	   s: the separator
-	   L: the list of strings to be iterated over
-	   e: the end-of-loop statement
-	   c: the comments (# ...)
-
-and the behaviour is the same as one would find in various programming
-languages, such as C, python, etc. i.e., the iterator variable loops over the
-values in the list, and whenever the iterator name is found in the loop's
-body, it's replaced by the current value of the iteration.
-
-Considering the C library project mentioned, and its file structure, in the
-context of the nvpm nvpm plugin, the following could be a valid example of a
-arbo file to be used, when loop is concerned:
-
-         	       	   FILE STRUCTURE
-        		       	.
-        		       	├── main.c
-        		       	├── makefile
-        		       	└── src
-        		       	    ├── logic.c
-        		       	    ├── logic.h
-        		       	    ├── math.c
-        		       	    ├── math.h
-        		       	    ├── ui.c
-        		       	    └── ui.h
-   
-╭─────────────────────────────────╮         ╭─────────────────────────╮
-│                                 │         │                         │
-│ workspace code                  │         │ workspace code          │
-│   tab main                      │         │   tab main              │
-│     file main: main.c           │         │     file main: main.c   │
-│     file make: makefile         │         │     file make: makefile │
-│                                 │         │                         │
-│   loop module : ui logic math { │ same as │   tab ui: src           │
-│     tab $(module): src          │         │     file ui.c           │
-│	 file $(module).c         │         │     file ui.h           │
-│	 file $(module).h         │         │                         │
-│   endl }                        │         │   tab logic: src        │
-│                                 │         │     file logic.c        │
-╰─────────────────────────────────╯         │     file logic.h        │
-                                            │                         │
-                                            │   tab math: src         │
-                                            │     file math.c         │
-                                            │     file math.h         │
-                                            │                         │
-                                            ╰─────────────────────────╯
-                             
-THE ARBO DATA STRUCTURE                            *arbo-data-structure*
-
-The example above shows a call to the main arbo function "arbo#arbo(...)",
-which returns the tree data-structure described in the arbo file.
-
-Each node of the tree, as well as its subtrees, will be in a form of a
-dictionary that may contain the following keys: file, info, meta, and list.
-
-- `file`:                                                *arbo-data-file*
-    type: string
-
-    Stores the path to the arbo file used when supplying the configuration
-    variable to arbo#arbo.
-
-    This is only used in the root node of the tree
-
-- `info`:                                                *arbo-data-info*
-    type: dictionary
-    keys: keyw, name, and info
-
-    Composed of the information described in a arbo element. Its fields are:
-    keyw, name, and info. Say we have an element that decribes a file node:
-
-		    ╭────────────────────────────────────╮
-		    │                                    │
-		    │ file main : main.c # the main file │
-		    │                                    │
-		    ╰────────────────────────────────────╯
-
-    in this case, its "info" dictionary field will be
-
-	      ╭───────────────────────────────────────────────╮
-	      │                                               │
-	      │ {'keyw':'file','name':'main','info':'main.c'} │
-	      │                                               │
-	      ╰───────────────────────────────────────────────╯
-
-- `meta`:                                                *arbo-data-meta*
-    type: dictionary
-    keys: type, leng, and indx
-
-    Composed of the meta information regarding the list (|arbo-data-list|) of
-    subnodes (children), in a given node.
-
-    Consider the same example in |arbo-data-info|, and that the lexicon use is
-    of the form "tab,file". Then, the resulting meta field will be something
-    like this:
-
-		   ╭──────────────────────────────╮
-		   │                              │
-		   │ {'type':2,'leng':3,'indx':0} │
-		   │                              │
-		   ╰──────────────────────────────╯
-
-    this means the list field has three elements of type 2 (file elements),
-    and it's currently placed at the first file element.
-
-
-- `list`:                                                *arbo-data-list*
-    type: list
-    items: dictionary nodes
-
-    Composed of the subnodes in the tree a.k.a children. Its length, type of
-    nodes, and current index are described in |arbo-data-meta
-
-DATA STRUCTURE EXAMPLE                                *arbo-data-example*
-
-  Consider the following scenario.
-
-  1) the configuration fed to arbo#arbo is of the form:
-
-	╭────────────────────────────────────────────────────────────╮
-	│                                                            │
-	│ {'file':'code.arbo','lexicon':'workspace,tab,buffer file'} │
-	│                                                            │
-	╰────────────────────────────────────────────────────────────╯
-
-  2) the content arbo file "code.arbo" is:
-
-  ╭───────────────────────╮
-  │ WORKSPACE code        │
-  │   tab root            │
-  │     file main.c       │
-  │   tab lib : src       │
-  │     buffer lib.c      │
-  │     buffer lib.h      │
-  │                       │
-  │ WORKSPACE meta = meta │
-  │   buffer install.sh   │
-  │                       │
-  ╰───────────────────────╯
-
-{ file: test/arbo/case.arbo,
-  meta: {leng: 2, type: 1, indx : 0},
-  list: [
-    {info: {keyw: "WORKSPACE", info: ""    , name: "code"},
-     meta: {leng: 2, type: 2, indx : 0},
-     list: [
-      {info: {keyw: "tab", info: ""   , name: "root"},
-       meta: {leng: 1, type: 3, indx: 0},
-       list: [
-         {info: {keyw: "file", info: "main.c", name: "main.c" }}
-       ],
-      },
-      {info: {keyw: "tab", info: "src", name: "lib"},
-        meta: {leng: 2, type: 3, indx: 0}
-        list: [
-          {info: {keyw: "buffer", info: "src/lib.c", name: "lib.c"}},
-          {info: {keyw: "buffer", info: "src/lib.h", name: "lib.h"}}
-        ],
-      }
-    ],
-    },
-    {info: {keyw: "WORKSPACE", info: "meta", name: "meta"},
-     meta: {leng: 1, type: 3, indx: 0},
-     list: [
-      {info: {keyw: "buffer", info: "meta/install.sh", name: "install.sh"}},
-     ],
-    }],
-}
 
 vim:tw=78:ts=8:noet:ft=help:norl:
-

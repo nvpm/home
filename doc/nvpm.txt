@@ -1,5 +1,150 @@
 *nvpm.txt*			      `Explore the tree nature of your projects`
 
-CONTENTS                                          *nvpm*
+CONTENTS						        *nvpm*
+INSTRODUCTION                               		   |nvpm-intro|
+THE CONCEPT                               		   |nvpm-concept|
+
+INSTRODUCTION                               		   *nvpm-intro*
+
+NVPM stands for NerdVim Project Manager. It's mission is to assist the user on
+managing large quantities of files in any project. The main goal is to create
+a tree-like structure in order to overcome the linearity of vim's bufferlist.
+
+The approach here is to make a plan about which files the user wants to open and
+then write what is called a project file. Those files follow the arbo markup
+language, explained in :help |arbo.txt|. More on that later.
+
+Note: any time a `project file` is mentioned here, it actually means
+      `arbo file`.
+
+THE CONCEPT                               		   *nvpm-concept*
+
+For small projects, vim's bufferlist will do just fine. You can open the files
+in different tabs and move arround using vim's default commands. The problem
+only appears when the project grows in number of files and directories.
+
+To exemplify this, we can imagine a hypothetical C project called LibGeo. This
+hypothetical project may start small, say:
+
+>
+  libgeo/
+  ├── main.c
+  └── readme.txt
+
+  0 directories, 2 files
+<
+
+In such cases, the user can open each file at a time and edit them separately.
+As development continues, the situation can change really fast. For example:
+
+>
+  libgeo/
+  ├── main.c
+  ├── readme.txt
+  └── src
+      ├── line.c
+      ├── line.h
+      ├── plane.c
+      ├── plane.h
+      ├── point.c
+      └── point.h
+
+  1 directory, 8 files
+<
+
+And it can always get uglier! The user may want to make separate tests,
+assisted by makefile. Also, as soon as the modules increase in number, more
+hierarchies may be necessary.
+
+And what about creating a git repository, a documentation folder, install and
+uninstall scripts, etc. Well, very quickly the user might face something like
+this:
+
+>
+  libgeo/
+  ├── bin
+  ├── doc
+  │   ├── libgeo-dev.txt
+  │   └── libgeo.txt
+  ├── .gitignore
+  ├── lib
+  ├── Makefile
+  ├── readme.txt
+  ├── scripts
+  │   ├── helper.sh
+  │   ├── install.sh
+  │   └── uninstall.sh
+  ├── src
+  │   ├── common.h
+  │   ├── data
+  │   │   ├── list.c
+  │   │   ├── list.h
+  │   │   ├── string.c
+  │   │   ├── string.h
+  │   │   ├── tree.c
+  │   │   └── tree.h
+  │   ├── main.c
+  │   ├── math                                                    large-libgeo
+  │   │   ├── complex.c
+  │   │   ├── complex.h
+  │   │   ├── matrix.c
+  │   │   ├── matrix.h
+  │   │   ├── real.c
+  │   │   ├── real.h
+  │   │   ├── vector.c
+  │   │   └── vector.h
+  │   └── shapes
+  │       ├── line.c
+  │       ├── line.h
+  │       ├── plane.c
+  │       ├── plane.h
+  │       ├── point.c
+  │       └── point.h
+  └── test
+      ├── common.h
+      ├── data
+      │   ├── list.c
+      │   ├── list.h
+      │   ├── string.c
+      │   ├── string.h
+      │   ├── tree.c
+      │   └── tree.h
+      ├── main.c
+      ├── math
+      │   ├── complex.c
+      │   ├── complex.h
+      │   ├── matrix.c
+      │   ├── matrix.h
+      │   ├── real.c
+      │   ├── real.h
+      │   ├── vector.c
+      │   └── vector.h
+      └── shapes
+          ├── line.c
+          ├── line.h
+          ├── plane.c
+          ├── plane.h
+          ├── point.c
+          └── point.h
+
+  12 directories, 52 files
+<
+
+Well how about now? Not only we have many more files and directories, divided
+into folders and subfolders, but also different categories of them. If the
+user tries to open them all, only one instance of vim will never be enough to
+sanely keep track of them.
+
+It would then be nice to have a way to:
+
+- keep track of files at all times,
+- find a way to more or less show their names (or paths) into view,
+- have a mechanisms to save and restore this view,
+- have an easy way to jump not only between files, but also between their many
+  different categories,
+- and probably more.
+
+As you may already be wondering, the nvpm plugin allows you to do just that and
+more!
 
 vim:tw=78:ts=8:noet:ft=help:norl:

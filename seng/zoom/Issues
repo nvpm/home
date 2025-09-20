@@ -1,5 +1,8 @@
 
 |bugs|
+  ● still some help files are resizing buf when loaded ~
+    ● still needs some pay attention to
+    ● try using a timer for the helpclose command
   ● [bug] au WinResized removes visual & possibly other things ~
   ● [bug] leaving a term window upon move key press ~
     ● upon leaving term window after terminal is exited, 
@@ -7,10 +10,5 @@
       and holding h,j,k, and l. The whole zoomed buffer goes left,
       butit keeps its size.
 |fixed|
-  ● still some help files are resizing buf when loaded ~
-    ● still needs some pay attention to
-  ● double help pagination w/ 'K' ~
-    ● the second call for the help file triggers the 'helpclose'
-      instruction from the autocmd
 
 vim: ft=help: tw=2
