@@ -1,4 +1,5 @@
-#{file: 'test/arbo/case.arbo',
+#{file: 'test/arbo/nvpm.arbo',
+  synx: 'nvpm',
   meta: #{leng: 3, type: 1, indx: 0},
   list: [
     #{info: #{keyw:'workspace',name:'<fixed>',info:''},
@@ -27,7 +28,7 @@
         },
       ]
     },
-    #{info: #{keyw:'workspace',name:'meta',info:''},
+    #{info: #{keyw:'workspace',name:'meta'   ,info:''},
       meta: #{leng: 2, type: 2, indx: 0},
       list: [
         #{info: #{keyw:'tab',name:'<fixed>',info:''   },

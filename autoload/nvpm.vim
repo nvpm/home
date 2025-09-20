@@ -24,10 +24,8 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
     let g:nvpm.arbo.lexicon .= ',tab folder shelf package branch'
     let g:nvpm.arbo.lexicon .= ',file buffer path entry leaf'
   endif
-  " these will be gone once the arbo synx var is implemented
-  let g:nvpm.arbo.fixt  = 1
-  let g:nvpm.arbo.home  = 1
-  let g:nvpm.arbo.file  = ''
+  let g:nvpm.arbo.syntax = 'nvpm'
+  let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo)
 
   let g:nvpm.mode = 0

@@ -11,20 +11,26 @@ fu! s:test.arbo(...) "{
   "so syntax/arbo.vim
 
   let conf = {}
+  let conf.file    = 'test/arbo/normal.arbo'
+  let conf.syntax  = 'normal'
+  let conf.lexicon = 'bundle, data'
 
-  let conf.file    = 'test/arbo/case.arbo'
-  let conf.home    = 1
-  let conf.fixt    = 1
+  let arbo = arbo#arbo(conf)
+  let data = s:test.eval('test/arbo/normal.expt')
+  
+  call arbo#show(arbo)
+
+  let conf = {}
+  let conf.file    = 'test/arbo/nvpm.arbo'
+  let conf.syntax  = 'nvpm'
   let conf.lexicon = 'workspace,tab,file'
 
-  let case = arbo#arbo(conf)
-  let expt = s:test.eval('test/arbo/case.expt')
-  "echo case.list[0].meta
-  "return
+  let arbo = arbo#arbo(conf)
+  let data = s:test.eval('test/arbo/nvpm.expt')
 
   echon "test/arbo: "
-  let diff = case!=?expt
-  if diff|call self.fail()|call arbo#show(case)|return 1|endif
+  let diff = arbo!=?data
+  if diff|call self.fail()|call arbo#show(arbo)|return 1|endif
   call self.pass()
 
 endfu "}

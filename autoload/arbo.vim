@@ -25,11 +25,17 @@ fu! arbo#data(...) abort "{ builds the arbo Data Structure (DS)
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
-  let home = get(s:conf,'HOME','')
+  let nvpm = s:conf.syntax ==? 'nvpm'
 
-  let tree = arbo#tree(list,leng,home)
+  if nvpm
+    let home = get(s:conf,'HOME','')
+    let tree = arbo#tree(list,leng,nvpm,home)
+  else
+    let tree = arbo#tree(list,leng)
+  endif
 
   let tree.file = s:conf.file
+  let tree.synx = s:conf.syntax
 
   if get(s:conf,'fixt',0)|call arbo#fixt(tree,s:conf)|endif
 
@@ -98,20 +104,23 @@ fu! arbo#fixt(...) abort "{ fixes some user mistakes in the DS
 endfu "}
 fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
 
-  let list = get(a:000,0,[])
-  let leng = get(a:000,1,len(list))
-  let home = get(a:000,2,'')
-  let home = [home .. '/',home][empty(home)]
-  let indx = 0
+  let list = get(a:,1,[])
+  let leng = get(a:,2,len(list))
+  let nvpm = get(a:,3)
+
+  if nvpm
+    let home = get(a:,4,'')
+    let home = [home .. '/',home][empty(home)]
+  endif
 
   let tree = #{list:[],meta:#{leng:0,indx:0,type:-2}}
 
+  let indx = 0
   " loop over conf.list
   while indx<leng
 
     " catches node from given nodelist
     let node = list[indx]|let indx+=1
-    let path = [home,''][node.absl] .. node.info.info
 
     let node.type = arbo#find(s:conf.lexicon     ,node.info.keyw)
     let node.tree = arbo#find(s:conf.lexicon[:-2],node.info.keyw)
@@ -131,7 +140,12 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
 
       " extend node fields with.list, indx and leng recursively
       let sublist = list[init:indx-1]
-      let subtree = arbo#tree(sublist,indx-init,path)
+      if nvpm
+        let path = [home,''][node.absl] .. node.info.info
+        let subtree = arbo#tree(sublist,indx-init,1,path)
+      else
+        let subtree = arbo#tree(sublist,indx-init)
+      endif
       call extend(node,subtree)
 
     endif
@@ -150,7 +164,7 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     let tree.meta.type = node.type
 
     " handles home for leaf nodes
-    if -1==node.tree && get(s:conf,'home')
+    if nvpm && -1==node.tree && get(s:conf,'home')
       let info = empty(node.info.info)?node.info.name:node.info.info
       let node.info.info = [home .. info,info][node.absl]
       let node.info.info = simplify(node.info.info)
@@ -159,10 +173,10 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     endif
 
     " remove unnecessary node-fields
-    unlet node.trim
-    unlet node.tree
-    unlet node.absl
-    unlet node.type
+    if has_key(node,'trim')|unlet node.trim|endif
+    if has_key(node,'tree')|unlet node.tree|endif
+    if has_key(node,'absl')|unlet node.absl|endif
+    if has_key(node,'type')|unlet node.type|endif
 
     " adds node to tree & increment length
     call add(tree.list,node)|let tree.meta.leng+=1
@@ -186,6 +200,13 @@ fu! arbo#conf(...) abort "{ rectifies configuration dictionary
       call add(list,split(type,'\s'))
     endfor
     let conf.lexicon = list
+  endif
+  if !has_key(conf,'syntax')||conf.syntax ==? 'normal'
+    let conf.syntax = 'normal'
+    let conf.home = 0
+  elseif conf.syntax ==? 'nvpm'
+    let conf.home = 1
+    let conf.fixt = 1
   endif
 
   let conf.leaftype = len(conf.lexicon)
@@ -281,8 +302,7 @@ fu! arbo#trim(...) abort "{ standalone and triple trims features
     while indx<leng
       let node = objc[indx]|let indx+=1
       if node.trim>=3|break|endif
-      let stda = empty(node.info.keyw..node.info.name..node.info.info)
-      if stda && node.trim
+      if node.stda && node.trim
         let trim = node.trim
         continue
       endif
@@ -290,6 +310,7 @@ fu! arbo#trim(...) abort "{ standalone and triple trims features
         let node.trim = trim
         let trim = 0
       endif
+        call remove(node,'stda')
       call add(newlist,node)
     endwhile
     return newlist
@@ -387,28 +408,37 @@ fu! arbo#node(...) abort "{ parses a line into a valid node
   let info = info[3]
 
   let node = {}
-  let rgex = '\v *[=:] *'
-
-  " stores absolute key for home absolute path functionality
-  let absl = trim(matchstr(info,rgex))
-
-  " split info into name and info again
-  let info = split(info,rgex,1)
-  if len(info)==1
-    let name = trim(info[0])
-    let info = ''
-  elseif len(info)>=2
-    let name = trim(info[0])
-    let info = trim(info[1])
-  endif
-
+  let node.stda = ''
   let node.trim = len(trim)
-  let node.absl = absl=='='
 
   let node.info = {}
   let node.info.keyw = keyw
-  let node.info.name = name
-  let node.info.info = info
+
+  if     s:conf.syntax ==? 'normal'
+    let node.info.info = info
+  elseif s:conf.syntax ==? 'nvpm'
+    let rgex = '\v *[=:] *'
+
+    " stores absolute key for home absolute path functionality
+    let node.absl = trim(matchstr(info,rgex)) == '='
+
+    " split info into name and info again
+    let info = split(info,rgex,1)
+    if len(info)==1
+      let name = trim(info[0])
+      let info = ''
+    elseif len(info)>=2
+      let name = trim(info[0])
+      let info = trim(info[1])
+    endif
+
+    let node.info.name = name
+    let node.info.info = info " change info.info -> info.path
+    let node.stda .= node.info.name
+
+  endif
+  let node.stda .= node.info.keyw..node.info.info
+  let node.stda  = empty(node.stda)
 
   return node
 
@@ -436,8 +466,9 @@ fu! arbo#find(...) abort "{ returns the number type of a given keyword
 endfu "}
 fu! arbo#show(...) abort "{ pretty-prints a given node
 
-  let root = get(a:000,0,{})
-  let step = get(a:000,1, 0)
+  let root = get(a:,1,{})
+  let step = get(a:,2, 0)
+  let nvpm = get(a:,3, get(root,'synx','')=='nvpm')
   let tabs = repeat(' ',step)
   let list = get(root,'list',[])
 
@@ -451,15 +482,20 @@ fu! arbo#show(...) abort "{ pretty-prints a given node
   endif
   " recursive run loop over nodes
   for node in list
-    let name = get(node.info,'name','')
     let info = get(node.info,'info','')
+
+    if nvpm
+      let name = get(node.info,'name','')
+      let name = [name,"''"][empty(name)]
+      let info = name..' : '..info
+    endif
+
     let keyw = get(node.info,'keyw','')
-    let name = [name,"''"][empty(name)]
     let info = [info,"''"][empty(info)]
-    echon tabs keyw..' '..name..' : '..info..' ' get(node,'meta','')
+    echon tabs keyw..' '..info..' ' get(node,'meta','')
     echon "\n"
     if has_key(node,'list')
-      call arbo#show(node,step+2)
+      call arbo#show(node,step+2,nvpm)
     endif
   endfor
 

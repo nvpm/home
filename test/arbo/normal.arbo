@@ -1,0 +1,12 @@
+
+
+bundle one
+  data x=1.5 ; y=2.0
+  data x=2.5 ; y=2.0
+  --
+  data x=1.5 ; y=2.0
+  data x=2.5 ; y=2.0
+
+bundle two
+  data x=5.1 ; y=3.0
+  data x=5.2 ; y=3.0
