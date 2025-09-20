@@ -510,8 +510,8 @@ fu! arbo#seek(...) abort "{ looks for the current node of a given number type
   let leng = get(root.meta,'leng')
 
   if leng
-    let indx = get(root.meta,'indx')
-    return arbo#seek(root.list[indx%leng],type)
+    call arbo#indx(root)
+    return arbo#seek(root.list[root.meta.indx],type)
   endif
   return {}
 
