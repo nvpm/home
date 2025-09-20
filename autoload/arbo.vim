@@ -500,21 +500,18 @@ fu! arbo#show(...) abort "{ pretty-prints a given node
 endfu "}
 fu! arbo#seek(...) abort "{ looks for the current node of a given number type
 
-  " TODO: remove the list option from this method
-  "       unnecessary.
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
-  let code = get(a:000,2,'node')
-  if !has_key(root,'meta')|return {}|endif
-  if !has_key(root,'list')|return {}|endif
-  if type==root.meta.type
-    if code=='node'|return root     |endif
-    if code=='list'|return root.list|endif
-  endif
-  if has_key(root,'list')&&root.meta.leng
-    let indx = root.meta.indx
-    let leng = root.meta.leng
-    return arbo#seek(root.list[indx%leng],type,code)
+
+  if !has_key(root,'meta') | return {}   | endif
+  if !has_key(root,'list') | return {}   | endif
+  if type==root.meta.type  | return root | endif
+
+  let leng = get(root.meta,'leng')
+
+  if leng
+    let indx = get(root.meta,'indx')
+    return arbo#seek(root.list[indx%leng],type)
   endif
   return {}
 
