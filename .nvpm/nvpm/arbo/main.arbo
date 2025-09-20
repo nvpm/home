@@ -56,7 +56,7 @@
       file api  : api.txt
       file chan : channel.txt
       file jobs : job_control.txt
-      file libc = /iasj/snip/tuto/libc.txt
+     -file libc = /iasj/snip/tuto/libc.txt
       file btin : builtin.txt
   }
   ---

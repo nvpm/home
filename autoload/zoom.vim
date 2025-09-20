@@ -302,44 +302,43 @@ fu! zoom#zero(...) abort "{ resets the size variable
 
 endfu "}
 
-"-- auto functions --
-fu! zoom#help(...) abort "{ conforms the help and man buffers
+"-- auto function --
+fu! zoom#auto(...) abort "{ handles autocommands 
 
-  let bufname=bufname()
+  if !a:0|return|endif
 
-  if &ft == 'help'
+  if a:1=='help' "{
+    let bufname=bufname()
     silent! helpclose
     exec 'edit '. bufname
-  endif
-
-  if &ft == 'man'
+    return
+  endif "}
+  if a:1=='manp' "{
     if g:zoom.mode
       only
       let g:zoom.mode = 0
       call zoom#show()
-    " Note:
-    " this will never work because of edit part!
-    "else
-    "  close
-    "  exec 'edit '. bufname
+    else
+      silent! wincmd p
+      silent! close
     endif
-  endif
-
-endfu "}
-fu! zoom#term(...) abort "{ conforms terminal buffers
-
-  if bufname()=~'^.*git.*$'
-    call input(repeat(' ',g:zoom.size.l).'Press enter/esc to close it')
-  endif
-  if g:zoom.mode
-    let line = 0
-    if g:zoom.line
-      let line = g:line.mode
+    return
+  endif "}
+  if a:1=='term' "{
+    if bufname()=~'^.*git.*$'
+      call input(repeat(' ',g:zoom.size.l).'Press enter/esc to close it')
     endif
-    only
-    bdel
-    call zoom#show()
-    if line|call line#show()|endif
-  endif
+    if g:zoom.mode
+      let line = 0
+      if g:zoom.line
+        let line = g:line.mode
+      endif
+      only
+      bdel
+      call zoom#show()
+      if line|call line#show()|endif
+    endif
+    return
+  endif "}
 
 endfu "}

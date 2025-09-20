@@ -15,10 +15,11 @@ if g:zoom.autocmds
     au!
     au WinEnter    .nvpm/zoom/* if g:zoom.mode|wincmd p|endif
     au VimLeavePre * if g:zoom.mode|only|quit|endif
-    au BufWinEnter * call zoom#help()
+    au FileType help call zoom#auto('help')
+    au FileType man  call zoom#auto('manp')
     au ColorScheme * call zoom#show(1)
     if has('nvim')
-      au TermClose   * call timer_start(20,{->zoom#term()})
+      au TermClose * call timer_start(20,{->zoom#auto('term')})
     endif
   augroup END
 endif
