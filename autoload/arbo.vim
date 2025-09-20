@@ -25,11 +25,10 @@ fu! arbo#data(...) abort "{ builds the arbo Data Structure (DS)
 
   let list = get(s:conf,'list',[])
   let leng = get(s:conf,'leng',len(list))
-  let nvpm = s:conf.syntax ==? 'nvpm'
 
-  if nvpm
-    let home = get(s:conf,'HOME','')
-    let tree = arbo#tree(list,leng,nvpm,home)
+  if s:conf.homing
+    let home = get(s:conf,'home','')
+    let tree = arbo#tree(list,leng,home)
   else
     let tree = arbo#tree(list,leng)
   endif
@@ -43,7 +42,7 @@ fu! arbo#data(...) abort "{ builds the arbo Data Structure (DS)
   if has_key(s:conf,'leng')|unlet s:conf.leng|endif
   if has_key(s:conf,'list')|unlet s:conf.list|endif
   if has_key(s:conf,'body')|unlet s:conf.body|endif
-  if has_key(s:conf,'HOME')|unlet s:conf.HOME|endif
+  if has_key(s:conf,'home')|unlet s:conf.home|endif
   if has_key(s:conf,'file')|unlet s:conf.file|endif
 
   unlet s:conf
@@ -106,10 +105,9 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
 
   let list = get(a:,1,[])
   let leng = get(a:,2,len(list))
-  let nvpm = get(a:,3)
 
-  if nvpm
-    let home = get(a:,4,'')
+  if s:conf.homing
+    let home = get(a:,3,'')
     let home = [home .. '/',home][empty(home)]
   endif
 
@@ -140,9 +138,9 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
 
       " extend node fields with.list, indx and leng recursively
       let sublist = list[init:indx-1]
-      if nvpm
+      if s:conf.homing
         let path = [home,''][node.absl] .. node.info.info
-        let subtree = arbo#tree(sublist,indx-init,1,path)
+        let subtree = arbo#tree(sublist,indx-init,path)
       else
         let subtree = arbo#tree(sublist,indx-init)
       endif
@@ -164,7 +162,7 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     let tree.meta.type = node.type
 
     " handles home for leaf nodes
-    if nvpm && -1==node.tree && get(s:conf,'home')
+    if s:conf.homing && -1==node.tree
       let info = empty(node.info.info)?node.info.name:node.info.info
       let node.info.info = [home .. info,info][node.absl]
       let node.info.info = simplify(node.info.info)
@@ -203,9 +201,9 @@ fu! arbo#conf(...) abort "{ rectifies configuration dictionary
   endif
   if !has_key(conf,'syntax')||conf.syntax ==? 'normal'
     let conf.syntax = 'normal'
-    let conf.home = 0
+    let conf.homing = 0
   elseif conf.syntax ==? 'nvpm'
-    let conf.home = 1
+    let conf.homing  = 1
     let conf.fixtree = 1
   endif
 
@@ -374,7 +372,7 @@ fu! arbo#loop(...) abort "{ looping mechanism
 endfu "}
 fu! arbo#home(...) abort "{ homing mechanism
 
-  if has_key(s:conf,'list')&&get(s:conf,'home')
+  if has_key(s:conf,'list')&&get(s:conf,'homing')
     let indx = 0
     let leng = get(s:conf,'leng',len(s:conf.list))
     let list = []
@@ -384,7 +382,7 @@ fu! arbo#home(...) abort "{ homing mechanism
       if node.info.keyw==?'home'
         if node.trim==1|continue|endif
         if node.trim==2|  break |endif
-        let s:conf.HOME = empty(node.info.info)?node.info.name:node.info.info
+        let s:conf.home = empty(node.info.info)?node.info.name:node.info.info
         continue
       endif
       call add(list,node)|let s:conf.leng+=1
@@ -419,7 +417,7 @@ fu! arbo#node(...) abort "{ parses a line into a valid node
   elseif s:conf.syntax ==? 'nvpm'
     let rgex = '\v *[=:] *'
 
-    " stores absolute key for home absolute path functionality
+    " stores absolute key for homing absolute path functionality
     let node.absl = trim(matchstr(info,rgex)) == '='
 
     " split info into name and info again
@@ -502,6 +500,8 @@ fu! arbo#show(...) abort "{ pretty-prints a given node
 endfu "}
 fu! arbo#seek(...) abort "{ looks for the current node of a given number type
 
+  " TODO: remove the list option from this method
+  "       unnecessary.
   let root = get(a:000,0,{})
   let type = get(a:000,1,-1)
   let code = get(a:000,2,'node')
