@@ -284,7 +284,7 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
   let curr = g:nvpm.tree.curr
   let head = fnamemodify(curr,':h')..'/'
 
-  exe 'edit '.curr
+  exe 'silent! edit '.curr
 
   if (curr=~'^.*\.arbo$'||head==g:nvpm.file.arbo)&&&l:ft!='arbo'
     setl filetype=arbo
