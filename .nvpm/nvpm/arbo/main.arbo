@@ -59,7 +59,6 @@
       file libc = /iasj/snip/tuto/libc.txt
       file btin : builtin.txt
   }
-  ---
   project   help {
     workspace  arbo {
         file  help : doc/arbo.txt

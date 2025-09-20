@@ -82,9 +82,10 @@ dictionary. For now, the following are the allowed fields of this dictionary:
 
 - `file`   : the full path to the arbo file to be parsed;
 - `lexicon`: the list of allowed keywords as mentioned before;
-- `home`   : the flag that allows for the homming mechanism, used by the
+- `homing` : the flag that allows for the homing mechanism, used by the
 	   nvpm/nvpm plugin;
-- `fixt`   : the flag that tells arbo to fix user mistakes in the arbo file.
+- `fixtree`: the flag that tells arbo to fix user mistakes in the arbo file.
+- `syntax` : an alias that sets a bundle of options
 
 The following is a complete example:
 >
