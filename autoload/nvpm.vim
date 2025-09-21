@@ -35,6 +35,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   " start with a null tree
   call nvpm#null('tree')
 
+  " default file locations
   let g:nvpm.file = {}
   let g:nvpm.file.root = '.nvpm/nvpm/'
   let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
@@ -122,9 +123,7 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
 endfu "}
 fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
-  if !isdirectory('.nvpm')||!isdirectory(g:nvpm.file.arbo)
-    return 1
-  endif
+  if !isdirectory(g:nvpm.file.arbo)|return 1|endif
 
   if g:nvpm.mode == 2
     let currarbo = bufname()
