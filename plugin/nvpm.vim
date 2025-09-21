@@ -21,6 +21,9 @@ if !exists(':NvpmJump') "{
   com! -complete=customlist,nvpm#user -count -nargs=* 
   \NvpmJump call nvpm#user('jump','<args>')
 endif "}
+if !exists(':NvpmEdit') "{
+  com! NvpmEdit call nvpm#user('edit')
+endif "}
 if !exists(':NvpmTerm') "{
   com! NvpmTerm call nvpm#user('term')
 endif "}
@@ -35,4 +38,3 @@ if g:nvpm.autocmds
     endif
   augroup END
 endif
-

@@ -3,6 +3,7 @@
 |bugs|
   ● [bug] synx: cut1/2 followed same cut ~
   ● [bug] fixt still puting wrong number type ~
+  ● [bug] fixt still puting wrong number type ~
 
 |fixed|
   ● cut 1/2 inside loop's content ~

@@ -28,6 +28,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo)
 
+  " 0: unloaded trees, 1: loaded trees, 2: edit mode
   let g:nvpm.mode = 0
   let g:nvpm.term = ''
 
@@ -125,62 +126,28 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
   call nvpm#load()
 
 endfu "}
-fu! nvpm#jump(...) abort "{ jumps between nodes
-
-  " TODO: make it as such that it jumps to an absolute location too
-  let step = a:1
-  let type = a:2
-
-  if g:nvpm.mode
-    " leaves trim mode on non-leaf jumps
-    if g:nvpm.mode==2&&type<g:nvpm.arbo.leaftype
-      wall
-      call nvpm#trim()
-      return
-    endif
-    if g:nvpm.tree.curr==bufname()
-      let node = arbo#seek(g:nvpm.tree,type)
-      if !has_key(node,'meta')|return 1|endif
-      call arbo#indx(node,node.meta.indx+step)
-    endif
-
-    " performs the JumpBack WorkFlow
-    call nvpm#curr()
-    call nvpm#rend()
-
-  else
-    if type == g:nvpm.arbo.leaftype
-      if step < 0
-        exe '::.,.+'.(v:count1-1).'bprev'
-      else
-        exe '::.,.+'.(v:count1-1).'bnext'
-      endif
-    elseif type == g:nvpm.arbo.leaftype-1
-      if step < 0
-        exe '::.,.+'.(v:count1-1).'tabprev'
-      else
-        exe '::.,.+'.(v:count1-1).'tabnext'
-      endif
-    endif
-  endif
-
-endfu "}
-fu! nvpm#trim(...) abort "{ trim mode routine (soon to be called 'edit mode')
+fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
   if !isdirectory('.nvpm')||!isdirectory(g:nvpm.file.arbo)
     return 1
   endif
 
   if g:nvpm.mode == 2
-    let pick = bufname()
-    if nvpm#grow(pick)
+    let currarbo = bufname()
+
+    " only leaves Edit Mode upon valid arbo file
+    if nvpm#grow(currarbo)
       echohl WarningMsg
-      echo  'NvpmJump: the arbo file "'.pick.'" is invalid. Aborting...'
+      echo  'NvpmEdit: the arbo file "'.currarbo.'" is invalid. Aborting...'
       echohl None
       return 1
     else
+      " removes edit file generated subtree from the nvpm tree
       call nvpm#fell(g:nvpm.file.edit)
-      let indx = nvpm#find(pick)
+
+      " jumps to the subtree respective to the selected arbo file before 
+      " exiting Edit Mode
+      let indx = nvpm#find(currarbo)
       if 1+indx
         call arbo#indx(g:nvpm.tree,indx)
       endif
@@ -189,16 +156,23 @@ fu! nvpm#trim(...) abort "{ trim mode routine (soon to be called 'edit mode')
     return
   endif
 
-  let arbos = readdir(g:nvpm.file.arbo)
+  " Edit Mode workspace creation
+  let forest = readdir(g:nvpm.file.arbo)
   let body   = []
-  for file in arbos
-    let file = g:nvpm.file.arbo..file
-    let line = 'file '..fnamemodify(file,':t:r')..':'..file
-    call add(body,line)
-  endfor
+  if empty(g:nvpm.arbo.lexicon)|return 1|else
+    let leafkeyw = get(g:nvpm.arbo.lexicon[-1],0,'')
+  endif
+
+  if empty(leafkeyw)|return 1|else
+    for file in forest
+      let file = g:nvpm.file.arbo..file
+      let line = 'file '..fnamemodify(file,':t:r')..':'..file
+      call add(body,line)
+    endfor
+  endif
 
   let arbo = ''
-  if !empty(g:nvpm.tree.list)
+  if empty(g:nvpm.tree.list)|return 1|else
     let arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
   endif
 
@@ -220,6 +194,51 @@ fu! nvpm#trim(...) abort "{ trim mode routine (soon to be called 'edit mode')
   call nvpm#load()
 
 endfu "}
+fu! nvpm#jump(...) abort "{ jumps between nodes
+
+  " TODO: make it as such that it jumps to an absolute location too
+  let step = a:1
+  let type = a:2
+
+  " jumps for loaded nvpm tree
+  if g:nvpm.mode
+
+    " leaves edit mode on non-leaf jumps
+    if g:nvpm.mode==2&&type<g:nvpm.arbo.leaftype
+      wall
+      call nvpm#edit()
+      return
+    endif
+
+    " updates indx based on given step
+    if g:nvpm.tree.curr==bufname()
+      let node = arbo#seek(g:nvpm.tree,type)
+      if !has_key(node,'meta')|return 1|endif
+      call arbo#indx(node,node.meta.indx+step)
+    endif
+
+    " renders the newly calculated current leaf node
+    call nvpm#curr()
+    call nvpm#rend()
+
+  " jumps for unloaded nvpm tree
+  else
+    if type == g:nvpm.arbo.leaftype
+      if step < 0
+        exe '::.,.+'.(v:count1-1).'bprev'
+      else
+        exe '::.,.+'.(v:count1-1).'bnext'
+      endif
+    elseif type == g:nvpm.arbo.leaftype-1
+      if step < 0
+        exe '::.,.+'.(v:count1-1).'tabprev'
+      else
+        exe '::.,.+'.(v:count1-1).'tabnext'
+      endif
+    endif
+  endif
+
+endfu "}
 fu! nvpm#make(...) abort "{ makes new arbo file and enters trim mode on it
 
   let name = get(a:000,0,'')
@@ -233,7 +252,7 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters trim mode on it
 
   let lines = split(lines,',')
   call writefile(lines,name)
-  call nvpm#trim()
+  call nvpm#edit()
 
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
@@ -342,41 +361,36 @@ endfu "}
 "-- user function --
 fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
 
-  if a:0==3 " user completions {
-
+  if a:0==3 " <tab> completions {
     let cmdline = trim(a:000[1])
-    if cmdline=~'\CNvpmFell'
+    if  cmdline=~'\CNvpmFell' "{
       let list = []
       for arbo in g:nvpm.tree.list
         if arbo.file==g:nvpm.file.edit|continue|endif
         call add(list,arbo.file)
       endfor
       return list
-    endif
-    if cmdline=~'\CNvpmJump'
+    endif "}
+    if  cmdline=~'\CNvpmJump' "{
       let list = []
       for i in range(g:nvpm.arbo.leaftype+1)
         call add(list,'+'..i)
         call add(list,'-'..i)
       endfor
       return list
-    endif
-    if cmdline=~'\CNvpmGrow'
+    endif "}
+    if  cmdline=~'\CNvpmGrow' "{
       let files = readdir(g:nvpm.file.arbo)
       return files
-    endif
+    endif "}
     return []
-
   endif "}
 
   let func = a:1
   let args = get(a:,2,'')
 
   if func=='jump' "{
-    if empty(args)
-      call nvpm#trim()
-      return
-    endif
+    if empty(args)|return|endif
     let user = matchlist(args,'\([+-]\)\(\d\+\)')
     if empty(user)
       echohl WarningMsg
@@ -405,8 +419,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     endif
     let file = g:nvpm.file.arbo..args
     if isdirectory(file)
-      let arbos = readdir(file)
-      for arbo in arbos
+      let forest = readdir(file)
+      for arbo in forest
         call nvpm#grow(simplify(file.'/'.arbo))
       endfor
     else
@@ -425,9 +439,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
   endif "}
   if func=='make' "{
 
-    if empty(args)
-      return 1
-    endif
+    if empty(args)|return|endif
+
     call mkdir(g:nvpm.file.arbo,'p')
     let arbo = g:nvpm.file.arbo..args
     if filereadable(arbo)
@@ -437,6 +450,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       return 1
     endif
     let args = arbo
+
   endif "}
 
   call nvpm#{func}(args)

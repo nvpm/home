@@ -78,9 +78,9 @@ cmap <F9>  <esc>:NvpmFell<space>
 nmap <F10> <esc>:NvpmMake<space>
 imap <F10> <esc>:NvpmMake<space>
 cmap <F10> <esc>:NvpmMake<space>
-nmap <silent><F12> <esc>:wall<cr>:NvpmJump<cr>
-imap <silent><F12> <esc>:wall<cr>:NvpmJump<cr>
-cmap <silent><F12> <esc>:wall<cr>:NvpmJump<cr>
+nmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
+imap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
+cmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
 if !has('nvim')
   nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
 else

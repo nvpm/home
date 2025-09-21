@@ -1,5 +1,14 @@
 
   project   devl {
+    workspace  nvpm {
+     tab  code
+        file auto : autoload/nvpm.vim
+        file plug : plugin/nvpm.vim
+       -file init = meta/init.vim
+      tab 🯅 seng = seng/nvpm
+        file TODO     
+        file Issues   
+    }
     workspace  arbo {
       tab  code
         file auto : autoload/arbo.vim
@@ -11,15 +20,6 @@
       tab  nvpm = test/arbo
         file case : nvpm.arbo
         file expt : nvpm.expt
-    }
-    workspace  nvpm {
-     tab  code
-        file auto : autoload/nvpm.vim
-        file plug : plugin/nvpm.vim
-        file init = meta/init.vim
-      tab 🯅 seng = seng/nvpm
-        file TODO     
-        file Issues   
     }
     --
     workspace 🭹 line {
