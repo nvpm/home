@@ -7,12 +7,13 @@ let _NVPMAUTO_ = 1
 "-- main functions --
 fu! nvpm#init(...) abort "{ user variables & startup routines
 
-  let g:nvpm = get(g:,'nvpm',{})
+  " either gets or sets g:nvpm
+  let g:nvpm          = get(g:     , 'nvpm'     , {})
+  let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
+  let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  0)
+  let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
 
-  let g:nvpm.initload = get(g:nvpm,'initload',0)
-  let g:nvpm.autocmds = get(g:nvpm,'autocmds',0)
-  let g:nvpm.filetree = get(g:nvpm,'filetree',0)
-
+  " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
   if has_key(g:nvpm,'lexicon')
     let g:nvpm.arbo.lexicon = g:nvpm.lexicon
@@ -25,11 +26,11 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   endif
   let g:nvpm.arbo.syntax = 'nvpm'
   let g:nvpm.arbo.file   = ''
-  call arbo#conf(g:nvpm.arbo)
+  call arbo#conf(g:nvpm.arbo) " listfies the lexicon
 
   " 0: unloaded trees, 1: loaded trees, 2: edit mode
   let g:nvpm.mode = 0
-  let g:nvpm.term = ''
+  let g:nvpm.term = '' " terminal path
 
   let g:nvpm.tree = {}
   call nvpm#zero()
