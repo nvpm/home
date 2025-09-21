@@ -12,7 +12,6 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.initload = get(g:nvpm,'initload',0)
   let g:nvpm.autocmds = get(g:nvpm,'autocmds',0)
   let g:nvpm.filetree = get(g:nvpm,'filetree',0)
-  "let g:nvpm.savebufs = get(g:nvpm,'savebufs',0)&&g:nvpm.initload
 
   let g:nvpm.arbo = {}
   if has_key(g:nvpm,'lexicon')
@@ -51,12 +50,6 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
         return
       endif
       let g:nvpm.tree = root
-      "if g:nvpm.savebufs
-      "  call nvpm#rend()
-      "  for file in g:nvpm.tree.bufs
-      "    exec 'badd '..file
-      "  endfor
-      "endif
       if 1+nvpm#find(g:nvpm.file.edit) 
         call nvpm#fell(g:nvpm.file.edit)
       endif
@@ -334,27 +327,13 @@ fu! nvpm#zero(...) abort "{ resets the nvpm tree
   let g:nvpm.tree.curr = ''
   let g:nvpm.tree.last = ''
   let g:nvpm.tree.list = []
-  "if g:nvpm.savebufs
-  "  let g:nvpm.tree.bufs = []
-  "endif
   let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
 
 endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
-  if g:nvpm.initload
-    "if g:nvpm.savebufs
-    "  let bool = '!empty(v:val)'
-    "  let bool.= '&&buflisted(v:val)'
-    "  let bool.= '&&v:val!~"^.nvpm.*"'
-    "  let bool.= '&&v:val!~"^.git.*"'
-    "  let bool.= '&&v:val!~"^term:.*"'
-    "  let list = map(range(1,bufnr('$')),'bufname(v:val)')
-    "  let list = filter(list,bool)
-    "  let g:nvpm.tree.bufs = list
-    "endif
-    call writefile([string(g:nvpm.tree)],g:nvpm.file.save)
-  endif
+  if !g:nvpm.initload|return 1|endif
+  return writefile([string(g:nvpm.tree)],g:nvpm.file.save)
 
 endfu "}
 
