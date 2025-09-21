@@ -32,8 +32,8 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.mode = 0
   let g:nvpm.term = '' " terminal path
 
-  let g:nvpm.tree = {}
-  call nvpm#zero()
+  " start with a null tree
+  call nvpm#null('tree')
 
   let g:nvpm.file = {}
   let g:nvpm.file.root = '.nvpm/nvpm/'
@@ -103,7 +103,7 @@ endfu "}
 fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
 
   if !a:0||empty(a:1)
-    call nvpm#zero()
+    call nvpm#null('tree')
   else
     let file = a:1
     let indx = nvpm#find(file)
@@ -323,12 +323,17 @@ fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
   endfor
 
 endfu "}
-fu! nvpm#zero(...) abort "{ resets the nvpm tree
+fu! nvpm#null(...) abort "{ resets the nvpm tree
 
-  let g:nvpm.tree.curr = ''
-  let g:nvpm.tree.last = ''
-  let g:nvpm.tree.list = []
-  let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
+  if !a:0|return|endif
+
+  if a:1=='tree'
+    let g:nvpm.tree      = {}
+    let g:nvpm.tree.curr = ''
+    let g:nvpm.tree.last = ''
+    let g:nvpm.tree.list = []
+    let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
+  endif
 
 endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
