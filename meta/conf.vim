@@ -74,9 +74,9 @@ nmap <silent>-         :NvpmJump -0<cr>
 nmap <F8>  <esc>:NvpmGrow<space>
 imap <F8>  <esc>:NvpmGrow<space>
 cmap <F8>  <esc>:NvpmGrow<space>
-nmap <F9>  <esc>:NvpmFell<space>
-imap <F9>  <esc>:NvpmFell<space>
-cmap <F9>  <esc>:NvpmFell<space>
+nmap <F9>  <esc>:NvpmTrim<space>
+imap <F9>  <esc>:NvpmTrim<space>
+cmap <F9>  <esc>:NvpmTrim<space>
 nmap <F10> <esc>:NvpmMake<space>
 imap <F10> <esc>:NvpmMake<space>
 cmap <F10> <esc>:NvpmMake<space>

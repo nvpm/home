@@ -62,7 +62,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
       endif
       let g:nvpm.tree = root
       if 1+nvpm#find(g:nvpm.file.edit) 
-        call nvpm#fell(g:nvpm.file.edit)
+        call nvpm#trim(g:nvpm.file.edit)
       endif
       let g:nvpm.mode = !!g:nvpm.tree.meta.leng
       call timer_start(g:nvpm.initload,{->nvpm#load()})
@@ -73,17 +73,9 @@ endfu "}
 fu! nvpm#load(...) abort "{ loading mechanisms (line,zoom,rend,curr,save)
 
   if !g:nvpm.mode|return|endif
-  if exists('g:line.mode')&&g:line.mode
-    let g:line.nvpm = g:nvpm.mode
-    if exists('*line#show')
-      call line#show()
-    endif
-  endif
-  if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
-    only
-    call zoom#show()
-  endif
 
+  call nvpm#line()
+  call nvpm#zoom()
   call nvpm#curr()
   call nvpm#rend()
   call nvpm#save()
@@ -110,7 +102,7 @@ fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
   let g:nvpm.mode = !!g:nvpm.tree.meta.leng
 
 endfu "}
-fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
+fu! nvpm#trim(...) abort "{ trims an arbo file from the nvpm tree
 
   if !a:0||empty(a:1)
     call nvpm#null('tree')
@@ -126,8 +118,12 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
       return 1
     endif
   endif
+
   let g:nvpm.mode = !!g:nvpm.tree.meta.leng
-  call nvpm#load()
+  if g:nvpm.mode
+    return nvpm#load()
+  endif
+  call nvpm#line()
 
 endfu "}
 fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
@@ -145,7 +141,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
       return 1
     else
       " removes edit file generated subtree from the nvpm tree
-      call nvpm#fell(g:nvpm.file.edit)
+      call nvpm#trim(g:nvpm.file.edit)
 
       " jumps to the subtree respective to the selected arbo file before 
       " exiting Edit Mode
@@ -241,7 +237,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
   endif
 
 endfu "}
-fu! nvpm#make(...) abort "{ makes new arbo file and enters trim mode on it
+fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 
   let name = get(a:000,0,'')
 
@@ -350,13 +346,31 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
   return writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
 
 endfu "}
+fu! nvpm#line(...) abort "{ 
+
+  if exists('g:line.mode')&&g:line.mode
+    let g:line.nvpm = g:nvpm.mode
+    if exists('*line#show')
+      call line#show()
+    endif
+  endif
+
+endfu "}
+fu! nvpm#zoom(...) abort "{ 
+
+  if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
+    only
+    call zoom#show()
+  endif
+
+endfu "}
 
 "-- user function --
 fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
 
   if a:0==3 " <tab> completions {
     let cmdline = trim(a:000[1])
-    if  cmdline=~'\CNvpmFell' "{
+    if  cmdline=~'\CNvpmTrim' "{
       let list = []
       for arbo in g:nvpm.tree.list
         if arbo.file==g:nvpm.file.edit|continue|endif
@@ -406,7 +420,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
   if func=='grow' "{
     if g:nvpm.mode==2
       echohl WarningMsg
-      echo  'NvpmGrow: leave trim mode first'
+      echo  'NvpmGrow: leave Edit Mode first'
       echohl None
       return 1
     endif
@@ -422,10 +436,10 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     call nvpm#load()
     return
   endif "}
-  if func=='fell' "{
+  if func=='trim' "{
     if g:nvpm.mode==2
       echohl WarningMsg
-      echo  'NvpmFell: leave trim mode first'
+      echo  'NvpmTrim: leave Edit Mode first'
       echohl None
       return 1
     endif
