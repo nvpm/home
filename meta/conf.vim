@@ -45,11 +45,13 @@ if !has('nvim')
   set hidden
 endif
 
+let nvpmhome = '/iasj/conf/nvim/nvpm'
+
 let nvpm = {}
 let nvpm.initload = 1
 let nvpm.autocmds = 1
 let nvpm.filetree = 1
-"let nvpm.savebufs = 0
+let nvpm.invasive = 0
 let nvpm.lexicon  = 'project,workspace,tab,file'
 
 hi arbovars guifg=#00ff00 gui=bold
@@ -78,9 +80,9 @@ cmap <F9>  <esc>:NvpmFell<space>
 nmap <F10> <esc>:NvpmMake<space>
 imap <F10> <esc>:NvpmMake<space>
 cmap <F10> <esc>:NvpmMake<space>
-nmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
-imap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
-cmap <silent><F12> <esc>:wall<cr>:NvpmEdit<cr>
+nmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+imap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+cmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
 if !has('nvim')
   nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
 else

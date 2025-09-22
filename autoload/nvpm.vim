@@ -4,6 +4,10 @@ let _NVPMAUTO_ = 1
 "let s:nvim = has('nvim')
 "let s:vim  = !s:nvim
 
+if !has_key(g:,'nvpmhome')
+  let g:nvpmhome = resolve(expand('~/.nvpm'))
+endif
+
 "-- main functions --
 fu! nvpm#init(...) abort "{ user variables & startup routines
 
@@ -12,6 +16,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
   let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
+  let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -37,16 +42,20 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
 
   " default file locations
   let g:nvpm.file = {}
-  let g:nvpm.file.root = '.nvpm/nvpm/'
+  if g:nvpm.invasive
+    let g:nvpm.file.root = '.nvpm/nvpm/'
+  else
+    let g:nvpm.file.root = g:nvpmhome..'/nvpm/locals/'..getcwd()..'/'
+  endif
   let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
-  let g:nvpm.file.edit = g:nvpm.file.root..'edit'
-  let g:nvpm.file.save = g:nvpm.file.root..'save'
+  let g:nvpm.file.edit = g:nvpm.file.root..'edit.arbo'
+  let g:nvpm.file.save = g:nvpm.file.root..'save.json'
 
   if !argc()&&g:nvpm.initload
     let g:nvpm.initload = abs(g:nvpm.initload)
     if filereadable(g:nvpm.file.save)
       let arbo = get(readfile(g:nvpm.file.save),0,'')
-      let root = eval(arbo)
+      let root = json_decode(arbo)
       if type(root)!=4
         call delete(g:nvpm.file.save)
         return
@@ -337,8 +346,8 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
 endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
-  if !g:nvpm.initload|return 1|endif
-  return writefile([string(g:nvpm.tree)],g:nvpm.file.save)
+  if !g:nvpm.initload||g:nvpm.mode!=1|return 1|endif
+  return writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
 
 endfu "}
 
