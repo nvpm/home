@@ -346,7 +346,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
 endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
-  if !g:nvpm.initload||g:nvpm.mode!=1|return 1|endif
+  if !g:nvpm.initload|return 1|endif
   return writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
 
 endfu "}
