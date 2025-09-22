@@ -45,7 +45,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   if g:nvpm.invasive
     let g:nvpm.file.root = '.nvpm/nvpm/'
   else
-    let g:nvpm.file.root = g:nvpmhome..'/nvpm/locals/'..getcwd()..'/'
+    let g:nvpm.file.root = g:nvpmhome..'/nvpm/locals'..getcwd()..'/'
   endif
   let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
   let g:nvpm.file.edit = g:nvpm.file.root..'edit.arbo'
@@ -123,6 +123,9 @@ fu! nvpm#trim(...) abort "{ trims an arbo file from the nvpm tree
   if g:nvpm.mode
     return nvpm#load()
   endif
+  echohl WarningMsg
+  echo  'NvpmTrim: You killed the tree. Use NvpmGrow to grow it back!'
+  echohl None
   call nvpm#line()
 
 endfu "}
@@ -332,6 +335,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
   if !a:0|return|endif
 
   if a:1=='tree'
+    let g:nvpm.mode      = 0
     let g:nvpm.tree      = {}
     let g:nvpm.tree.curr = ''
     let g:nvpm.tree.last = ''
@@ -374,7 +378,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       let list = []
       for arbo in g:nvpm.tree.list
         if arbo.file==g:nvpm.file.edit|continue|endif
-        call add(list,arbo.file)
+        call add(list,fnamemodify(arbo.file,':t'))
       endfor
       return list
     endif "}
@@ -443,6 +447,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       echohl None
       return 1
     endif
+    if empty(trim(args))&&g:nvpm.mode|return nvpm#trim()|endif
+    let args = g:nvpm.file.arbo..args
   endif "}
   if func=='make' "{
 
