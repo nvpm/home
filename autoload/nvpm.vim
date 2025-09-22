@@ -10,7 +10,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   " either gets or sets g:nvpm
   let g:nvpm          = get(g:     , 'nvpm'     , {})
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
-  let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  0)
+  let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
   let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
 
   " builds the arbo conf dictionary
