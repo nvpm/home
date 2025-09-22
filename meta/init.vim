@@ -37,7 +37,7 @@ endfu "}
 fu! s:test.nvpm(...) "{
 
   "so meta/conf.vim
-  "so autoload/nvpm.vim
+  so autoload/nvpm.vim
   "so plugin/nvpm.vim
 
 
@@ -127,7 +127,7 @@ endfu "}
 " exec {
 
 if 1|call s:test.arbo()|endif
-if 0|call s:test.nvpm()|endif
+if 1|call s:test.nvpm()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 

@@ -133,7 +133,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
   if !isdirectory(g:nvpm.file.arbo)|return 1|endif
 
-  if g:nvpm.mode == 2
+  if g:nvpm.mode == 2 "{
     let currarbo = bufname()
 
     " only leaves Edit Mode upon valid arbo file
@@ -155,7 +155,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
     endif
     call nvpm#load()
     return
-  endif
+  endif "}
 
   " Edit Mode workspace creation
   let forest = readdir(g:nvpm.file.arbo)
@@ -173,7 +173,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
   endif
 
   let arbo = ''
-  if empty(g:nvpm.tree.list)|return 1|else
+  if !empty(g:nvpm.tree.list)
     let arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
   endif
 
@@ -455,10 +455,10 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     if empty(args)|return|endif
 
     call mkdir(g:nvpm.file.arbo,'p')
-    let arbo = g:nvpm.file.arbo..args
+    let arbo = g:nvpm.file.arbo..args..'.arbo'
     if filereadable(arbo)
       echohl WarningMsg
-      echo 'NvpmMake: arbo file ['.args.'] exists. Choose another name!'
+      echo 'NvpmMake: arbo file ['.args.'.arbo] exists. Choose another name!'
       echohl None
       return 1
     endif
