@@ -324,6 +324,9 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
     elseif name =~ $VIMRUNTIME..'/doc/'
       let char = ''
       let name = fnamemodify(name,':t')
+    elseif name =~ '.*/arbo/.*\.arbo$'
+      let char = ''
+      let name = fnamemodify(name,':t')
     elseif &filetype == 'help'
       let char = ''
       let name = fnamemodify(name,':~')
