@@ -33,12 +33,9 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo) " listfies the lexicon
 
-  " 0: unloaded trees, 1: loaded trees, 2: edit mode
-  let g:nvpm.mode = 0
-  let g:nvpm.term = -1 " terminal bufnr
-
-  " start with a null tree
+  " start with a null values for sensible varibles in g:nvpm
   call nvpm#null('tree')
+  call nvpm#null('term')
 
   " default file locations
   let g:nvpm.file = {}
@@ -357,12 +354,16 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
   if !a:0|return|endif
 
   if a:1=='tree'
+    " 0: unloaded tree, 1: loaded tree, 2: edit mode
     let g:nvpm.mode      = 0
+
     let g:nvpm.tree      = {}
     let g:nvpm.tree.curr = ''
     let g:nvpm.tree.last = ''
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
+  elseif a:1=='term'
+    let g:nvpm.term = 0
   endif
 
 endfu "}
