@@ -25,7 +25,9 @@ if !exists(':NvpmEdit') "{
   com! NvpmEdit call nvpm#user('edit')
 endif "}
 if !exists(':NvpmTerm') "{
-  com! NvpmTerm call nvpm#user('term')
+  "com! NvpmTerm call nvpm#user('term')
+  com! -complete=shellcmd -nargs=* 
+  \NvpmTerm call nvpm#user('term','<args>')
 endif "}
 
 "-- auto commands  --

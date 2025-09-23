@@ -1,8 +1,8 @@
 "-- auto/nvpm.vim  --
 if !exists('NVPMTEST')&&exists('_NVPMAUTO_')|finish|endif
 let _NVPMAUTO_ = 1
-"let s:nvim = has('nvim')
-"let s:vim  = !s:nvim
+let s:nvim = has('nvim')
+let s:vim  = !s:nvim
 
 if !has_key(g:,'nvpmhome')
   let g:nvpmhome = resolve(expand('~/.nvpm'))
@@ -35,7 +35,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
 
   " 0: unloaded trees, 1: loaded trees, 2: edit mode
   let g:nvpm.mode = 0
-  let g:nvpm.term = '' " terminal path
+  let g:nvpm.term = -1 " terminal bufnr
 
   " start with a null tree
   call nvpm#null('tree')
@@ -258,13 +258,35 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  if !bufexists(g:nvpm.term)
-    terminal
-    let g:nvpm.term = bufname()
+  let arg = get(a:,1,'')
+
+  if arg=='termkill'
+    call nvpm#rend()
+    exe 'silent! bdelete '..g:nvpm.term
+    let g:nvpm.term = -1
+    return
   endif
 
-  if !empty(matchstr(g:nvpm.term,'term://.*'))
-    call execute('edit! '..g:nvpm.term)
+  if !bufexists(g:nvpm.term)
+    let cmd = empty(arg)?$SHELL:arg
+    if s:vim
+      let conf = {} 
+      let conf.curwin = 1
+      let conf.term_finish = 'close'
+      let conf.exit_cb = function('nvpm#term',['termkill'])
+      call term_start(cmd,conf)
+    else
+      let conf = {} 
+      let conf.pty  = v:true
+      let conf.term = v:true
+      let conf.on_exit = function('nvpm#term',['termkill'])
+      call jobstart(cmd,conf)
+    endif
+    let g:nvpm.term = bufnr()
+    let &l:ft = ''
+  else
+    exe 'buffer '..g:nvpm.term
+    if s:vim|exe 'normal i'|endif
   endif
 
 endfu "}

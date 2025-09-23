@@ -324,21 +324,5 @@ fu! zoom#auto(...) abort "{ handles autocommands
     endif
     return
   endif "}
-  if a:1=='term' "{
-    if bufname()=~'^.*git.*$'
-      call input(repeat(' ',g:zoom.size.l).'Press enter/esc to close it')
-    endif
-    if g:zoom.mode
-      let line = 0
-      if g:zoom.line
-        let line = g:line.mode
-      endif
-      only
-      bdel
-      call zoom#show()
-      if line|call line#show()|endif
-    endif
-    return
-  endif "}
 
 endfu "}

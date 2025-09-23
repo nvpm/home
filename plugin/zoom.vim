@@ -18,9 +18,6 @@ if g:zoom.autocmds
     au FileType help call zoom#auto('help')
     au FileType man  call zoom#auto('manp')
     au ColorScheme * call zoom#show(1)
-    if has('nvim')
-      au TermClose * call timer_start(20,{->zoom#auto('term')})
-    endif
   augroup END
 endif
 
