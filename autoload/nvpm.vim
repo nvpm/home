@@ -255,36 +255,39 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  let arg = get(a:,1,'')
+  " on-demand declaration of the nvmp term callback
+  if !exists('*s:termexit') "{
+  fu! s:termexit(...)
 
-  if arg=='termkill'
-    call nvpm#rend()
-    exe 'silent! bdelete '..g:nvpm.term
-    let g:nvpm.term = -1
-    return
-  endif
-
-  if !bufexists(g:nvpm.term)
-    let cmd = empty(arg)?$SHELL:arg
-    if s:vim
-      let conf = {} 
-      let conf.curwin = 1
-      let conf.term_finish = 'close'
-      let conf.exit_cb = function('nvpm#term',['termkill'])
-      call term_start(cmd,conf)
-    else
-      let conf = {} 
-      let conf.pty  = v:true
-      let conf.term = v:true
-      let conf.on_exit = function('nvpm#term',['termkill'])
-      call jobstart(cmd,conf)
+    if bufnr()==s:term.indx
+      call nvpm#rend()
+      " delete terminal buffer, which was detached form killed process
+      exec 'bdelete '..s:term.indx
+      call nvpm#null('term')
     endif
-    let g:nvpm.term = bufnr()
-    let &l:ft = ''
-  else
-    exe 'buffer '..g:nvpm.term
-    if s:vim|exe 'normal i'|endif
-  endif
+
+  endfu
+  endif "}
+
+  " handling of nvpm wild terminal
+  if !a:0||empty(a:1) "{
+    if !s:term.indx||!bufexists(s:term.indx)
+
+      if s:nvim 
+        terminal
+        let s:term.indx = bufnr()
+        " call-back routine for nvpm wild term in Neovim {
+        if !exists('s:termcloseau')
+          au! TermClose * call s:termexit()
+          let s:termcloseau = 1
+        endif "}
+        return
+      endif
+
+    else
+      exe 'buffer '..s:term.indx
+    endif
+  endif "}
 
 endfu "}
 
@@ -363,7 +366,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let g:nvpm.term = 0
+    let s:term.indx = 0
   endif
 
 endfu "}

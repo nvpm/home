@@ -260,8 +260,8 @@ nmap <silent>ml :Line<cr><c-l>
 "set noshowmode
 
 let zoom = {}
-let zoom.autocmds = 1
-let zoom.initload = 1
+let zoom.autocmds = 0
+let zoom.initload = 0
 let zoom.keepline = 1
 let zoom.pushcmdl = 0
 let zoom.height = -4
