@@ -255,38 +255,50 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  " on-demand declaration of the nvmp term callback
-  if !exists('*s:termexit') "{
-  fu! s:termexit(...)
+  " on-demand declaration of the nvmp term callback "{
+  if !exists('*s:exit')
+  fu! s:exit(...)
 
-    if bufnr()==s:term.indx
+    if bufnr()==g:nvpm.wild
       call nvpm#rend()
       " delete terminal buffer, which was detached form killed process
-      exec 'bdelete '..s:term.indx
+      exec 'bdelete '..g:nvpm.wild
       call nvpm#null('term')
     endif
 
   endfu
   endif "}
+  " handling of nvpm wild terminal "{
+  if !a:0||empty(a:1)
+    if !g:nvpm.wild||!bufexists(g:nvpm.wild)
 
-  " handling of nvpm wild terminal
-  if !a:0||empty(a:1) "{
-    if !s:term.indx||!bufexists(s:term.indx)
-
+      " Vim    {
+      if !s:nvim 
+        let conf = {} 
+        let conf.curwin = 1
+        let conf.term_finish = 'close'
+        let conf.exit_cb = function('s:exit')
+        call term_start($SHELL,conf)
+        let g:nvpm.wild = bufnr()
+        return
+      endif " }
+      " Neovim {
       if s:nvim 
         terminal
-        let s:term.indx = bufnr()
+        let g:nvpm.wild = bufnr()
         " call-back routine for nvpm wild term in Neovim {
-        if !exists('s:termcloseau')
-          au! TermClose * call s:termexit()
-          let s:termcloseau = 1
+        if !exists('g:nvpmcloseau')
+          au! TermClose * call s:exit()
+          let g:nvpmcloseau = 1
         endif "}
         return
-      endif
+      endif " }
 
     else
-      exe 'buffer '..s:term.indx
+      exe 'buffer '..g:nvpm.wild
+      if !s:nvim|exe 'normal i'|endif
     endif
+    return
   endif "}
 
 endfu "}
@@ -366,7 +378,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let s:term.indx = 0
+    let g:nvpm.wild = 0
   endif
 
 endfu "}
@@ -376,6 +388,7 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
   return writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
 
 endfu "}
+"TODO: investigate why these are necessary
 fu! nvpm#line(...) abort "{ 
 
   if exists('g:line.mode')&&g:line.mode
