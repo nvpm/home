@@ -58,7 +58,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
         return
       endif
       let g:nvpm.tree = root
-      if 1+nvpm#find(g:nvpm.file.edit) 
+      if 1+nvpm#find(g:nvpm.file.edit)
         call nvpm#trim(g:nvpm.file.edit)
       endif
       let g:nvpm.mode = !!g:nvpm.tree.meta.leng
@@ -143,7 +143,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
       " removes edit file generated subtree from the nvpm tree
       call nvpm#trim(g:nvpm.file.edit)
 
-      " jumps to the subtree respective to the selected arbo file before 
+      " jumps to the subtree respective to the selected arbo file before
       " exiting Edit Mode
       let indx = nvpm#find(currarbo)
       if 1+indx
@@ -262,8 +262,10 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     if bufnr()==g:nvpm.wild
       call nvpm#rend()
       " delete terminal buffer, which was detached form killed process
-      exec 'bdelete '..g:nvpm.wild
+      exec 'silent! bdelete '..g:nvpm.wild
       call nvpm#null('term')
+    else
+      call nvpm#term()
     endif
 
   endfu
@@ -273,8 +275,8 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     if !g:nvpm.wild||!bufexists(g:nvpm.wild)
 
       " Vim    {
-      if !s:nvim 
-        let conf = {} 
+      if !s:nvim
+        let conf = {}
         let conf.curwin = 1
         let conf.term_finish = 'close'
         let conf.exit_cb = function('s:exit')
@@ -283,7 +285,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
         return
       endif " }
       " Neovim {
-      if s:nvim 
+      if s:nvim
         terminal
         let g:nvpm.wild = bufnr()
         " call-back routine for nvpm wild term in Neovim {
@@ -300,6 +302,21 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     endif
     return
   endif "}
+  " handling of other kinds of terminal "{
+
+  let cmd = a:1
+  if !s:nvim " Vim    {
+    let conf = {}
+    let conf.curwin = 1
+    call term_start(cmd,conf)
+    return
+  endif " }
+  if s:nvim " Neovim  {
+    exec 'terminal '..a:1
+    exec 'normal i'
+  endif " }
+
+  "}
 
 endfu "}
 
@@ -348,7 +365,7 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
     call mkdir(head,'p')
   endif
 
-endfu "} 
+endfu "}
 fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
 
   for key in keys(g:nvpm)
@@ -389,7 +406,7 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
 endfu "}
 "TODO: investigate why these are necessary
-fu! nvpm#line(...) abort "{ 
+fu! nvpm#line(...) abort "{
 
   if exists('g:line.mode')&&g:line.mode
     let g:line.nvpm = g:nvpm.mode
@@ -399,7 +416,7 @@ fu! nvpm#line(...) abort "{
   endif
 
 endfu "}
-fu! nvpm#zoom(...) abort "{ 
+fu! nvpm#zoom(...) abort "{
 
   if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
     only
