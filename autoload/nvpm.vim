@@ -255,12 +255,12 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  " handling of nvpm wild terminal "{
+  " handling of nvpm terminal "{
   if !a:0||empty(a:1)
     if !g:nvpm.term||!bufexists(g:nvpm.term)
 
-      " Vim    {
-      if !s:nvim
+
+      if !s:nvim " Vim    {
         let conf = {}
         let conf.curwin = 1
         let conf.term_finish = 'close'
@@ -269,13 +269,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
         let g:nvpm.term = bufnr()
         return
       endif " }
-      " Neovim {
-      if s:nvim
-        "let conf = {}
-        "let conf.pty  = v:true
-        "let conf.term = v:true
-        "let conf.on_exit = function('nvpm#auto',['term'])
-        "call jobstart($SHELL,conf)
+      if  s:nvim " Neovim {
         terminal
         let g:nvpm.term = bufnr()
         return
@@ -287,7 +281,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     endif
     return
   endif "}
-  " handling of other kinds of terminal "{
+  " handling of user shellcmd "{
 
   let cmd = a:1
   if !s:nvim " Vim    {
@@ -297,7 +291,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     call term_start(cmd,conf)
     return
   endif " }
-  if s:nvim " Neovim  {
+  if  s:nvim " Neovim {
     exec 'terminal '..cmd
     exec 'normal i'
   endif " }
@@ -515,17 +509,17 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
 
   let func = get(a:,1,'')
 
-  if func=='term' "{
+  if func=='term'
     if bufnr()==g:nvpm.term
       bprevious
       exec 'silent! bdelete '..g:nvpm.term
       call nvpm#null('term')
     else
-      call input('<ESC>/<ENTER> to exit: ')
       let bufnr = bufnr()
+      call input('<ESC>/<ENTER> to exit: ')
       bprevious
       exec 'bdel '..bufnr
     endif
-  endif "}
+  endif
 
 endfu "}
