@@ -271,6 +271,11 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       endif " }
       " Neovim {
       if s:nvim
+        "let conf = {}
+        "let conf.pty  = v:true
+        "let conf.term = v:true
+        "let conf.on_exit = function('nvpm#auto',['term'])
+        "call jobstart($SHELL,conf)
         terminal
         let g:nvpm.term = bufnr()
         return
@@ -301,10 +306,10 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 endfu "}
 fu! nvpm#auto(...) abort "{
 
-  if get(a:,1,'')=='term'
+  let func = get(a:,1,'')
+  if func=='term'
     if bufnr()==g:nvpm.term
-      bprevious
-      " delete terminal buffer, which was detached form killed process
+      bprev
       exec 'silent! bdelete '..g:nvpm.term
       call nvpm#null('term')
     endif
