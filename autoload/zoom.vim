@@ -303,7 +303,7 @@ fu! zoom#zero(...) abort "{ resets the size variable
 endfu "}
 
 "-- auto function --
-fu! zoom#auto(...) abort "{ handles autocommands 
+fu! zoom#auto(...) abort "{ handles autocmds & callbacks
 
   if !a:0|return|endif
 

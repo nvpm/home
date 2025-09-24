@@ -293,6 +293,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   if !s:nvim " Vim    {
     let conf = {}
     let conf.curwin = 1
+    let conf.exit_cb = function('nvpm#auto',['term'])
     call term_start(cmd,conf)
     return
   endif " }
@@ -302,18 +303,6 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   endif " }
 
   "}
-
-endfu "}
-fu! nvpm#auto(...) abort "{
-
-  let func = get(a:,1,'')
-  if func=='term'
-    if bufnr()==g:nvpm.term
-      bprev
-      exec 'silent! bdelete '..g:nvpm.term
-      call nvpm#null('term')
-    endif
-  endif
 
 endfu "}
 
@@ -402,8 +391,8 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
   return writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
 
 endfu "}
-"TODO: investigate why these are necessary
-fu! nvpm#line(...) abort "{
+"TODO: re-investigate why these are necessary
+fu! nvpm#line(...) abort "{ initializes nvpm/line
 
   if exists('g:line.mode')&&g:line.mode
     let g:line.nvpm = g:nvpm.mode
@@ -413,7 +402,7 @@ fu! nvpm#line(...) abort "{
   endif
 
 endfu "}
-fu! nvpm#zoom(...) abort "{
+fu! nvpm#zoom(...) abort "{ initializes nvpm/zoom
 
   if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
     only
@@ -520,5 +509,23 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
   endif "}
 
   call nvpm#{func}(args)
+
+endfu "}
+fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
+
+  let func = get(a:,1,'')
+
+  if func=='term' "{
+    if bufnr()==g:nvpm.term
+      bprevious
+      exec 'silent! bdelete '..g:nvpm.term
+      call nvpm#null('term')
+    else
+      call input('<ESC>/<ENTER> to exit: ')
+      let bufnr = bufnr()
+      bprevious
+      exec 'bdel '..bufnr
+    endif
+  endif "}
 
 endfu "}
