@@ -255,49 +255,29 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  " on-demand declaration of the nvmp term callback "{
-  if !exists('*s:exit')
-  fu! s:exit(...)
-
-    if bufnr()==g:nvpm.wild
-      call nvpm#rend()
-      " delete terminal buffer, which was detached form killed process
-      exec 'silent! bdelete '..g:nvpm.wild
-      call nvpm#null('term')
-    else
-      call nvpm#term()
-    endif
-
-  endfu
-  endif "}
   " handling of nvpm wild terminal "{
   if !a:0||empty(a:1)
-    if !g:nvpm.wild||!bufexists(g:nvpm.wild)
+    if !g:nvpm.term||!bufexists(g:nvpm.term)
 
       " Vim    {
       if !s:nvim
         let conf = {}
         let conf.curwin = 1
         let conf.term_finish = 'close'
-        let conf.exit_cb = function('s:exit')
+        let conf.exit_cb = function('nvpm#auto',['term'])
         call term_start($SHELL,conf)
-        let g:nvpm.wild = bufnr()
+        let g:nvpm.term = bufnr()
         return
       endif " }
       " Neovim {
       if s:nvim
         terminal
-        let g:nvpm.wild = bufnr()
-        " call-back routine for nvpm wild term in Neovim {
-        if !exists('g:nvpmcloseau')
-          au! TermClose * call s:exit()
-          let g:nvpmcloseau = 1
-        endif "}
+        let g:nvpm.term = bufnr()
         return
       endif " }
 
     else
-      exe 'buffer '..g:nvpm.wild
+      exe 'buffer '..g:nvpm.term
       if !s:nvim|exe 'normal i'|endif
     endif
     return
@@ -313,10 +293,22 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   endif " }
   if s:nvim " Neovim  {
     exec 'terminal '..a:1
-    exec 'normal i'
+    "exec 'normal i'
   endif " }
 
   "}
+
+endfu "}
+fu! nvpm#auto(...) abort "{
+
+  if get(a:,1,'')=='term'
+    if bufnr()==g:nvpm.term
+      bprevious
+      " delete terminal buffer, which was detached form killed process
+      exec 'silent! bdelete '..g:nvpm.term
+      call nvpm#null('term')
+    endif
+  endif
 
 endfu "}
 
@@ -355,7 +347,7 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
   let curr = g:nvpm.tree.curr
   let head = fnamemodify(curr,':h')..'/'
 
-  exe 'silent! edit '.curr
+  exe 'edit '.curr
 
   if (curr=~'^.*\.arbo$'||head==g:nvpm.file.arbo)&&&l:ft!='arbo'
     setl filetype=arbo
@@ -395,7 +387,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let g:nvpm.wild = 0
+    let g:nvpm.term = 0
   endif
 
 endfu "}
