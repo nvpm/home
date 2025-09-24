@@ -40,7 +40,7 @@ if g:nvpm.autocmds
     endif
     if has('nvim')
       " because neovim is using 'terminal' command instead of jobstart
-      au! TermClose * call nvpm#auto('term')
+      au! TermClose   * call nvpm#auto('term')
     endif
   augroup END
 endif

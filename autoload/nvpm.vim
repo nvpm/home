@@ -298,8 +298,8 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     return
   endif " }
   if s:nvim " Neovim  {
-    exec 'terminal '..a:1
-    "exec 'normal i'
+    exec 'terminal '..cmd
+    exec 'normal i'
   endif " }
 
   "}
