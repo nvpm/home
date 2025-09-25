@@ -1,8 +1,15 @@
 |bugs|
-  ● [bug] NvpmFell without arguments crashes Vim session demanding restart ~
+  ● [bug] newly cwd feature breaks autocomplete of local files in edit mode ~
+    since it changes the current directory, insert keybinds like
+    <c-x><c-f> won't find the files in the project's home folder,
+    because in edit mode, the cwd is changed to somewhere else.
+
+    The change in cwd must be done only in the terminal mode
+
   ● [bug] ~
 
 |fixed|
+  ● NvpmFell without arguments crashes Vim session demanding restart ~
   ● jump non-existing node ~
     When a node doesn't exists, and user tries to jump between that node type, 
     and error is displayed regarding the 'meta' field in the arbo data 

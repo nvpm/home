@@ -1,14 +1,13 @@
 
-  ● GLOBAL ARBO DIRECTORY ~
-  ● LOAD A ARBO FILE FROM ANYWHERE ~
-  ● SPECIAL KEY-MAPS TO HELP EDIT ARBO FILES ~
-  ● SPLITS ~
-  ● NODE FINDER ~
-  ● LOVED ARBO FILES ~
-  ● NVPM MENU ~
-  ● NVPM INFO ~
-  ● SEVERAL WILD TERMINALS ~
-  ● CHANGE WORKING DIRECTORY ~
+  ● include routine for coming back from help files (nvpm#jump mode 0) ~
+  ● load an arbo file from anywhere ~
+  ● special key-maps to help edit arbo files ~
+  ● splits ~
+  ● node finder ~
+  ● loved arbo files ~
+  ● nvpm menu ~
+  ● nvpm info ~
+  ● several wild terminals ~
   ● float windows for edit mode nd terminal ~
     ● nvim only
   ● remake the term keyword support  ~
