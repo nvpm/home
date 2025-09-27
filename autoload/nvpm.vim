@@ -2,7 +2,6 @@
 if !exists('NVPMTEST')&&exists('_NVPMAUTO_')|finish|endif
 let _NVPMAUTO_ = 1
 let s:nvim = has('nvim')
-let s:vim  = !s:nvim
 
 if !has_key(g:,'nvpmhome')
   let g:nvpmhome = resolve(expand('~/.nvpm'))
@@ -261,15 +260,9 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   let name = get(a:,1,'main')
   let cmd  = get(a:,2,$SHELL)
   let name = empty(trim(name))?'main':name
-  let cmd  = empty(trim(cmd)) ?$SHELL:cmd
 
-  if has_key(g:nvpm.term,name)
-    if bufexists(g:nvpm.term[name])
-      exe 'buffer '..g:nvpm.term[name]
-    else
-      call remove(g:nvpm.term,name)
-      call nvpm#term(name,cmd)
-    endif
+  if has_key(g:nvpm.term,name)&&bufexists(g:nvpm.term[name])
+    exe 'buffer '..g:nvpm.term[name]
   else
     let conf = {}
     if name=='main'&&g:nvpm.mode==2
@@ -363,7 +356,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let g:nvpm.term = #{main:-1}
+    let g:nvpm.term = {}
   endif
 
 endfu "}
@@ -418,6 +411,9 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     if  cmdline=~'\CNvpmGrow' "{
       let files = readdir(g:nvpm.file.arbo)
       return files
+    endif "}
+    if  cmdline=~'\CNvpmTerm' "{
+      return keys(g:nvpm.term)
     endif "}
     return []
   endif "}
@@ -499,6 +495,9 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       let args = split(args)
       let name = args[0]
       let cmd  = join(args[1:])
+      if !empty(name)&&empty(cmd)
+        let cmd = name
+      endif
       call nvpm#term(name,cmd)
     endif
     return
@@ -514,15 +513,17 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   if func=='term'
     if !g:nvpm.autoterm|return|endif
     let bufnr = bufnr()
-    if bufnr==g:nvpm.term.main
-      call nvpm#rend()
-      exec 'bdelete '..g:nvpm.term.main
-      let g:nvpm.term.main = -1
-    else
+    if bufnr!=get(g:nvpm.term,'main',-1)
       call input('<ESC>/<ENTER> to exit: ')
-      call nvpm#rend()
-      exec 'bdelete '..bufnr
     endif
+    call nvpm#rend()
+    exec 'bdelete '..bufnr
+    for key in keys(g:nvpm.term)
+      if bufnr==g:nvpm.term[key]
+        call remove(g:nvpm.term,key)
+        break
+      endif
+    endfor
   endif
 
 endfu "}
