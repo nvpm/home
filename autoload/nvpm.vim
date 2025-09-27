@@ -258,57 +258,31 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  " handling of nvpm terminal "{
-  if !a:0||empty(a:1)
-    if !g:nvpm.term||!bufexists(g:nvpm.term)
-
-      " cwd feature for edit mode
-      let cwd = g:nvpm.mode==2?g:nvpm.file.root:g:nvpm.home
-
-      if !s:nvim    " Vim    {
-        let conf = {}
-        let conf.cwd     = cwd
-        let conf.curwin  = 1
-        let conf.exit_cb = function('nvpm#auto',['term'])
-        call term_start($SHELL,conf)
-        let g:nvpm.term = bufnr()
-      " }
-      elseif s:nvim " Neovim {
-        let conf         = {}
-        let conf.cwd     = cwd
-        let conf.term    = v:true
-        let conf.on_exit = function('nvpm#auto',['term'])
-        call jobstart($SHELL,conf)
-        let g:nvpm.term = bufnr()
-        setl ft=
-      endif " }
-
-    else
-      exe 'buffer '..g:nvpm.term
+  let name = a:1
+  let cmd  = a:2
+  if has_key(g:nvpm.term,name)
+    if bufexists(g:nvpm.term[name])
+      exe 'buffer '..g:nvpm.term[name]
       if !s:nvim|exe 'normal i'|endif
+    else
+      call remove(g:nvpm.term,name)
+      call nvpm#term(name,cmd)
     endif
-    return
-  endif "}
-  " handling of user shellcmd "{
-
-  let cmd = a:1
-  if !s:nvim     " Vim    {
+  else
     let conf = {}
-    let conf.curwin = 1
-    let conf.exit_cb = function('nvpm#auto',['term'])
-    call term_start(cmd,conf)
-    return
-  " }
-  elseif  s:nvim " Neovim {
-    let conf         = {}
-    let conf.term    = v:true
-    let conf.on_exit = function('nvpm#auto',['term'])
-    call jobstart(cmd,conf)
-    exec 'normal i'
-    setl ft=
-  endif " }
-
-  "}
+    if s:nvim
+      let conf.term    = v:true
+      let conf.on_exit = function('nvpm#auto',['term'])
+      call jobstart(cmd,conf)
+      exec 'normal i'
+      setl ft=
+    else
+      let conf.curwin = 1
+      let conf.exit_cb = function('nvpm#auto',['term'])
+      call term_start(cmd,conf)
+    endif
+    let g:nvpm.term[name] = bufnr()
+  endif
 
 endfu "}
 
@@ -384,7 +358,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let g:nvpm.term = 0
+    let g:nvpm.term = {}
   endif
 
 endfu "}
