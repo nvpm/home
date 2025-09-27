@@ -16,8 +16,10 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
   let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
-  let g:nvpm.autoterm = get(g:nvpm , 'autoterm' ,  1)
-  let g:nvpm.listterm = get(g:nvpm , 'listterm' ,  0)
+
+  " NvpmTerm options
+  let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
+  let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  0)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -271,16 +273,16 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     endif
     if s:nvim
       let conf.term    = v:true
-      let conf.on_exit = function('nvpm#auto',['term'])
+      let conf.on_exit = function('nvpm#auto',['termexit'])
       call jobstart(cmd,conf)
       setl ft=
     else
       let conf.curwin = 1
-      let conf.exit_cb = function('nvpm#auto',['term'])
+      let conf.exit_cb = function('nvpm#auto',['termexit'])
       call term_start(cmd,conf)
     endif
     let g:nvpm.term[name] = bufnr()
-    if !g:nvpm.listterm|setl nobuflisted|endif
+    if !g:nvpm.termlist|setl nobuflisted|endif
   endif
   exec 'normal i'
 
@@ -507,8 +509,8 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
 
   let func = get(a:,1,'')
 
-  if func=='term'
-    if !g:nvpm.autoterm|return|endif
+  if func=='termexit'
+    if !g:nvpm.termexit|return|endif
     let bufnr = bufnr()
     call nvpm#rend()
     exec 'bdelete '..bufnr
