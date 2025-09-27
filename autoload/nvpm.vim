@@ -266,7 +266,6 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   if has_key(g:nvpm.term,name)
     if bufexists(g:nvpm.term[name])
       exe 'buffer '..g:nvpm.term[name]
-      if !s:nvim|exe 'normal i'|endif
     else
       call remove(g:nvpm.term,name)
       call nvpm#term(name,cmd)
@@ -280,7 +279,6 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       let conf.term    = v:true
       let conf.on_exit = function('nvpm#auto',['term'])
       call jobstart(cmd,conf)
-      exec 'normal i'
       setl ft=
     else
       let conf.curwin = 1
@@ -289,6 +287,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     endif
     let g:nvpm.term[name] = bufnr()
   endif
+  exec 'normal i'
 
 endfu "}
 
@@ -364,7 +363,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let g:nvpm.term = {}
+    let g:nvpm.term = #{main:-1}
   endif
 
 endfu "}
@@ -505,6 +504,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     return
   endif "}
 
+  call nvpm#{func}(args)
+
 endfu "}
 fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
 
@@ -513,10 +514,10 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   if func=='term'
     if !g:nvpm.autoterm|return|endif
     let bufnr = bufnr()
-    if bufnr==g:nvpm.term
+    if bufnr==g:nvpm.term.main
       call nvpm#rend()
-      exec 'bdelete '..g:nvpm.term
-      call nvpm#null('term')
+      exec 'bdelete '..g:nvpm.term.main
+      let g:nvpm.term.main = -1
     else
       call input('<ESC>/<ENTER> to exit: ')
       call nvpm#rend()

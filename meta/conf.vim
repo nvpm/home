@@ -84,11 +84,14 @@ cmap <F12> <esc>:NvpmMake<space>
 nmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
 imap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
 cmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
-if !has('nvim')
-  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
-else
-  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>:startinsert<cr>
-endif
+
+nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
+
+"if !has('nvim')
+"  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
+"else
+"  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>:startinsert<cr>
+"endif
 
 "}
 " line {
