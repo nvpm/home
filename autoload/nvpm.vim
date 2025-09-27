@@ -258,8 +258,11 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  let name = a:1
-  let cmd  = a:2
+  let name = get(a:,1,'main')
+  let cmd  = get(a:,2,$SHELL)
+  let name = empty(trim(name))?'main':name
+  let cmd  = empty(trim(cmd)) ?$SHELL:cmd
+
   if has_key(g:nvpm.term,name)
     if bufexists(g:nvpm.term[name])
       exe 'buffer '..g:nvpm.term[name]
@@ -270,6 +273,9 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     endif
   else
     let conf = {}
+    if name=='main'&&g:nvpm.mode==2
+      let conf.cwd = g:nvpm.file.root
+    endif
     if s:nvim
       let conf.term    = v:true
       let conf.on_exit = function('nvpm#auto',['term'])
@@ -469,6 +475,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     endif
     if empty(trim(args))&&g:nvpm.mode|return nvpm#trim()|endif
     let args = g:nvpm.file.arbo..args
+    call nvpm#trim(args)
+    return
   endif "}
   if func=='make' "{
 
@@ -482,11 +490,20 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       echohl None
       return 1
     endif
-    let args = arbo
-
+    call nvpm#make(arbo)
+    return
   endif "}
-
-  call nvpm#{func}(args)
+  if func=='term' "{
+    if empty(args)
+      call nvpm#term()
+    else
+      let args = split(args)
+      let name = args[0]
+      let cmd  = join(args[1:])
+      call nvpm#term(name,cmd)
+    endif
+    return
+  endif "}
 
 endfu "}
 fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
