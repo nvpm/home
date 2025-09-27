@@ -14,9 +14,10 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm          = get(g:     , 'nvpm'     , {})
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
-  let g:nvpm.autoterm = get(g:nvpm , 'autoterm' ,  1)
   let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
+  let g:nvpm.autoterm = get(g:nvpm , 'autoterm' ,  1)
+  let g:nvpm.listterm = get(g:nvpm , 'listterm' ,  0)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -279,6 +280,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       call term_start(cmd,conf)
     endif
     let g:nvpm.term[name] = bufnr()
+    if !g:nvpm.listterm|setl nobuflisted|endif
   endif
   exec 'normal i'
 

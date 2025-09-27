@@ -51,6 +51,7 @@ let nvpm = {}
 let nvpm.initload = 1
 let nvpm.autocmds = 1
 let nvpm.autoterm = 1
+let nvpm.listterm = 0
 let nvpm.filetree = 1
 let nvpm.invasive = 0
 let nvpm.lexicon  = 'project,workspace,tab,file'
