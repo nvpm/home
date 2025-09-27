@@ -37,7 +37,7 @@ endfu "}
 fu! s:test.nvpm(...) "{
 
   "so meta/conf.vim
-  "so autoload/nvpm.vim
+  so autoload/nvpm.vim
   "so plugin/nvpm.vim
 
   NvpmTerm git status

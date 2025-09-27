@@ -258,8 +258,8 @@ endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
   let name = get(a:,1,'main')
+  let name = empty(name)?'main':name
   let cmd  = get(a:,2,$SHELL)
-  let name = empty(trim(name))?'main':name
 
   if has_key(g:nvpm.term,name)&&bufexists(g:nvpm.term[name])
     exe 'buffer '..g:nvpm.term[name]
@@ -419,7 +419,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
   endif "}
 
   let func = a:1
-  let args = get(a:,2,'')
+  let args = trim(get(a:,2,''))
 
   if func=='jump' "{
     if empty(args)|return|endif
@@ -489,18 +489,13 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     return
   endif "}
   if func=='term' "{
-    if empty(args)
-      call nvpm#term()
-    else
+    if !empty(args)
       let args = split(args)
-      let name = args[0]
-      let cmd  = join(args[1:])
-      if !empty(name)&&empty(cmd)
-        let cmd = name
-      endif
+      let name = args[0]..' '..get(args,1,'')
+      let cmd  = join(args)
       call nvpm#term(name,cmd)
+      return
     endif
-    return
   endif "}
 
   call nvpm#{func}(args)
@@ -513,9 +508,6 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   if func=='term'
     if !g:nvpm.autoterm|return|endif
     let bufnr = bufnr()
-    if bufnr!=get(g:nvpm.term,'main',-1)
-      call input('<ESC>/<ENTER> to exit: ')
-    endif
     call nvpm#rend()
     exec 'bdelete '..bufnr
     for key in keys(g:nvpm.term)
