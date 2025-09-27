@@ -261,6 +261,7 @@ nmap <silent>ml :Line<cr><c-l>
 
 let zoom = {}
 let zoom.autocmds = 1
+let zoom.autohelp = 1
 let zoom.initload = 1
 let zoom.keepline = 1
 let zoom.pushcmdl = 0

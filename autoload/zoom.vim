@@ -10,6 +10,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom = get(g:,'zoom',{})
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
+  let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
   let g:zoom.keepline = get(g:zoom , 'keepline' , 0)
   let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
   let g:zoom.height   = get(g:zoom , 'height'   , &lines)
@@ -308,15 +309,17 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
   if !a:0|return|endif
 
   if a:1=='help' "{
-    let bufname=bufname()
-    silent! helpclose
-    exec 'edit '. bufname
+    "TODO: investigate the 'keywordprg' option in both Vim & Neovim for
+    "      all filetypes
+    if buflisted(bufnr())|return|endif
+    if &ft=='man'||&ft=='help'
+      call timer_start(0,{->zoom#auto('only')})
+    endif
     return
   endif "}
-  if a:1=='manp' "{
+  if a:1=='only' "{
     if g:zoom.mode
       only
-      let g:zoom.mode = 0
       call zoom#show()
     else
       silent! wincmd p

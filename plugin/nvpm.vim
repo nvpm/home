@@ -38,8 +38,5 @@ if g:nvpm.autocmds
     if g:nvpm.initload
       au! VimLeavePre * call nvpm#save()
     endif
-    if has('nvim')
-      au! TermClose   * call nvpm#auto('term')
-    endif
   augroup END
 endif

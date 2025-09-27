@@ -15,6 +15,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm          = get(g:     , 'nvpm'     , {})
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
+  let g:nvpm.autoterm = get(g:nvpm , 'autoterm' ,  1)
   let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
 
@@ -33,7 +34,9 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo) " listfies the lexicon
 
-  " start with a null values for sensible varibles in g:nvpm
+  " 0: unloaded tree, 1: loaded tree, 2: edit mode
+  let g:nvpm.mode = 0
+  let g:nvpm.home = getcwd()
   call nvpm#null('tree')
   call nvpm#null('term')
 
@@ -259,20 +262,25 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   if !a:0||empty(a:1)
     if !g:nvpm.term||!bufexists(g:nvpm.term)
 
+      " cwd feature for edit mode
+      let cwd = g:nvpm.mode==2?g:nvpm.file.root:g:nvpm.home
 
-      if !s:nvim " Vim    {
+      if !s:nvim    " Vim    {
         let conf = {}
-        let conf.curwin = 1
-        let conf.term_finish = 'close'
+        let conf.cwd     = cwd
+        let conf.curwin  = 1
         let conf.exit_cb = function('nvpm#auto',['term'])
         call term_start($SHELL,conf)
         let g:nvpm.term = bufnr()
-        return
-      endif " }
-      if  s:nvim " Neovim {
-        terminal
+      " }
+      elseif s:nvim " Neovim {
+        let conf         = {}
+        let conf.cwd     = cwd
+        let conf.term    = v:true
+        let conf.on_exit = function('nvpm#auto',['term'])
+        call jobstart($SHELL,conf)
         let g:nvpm.term = bufnr()
-        return
+        setl ft=
       endif " }
 
     else
@@ -284,16 +292,20 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
   " handling of user shellcmd "{
 
   let cmd = a:1
-  if !s:nvim " Vim    {
+  if !s:nvim     " Vim    {
     let conf = {}
     let conf.curwin = 1
     let conf.exit_cb = function('nvpm#auto',['term'])
     call term_start(cmd,conf)
     return
-  endif " }
-  if  s:nvim " Neovim {
-    exec 'terminal '..cmd
+  " }
+  elseif  s:nvim " Neovim {
+    let conf         = {}
+    let conf.term    = v:true
+    let conf.on_exit = function('nvpm#auto',['term'])
+    call jobstart(cmd,conf)
     exec 'normal i'
+    setl ft=
   endif " }
 
   "}
@@ -366,9 +378,6 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
   if !a:0|return|endif
 
   if a:1=='tree'
-    " 0: unloaded tree, 1: loaded tree, 2: edit mode
-    let g:nvpm.mode      = 0
-
     let g:nvpm.tree      = {}
     let g:nvpm.tree.curr = ''
     let g:nvpm.tree.last = ''
@@ -381,8 +390,9 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
 endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
-  if !g:nvpm.initload|return 1|endif
-  return writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
+  if g:nvpm.initload&&g:nvpm.mode==1
+    call writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
+  endif
 
 endfu "}
 "TODO: re-investigate why these are necessary
@@ -510,15 +520,16 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   let func = get(a:,1,'')
 
   if func=='term'
-    if bufnr()==g:nvpm.term
-      bprevious
-      exec 'silent! bdelete '..g:nvpm.term
+    if !g:nvpm.autoterm|return|endif
+    let bufnr = bufnr()
+    if bufnr==g:nvpm.term
+      call nvpm#rend()
+      exec 'bdelete '..g:nvpm.term
       call nvpm#null('term')
     else
-      let bufnr = bufnr()
       call input('<ESC>/<ENTER> to exit: ')
-      bprevious
-      exec 'bdel '..bufnr
+      call nvpm#rend()
+      exec 'bdelete '..bufnr
     endif
   endif
 

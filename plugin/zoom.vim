@@ -15,9 +15,10 @@ if g:zoom.autocmds
     au!
     au WinEnter    .nvpm/zoom/* if g:zoom.mode|wincmd p|endif
     au VimLeavePre * if g:zoom.mode|only|quit|endif
-    au FileType help call zoom#auto('help')
-    au FileType man  call zoom#auto('manp')
-    au ColorScheme * call zoom#show(1)
+    if g:zoom.autohelp
+      au FileType  help,man setl nobuflisted
+      au BufWinEnter * call zoom#auto('help')
+    endif
+    "au ColorScheme * call zoom#show(1)
   augroup END
 endif
-
