@@ -349,9 +349,11 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
 
   exe 'edit '.curr
 
-  if (curr=~'^.*\.arbo$'||head==g:nvpm.file.arbo)&&&l:ft!='arbo'
-    setl filetype=arbo
-    setl commentstring=-%s
+  if curr=~'^.*\.arbo$'||head==g:nvpm.file.arbo
+    setl nobuflisted
+    if &l:ft!='arbo'
+      setl filetype=arbo
+    endif
   endif
   if g:nvpm.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
     call mkdir(head,'p')
