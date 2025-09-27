@@ -49,15 +49,15 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   endif
   let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
   let g:nvpm.file.edit = g:nvpm.file.root..'edit.arbo'
-  let g:nvpm.file.save = g:nvpm.file.root..'save.json'
+  let g:nvpm.file.tree = g:nvpm.file.root..'tree.json'
 
   if !argc()&&g:nvpm.initload
     let g:nvpm.initload = abs(g:nvpm.initload)
-    if filereadable(g:nvpm.file.save)
-      let arbo = get(readfile(g:nvpm.file.save),0,'')
+    if filereadable(g:nvpm.file.tree)
+      let arbo = get(readfile(g:nvpm.file.tree),0,'')
       let root = json_decode(arbo)
       if type(root)!=4
-        call delete(g:nvpm.file.save)
+        call delete(g:nvpm.file.tree)
         return
       endif
       let g:nvpm.tree = root
@@ -391,7 +391,7 @@ endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
   if g:nvpm.initload&&g:nvpm.mode==1
-    call writefile([json_encode(g:nvpm.tree)],g:nvpm.file.save)
+    call writefile([json_encode(g:nvpm.tree)],g:nvpm.file.tree)
   endif
 
 endfu "}
