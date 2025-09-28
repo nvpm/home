@@ -26,7 +26,7 @@ if !exists(':NvpmEdit') "{
 endif "}
 if !exists(':NvpmTerm') "{
   "com! NvpmTerm call nvpm#user('term')
-  com! -complete=shellcmd -nargs=* 
+  com! -complete=customlist,nvpm#user -nargs=* 
   \NvpmTerm call nvpm#user('term','<args>')
 endif "}
 

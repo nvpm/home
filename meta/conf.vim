@@ -50,45 +50,68 @@ let nvpmhome = '/iasj/conf/nvim/nvpm'
 let nvpm = {}
 let nvpm.initload = 1
 let nvpm.autocmds = 1
-let nvpm.autoterm = 1
+
+let nvpm.termexit = 1
+let nvpm.termlist = 0
+let nvpm.termkeep = 1
+
 let nvpm.filetree = 1
 let nvpm.invasive = 0
+
 let nvpm.lexicon  = 'project,workspace,tab,file'
 
-hi arbovars guifg=#00ff00 gui=bold
-hi arbokeyw guifg=#aa7700 gui=bold
+" NvpmTerm {
 
-nmap <silent><space>   :NvpmJump +4<cr>
-nmap <silent>m<space>  :NvpmJump -4<cr>
-nmap <silent><tab>     :NvpmJump +3<cr>
-nmap <silent>m<tab>    :NvpmJump -3<cr>
-nmap <silent><BS>      :NvpmJump +2<cr>
-nmap <silent><DEL>     :NvpmJump -2<cr>
-nmap <silent><C-p>     :NvpmJump -2<cr>
-nmap <silent><C-n>     :NvpmJump +2<cr>
-nmap <silent><C-i>     :NvpmJump -1<cr>
-nmap <silent><C-o>     :NvpmJump -1<cr>
-nmap <silent><C-Space> :NvpmJump +1<cr>
-nmap <silent>=         :NvpmJump +0<cr>
-nmap <silent>-         :NvpmJump -0<cr>
+  nmap mgl :wa<cr>:NvpmTerm git log --all --graph --oneline<cr>
+  nmap mgd :wa<cr>:NvpmTerm git diff<cr>
+  nmap mgs :wa<cr>:NvpmTerm git status<cr>
+  nmap mgg :wa<cr>:NvpmTerm tig<cr>
+  nmap mf  :wa<cr>:NvpmTerm yazi<cr>
 
-nmap <F8>  <esc>:NvpmGrow<space>
-imap <F8>  <esc>:NvpmGrow<space>
-cmap <F8>  <esc>:NvpmGrow<space>
-nmap <F11>  <esc>:NvpmTrim<space>
-imap <F11>  <esc>:NvpmTrim<space>
-cmap <F11>  <esc>:NvpmTrim<space>
-nmap <F12> <esc>:NvpmMake<space>
-imap <F12> <esc>:NvpmMake<space>
-cmap <F12> <esc>:NvpmMake<space>
-nmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
-imap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
-cmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
-if !has('nvim')
-  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>
-else
-  nmap <silent>mt <esc>:wall<cr>:NvpmTerm<cr>:startinsert<cr>
-endif
+  nmap mgR :wa<cr>:!git restore .<cr>
+  nmap mgr :wa<cr>:!git restore --staged .<cr>
+  nmap mt  :wa<cr>:NvpmTerm<cr>
+
+" }
+" NvpmJump {
+
+  nmap <silent><space>   :NvpmJump +4<cr>
+  nmap <silent>m<space>  :NvpmJump -4<cr>
+  nmap <silent><tab>     :NvpmJump +3<cr>
+  nmap <silent>m<tab>    :NvpmJump -3<cr>
+  nmap <silent><BS>      :NvpmJump +2<cr>
+  nmap <silent><DEL>     :NvpmJump -2<cr>
+  nmap <silent><C-p>     :NvpmJump -2<cr>
+  nmap <silent><C-n>     :NvpmJump +2<cr>
+  nmap <silent><C-i>     :NvpmJump -1<cr>
+  nmap <silent><C-o>     :NvpmJump -1<cr>
+  nmap <silent><C-Space> :NvpmJump +1<cr>
+  nmap <silent>=         :NvpmJump +0<cr>
+  nmap <silent>-         :NvpmJump -0<cr>
+
+" }
+" NvpmMisc {
+
+  nmap <F8>  <esc>:NvpmGrow<space>
+  imap <F8>  <esc>:NvpmGrow<space>
+  cmap <F8>  <esc>:NvpmGrow<space>
+  nmap <F11>  <esc>:NvpmTrim<space>
+  imap <F11>  <esc>:NvpmTrim<space>
+  cmap <F11>  <esc>:NvpmTrim<space>
+  nmap <F12> <esc>:NvpmMake<space>
+  imap <F12> <esc>:NvpmMake<space>
+  cmap <F12> <esc>:NvpmMake<space>
+  nmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+  imap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+  cmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+
+" }
+" hl-groups{
+
+  hi arbovars guifg=#00ff00 gui=bold
+  hi arbokeyw guifg=#aa7700 gui=bold
+
+" }
 
 "}
 " line {

@@ -2,7 +2,6 @@
 if !exists('NVPMTEST')&&exists('_NVPMAUTO_')|finish|endif
 let _NVPMAUTO_ = 1
 let s:nvim = has('nvim')
-let s:vim  = !s:nvim
 
 if !has_key(g:,'nvpmhome')
   let g:nvpmhome = resolve(expand('~/.nvpm'))
@@ -15,9 +14,13 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm          = get(g:     , 'nvpm'     , {})
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
-  let g:nvpm.autoterm = get(g:nvpm , 'autoterm' ,  1)
   let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
+
+  " NvpmTerm options
+  let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
+  let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  0)
+  let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  0)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -258,57 +261,43 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
-  " handling of nvpm terminal "{
-  if !a:0||empty(a:1)
-    if !g:nvpm.term||!bufexists(g:nvpm.term)
+  let name = get(a:,1,'main')
+  let name = empty(name)?'main':name
+  let cmd  = get(a:,2,$SHELL)
 
-      " cwd feature for edit mode
-      let cwd = g:nvpm.mode==2?g:nvpm.file.root:g:nvpm.home
-
-      if !s:nvim    " Vim    {
-        let conf = {}
-        let conf.cwd     = cwd
-        let conf.curwin  = 1
-        let conf.exit_cb = function('nvpm#auto',['term'])
-        call term_start($SHELL,conf)
-        let g:nvpm.term = bufnr()
-      " }
-      elseif s:nvim " Neovim {
-        let conf         = {}
-        let conf.cwd     = cwd
-        let conf.term    = v:true
-        let conf.on_exit = function('nvpm#auto',['term'])
-        call jobstart($SHELL,conf)
-        let g:nvpm.term = bufnr()
-        setl ft=
-      endif " }
-
-    else
-      exe 'buffer '..g:nvpm.term
-      if !s:nvim|exe 'normal i'|endif
-    endif
-    return
-  endif "}
-  " handling of user shellcmd "{
-
-  let cmd = a:1
-  if !s:nvim     " Vim    {
+  if has_key(g:nvpm.term,name)&&bufexists(g:nvpm.term[name])
+    exe 'buffer '..g:nvpm.term[name]
+  else
     let conf = {}
-    let conf.curwin = 1
-    let conf.exit_cb = function('nvpm#auto',['term'])
-    call term_start(cmd,conf)
-    return
-  " }
-  elseif  s:nvim " Neovim {
-    let conf         = {}
-    let conf.term    = v:true
-    let conf.on_exit = function('nvpm#auto',['term'])
-    call jobstart(cmd,conf)
-    exec 'normal i'
-    setl ft=
-  endif " }
-
-  "}
+    if s:nvim
+      let conf.term    = v:true
+      let conf.on_exit = function('nvpm#auto',['termexit'])
+      if name=='main'
+        if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
+        call jobstart(cmd,conf)
+      elseif !g:nvpm.termkeep
+        let hold = '&&echo&&read -p "PRESS [Enter] TO EXIT: "'
+        call jobstart(cmd..hold,conf)
+      else
+        call chansend(jobstart($SHELL,conf),cmd.."\n")
+      endif
+      setl ft=
+    else
+      let conf.curwin = 1
+      let conf.exit_cb = function('nvpm#auto',['termexit'])
+      if name=='main'
+        if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
+        call term_start(cmd,conf)
+      elseif !g:nvpm.termkeep
+        call term_start(cmd,conf)
+      else
+        call term_sendkeys(term_start($SHELL,conf),cmd.."\n")
+      endif
+    endif
+    let g:nvpm.term[name] = bufnr()
+    if !g:nvpm.termlist|setl nobuflisted|endif
+  endif
+  startinsert
 
 endfu "}
 
@@ -386,7 +375,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
-    let g:nvpm.term = 0
+    let g:nvpm.term = {}
   endif
 
 endfu "}
@@ -442,11 +431,14 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       let files = readdir(g:nvpm.file.arbo)
       return files
     endif "}
+    if  cmdline=~'\CNvpmTerm' "{
+      return keys(g:nvpm.term)
+    endif "}
     return []
   endif "}
 
   let func = a:1
-  let args = get(a:,2,'')
+  let args = trim(get(a:,2,''))
 
   if func=='jump' "{
     if empty(args)|return|endif
@@ -497,6 +489,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     endif
     if empty(trim(args))&&g:nvpm.mode|return nvpm#trim()|endif
     let args = g:nvpm.file.arbo..args
+    call nvpm#trim(args)
+    return
   endif "}
   if func=='make' "{
 
@@ -510,8 +504,16 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       echohl None
       return 1
     endif
-    let args = arbo
-
+    call nvpm#make(arbo)
+    return
+  endif "}
+  if func=='term' "{
+    if !empty(args)
+      let args = split(args)
+      let name = args[0]..' '..get(args,1,'')
+      call nvpm#term(name,join(args))
+      return
+    endif
   endif "}
 
   call nvpm#{func}(args)
@@ -521,18 +523,17 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
 
   let func = get(a:,1,'')
 
-  if func=='term'
-    if !g:nvpm.autoterm|return|endif
+  if func=='termexit'
+    if !g:nvpm.termexit|return|endif
     let bufnr = bufnr()
-    if bufnr==g:nvpm.term
-      call nvpm#rend()
-      exec 'bdelete '..g:nvpm.term
-      call nvpm#null('term')
-    else
-      call input('<ESC>/<ENTER> to exit: ')
-      call nvpm#rend()
-      exec 'bdelete '..bufnr
-    endif
+    call nvpm#rend()
+    exec 'bdelete '..bufnr
+    for key in keys(g:nvpm.term)
+      if bufnr==g:nvpm.term[key]
+        call remove(g:nvpm.term,key)
+        break
+      endif
+    endfor
   endif
 
 endfu "}
