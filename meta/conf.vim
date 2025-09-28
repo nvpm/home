@@ -55,6 +55,7 @@ let nvpm.autocmds = 1
 let nvpm.termexit = 1
 let nvpm.termlist = 0
 let nvpm.termkeep = !s:nvim
+let nvpm.termkeep = 0
 
 let nvpm.filetree = 1
 let nvpm.invasive = 0

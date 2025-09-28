@@ -267,6 +267,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
   if has_key(g:nvpm.term,name)&&bufexists(g:nvpm.term[name])
     exe 'buffer '..g:nvpm.term[name]
+    if !s:nvim|exe 'normal i'|endif
   else
     let conf = {}
     if s:nvim
@@ -276,7 +277,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
         if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
         call jobstart(cmd,conf)
       elseif !g:nvpm.termkeep
-        let hold = '&&echo&&read -p "PRESS [Enter] TO EXIT: "'
+        let hold = "&&echo&&read -p 'PRESS [Enter] TO EXIT: '"
         call jobstart(cmd..hold,conf)
       else
         call chansend(jobstart($SHELL,conf),cmd.."\n")
@@ -287,12 +288,11 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       let conf.exit_cb = function('nvpm#auto',['termexit'])
       if name=='main'
         if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
-        call term_start(cmd,conf)
-      elseif !g:nvpm.termkeep
-        call term_start(cmd,conf)
+        let cmd=''
       else
-        call term_sendkeys(term_start($SHELL,conf),cmd.."\n")
+        let cmd.="\n"
       endif
+      call term_sendkeys(term_start($SHELL,conf),cmd)
     endif
     let g:nvpm.term[name] = bufnr()
     if !g:nvpm.termlist|setl nobuflisted|endif
