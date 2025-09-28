@@ -20,6 +20,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   " NvpmTerm options
   let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
   let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  0)
+  let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  0)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -268,23 +269,35 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     exe 'buffer '..g:nvpm.term[name]
   else
     let conf = {}
-    if name=='main'&&g:nvpm.mode==2
-      let conf.cwd = g:nvpm.file.root
-    endif
     if s:nvim
       let conf.term    = v:true
       let conf.on_exit = function('nvpm#auto',['termexit'])
-      call jobstart(cmd,conf)
+      if name=='main'
+        if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
+        call jobstart(cmd,conf)
+      elseif !g:nvpm.termkeep
+        let hold = '&&echo&&read -p "PRESS [Enter] TO EXIT: "'
+        call jobstart(cmd..hold,conf)
+      else
+        call chansend(jobstart($SHELL,conf),cmd.."\n")
+      endif
       setl ft=
     else
       let conf.curwin = 1
       let conf.exit_cb = function('nvpm#auto',['termexit'])
-      call term_start(cmd,conf)
+      if name=='main'
+        if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
+        call term_start(cmd,conf)
+      elseif !g:nvpm.termkeep
+        call term_start(cmd,conf)
+      else
+        call term_sendkeys(term_start($SHELL,conf),cmd.."\n")
+      endif
     endif
     let g:nvpm.term[name] = bufnr()
     if !g:nvpm.termlist|setl nobuflisted|endif
   endif
-  exec 'normal i'
+  startinsert
 
 endfu "}
 
@@ -496,8 +509,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     if !empty(args)
       let args = split(args)
       let name = args[0]..' '..get(args,1,'')
-      let cmd  = join(args)
-      call nvpm#term(name,cmd)
+      call nvpm#term(name,join(args))
       return
     endif
   endif "}
