@@ -524,6 +524,7 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   let func = get(a:,1,'')
 
   if func=='termexit'
+    "TODO: save line number and jump to it when exiting
     if !g:nvpm.termexit|return|endif
     let bufnr = bufnr()
     call nvpm#rend()

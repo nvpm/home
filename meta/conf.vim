@@ -23,7 +23,8 @@ endif
 "}
 " main {
 
-if !has('nvim')
+let s:nvim = has('nvim')
+if !s:nvim
   set termguicolors
   syntax on
   set bg=dark
@@ -41,7 +42,7 @@ hi clear NonText     |hi NonText     ctermfg=0 guifg=#555555
 "}
 " nvpm {
 
-if !has('nvim')
+if !s:nvim
   set hidden
 endif
 
@@ -53,7 +54,7 @@ let nvpm.autocmds = 1
 
 let nvpm.termexit = 1
 let nvpm.termlist = 0
-let nvpm.termkeep = 1
+let nvpm.termkeep = !s:nvim
 
 let nvpm.filetree = 1
 let nvpm.invasive = 0
