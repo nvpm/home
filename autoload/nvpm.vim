@@ -28,10 +28,10 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
     let g:nvpm.arbo.lexicon = g:nvpm.lexicon
   else
     let g:nvpm.arbo.lexicon  = ''
-    let g:nvpm.arbo.lexicon .= ',project scheme layout root'
-    let g:nvpm.arbo.lexicon .= ',workspace archive trunk'
-    let g:nvpm.arbo.lexicon .= ',tab folder shelf package branch'
-    let g:nvpm.arbo.lexicon .= ',file buffer path entry leaf'
+    let g:nvpm.arbo.lexicon .= ',project scheme layout'
+    let g:nvpm.arbo.lexicon .= ',workspace archive'
+    let g:nvpm.arbo.lexicon .= ',tab folder shelf package'
+    let g:nvpm.arbo.lexicon .= ',file buffer buff term terminal'
   endif
   let g:nvpm.arbo.syntax = 'nvpm'
   let g:nvpm.arbo.file   = ''
@@ -327,7 +327,6 @@ fu! nvpm#curr(...) abort "{ calculates the current leaf node in the nvpm tree
   let curr = node.list[node.meta.indx].info.info
   if empty(curr)|return 1|endif
 
-  let g:nvpm.tree.last = g:nvpm.tree.curr
   let g:nvpm.tree.curr = curr
 
 endfu "}
@@ -371,7 +370,6 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
   if a:1=='tree'
     let g:nvpm.tree      = {}
     let g:nvpm.tree.curr = ''
-    let g:nvpm.tree.last = ''
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
