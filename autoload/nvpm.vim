@@ -126,6 +126,10 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
       " just to keep indx inside bounds, because of new leng
       call arbo#indx(g:nvpm.tree)
     else
+      let file = fnamemodify(file,':t')
+      echohl WarningMsg
+      echo  'NvpmFell: arbo file "'..file..'" not found in the NvpmTree'
+      echohl None
       return 1
     endif
 
