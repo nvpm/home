@@ -14,8 +14,8 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm          = get(g:     , 'nvpm'     , {})
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
-  let g:nvpm.pathtree = get(g:nvpm , 'filetree' ,  0)
-  let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
+  let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  1)
+  let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  0)
 
   " NvpmTerm options
   let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
@@ -344,7 +344,7 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
       setl filetype=arbo
     endif
   endif
-  if g:nvpm.pathtree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
+  if g:nvpm.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
     call mkdir(head,'p')
   endif
 
