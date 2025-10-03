@@ -19,7 +19,6 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  0)
 
   " NvpmTerm options
-  let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
   let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  0)
   let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  0)
 
@@ -529,7 +528,6 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
 
   if func=='termexit'
     "TODO: save line number and jump to it when exiting
-    if !g:nvpm.termexit|return|endif
     let bufnr = bufnr()
     call nvpm#rend()
     exec 'bdelete '..bufnr
