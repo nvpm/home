@@ -46,7 +46,7 @@ if !s:nvim
   set hidden
 endif
 
-let nvpmhome = '/iasj/conf/nvim/nvpm'
+let nvpmhome = '/iasj/proj/nvpm/.nvpm'
 
 let nvpm = {}
 let nvpm.initload = 1

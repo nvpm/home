@@ -48,7 +48,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   if g:nvpm.invasive
     let g:nvpm.file.root = '.nvpm/nvpm/'
   else
-    let g:nvpm.file.root = g:nvpmhome..'/nvpm/locals'..getcwd()..'/'
+    let g:nvpm.file.root = g:nvpmhome..'/nvpm/root'..getcwd()..'/'
   endif
   let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
   let g:nvpm.file.edit = g:nvpm.file.root..'edit.arbo'
