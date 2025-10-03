@@ -60,7 +60,11 @@ let nvpm.invasive = 0
 
 let nvpm.lexicon  = 'project,workspace,tab,file'
 
-" NvpmTerm {
+
+hi arbovars guifg=#00ff00 gui=bold
+hi arbokeyw guifg=#aa7700 gui=bold
+
+" NvpmTerm maps {
 
   nnoremap mgl :wa<cr>:NvpmTerm git log --all --graph --oneline<cr>
   nnoremap mgd :wa<cr>:NvpmTerm git diff<cr>
@@ -73,7 +77,7 @@ let nvpm.lexicon  = 'project,workspace,tab,file'
   nnoremap mt  :wa<cr>:NvpmTerm<cr>
 
 " }
-" NvpmJump {
+" NvpmJump maps {
 
   nnoremap <silent><space>   :NvpmJump +4<cr>
   nnoremap <silent>m<space>  :NvpmJump -4<cr>
@@ -90,18 +94,9 @@ let nvpm.lexicon  = 'project,workspace,tab,file'
   nnoremap <silent>-         :NvpmJump -0<cr>
 
 " }
-" NvpmMisc {
+" Random   maps {
 
-  nnoremap <F9>  :NvpmGrow<space>
-  nnoremap <F10> :NvpmTrim<space>
-  nnoremap <F11> :NvpmMake<space>
   nnoremap <c-e> :NvpmEdit<cr>
-
-" }
-" hl-groups{
-
-  hi arbovars guifg=#00ff00 gui=bold
-  hi arbokeyw guifg=#aa7700 gui=bold
 
 " }
 
