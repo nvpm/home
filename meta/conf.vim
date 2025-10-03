@@ -92,10 +92,10 @@ let nvpm.lexicon  = 'project,workspace,tab,file'
 " }
 " NvpmMisc {
 
-  nnoremap <F9>  <esc>:NvpmGrow<space>
-  nnoremap <F10> <esc>:NvpmTrim<space>
-  nnoremap <F11> <esc>:NvpmMake<space>
-  nnoremap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+  nnoremap <F9>  :NvpmGrow<space>
+  nnoremap <F10> :NvpmTrim<space>
+  nnoremap <F11> :NvpmMake<space>
+  nnoremap <c-e> :NvpmEdit<cr>
 
 " }
 " hl-groups{
