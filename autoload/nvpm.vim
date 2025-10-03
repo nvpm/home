@@ -66,7 +66,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
       endif
       let g:nvpm.tree = root
       if 1+nvpm#find(g:nvpm.path.edit)
-        call nvpm#trim(g:nvpm.path.edit)
+        call nvpm#fell(g:nvpm.path.edit)
       endif
       let g:nvpm.mode = !!g:nvpm.tree.meta.leng
       call timer_start(g:nvpm.initload,{->nvpm#load()})
@@ -106,7 +106,7 @@ fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
   let g:nvpm.mode = !!g:nvpm.tree.meta.leng
 
 endfu "}
-fu! nvpm#trim(...) abort "{ trims an arbo file from the nvpm tree
+fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
 
   if !a:0||empty(a:1)
     call nvpm#null('tree')
@@ -128,7 +128,7 @@ fu! nvpm#trim(...) abort "{ trims an arbo file from the nvpm tree
     return nvpm#load()
   endif
   echohl WarningMsg
-  echo  'NvpmTrim: You killed the tree. Use NvpmGrow to grow it back!'
+  echo  'NvpmFell: You killed the tree. Use NvpmGrow to grow it back!'
   echohl None
   call nvpm#line()
 
@@ -148,7 +148,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
       return 1
     else
       " removes edit file generated subtree from the nvpm tree
-      call nvpm#trim(g:nvpm.path.edit)
+      call nvpm#fell(g:nvpm.path.edit)
 
       " jumps to the subtree respective to the selected arbo file before
       " exiting Edit Mode
@@ -414,7 +414,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
 
   if a:0==3 " <tab> completions {
     let cmdline = trim(a:000[1])
-    if  cmdline=~'\CNvpmTrim' "{
+    if  cmdline=~'\CNvpmFell' "{
       let list = []
       for arbo in g:nvpm.tree.list
         if arbo.file==g:nvpm.path.edit|continue|endif
@@ -483,16 +483,16 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     call nvpm#load()
     return
   endif "}
-  if func=='trim' "{
+  if func=='fell' "{
     if g:nvpm.mode==2
       echohl WarningMsg
-      echo  'NvpmTrim: leave Edit Mode first'
+      echo  'NvpmFell: leave Edit Mode first'
       echohl None
       return 1
     endif
-    if empty(trim(args))&&g:nvpm.mode|return nvpm#trim()|endif
+    if empty(trim(args))&&g:nvpm.mode|return nvpm#fell()|endif
     let args = g:nvpm.path.arbo..args
-    call nvpm#trim(args)
+    call nvpm#fell(args)
     return
   endif "}
   if func=='make' "{

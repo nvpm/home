@@ -13,9 +13,9 @@ if !exists(':NvpmGrow') "{
   com! -complete=customlist,nvpm#user -nargs=* 
   \NvpmGrow call nvpm#user('grow','<args>')
 endif "}
-if !exists(':NvpmTrim') "{
+if !exists(':NvpmFell') "{
   com! -complete=customlist,nvpm#user -nargs=* 
-  \NvpmTrim call nvpm#user('trim','<args>')
+  \NvpmFell call nvpm#user('fell','<args>')
 endif "}
 if !exists(':NvpmJump') "{
   com! -complete=customlist,nvpm#user -count -nargs=* 
