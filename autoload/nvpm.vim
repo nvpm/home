@@ -14,7 +14,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm          = get(g:     , 'nvpm'     , {})
   let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
   let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
-  let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  0)
+  let g:nvpm.pathtree = get(g:nvpm , 'filetree' ,  0)
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  1)
 
   " NvpmTerm options
@@ -44,29 +44,29 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   call nvpm#null('term')
 
   " default file locations
-  let g:nvpm.file = {}
+  let g:nvpm.path = {}
   if g:nvpm.invasive
-    let g:nvpm.file.root = '.nvpm/nvpm/'
+    let g:nvpm.path.root = '.nvpm/nvpm/'
   else
     let cwd = join(split(getcwd(),'/'),'.')
-    let g:nvpm.file.root = g:nvpmhome..'/nvpm/root/'..cwd..'/'
+    let g:nvpm.path.root = g:nvpmhome..'/nvpm/root/'..cwd..'/'
   endif
-  let g:nvpm.file.arbo = g:nvpm.file.root..'arbo/'
-  let g:nvpm.file.edit = g:nvpm.file.root..'edit.arbo'
-  let g:nvpm.file.tree = g:nvpm.file.root..'tree.json'
+  let g:nvpm.path.arbo = g:nvpm.path.root..'arbo/'
+  let g:nvpm.path.edit = g:nvpm.path.root..'edit.arbo'
+  let g:nvpm.path.tree = g:nvpm.path.root..'tree.json'
 
   if !argc()&&g:nvpm.initload
     let g:nvpm.initload = abs(g:nvpm.initload)
-    if filereadable(g:nvpm.file.tree)
-      let arbo = get(readfile(g:nvpm.file.tree),0,'')
+    if filereadable(g:nvpm.path.tree)
+      let arbo = get(readfile(g:nvpm.path.tree),0,'')
       let root = json_decode(arbo)
       if type(root)!=4
-        call delete(g:nvpm.file.tree)
+        call delete(g:nvpm.path.tree)
         return
       endif
       let g:nvpm.tree = root
-      if 1+nvpm#find(g:nvpm.file.edit)
-        call nvpm#trim(g:nvpm.file.edit)
+      if 1+nvpm#find(g:nvpm.path.edit)
+        call nvpm#trim(g:nvpm.path.edit)
       endif
       let g:nvpm.mode = !!g:nvpm.tree.meta.leng
       call timer_start(g:nvpm.initload,{->nvpm#load()})
@@ -135,7 +135,7 @@ fu! nvpm#trim(...) abort "{ trims an arbo file from the nvpm tree
 endfu "}
 fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
-  if !isdirectory(g:nvpm.file.arbo)|return 1|endif
+  if !isdirectory(g:nvpm.path.arbo)|return 1|endif
 
   if g:nvpm.mode == 2 "{
     let currarbo = bufname()
@@ -148,7 +148,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
       return 1
     else
       " removes edit file generated subtree from the nvpm tree
-      call nvpm#trim(g:nvpm.file.edit)
+      call nvpm#trim(g:nvpm.path.edit)
 
       " jumps to the subtree respective to the selected arbo file before
       " exiting Edit Mode
@@ -162,7 +162,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
   endif "}
 
   " Edit Mode workspace creation
-  let forest = readdir(g:nvpm.file.arbo)
+  let forest = readdir(g:nvpm.path.arbo)
   let body   = []
   if empty(g:nvpm.arbo.lexicon)|return 1|else
     let leafkeyw = get(g:nvpm.arbo.lexicon[-1],0,'')
@@ -170,7 +170,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
   if empty(leafkeyw)|return 1|else
     for file in forest
-      let file = g:nvpm.file.arbo..file
+      let file = g:nvpm.path.arbo..file
       let line = 'file '..fnamemodify(file,':t:r')..':'..file
       call add(body,line)
     endfor
@@ -181,8 +181,8 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
     let arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
   endif
 
-  call writefile(body,g:nvpm.file.edit)
-  call nvpm#grow(g:nvpm.file.edit)
+  call writefile(body,g:nvpm.path.edit)
+  call nvpm#grow(g:nvpm.path.edit)
   let g:nvpm.mode = 2
 
   if !empty(arbo)
@@ -275,7 +275,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       let conf.term    = v:true
       let conf.on_exit = function('nvpm#auto',['termexit'])
       if name=='main'
-        if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
+        if g:nvpm.mode==2|let conf.cwd = g:nvpm.path.root|endif
         call jobstart(cmd,conf)
       elseif !g:nvpm.termkeep
         let hold = "&&echo&&read -p 'PRESS [Enter] TO EXIT: '"
@@ -288,7 +288,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       let conf.curwin = 1
       let conf.exit_cb = function('nvpm#auto',['termexit'])
       if name=='main'
-        if g:nvpm.mode==2|let conf.cwd = g:nvpm.file.root|endif
+        if g:nvpm.mode==2|let conf.cwd = g:nvpm.path.root|endif
         let cmd=''
       else
         let cmd.="\n"
@@ -338,13 +338,13 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
 
   exe 'edit '.curr
 
-  if curr=~'^.*\.arbo$'||head==g:nvpm.file.arbo
+  if curr=~'^.*\.arbo$'||head==g:nvpm.path.arbo
     setl nobuflisted
     if &l:ft!='arbo'
       setl filetype=arbo
     endif
   endif
-  if g:nvpm.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
+  if g:nvpm.pathtree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
     call mkdir(head,'p')
   endif
 
@@ -381,11 +381,11 @@ endfu "}
 fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
 
   if !g:nvpm.mode
-    call delete(g:nvpm.file.tree)
+    call delete(g:nvpm.path.tree)
     return
   endif
   if g:nvpm.initload&&g:nvpm.mode==1
-    call writefile([json_encode(g:nvpm.tree)],g:nvpm.file.tree)
+    call writefile([json_encode(g:nvpm.tree)],g:nvpm.path.tree)
   endif
 
 endfu "}
@@ -417,7 +417,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     if  cmdline=~'\CNvpmTrim' "{
       let list = []
       for arbo in g:nvpm.tree.list
-        if arbo.file==g:nvpm.file.edit|continue|endif
+        if arbo.file==g:nvpm.path.edit|continue|endif
         call add(list,fnamemodify(arbo.file,':t'))
       endfor
       return list
@@ -431,7 +431,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       return list
     endif "}
     if  cmdline=~'\CNvpmGrow' "{
-      let files = readdir(g:nvpm.file.arbo)
+      let files = readdir(g:nvpm.path.arbo)
       return files
     endif "}
     if  cmdline=~'\CNvpmTerm' "{
@@ -471,7 +471,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       echohl None
       return 1
     endif
-    let file = g:nvpm.file.arbo..args
+    let file = g:nvpm.path.arbo..args
     if isdirectory(file)
       let forest = readdir(file)
       for arbo in forest
@@ -491,7 +491,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       return 1
     endif
     if empty(trim(args))&&g:nvpm.mode|return nvpm#trim()|endif
-    let args = g:nvpm.file.arbo..args
+    let args = g:nvpm.path.arbo..args
     call nvpm#trim(args)
     return
   endif "}
@@ -499,8 +499,8 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
 
     if empty(args)|return|endif
 
-    call mkdir(g:nvpm.file.arbo,'p')
-    let arbo = g:nvpm.file.arbo..args..'.arbo'
+    call mkdir(g:nvpm.path.arbo,'p')
+    let arbo = g:nvpm.path.arbo..args..'.arbo'
     if filereadable(arbo)
       echohl WarningMsg
       echo 'NvpmMake: arbo file ['.args.'.arbo] exists. Choose another name!'
