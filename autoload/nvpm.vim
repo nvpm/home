@@ -109,7 +109,14 @@ endfu "}
 fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
 
   if !a:0||empty(a:1)
-    call nvpm#null('tree')
+    if !g:nvpm.mode
+      echohl WarningMsg
+      echo  'NvpmFell: No tree to be felled. Ignoring!!'
+      echohl None
+    else "fells down the current arbo file loaded
+      let file = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
+      call nvpm#fell(file)
+    endif
   else
     let file = a:1
     let indx = nvpm#find(file)
@@ -121,16 +128,17 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
     else
       return 1
     endif
-  endif
 
-  let g:nvpm.mode = !!g:nvpm.tree.meta.leng
-  if g:nvpm.mode
-    return nvpm#load()
+    let g:nvpm.mode = !!g:nvpm.tree.meta.leng
+    if g:nvpm.mode
+      return nvpm#load()
+    endif
+
+    echohl WarningMsg
+    echo  'NvpmFell: You killed the tree. Use NvpmGrow to grow it back!'
+    echohl None
+    call nvpm#line()
   endif
-  echohl WarningMsg
-  echo  'NvpmFell: You killed the tree. Use NvpmGrow to grow it back!'
-  echohl None
-  call nvpm#line()
 
 endfu "}
 fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
