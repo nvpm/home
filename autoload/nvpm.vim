@@ -6,6 +6,7 @@ let s:nvim = has('nvim')
 if !has_key(g:,'nvpmhome')
   let g:nvpmhome = resolve(expand('~/.nvpm'))
 endif
+let s:home = g:nvpmhome..'/nvpm/'
 
 "-- main functions --
 fu! nvpm#init(...) abort "{ user variables & startup routines
@@ -49,7 +50,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
     let g:nvpm.path.root = '.nvpm/nvpm/'
   else
     let cwd = join(split(getcwd(),'/'),'.')
-    let g:nvpm.path.root = g:nvpmhome..'/nvpm/root/'..cwd..'/'
+    let g:nvpm.path.root = s:home..'root/'..cwd..'/'
   endif
   let g:nvpm.path.arbo = g:nvpm.path.root..'arbo/'
   let g:nvpm.path.edit = g:nvpm.path.root..'edit.arbo'
