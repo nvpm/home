@@ -31,13 +31,13 @@ if !s:nvim
 endif
 colorscheme ayu
 
-hi clear Pmenu       |hi Pmenu       guibg=#1f252a guifg=#888888
-hi clear PmenuSel    |hi PmenuSel    guibg=#aa361b guifg=#ffffff
-hi clear Folded      |hi Folded      guibg=#0f0f0f guifg=#749984
-hi clear DiffAdded   |hi DiffAdded   guifg=#00ff00 gui=bold
-hi clear DiffRemoved |hi DiffRemoved guifg=#ff5555 gui=bold
-hi clear Visual      |hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
-hi clear NonText     |hi NonText     ctermfg=0 guifg=#555555
+hi clear Pmenu      |hi Pmenu       guibg=#1f252a guifg=#888888
+hi clear PmenuSel   |hi PmenuSel    guibg=#aa361b guifg=#ffffff
+hi clear Folded     |hi Folded      guibg=#0f0f0f guifg=#749984
+hi clear DiffAdded  |hi DiffAdded   guifg=#00ff00 gui=bold
+hi clear DiffRemoved|hi DiffRemoved guifg=#ff5555 gui=bold
+hi clear Visual     |hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
+hi clear NonText    |hi NonText     ctermfg=0 guifg=#555555
 
 "}
 " nvpm {
@@ -54,7 +54,6 @@ let nvpm.autocmds = 1
 
 let nvpm.termexit = 1
 let nvpm.termlist = 0
-let nvpm.termkeep = !s:nvim
 let nvpm.termkeep = 0
 
 let nvpm.filetree = 1
@@ -64,48 +63,40 @@ let nvpm.lexicon  = 'project,workspace,tab,file'
 
 " NvpmTerm {
 
-  nmap mgl :wa<cr>:NvpmTerm git log --all --graph --oneline<cr>
-  nmap mgd :wa<cr>:NvpmTerm git diff<cr>
-  nmap mgs :wa<cr>:NvpmTerm git status<cr>
-  nmap mgg :wa<cr>:NvpmTerm tig<cr>
-  nmap mf  :wa<cr>:NvpmTerm yazi<cr>
+  nnoremap mgl :wa<cr>:NvpmTerm git log --all --graph --oneline<cr>
+  nnoremap mgd :wa<cr>:NvpmTerm git diff<cr>
+  nnoremap mgs :wa<cr>:NvpmTerm git status<cr>
+  nnoremap mgg :wa<cr>:NvpmTerm tig<cr>
+  nnoremap mf  :wa<cr>:NvpmTerm yazi<cr>
+  nnoremap mgR :wa<cr>:!git restore .<cr>
+  nnoremap mgr :wa<cr>:!git restore --staged .<cr>
 
-  nmap mgR :wa<cr>:!git restore .<cr>
-  nmap mgr :wa<cr>:!git restore --staged .<cr>
-  nmap mt  :wa<cr>:NvpmTerm<cr>
+  nnoremap mt  :wa<cr>:NvpmTerm<cr>
 
 " }
 " NvpmJump {
 
-  nmap <silent><space>   :NvpmJump +4<cr>
-  nmap <silent>m<space>  :NvpmJump -4<cr>
-  nmap <silent><tab>     :NvpmJump +3<cr>
-  nmap <silent>m<tab>    :NvpmJump -3<cr>
-  nmap <silent><BS>      :NvpmJump +2<cr>
-  nmap <silent><DEL>     :NvpmJump -2<cr>
-  nmap <silent><C-p>     :NvpmJump -2<cr>
-  nmap <silent><C-n>     :NvpmJump +2<cr>
-  nmap <silent><C-i>     :NvpmJump -1<cr>
-  nmap <silent><C-o>     :NvpmJump -1<cr>
-  nmap <silent><C-Space> :NvpmJump +1<cr>
-  nmap <silent>=         :NvpmJump +0<cr>
-  nmap <silent>-         :NvpmJump -0<cr>
+  nnoremap <silent><space>   :NvpmJump +4<cr>
+  nnoremap <silent>m<space>  :NvpmJump -4<cr>
+  nnoremap <silent><tab>     :NvpmJump +3<cr>
+  nnoremap <silent>m<tab>    :NvpmJump -3<cr>
+  nnoremap <silent><BS>      :NvpmJump +2<cr>
+  nnoremap <silent><DEL>     :NvpmJump -2<cr>
+  nnoremap <silent><C-p>     :NvpmJump -2<cr>
+  nnoremap <silent><C-n>     :NvpmJump +2<cr>
+  nnoremap <silent><C-i>     :NvpmJump -1<cr>
+  nnoremap <silent><C-o>     :NvpmJump -1<cr>
+  nnoremap <silent><C-Space> :NvpmJump +1<cr>
+  nnoremap <silent>=         :NvpmJump +0<cr>
+  nnoremap <silent>-         :NvpmJump -0<cr>
 
 " }
 " NvpmMisc {
 
-  nmap <F8>  <esc>:NvpmGrow<space>
-  imap <F8>  <esc>:NvpmGrow<space>
-  cmap <F8>  <esc>:NvpmGrow<space>
-  nmap <F11>  <esc>:NvpmTrim<space>
-  imap <F11>  <esc>:NvpmTrim<space>
-  cmap <F11>  <esc>:NvpmTrim<space>
-  nmap <F12> <esc>:NvpmMake<space>
-  imap <F12> <esc>:NvpmMake<space>
-  cmap <F12> <esc>:NvpmMake<space>
-  nmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
-  imap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
-  cmap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
+  nnoremap <F9>  <esc>:NvpmGrow<space>
+  nnoremap <F10> <esc>:NvpmTrim<space>
+  nnoremap <F11> <esc>:NvpmMake<space>
+  nnoremap <silent><c-e> <esc>:wall<cr>:NvpmEdit<cr>
 
 " }
 " hl-groups{
