@@ -1,5 +1,5 @@
 |bugs|
-  ● [bug] on NvpmTerm close erases undo tree ~
+  ● [bug] on NvpmTerm close erases undo tree in Neovim ~
   ● [bug] ~
 
 |fixed|
