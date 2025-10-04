@@ -223,8 +223,7 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
     let name = ''
     if g:line.nvpm "{
       if type==0
-        let name = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
-        let name = fnamemodify(name,':t')
+        let name = fnamemodify(g:nvpm.tree.curr.arbo,':t')
       else
         let node = arbo#seek(g:nvpm.tree,type)
         if has_key(node,'meta')&&has_key(node,'list')

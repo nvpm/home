@@ -115,8 +115,7 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
       echo  'NvpmFell: No tree to be felled. Ignoring!!'
       echohl None
     else "fells down the current arbo file loaded
-      let file = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
-      call nvpm#fell(file)
+      call nvpm#fell(g:nvpm.tree.curr.arbo)
     endif
   else
     let file = a:1
@@ -189,20 +188,15 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
     endfor
   endif
 
-  let arbo = ''
-  if !empty(g:nvpm.tree.list)
-    let arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
-  endif
-
   call writefile(body,g:nvpm.path.edit)
   call nvpm#grow(g:nvpm.path.edit)
   let g:nvpm.mode = 2
 
-  if !empty(arbo)
+  if !empty(g:nvpm.tree.curr.arbo)
     let node = arbo#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
-      if leaf.info.info == arbo
+      if leaf.info.info == g:nvpm.tree.curr.arbo
         let node.meta.indx = indx
         break
       endif
@@ -229,7 +223,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     endif
 
     " updates indx based on given step
-    if g:nvpm.tree.curr==bufname()
+    if g:nvpm.tree.curr.leaf==bufname()
       let node = arbo#seek(g:nvpm.tree,type)
       if !has_key(node,'meta')|return 1|endif
       call arbo#indx(node,node.meta.indx+step)
@@ -343,12 +337,13 @@ fu! nvpm#curr(...) abort "{ calculates the current leaf node in the nvpm tree
   let curr = node.list[node.meta.indx].info.info
   if empty(curr)|return 1|endif
 
-  let g:nvpm.tree.curr = curr
+  let g:nvpm.tree.curr.leaf = curr
+  let g:nvpm.tree.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
 
 endfu "}
 fu! nvpm#rend(...) abort "{ renders the current leaf node
 
-  let curr = g:nvpm.tree.curr
+  let curr = g:nvpm.tree.curr.leaf
   let head = fnamemodify(curr,':h')..'/'
 
   exe 'edit '.curr
@@ -385,7 +380,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
 
   if a:1=='tree'
     let g:nvpm.tree      = {}
-    let g:nvpm.tree.curr = ''
+    let g:nvpm.tree.curr = #{leaf:'',arbo:''}
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='term'
