@@ -1,8 +1,10 @@
 |bugs|
-  ● [bug] on NvpmTerm close erases undo tree in Neovim ~
   ● [bug] ~
 
 |fixed|
+  ● on NvpmTerm close erases undo tree in Neovim ~
+    Solution was to re-use the :terminal command. The use of jobstart() 
+    deletes the current buffer, which then erases the its undo-tree
   ●  ~
 
 vim: ft=help: tw=2

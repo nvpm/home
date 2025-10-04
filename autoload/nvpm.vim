@@ -19,8 +19,9 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  0)
 
   " NvpmTerm options
-  let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  0)
-  let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  0)
+  let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  1)
+  let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  1)
+  let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -270,21 +271,23 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     exe 'buffer '..g:nvpm.term[name]
     if !s:nvim|exe 'normal i'|endif
   else
-    let conf = {}
-    if s:nvim
-      let conf.term    = v:true
-      let conf.on_exit = function('nvpm#auto',['termexit'])
+    if s:nvim " nvim{
       if name=='main'
-        if g:nvpm.mode==2|let conf.cwd = g:nvpm.path.root|endif
-        call jobstart(cmd,conf)
-      elseif !g:nvpm.termkeep
-        let hold = "&&echo&&read -p 'PRESS [Enter] TO EXIT: '"
-        call jobstart(cmd..hold,conf)
+        let cwd = './'
+        if g:nvpm.mode==2|let cwd=g:nvpm.path.root|endif
+        exec 'edit term://'..cwd..'/'..cmd
       else
-        call chansend(jobstart($SHELL,conf),cmd.."\n")
+        if g:nvpm.termkeep
+          exec 'edit term://.//'..$SHELL
+          call chansend(&channel,cmd.."\n")
+        else
+          let hold = "&&echo&&read -p 'PRESS [Enter] TO EXIT: '"
+          exec 'edit term://.//'..cmd..hold
+        endif
       endif
-      setl ft=
-    else
+    "}
+    else      " vim {
+      let conf = {}
       let conf.curwin = 1
       let conf.exit_cb = function('nvpm#auto',['termexit'])
       if name=='main'
@@ -294,7 +297,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
         let cmd.="\n"
       endif
       call term_sendkeys(term_start($SHELL,conf),cmd)
-    endif
+    endif "}
     let g:nvpm.term[name] = bufnr()
     if !g:nvpm.termlist|setl nobuflisted|endif
   endif
@@ -527,8 +530,11 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   let func = get(a:,1,'')
 
   if func=='termexit'
-    "TODO: save line number and jump to it when exiting
     let bufnr = bufnr()
+    if !g:nvpm.termexit||
+      \(g:nvpm.termexit==1&&-1==match(values(g:nvpm.term),bufnr))
+      return
+    endif
     call nvpm#rend()
     exec 'bdelete '..bufnr
     for key in keys(g:nvpm.term)

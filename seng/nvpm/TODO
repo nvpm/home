@@ -1,16 +1,9 @@
 
+  ● remake the term keyword support  ~
   ● include routine for coming back from help files (nvpm#jump mode 0) ~
-  ● load an arbo file from anywhere ~
-  ● special key-maps to help edit arbo files ~
   ● splits ~
   ● node finder ~
   ● loved arbo files ~
-  ● nvpm menu ~
-  ● nvpm info ~
-  ● several wild terminals ~
-  ● float windows for edit mode nd terminal ~
-    ● nvim only
-  ● remake the term keyword support  ~
   ● develop global arbo files and skelletons  ~
     ● needs arbo#skel() method first
 

@@ -54,12 +54,12 @@ let nvpm.autocmds = 1
 
 let nvpm.termlist = 0
 let nvpm.termkeep = 0
+let nvpm.termexit = 2
 
 let nvpm.filetree = 1
 let nvpm.invasive = 0
 
 let nvpm.lexicon  = 'project,workspace,tab,file'
-
 
 hi arbovars guifg=#00ff00 gui=bold
 hi arbokeyw guifg=#aa7700 gui=bold
