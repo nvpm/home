@@ -22,6 +22,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  1)
   let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  1)
   let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
+  let g:nvpm.termmode = get(g:nvpm , 'termmode' ,  1)
 
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
@@ -275,7 +276,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
   if has_key(g:nvpm.term,name)&&bufexists(g:nvpm.term[name])
     exe 'buffer '..g:nvpm.term[name]
-    if !s:nvim|exe 'normal i'|endif
+    if !s:nvim&&g:nvpm.termmode|exe 'normal i'|endif
   else
     if s:nvim " nvim{
       if name=='main'
@@ -307,7 +308,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     let g:nvpm.term[name] = bufnr()
     if !g:nvpm.termlist|setl nobuflisted|endif
   endif
-  startinsert
+  if g:nvpm.termmode|startinsert|endif
 
 endfu "}
 

@@ -55,6 +55,7 @@ let nvpm.autocmds = 1
 let nvpm.termlist = 0
 let nvpm.termkeep = 0
 let nvpm.termexit = 2
+let nvpm.termmode = 1
 
 let nvpm.filetree = 1
 let nvpm.invasive = 0
