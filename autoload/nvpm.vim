@@ -282,6 +282,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     "  call term_sendkeys(term_start($SHELL,conf),leaf.cmd)
     endif "}
     let leaf.bufnr = bufnr()
+    if g:nvpm.termmode>1|startinsert|endif
     return
   endif
 
@@ -370,10 +371,12 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
 
   if has_key(leaf,'cmd')
     if has_key(leaf,'bufnr')&&bufexists(leaf.bufnr)
-      return execute('buffer '..leaf.bufnr)
+      exec 'buffer '..leaf.bufnr
+      if g:nvpm.termmode>2|startinsert|endif
     else
-      return nvpm#term()
+      call nvpm#term()
     endif
+    return
   endif
 
   exe 'edit '.leaf.info
