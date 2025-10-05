@@ -282,6 +282,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       call term_sendkeys(term_start($SHELL,conf),leaf.cmd.."\n")
     endif "}
     let leaf.bufnr = bufnr()
+    if g:nvpm.termlist<0|setl nobuflisted|endif
     if g:nvpm.termmode>1|startinsert|endif
     return
   endif
