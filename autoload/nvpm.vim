@@ -359,7 +359,7 @@ fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
 
   if 1+match(s:term,leaf.keyw)&&!has_key(leaf,'cmd')
     let leaf.cmd  = empty(leaf.info)?$SHELL:leaf.info
-    let leaf.name = empty(leaf.name)?split(leaf.cmd)[:1]:leaf.name
+    let leaf.name = empty(leaf.name)?join(split(leaf.cmd)[:1]):leaf.name
   endif
 
 endfu "}
