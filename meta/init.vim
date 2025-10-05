@@ -10,15 +10,15 @@ fu! s:test.arbo(...) "{
   so autoload/arbo.vim
   "so syntax/arbo.vim
 
-  let conf = {}
-  let conf.file    = 'test/arbo/normal.arbo'
-  let conf.syntax  = 'normal'
-  let conf.lexicon = 'bundle, data'
-
-  let arbo = arbo#arbo(conf)
-  let data = s:test.eval('test/arbo/normal.expt')
-  
-  call arbo#show(arbo)
+  "let conf = {}
+  "let conf.file    = 'test/arbo/normal.arbo'
+  "let conf.syntax  = 'normal'
+  "let conf.lexicon = 'bundle, data'
+  "
+  "let arbo = arbo#arbo(conf)
+  "let data = s:test.eval('test/arbo/normal.expt')
+  "
+  "call arbo#show(arbo)
 
   let conf = {}
   let conf.file    = 'test/arbo/nvpm.arbo'
@@ -127,8 +127,8 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.arbo()|endif
-if 1|call s:test.nvpm()|endif
+if 1|call s:test.arbo()|endif
+if 0|call s:test.nvpm()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 

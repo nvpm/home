@@ -1,9 +1,53 @@
 "-- auto/arbo.vim  --
 if !exists('NVPMTEST')&&exists('_ARBOAUTO_')|finish|endif
 let _ARBOAUTO_=1
-"let s:nvim = has('nvim')
-"let s:vim  = !s:nvim
 
+fu! arbo#node(...) abort "{ parses a line into a valid node
+
+  let line = get(a:,1,'')
+  let nvpm = get(a:,2,s:conf.syntax ==? 'nvpm')
+  let line = ['',line][type(line)==type('')]
+
+  let rgex = '^\v *(-*) *(\w*) *(.*)$'
+  let info = matchlist(line,rgex)
+
+  let trim = info[1]
+  let keyw = info[2]
+  let info = info[3]
+
+  let node = {}
+  let node.keyw = keyw
+  let node.info = info
+  let node.stda = ''
+  let node.trim = len(trim)
+
+  if nvpm
+    let rgex = '\v *[=:] *'
+
+    " stores absolute key for homing absolute path functionality
+    let node.absl = trim(matchstr(info,rgex)) == '='
+
+    " split info into name and info again
+    let info = split(info,rgex,1)
+    if len(info)==1
+      let name = trim(info[0])
+      let info = ''
+    elseif len(info)>=2
+      let name = trim(info[0])
+      let info = trim(info[1])
+    endif
+
+    let node.name = name
+    let node.info = info
+    let node.stda.= node.name
+
+  endif
+  let node.stda.= node.keyw..node.info
+  let node.stda = empty(node.stda)
+
+  return node
+
+endfu "}
 "-- main functions --
 fu! arbo#arbo(...) abort "{ main arbo routine
 
@@ -63,10 +107,10 @@ fu! arbo#fixt(...) abort "{ fixes some user mistakes in the DS
     let mintype = conf.leaftype
     let minkeyw = conf.lexicon[mintype-1][0]
     for node in root.list
-      let type = arbo#find(conf.lexicon,node.info.keyw)
+      let type = arbo#find(conf.lexicon,node.keyw)
       if type<mintype
         let mintype = type
-        let minkeyw = node.info.keyw
+        let minkeyw = node.keyw
       endif
     endfor
 
@@ -74,7 +118,7 @@ fu! arbo#fixt(...) abort "{ fixes some user mistakes in the DS
     let list = []
     let node = root.list[indx]
     " while bounded & curr node type is inside a non-leaf node
-    while indx<root.meta.leng&&arbo#find(conf.lexicon,node.info.keyw)>mintype
+    while indx<root.meta.leng&&arbo#find(conf.lexicon,node.keyw)>mintype
       call add(list,node)
       let indx+=1
       let node = root.list[indx]
@@ -82,9 +126,9 @@ fu! arbo#fixt(...) abort "{ fixes some user mistakes in the DS
     if indx
       let next = root.list[indx]
       let node = #{info:{},meta:{}}
-      let node.info.keyw = minkeyw
-      let node.info.name = '<fixed>'
-      let node.info.info = ''
+      let node.keyw = minkeyw
+      let node.name = '<fixed>'
+      let node.info = ''
       let node.meta.leng = len(list)
       let node.meta.indx = 0
       "let node.meta.type = arbo#find(conf.lexicon,list[0].info.keyw)
@@ -120,15 +164,15 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     " catches node from given nodelist
     let node = list[indx]|let indx+=1
 
-    let node.type = arbo#find(s:conf.lexicon     ,node.info.keyw)
-    let node.tree = arbo#find(s:conf.lexicon[:-2],node.info.keyw)
+    let node.type = arbo#find(s:conf.lexicon     ,node.keyw)
+    let node.tree = arbo#find(s:conf.lexicon[:-2],node.keyw)
 
     " recursively handles non-leaf nodes (sub-tree)
     if 1+node.tree
       let init = indx
       while indx<leng
         let item = list[indx]
-        let item.tree = arbo#find(s:conf.lexicon[:-2],item.info.keyw)
+        let item.tree = arbo#find(s:conf.lexicon[:-2],item.keyw)
         " breaks at next same (or higher) type node
         if 1+item.tree && item.tree<=node.tree
           break
@@ -139,7 +183,7 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
       " extend node fields with.list, indx and leng recursively
       let sublist = list[init:indx-1]
       if s:conf.homing
-        let path = [home,''][node.absl] .. node.info.info
+        let path = [home,''][node.absl] .. node.info
         let subtree = arbo#tree(sublist,indx-init,path)
       else
         let subtree = arbo#tree(sublist,indx-init)
@@ -163,11 +207,9 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
 
     " handles home for leaf nodes
     if s:conf.homing && -1==node.tree
-      let info = empty(node.info.info)?node.info.name:node.info.info
-      let node.info.info = [home .. info,info][node.absl]
-      let node.info.info = simplify(node.info.info)
-     "let node.info.info = substitute(node.info.info,'//','/','g')
-     "let node.info.info = substitute(node.info.info,'/$','','')
+      let info = empty(node.info)?node.name:node.info
+      let node.info = [home .. info,info][node.absl]
+      let node.info = simplify(node.info)
     endif
 
     " remove unnecessary node-fields
@@ -324,14 +366,14 @@ fu! arbo#loop(...) abort "{ looping mechanism
     let s:conf.leng = 0
     while indx<leng
       let node = s:conf.list[indx]|let indx+=1
-      if node.info.keyw !=? 'loop'
+      if node.keyw !=? 'loop'
         call add(list,node)
         let s:conf.leng+=1
-      else " found loop keyword {
+      else " found loop keyword
         let loop = []
         while indx<leng
           let item = s:conf.list[indx]|let indx+=1
-          if item.info.keyw==?'endl'|break|endif
+          if item.keyw==?'endl'|break|endif
           if node.trim|continue|endif
           call add(loop,item)
         endwhile
@@ -340,31 +382,31 @@ fu! arbo#loop(...) abort "{ looping mechanism
           let s:conf.list[indx].trim = 2
           continue
         endif
-        let info = empty(node.info.info)?node.info.name:node.info.info
-        let name = empty(node.info.info)?'':node.info.name
+        let info = empty(node.info)?node.name:node.info
+        let name = empty(node.info)?'':node.name
         let vars = split(info,' ')
         let vars = arbo#list(vars)
         let vars = arbo#trim(vars)
-        for node in vars "{
+        for node in vars
           if node.trim==1|continue|endif
           if node.trim>=2|  break |endif
-          let var = node.info.keyw
+          let var = node.keyw
           for item in loop
             let info = deepcopy(item)
             if empty(name)
-              let info.info.name = substitute(info.info.name,'$_',var,'g')
-              let info.info.info = substitute(info.info.info,'$_',var,'g')
+              let info.name = substitute(info.name,'$_',var,'g')
+              let info.info = substitute(info.info,'$_',var,'g')
             else
-              let info.info.name = substitute(info.info.name,'$('..name..')',var,'g')
-              let info.info.info = substitute(info.info.info,'$('..name..')',var,'g')
+              let info.name = substitute(info.name,'$('..name..')',var,'g')
+              let info.info = substitute(info.info,'$('..name..')',var,'g')
             endif
             if node.trim
               let info.trim = node.trim
             endif
             call add(list,info)|let s:conf.leng+=1
           endfor
-        endfor "}
-      endif "}
+        endfor
+      endif
     endwhile
     let s:conf.list = list
   endif
@@ -379,10 +421,10 @@ fu! arbo#home(...) abort "{ homing mechanism
     let s:conf.leng = 0
     while indx<leng
       let node = s:conf.list[indx]|let indx+=1
-      if node.info.keyw==?'home'
+      if node.keyw==?'home'
         if node.trim==1|continue|endif
         if node.trim==2|  break |endif
-        let s:conf.home = empty(node.info.info)?node.info.name:node.info.info
+        let s:conf.home = empty(node.info)?node.name:node.info
         continue
       endif
       call add(list,node)|let s:conf.leng+=1
@@ -393,54 +435,7 @@ fu! arbo#home(...) abort "{ homing mechanism
 endfu "}
 
 "-- auxy functions --
-fu! arbo#node(...) abort "{ parses a line into a valid node
 
-  let line = get(a:000,0,'')
-  let line = ['',line][type(line)==type('')]
-
-  let rgex = '^\v *(-*) *(\w*) *(.*)$'
-  let info = matchlist(line,rgex)
-
-  let trim = info[1]
-  let keyw = info[2]
-  let info = info[3]
-
-  let node = {}
-  let node.stda = ''
-  let node.trim = len(trim)
-
-  let node.info = {}
-  let node.info.keyw = keyw
-
-  if     s:conf.syntax ==? 'normal'
-    let node.info.info = info
-  elseif s:conf.syntax ==? 'nvpm'
-    let rgex = '\v *[=:] *'
-
-    " stores absolute key for homing absolute path functionality
-    let node.absl = trim(matchstr(info,rgex)) == '='
-
-    " split info into name and info again
-    let info = split(info,rgex,1)
-    if len(info)==1
-      let name = trim(info[0])
-      let info = ''
-    elseif len(info)>=2
-      let name = trim(info[0])
-      let info = trim(info[1])
-    endif
-
-    let node.info.name = name
-    let node.info.info = info " change info.info -> info.path
-    let node.stda .= node.info.name
-
-  endif
-  let node.stda .= node.info.keyw..node.info.info
-  let node.stda  = empty(node.stda)
-
-  return node
-
-endfu "}
 fu! arbo#find(...) abort "{ returns the number type of a given keyword
 
   if !exists('a:1')|return -1|endif
@@ -480,15 +475,15 @@ fu! arbo#show(...) abort "{ pretty-prints a given node
   endif
   " recursive run loop over nodes
   for node in list
-    let info = get(node.info,'info','')
+    let info = get(node,'info','')
 
     if nvpm
-      let name = get(node.info,'name','')
+      let name = get(node,'name','')
       let name = [name,"''"][empty(name)]
       let info = name..' : '..info
     endif
 
-    let keyw = get(node.info,'keyw','')
+    let keyw = get(node,'keyw','')
     let info = [info,"''"][empty(info)]
     echon tabs keyw..' '..info..' ' get(node,'meta','')
     echon "\n"

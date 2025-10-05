@@ -11,7 +11,6 @@
   loop logic -math physics
   tab $_:src,file $_.c,file $_.h # single line entries
   endl
-
 workspace meta {
     file read:README.md
     file clog:changelog
