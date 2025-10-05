@@ -194,7 +194,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
     let node = arbo#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
-      if leaf.info.info == g:nvpm.curr.arbo.file
+      if leaf.info == g:nvpm.curr.arbo.file
         let node.meta.indx = indx
         break
       endif
@@ -333,7 +333,7 @@ fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
   let leaves = arbo#seek(root,g:nvpm.arbo.leaftype)
   if empty(leaves)|return 1|endif
 
-  let g:nvpm.curr.leaf = leaves.list[leaves.meta.indx].info
+  let g:nvpm.curr.leaf = leaves.list[leaves.meta.indx]
   let g:nvpm.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx]
 
 endfu "}

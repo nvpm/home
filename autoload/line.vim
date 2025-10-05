@@ -194,7 +194,7 @@ fu! line#pack(...) abort "{ packs multiple atoms together
 
   for indx in range(leng)
     let item = list[indx]
-    let info = g:line.nvpm?eval('item.info.name'):fnamemodify(item,':t:r')
+    let info = g:line.nvpm?eval('item.name'):fnamemodify(item,':t:r')
     let iscurr = indx==curr
     if indx==curr
       let info = g:line.curredge[0]..info..g:line.curredge[1]
@@ -229,7 +229,7 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
         if has_key(node,'meta')&&has_key(node,'list')
           let node = node.list[node.meta.indx]
           if has_key(node,'info')
-            let name = node.info.name
+            let name = node.name
           endif
         endif
       endif
