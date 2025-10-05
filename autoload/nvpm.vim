@@ -41,7 +41,6 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
 
   " 0: unloaded tree, 1: loaded tree, 2: edit mode
   let g:nvpm.mode = 0
-  let g:nvpm.home = getcwd()
   call nvpm#null('tree')
   call nvpm#null('term')
 
