@@ -33,11 +33,13 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
     let g:nvpm.arbo.lexicon .= ',project scheme layout'
     let g:nvpm.arbo.lexicon .= ',workspace archive'
     let g:nvpm.arbo.lexicon .= ',tab folder shelf package'
-    let g:nvpm.arbo.lexicon .= ',file buffer buff term terminal'
+    let g:nvpm.arbo.lexicon .= ',file buffer buff'
   endif
   let g:nvpm.arbo.syntax = 'nvpm'
   let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo) " listfies the lexicon
+  let s:term = ['term','terminal','shell','cmd','run','exec']
+  let g:nvpm.arbo.lexicon[-1]+= s:term
 
   call nvpm#null()
 
@@ -221,7 +223,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     endif
 
     " updates indx based on given step
-    if g:nvpm.curr.leaf.info==bufname()
+    if g:nvpm.curr.leaf.info==bufname()||has_key(g:nvpm.curr.leaf,'cmd')
       let node = nvpm#seek(g:nvpm.tree,type)
       if !has_key(node,'meta')|return 1|endif
       call nvpm#indx(node,node.meta.indx+step)
@@ -266,6 +268,22 @@ fu! nvpm#make(...) abort "{ makes new arbo file and enters Edit Mode on it
 
 endfu "}
 fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
+
+  if !a:0
+    let leaf = g:nvpm.curr.leaf
+    if s:nvim " nvim{
+      terminal
+      call chansend(&channel,leaf.cmd.."\n")
+    "}
+    "else      " vim {
+    "  let conf = {}
+    "  let conf.curwin = 1
+    "  let conf.exit_cb = function('nvpm#auto',['termexit'])
+    "  call term_sendkeys(term_start($SHELL,conf),leaf.cmd)
+    endif "}
+    let leaf.bufnr = bufnr()
+    return
+  endif
 
   let name = get(a:,1,'main')
   let name = empty(name)?'main':name
@@ -332,19 +350,36 @@ fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
 
   let leaves = nvpm#seek(root,g:nvpm.arbo.leaftype)
   if empty(leaves)|return 1|endif
+  let leaf = leaves.list[leaves.meta.indx]
 
-  let g:nvpm.curr.leaf = leaves.list[leaves.meta.indx]
+  let g:nvpm.curr.leaf = leaf
   let g:nvpm.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx]
+
+  if 1+match(s:term,leaf.keyw)&&!has_key(leaf,'cmd')
+    let leaf.cmd = empty(leaf.info)?$SHELL:leaf.info
+    if empty(leaf.info)
+      let leaf.cmd = $SHELL
+      let leaf.name = empty(leaf.name)?$SHELL:leaf.name
+    endif
+  endif
 
 endfu "}
 fu! nvpm#rend(...) abort "{ renders the current leaf node
 
-  let curr = g:nvpm.curr.leaf.info
-  let head = fnamemodify(curr,':h')..'/'
+  let leaf = g:nvpm.curr.leaf
 
-  exe 'edit '.curr
+  if has_key(leaf,'cmd')
+    if has_key(leaf,'bufnr')&&bufexists(leaf.bufnr)
+      return execute('buffer '..leaf.bufnr)
+    else
+      return nvpm#term()
+    endif
+  endif
 
-  if curr=~'^.*\.arbo$'||head==g:nvpm.path.arbo
+  exe 'edit '.leaf.info
+
+  let head = fnamemodify(leaf.info,':h')..'/'
+  if leaf.info=~'^.*\.arbo$'||head==g:nvpm.path.arbo
     setl nobuflisted
     if &l:ft!='arbo'
       setl filetype=arbo
@@ -576,6 +611,12 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   let func = get(a:,1,'')
 
   if func=='termexit'
+    if has_key(g:nvpm.curr.leaf,'bufnr')
+      enew
+      exec 'bdelete '..g:nvpm.curr.leaf.bufnr
+      call nvpm#term()
+      return
+    endif
     let bufnr = bufnr()
     if !g:nvpm.termexit||
       \(g:nvpm.termexit==1&&-1==match(values(g:nvpm.term),bufnr))
