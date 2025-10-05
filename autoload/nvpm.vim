@@ -275,11 +275,11 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       terminal
       call chansend(&channel,leaf.cmd.."\n")
     "}
-    "else      " vim {
-    "  let conf = {}
-    "  let conf.curwin = 1
-    "  let conf.exit_cb = function('nvpm#auto',['termexit'])
-    "  call term_sendkeys(term_start($SHELL,conf),leaf.cmd)
+    else      " vim {
+      let conf = {}
+      let conf.curwin = 1
+      let conf.exit_cb = function('nvpm#auto',['termexit'])
+      call term_sendkeys(term_start($SHELL,conf),leaf.cmd.."\n")
     endif "}
     let leaf.bufnr = bufnr()
     if g:nvpm.termmode>1|startinsert|endif
