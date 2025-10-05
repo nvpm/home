@@ -2,52 +2,6 @@
 if !exists('NVPMTEST')&&exists('_ARBOAUTO_')|finish|endif
 let _ARBOAUTO_=1
 
-fu! arbo#node(...) abort "{ parses a line into a valid node
-
-  let line = get(a:,1,'')
-  let nvpm = get(a:,2,s:conf.syntax ==? 'nvpm')
-  let line = ['',line][type(line)==type('')]
-
-  let rgex = '^\v *(-*) *(\w*) *(.*)$'
-  let info = matchlist(line,rgex)
-
-  let trim = info[1]
-  let keyw = info[2]
-  let info = info[3]
-
-  let node = {}
-  let node.keyw = keyw
-  let node.info = info
-  let node.stda = ''
-  let node.trim = len(trim)
-
-  if nvpm
-    let rgex = '\v *[=:] *'
-
-    " stores absolute key for homing absolute path functionality
-    let node.absl = trim(matchstr(info,rgex)) == '='
-
-    " split info into name and info again
-    let info = split(info,rgex,1)
-    if len(info)==1
-      let name = trim(info[0])
-      let info = ''
-    elseif len(info)>=2
-      let name = trim(info[0])
-      let info = trim(info[1])
-    endif
-
-    let node.name = name
-    let node.info = info
-    let node.stda.= node.name
-
-  endif
-  let node.stda.= node.keyw..node.info
-  let node.stda = empty(node.stda)
-
-  return node
-
-endfu "}
 "-- main functions --
 fu! arbo#arbo(...) abort "{ main arbo routine
 
@@ -435,7 +389,52 @@ fu! arbo#home(...) abort "{ homing mechanism
 endfu "}
 
 "-- auxy functions --
+fu! arbo#node(...) abort "{ parses a line into a valid node
 
+  let line = get(a:,1,'')
+  let nvpm = get(a:,2,s:conf.syntax ==? 'nvpm')
+  let line = ['',line][type(line)==type('')]
+
+  let rgex = '^\v *(-*) *(\w*) *(.*)$'
+  let info = matchlist(line,rgex)
+
+  let trim = info[1]
+  let keyw = info[2]
+  let info = info[3]
+
+  let node = {}
+  let node.keyw = keyw
+  let node.info = info
+  let node.stda = ''
+  let node.trim = len(trim)
+
+  if nvpm
+    let rgex = '\v *[=:] *'
+
+    " stores absolute key for homing absolute path functionality
+    let node.absl = trim(matchstr(info,rgex)) == '='
+
+    " split info into name and info again
+    let info = split(info,rgex,1)
+    if len(info)==1
+      let name = trim(info[0])
+      let info = ''
+    elseif len(info)>=2
+      let name = trim(info[0])
+      let info = trim(info[1])
+    endif
+
+    let node.name = name
+    let node.info = info
+    let node.stda.= node.name
+
+  endif
+  let node.stda.= node.keyw..node.info
+  let node.stda = empty(node.stda)
+
+  return node
+
+endfu "}
 fu! arbo#find(...) abort "{ returns the number type of a given keyword
 
   if !exists('a:1')|return -1|endif
