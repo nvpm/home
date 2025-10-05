@@ -121,7 +121,7 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
       unlet g:nvpm.tree.list[indx]
       let g:nvpm.tree.meta.leng-= 1
       " just to keep indx inside bounds, because of new leng
-      call arbo#indx(g:nvpm.tree)
+      call nvpm#indx(g:nvpm.tree)
     else
       let file = fnamemodify(file,':t')
       echohl WarningMsg
@@ -163,7 +163,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
       " exiting Edit Mode
       let indx = nvpm#find(currarbo)
       if 1+indx
-        call arbo#indx(g:nvpm.tree,indx)
+        call nvpm#indx(g:nvpm.tree,indx)
       endif
     endif
     call nvpm#load()
@@ -191,7 +191,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
   " jumps to current arbo file (if any) in the edit mode view
   if has_key(g:nvpm.curr.arbo,'file')
-    let node = arbo#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
+    let node = nvpm#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
       if leaf.info == g:nvpm.curr.arbo.file
@@ -222,9 +222,9 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
 
     " updates indx based on given step
     if g:nvpm.curr.leaf.info==bufname()
-      let node = arbo#seek(g:nvpm.tree,type)
+      let node = nvpm#seek(g:nvpm.tree,type)
       if !has_key(node,'meta')|return 1|endif
-      call arbo#indx(node,node.meta.indx+step)
+      call nvpm#indx(node,node.meta.indx+step)
     endif
 
     " renders the newly calculated current leaf node
@@ -330,7 +330,7 @@ fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
 
   if empty(root)||empty(list)|return 1|endif
 
-  let leaves = arbo#seek(root,g:nvpm.arbo.leaftype)
+  let leaves = nvpm#seek(root,g:nvpm.arbo.leaftype)
   if empty(leaves)|return 1|endif
 
   let g:nvpm.curr.leaf = leaves.list[leaves.meta.indx]
@@ -402,6 +402,40 @@ fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
     let item = g:nvpm[key]
     echo key..' : '..string(item)
   endfor
+
+endfu "}
+fu! nvpm#seek(...) abort "{ looks for the current node of a given number type
+
+  let root = get(a:000,0,{})
+  let type = get(a:000,1,-1)
+
+  if !has_key(root,'meta') | return {}   | endif
+  if !has_key(root,'list') | return {}   | endif
+  if type==root.meta.type  | return root | endif
+
+  let leng = get(root.meta,'leng')
+
+  if leng
+    call nvpm#indx(root)
+    return nvpm#seek(root.list[root.meta.indx],type)
+  endif
+  return {}
+
+endfu "}
+fu! nvpm#indx(...) abort "{ sets/limits a new index to a given meta field
+
+  if !a:0||type(a:1)!=type({})|return 1|endif
+
+  let node = a:1
+
+  if has_key(node,'meta')
+    let meta = node.meta
+    let meta.indx = get(a:,2,meta.indx)
+    if has_key(meta,'leng')
+      let meta.indx%= meta.leng               " limits range inside length
+      let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
+    endif
+  endif
 
 endfu "}
 "TODO: re-investigate why these are necessary

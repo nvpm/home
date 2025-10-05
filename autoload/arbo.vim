@@ -492,37 +492,3 @@ fu! arbo#show(...) abort "{ pretty-prints a given node
   endfor
 
 endfu "}
-fu! arbo#seek(...) abort "{ looks for the current node of a given number type
-
-  let root = get(a:000,0,{})
-  let type = get(a:000,1,-1)
-
-  if !has_key(root,'meta') | return {}   | endif
-  if !has_key(root,'list') | return {}   | endif
-  if type==root.meta.type  | return root | endif
-
-  let leng = get(root.meta,'leng')
-
-  if leng
-    call arbo#indx(root)
-    return arbo#seek(root.list[root.meta.indx],type)
-  endif
-  return {}
-
-endfu "}
-fu! arbo#indx(...) abort "{ sets/limits a new index to a given meta field
-
-  if !a:0||type(a:1)!=type({})|return 1|endif
-
-  let node = a:1
-
-  if has_key(node,'meta')
-    let meta = node.meta
-    let meta.indx = get(a:,2,meta.indx)
-    if has_key(meta,'leng')
-      let meta.indx%= meta.leng               " limits range inside length
-      let meta.indx+= (meta.indx<0)*meta.leng " keeps indx positive
-    endif
-  endif
-
-endfu "}
