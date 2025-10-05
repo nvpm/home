@@ -38,7 +38,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.arbo.syntax = 'nvpm'
   let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo) " listfies the lexicon
-  let s:term = ['term','terminal','shell','cmd','run','exec']
+  let s:term = ['term','terminal','shell','cmd','run','exec','open']
   let g:nvpm.arbo.lexicon[-1]+= s:term
 
   call nvpm#null()
