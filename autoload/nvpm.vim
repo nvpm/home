@@ -358,11 +358,8 @@ fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
   let g:nvpm.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx]
 
   if 1+match(s:term,leaf.keyw)&&!has_key(leaf,'cmd')
-    let leaf.cmd = empty(leaf.info)?$SHELL:leaf.info
-    if empty(leaf.info)
-      let leaf.cmd = $SHELL
-      let leaf.name = empty(leaf.name)?$SHELL:leaf.name
-    endif
+    let leaf.cmd  = empty(leaf.info)?$SHELL:leaf.info
+    let leaf.name = empty(leaf.name)?split(leaf.cmd)[:1]:leaf.name
   endif
 
 endfu "}
