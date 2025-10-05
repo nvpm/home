@@ -39,10 +39,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.arbo.file   = ''
   call arbo#conf(g:nvpm.arbo) " listfies the lexicon
 
-  " 0: unloaded tree, 1: loaded tree, 2: edit mode
-  let g:nvpm.mode = 0
-  call nvpm#null('tree')
-  call nvpm#null('term')
+  call nvpm#null()
 
   " default file locations
   let g:nvpm.path = {}
@@ -79,11 +76,11 @@ fu! nvpm#load(...) abort "{ loading mechanisms (line,zoom,rend,curr,save)
 
   if !g:nvpm.mode|return|endif
 
-  call nvpm#line()
-  call nvpm#zoom()
   call nvpm#curr()
   call nvpm#rend()
   call nvpm#save()
+  call nvpm#line()
+  call nvpm#zoom()
 
 endfu "}
 fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
@@ -115,7 +112,7 @@ fu! nvpm#fell(...) abort "{ fells an arbo file from the nvpm tree
       echo  'NvpmFell: No tree to be felled. Ignoring!!'
       echohl None
     else "fells down the current arbo file loaded
-      call nvpm#fell(g:nvpm.tree.curr.arbo)
+      call nvpm#fell(g:nvpm.curr.arbo.file)
     endif
   else
     let file = a:1
@@ -192,11 +189,12 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
   call nvpm#grow(g:nvpm.path.edit)
   let g:nvpm.mode = 2
 
-  if !empty(g:nvpm.tree.curr.arbo)
+  " jumps to current arbo file (if any) in the edit mode view
+  if has_key(g:nvpm.curr.arbo,'file')
     let node = arbo#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
-      if leaf.info.info == g:nvpm.tree.curr.arbo
+      if leaf.info.info == g:nvpm.curr.arbo.file
         let node.meta.indx = indx
         break
       endif
@@ -223,7 +221,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     endif
 
     " updates indx based on given step
-    if g:nvpm.tree.curr.leaf==bufname()
+    if g:nvpm.curr.leaf.info==bufname()
       let node = arbo#seek(g:nvpm.tree,type)
       if !has_key(node,'meta')|return 1|endif
       call arbo#indx(node,node.meta.indx+step)
@@ -325,25 +323,23 @@ fu! nvpm#find(...) abort "{ looks for a given arbo file in the nvpm tree
   return -1
 
 endfu "}
-fu! nvpm#curr(...) abort "{ calculates the current leaf node in the nvpm tree
+fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
 
   let root = g:nvpm.tree
   let list = get(root,'list',[])
 
   if empty(root)||empty(list)|return 1|endif
 
-  let node = arbo#seek(root,g:nvpm.arbo.leaftype)
-  if empty(node)|return 1|endif
-  let curr = node.list[node.meta.indx].info.info
-  if empty(curr)|return 1|endif
+  let leaves = arbo#seek(root,g:nvpm.arbo.leaftype)
+  if empty(leaves)|return 1|endif
 
-  let g:nvpm.tree.curr.leaf = curr
-  let g:nvpm.tree.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx].file
+  let g:nvpm.curr.leaf = leaves.list[leaves.meta.indx].info
+  let g:nvpm.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx]
 
 endfu "}
 fu! nvpm#rend(...) abort "{ renders the current leaf node
 
-  let curr = g:nvpm.tree.curr.leaf
+  let curr = g:nvpm.curr.leaf.info
   let head = fnamemodify(curr,':h')..'/'
 
   exe 'edit '.curr
@@ -361,13 +357,22 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
 endfu "}
 fu! nvpm#null(...) abort "{ resets the nvpm tree
 
-  if !a:0|return|endif
+  if !a:0
+    call nvpm#null('nvpm')
+    call nvpm#null('tree')
+    call nvpm#null('curr')
+    call nvpm#null('term')
+    return
+  endif
 
-  if a:1=='tree'
+  if a:1=='nvpm'
+    let g:nvpm.mode = 0
+  elseif a:1=='tree'
     let g:nvpm.tree      = {}
-    let g:nvpm.tree.curr = #{leaf:'',arbo:''}
     let g:nvpm.tree.list = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
+  elseif a:1=='curr'
+    let g:nvpm.curr = #{leaf:{},arbo:{}}
   elseif a:1=='term'
     let g:nvpm.term = {}
   endif
