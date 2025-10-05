@@ -359,21 +359,6 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
   endif
 
 endfu "}
-fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
-
-  for key in keys(g:nvpm)
-    if key=='root'
-      echo 'root :' g:nvpm.tree.meta
-      for arbo in g:nvpm.tree.list
-        echo '  '..arbo.file
-      endfor
-      continue
-    endif
-    let item = g:nvpm[key]
-    echo key..' : '..string(item)
-  endfor
-
-endfu "}
 fu! nvpm#null(...) abort "{ resets the nvpm tree
 
   if !a:0|return|endif
@@ -397,6 +382,21 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
   if g:nvpm.initload&&g:nvpm.mode==1
     call writefile([json_encode(g:nvpm.tree)],g:nvpm.path.tree)
   endif
+
+endfu "}
+fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
+
+  for key in keys(g:nvpm)
+    if key=='root'
+      echo 'root :' g:nvpm.tree.meta
+      for arbo in g:nvpm.tree.list
+        echo '  '..arbo.file
+      endfor
+      continue
+    endif
+    let item = g:nvpm[key]
+    echo key..' : '..string(item)
+  endfor
 
 endfu "}
 "TODO: re-investigate why these are necessary
