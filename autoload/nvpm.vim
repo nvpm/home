@@ -615,13 +615,13 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
   let func = get(a:,1,'')
 
   if func=='termexit'
-    if has_key(g:nvpm.curr.leaf,'bufnr')
+    let bufnr = bufnr()
+    if has_key(g:nvpm.curr.leaf,'bufnr')&&g:nvpm.curr.leaf.bufnr==bufnr
       enew
       exec 'bdelete '..g:nvpm.curr.leaf.bufnr
       call nvpm#term()
       return
     endif
-    let bufnr = bufnr()
     if !g:nvpm.termexit||
       \(g:nvpm.termexit==1&&-1==match(values(g:nvpm.term),bufnr))
       return
