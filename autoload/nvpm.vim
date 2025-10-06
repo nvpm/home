@@ -23,6 +23,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  1)
   let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
   let g:nvpm.termmode = get(g:nvpm , 'termmode' ,  1)
+  let g:nvpm.termkill = get(g:nvpm , 'termkill' ,  1)
 
   let s:term = 'term terminal shell open run'
   " builds the arbo conf dictionary
@@ -106,6 +107,12 @@ fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
       let g:nvpm.tree.meta.leng+=1
     endif
     let g:nvpm.tree.meta.indx = indx
+    if g:nvpm.termkill
+      for bufnr in g:nvpm.tree.term
+        if bufexists(bufnr)|exe 'bdelete! '..bufnr|endif
+      endfor
+      let g:nvpm.tree.term = []
+    endif
   endif
   let g:nvpm.mode = !!g:nvpm.tree.meta.leng
 
@@ -291,6 +298,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     let leaf.bufnr = bufnr()
     if g:nvpm.termlist<0|setl nobuflisted|endif
     if g:nvpm.termmode>1|startinsert|endif
+    call add(g:nvpm.tree.term,leaf.bufnr)
     return
   endif
 
@@ -412,6 +420,7 @@ fu! nvpm#null(...) abort "{ resets the nvpm tree
   elseif a:1=='tree'
     let g:nvpm.tree      = {}
     let g:nvpm.tree.list = []
+    let g:nvpm.tree.term = []
     let g:nvpm.tree.meta = #{leng:0,indx:0,type:0}
   elseif a:1=='curr'
     let g:nvpm.curr = #{leaf:{},arbo:{}}
@@ -622,6 +631,10 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
       enew
       exec 'bdelete '..g:nvpm.curr.leaf.bufnr
       call nvpm#term()
+      let indx = index(g:nvpm.tree.term,bufnr)
+      if 1+indx
+        call remove(g:nvpm.tree.term,indx)
+      endif
       return
     endif
     if !g:nvpm.termexit||
