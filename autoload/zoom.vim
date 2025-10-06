@@ -331,5 +331,9 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
     endif
     return
   endif "}
+  if a:1=='quit' "{
+    if g:zoom.mode|only|quit|endif
+    return
+  endif "}
 
 endfu "}

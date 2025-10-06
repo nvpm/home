@@ -14,7 +14,7 @@ if g:zoom.autocmds
   augroup ZOOM
     au!
     au WinEnter    .nvpm/zoom/* if g:zoom.mode|wincmd p|endif
-    au VimLeavePre * if g:zoom.mode|only|quit|endif
+    au VimLeavePre * call zoom#auto('quit')
     if g:zoom.autohelp
       au FileType  help,man setl nobuflisted
       au BufWinEnter * call zoom#auto('help')
