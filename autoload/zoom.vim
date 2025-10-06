@@ -28,10 +28,10 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.nvpm   = exists('g:_NVPMAUTO_')
   let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0  }
   let g:zoom.pads   = #{}
-  let g:zoom.pads.l = '.nvpm/zoom/l'
-  let g:zoom.pads.r = '.nvpm/zoom/r'
-  let g:zoom.pads.t = '.nvpm/zoom/t'
-  let g:zoom.pads.b = '.nvpm/zoom/b'
+  let g:zoom.pads.l = s:home..'l'
+  let g:zoom.pads.r = s:home..'r'
+  let g:zoom.pads.t = s:home..'t'
+  let g:zoom.pads.b = s:home..'b'
   let g:zoom.colr = {}
   let g:zoom.colr.TabLine      = ''
   let g:zoom.colr.TabLineFill  = ''
@@ -335,5 +335,10 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
     if g:zoom.mode|only|quit|endif
     return
   endif "}
-
+  if a:1=='back' "{
+    if bufname()=~s:home..'[lrtb]'
+      wincmd p
+    endif
+    return
+  endif "}
 endfu "}
