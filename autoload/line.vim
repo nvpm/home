@@ -2,7 +2,11 @@
 if !exists('NVPMTEST')&&exists('_LINEAUTO_')|finish|endif
 let _LINEAUTO_ = 1
 let s:nvim = has('nvim')
-let s:vim  = !s:nvim
+
+if !has_key(g:,'nvpmhome')
+  let g:nvpmhome = resolve(expand('~/.nvpm'))
+endif
+let s:home = g:nvpmhome..'/line/'
 
 "-- main functions --
 fu! line#init(...) abort "{ user variables & startup routines
@@ -541,14 +545,14 @@ fu! line#giti(...) abort "{ sets the timer, job, or tcp connection for git info
       unlet g:line.gitdelay
     endif "}
     let opt = {}
-    if s:vim
-      if g:line.git.job=~'.*run'|return|endif
-      let opt.out_cb = function('line#data')
-      let g:line.git.job = job_start(g:line.bash,opt)
-    else
+    if s:nvim
       if g:line.git.job|return|endif
       let opt.on_stdout = function('line#data')
       let g:line.git.job = jobstart(g:line.bash,opt)
+    else
+      if g:line.git.job=~'.*run'|return|endif
+      let opt.out_cb = function('line#data')
+      let g:line.git.job = job_start(g:line.bash,opt)
     endif
     return
   endif "end-job}
@@ -611,7 +615,7 @@ fu! line#stop(...) abort "{ stops the timer, job, or tcp connection
   if g:line.gitimode==1
     call timer_stop(g:line.git.timer)
   elseif g:line.gitimode==2
-    call {s:vim?'job_stop':'jobstop'}(g:line.git.job)
+    call {s:nvim?'jobstop':'job_stop'}(g:line.git.job)
   endif
   call line#zero()
 
