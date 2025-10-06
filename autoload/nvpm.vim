@@ -449,13 +449,9 @@ fu! nvpm#seek(...) abort "{ looks for the current node of a given number type
   let type = get(a:000,1,-1)
 
   if !has_key(root,'meta') | return {}   | endif
-  if !has_key(root,'list') | return {}   | endif
   if type==root.meta.type  | return root | endif
-
-  let leng = get(root.meta,'leng')
-
-  if leng
-    call nvpm#indx(root)
+  
+  if root.meta.leng
     return nvpm#seek(root.list[root.meta.indx],type)
   endif
   return {}
