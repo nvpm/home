@@ -1,7 +1,9 @@
 |bugs|
-  ● [bug] savedtree on last terminal visited, does not recreate term ~
+  ● [bug] orphaned terminal buffers after edit mode reparsing ~
+  Terminals owned by a leaf node get left behind after arbo#arbo() call.
 
 |fixed|
+  ● [bug] savedtree on last terminal visited, does not recreate term ~
   ● on NvpmTerm close erases undo tree in Neovim ~
     Solution was to re-use the :terminal command. The use of jobstart() 
     deletes the current buffer, which then erases the its undo-tree
