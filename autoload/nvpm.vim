@@ -618,7 +618,7 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
       return
     endif
     if !g:nvpm.termexit||
-      \(g:nvpm.termexit==1&&-1==match(values(g:nvpm.term),bufnr))
+      \(g:nvpm.termexit==1&&-1==index(values(g:nvpm.term),bufnr))
       return
     endif
     call nvpm#rend()
