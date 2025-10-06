@@ -226,8 +226,12 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
       return
     endif
 
+    let samefile = g:nvpm.curr.leaf.info==bufname()
+    let keywterm = has_key(g:nvpm.curr.leaf,'cmd')
+    let wildterm = 1+index(values(g:nvpm.term),bufnr())
+
     " updates indx based on given step
-    if g:nvpm.curr.leaf.info==bufname()||has_key(g:nvpm.curr.leaf,'cmd')
+    if samefile||(keywterm&&!wildterm)
       let node = nvpm#seek(type)
       call nvpm#indx(node,node.meta.indx+step)
     endif
