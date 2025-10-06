@@ -225,7 +225,7 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
       if type==0
         let name = fnamemodify(g:nvpm.curr.arbo.file,':t')
       else
-        let node = nvpm#seek(g:nvpm.tree,type)
+        let node = nvpm#seek(type)
         if has_key(node,'meta')&&has_key(node,'list')
           let node = node.list[node.meta.indx]
           if has_key(node,'info')
@@ -255,7 +255,7 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
     let indx = 0
 
     if g:line.nvpm   "{
-      let node = nvpm#seek(g:nvpm.tree,type)
+      let node = nvpm#seek(type)
       if has_key(node,'meta')
         let indx = node.meta.indx
         let leng = node.meta.leng

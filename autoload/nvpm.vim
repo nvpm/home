@@ -197,7 +197,7 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
 
   " jumps to current arbo file (if any) in the edit mode view
   if has_key(g:nvpm.curr.arbo,'file')
-    let node = nvpm#seek(g:nvpm.tree,g:nvpm.arbo.leaftype)
+    let node = nvpm#seek()
     for indx in range(node.meta.leng)
       let leaf = node.list[indx]
       if leaf.info == g:nvpm.curr.arbo.file
@@ -228,7 +228,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
 
     " updates indx based on given step
     if g:nvpm.curr.leaf.info==bufname()||has_key(g:nvpm.curr.leaf,'cmd')
-      let node = nvpm#seek(g:nvpm.tree,type)
+      let node = nvpm#seek(type)
       call nvpm#indx(node,node.meta.indx+step)
     endif
 
@@ -353,9 +353,8 @@ fu! nvpm#curr(...) abort "{ calculates the current var g:nvpm.curr
 
   if empty(root)||empty(list)|return 1|endif
 
-  let leaves = nvpm#seek(root,g:nvpm.arbo.leaftype)
-  if empty(leaves)|return 1|endif
-  let leaf = leaves.list[leaves.meta.indx]
+  let leaves = nvpm#seek()
+  let leaf   = leaves.list[leaves.meta.indx]
 
   let g:nvpm.curr.leaf = leaf
   let g:nvpm.curr.arbo = g:nvpm.tree.list[g:nvpm.tree.meta.indx]
@@ -445,14 +444,14 @@ fu! nvpm#show(...) abort "{ pretty-prints the nvpm tree
 endfu "}
 fu! nvpm#seek(...) abort "{ looks for the current node of a given number type
 
-  let root = get(a:000,0,{})
-  let type = get(a:000,1,-1)
+  let type = get(a:,1,g:nvpm.arbo.leaftype)
+  let root = get(a:,2,g:nvpm.tree)
 
   if !has_key(root,'meta') | return {}   | endif
   if type==root.meta.type  | return root | endif
   
   if root.meta.leng
-    return nvpm#seek(root.list[root.meta.indx],type)
+    return nvpm#seek(type,root.list[root.meta.indx])
   endif
   return {}
 
