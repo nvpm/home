@@ -229,7 +229,6 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     " updates indx based on given step
     if g:nvpm.curr.leaf.info==bufname()||has_key(g:nvpm.curr.leaf,'cmd')
       let node = nvpm#seek(g:nvpm.tree,type)
-      if !has_key(node,'meta')|return 1|endif
       call nvpm#indx(node,node.meta.indx+step)
     endif
 
