@@ -24,6 +24,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
   let g:nvpm.termmode = get(g:nvpm , 'termmode' ,  1)
 
+  let s:term = 'term terminal shell open run'
   " builds the arbo conf dictionary
   let g:nvpm.arbo = {}
   if has_key(g:nvpm,'lexicon')
@@ -37,9 +38,12 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   endif
   let g:nvpm.arbo.syntax = 'nvpm'
   let g:nvpm.arbo.file   = ''
-  call arbo#conf(g:nvpm.arbo) " listfies the lexicon
-  let s:term = ['term','terminal','shell','cmd','run','exec','open']
-  let g:nvpm.arbo.lexicon[-1]+= s:term
+
+  let lexi   = split(g:nvpm.arbo.lexicon,';')
+  let s:term = get(lexi,1,s:term)
+  let g:nvpm.arbo.lexicon = get(lexi,0,'')..' '..s:term
+  call arbo#conf(g:nvpm.arbo)
+  let s:term = split(s:term)
 
   call nvpm#null()
 
