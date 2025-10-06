@@ -1,5 +1,5 @@
 |bugs|
-  ● [bug] ~
+  ● [bug] savedtree on last terminal visited, does not recreate term ~
 
 |fixed|
   ● on NvpmTerm close erases undo tree in Neovim ~

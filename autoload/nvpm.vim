@@ -427,6 +427,9 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
     return
   endif
   if g:nvpm.initload&&g:nvpm.mode==1
+    if has_key(g:nvpm.curr.leaf,'bufnr')
+      unlet g:nvpm.curr.leaf.bufnr
+    endif
     call writefile([json_encode(g:nvpm.tree)],g:nvpm.path.tree)
   endif
 
