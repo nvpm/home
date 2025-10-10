@@ -52,7 +52,7 @@ let nvpm = {}
 let nvpm.initload = 1
 let nvpm.autocmds = 1
 
-let nvpm.termlist = 0
+let nvpm.termlist = -1
 let nvpm.termkeep = 0
 let nvpm.termexit = 2
 let nvpm.termmode = 2
