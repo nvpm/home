@@ -159,11 +159,15 @@ fu! arbo#tree(...) abort "{ recursively builds the tree from the list of nodes
     " transfers node type to parent node
     let tree.meta.type = node.type
 
-    " handles home for leaf nodes
-    if s:conf.homing && -1==node.tree
-      let info = empty(node.info)?node.name:node.info
-      let node.info = [home .. info,info][node.absl]
+    " handles leaf nodes
+    if -1==node.tree
+      if s:conf.homing
+        let info = empty(node.info)?node.name:node.info
+        let node.info = [home .. info,info][node.absl]
+      endif
       let node.info = simplify(node.info)
+      let node.info = resolve(node.info)
+      let node.info = expand(node.info)
     endif
 
     " remove unnecessary node-fields
