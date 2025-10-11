@@ -32,6 +32,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.pads.r = s:home..'r'
   let g:zoom.pads.t = s:home..'t'
   let g:zoom.pads.b = s:home..'b'
+  let g:zoom.pads.list = []
   let g:zoom.colr = {}
   let g:zoom.colr.TabLine      = ''
   let g:zoom.colr.TabLineFill  = ''
@@ -39,8 +40,6 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.colr.StatusLineNC = ''
   let g:zoom.colr.VertSplit    = ''
   let g:zoom.none = ''
-
-  let s:pads = []
 
   if !argc()&&g:zoom.initload
     call timer_start(g:zoom.initload,{->zoom#show()})
@@ -195,7 +194,7 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
     let &laststatus  = g:zoom.botl
   endif
 
-  for buf in s:pads
+  for buf in g:zoom.pads.list
     if bufexists(buf)|exe 'bdel '..buf|endif
   endfor
 
@@ -307,8 +306,8 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
   endif
 
   let bufnr = bufnr()
-  if -1==index(s:pads,bufnr)
-    call add(s:pads,bufnr)
+  if -1==index(g:zoom.pads.list,bufnr)
+    call add(g:zoom.pads.list,bufnr)
   endif
 
 endfu " }
