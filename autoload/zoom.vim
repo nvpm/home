@@ -40,6 +40,8 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.colr.VertSplit    = ''
   let g:zoom.none = ''
 
+  let s:pads = []
+
   if !argc()&&g:zoom.initload
     call timer_start(g:zoom.initload,{->zoom#show()})
   endif
@@ -193,6 +195,10 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
     let &laststatus  = g:zoom.botl
   endif
 
+  for buf in s:pads
+    if bufexists(buf)|exe 'bdel '..buf|endif
+  endfor
+
 endfu "}
 fu! zoom#zoom(...) abort "{ swaps between modes (toggle switch)
 
@@ -298,6 +304,11 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
     exe 'setl fillchars+=horizdown:\ '
     exe 'setl fillchars+=vertleft:\ '
     exe 'setl fillchars+=vertright:\ '
+  endif
+
+  let bufnr = bufnr()
+  if -1==index(s:pads,bufnr)
+    call add(s:pads,bufnr)
   endif
 
 endfu " }
