@@ -23,13 +23,18 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.top      = get(g:zoom , 'top'      , -1)
 
   let g:zoom.mode   = 0
+
+  let g:zoom.save = {}
+
   let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0  }
+
   let g:zoom.pads   = #{}
   let g:zoom.pads.l = s:home..'l'
   let g:zoom.pads.r = s:home..'r'
   let g:zoom.pads.t = s:home..'t'
   let g:zoom.pads.b = s:home..'b'
   let g:zoom.pads.list = []
+
   let g:zoom.colr = {}
   let g:zoom.colr.TabLine      = ''
   let g:zoom.colr.TabLineFill  = ''
@@ -153,8 +158,14 @@ fu! zoom#show(...) abort "{ enters zoom mode
 
   set showtabline=0
   set laststatus=0
+  set statusline=
+  set tabline=
 
-  return
+  if exists('g:line.pads')
+    let g:line.pads.left  = g:zoom.size.l
+    let g:line.pads.right = g:zoom.size.r
+  endif
+
   exe 'set fillchars=vert:\ '
   if s:nvim
     exe 'set fillchars+=horiz:\ '
@@ -171,10 +182,17 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   silent! only
   let g:zoom.mode = 0
 
-  let &cmdheight   = g:zoom.cmdh
-  let &fillchars   = g:zoom.fill
-  let &showtabline = g:zoom.topl
-  let &laststatus  = g:zoom.botl
+  let &cmdheight   = g:zoom.save.cmdheight
+  let &fillchars   = g:zoom.save.fillchars
+  let &showtabline = g:zoom.save.showtabline
+  let &laststatus  = g:zoom.save.laststatus
+  let &statusline  = g:zoom.save.statusline
+  let &tabline     = g:zoom.save.tabline
+
+  if exists('g:line.pads')
+    let g:line.pads.left  = 0
+    let g:line.pads.right = 0
+  endif
 
   for buf in g:zoom.pads.list
     if bufexists(buf)|exe 'bwipeout '..buf|endif
@@ -211,6 +229,7 @@ fu! zoom#geth(...) abort "{ get highlight arguments from hi-group
 endfu "}
 fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
 
+  " save current colors
   for name in keys(g:zoom.colr)
     if empty(g:zoom.colr[name])
       let args = zoom#geth(name)
@@ -219,10 +238,13 @@ fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
     endif
   endfor
 
-  let g:zoom.cmdh = &cmdheight
-  let g:zoom.fill = &fillchars
-  let g:zoom.topl = &showtabline
-  let g:zoom.botl = &laststatus
+  " save current user options
+  let g:zoom.save.cmdheight   = &cmdheight
+  let g:zoom.save.fillchars   = &fillchars
+  let g:zoom.save.showtabline = &showtabline
+  let g:zoom.save.laststatus  = &laststatus
+  let g:zoom.save.statusline  = &statusline
+  let g:zoom.save.tabline     = &tabline
 
 endfu "}
 fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
@@ -281,7 +303,6 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
     call add(g:zoom.pads.list,bufnr)
   endif
 
-  return
   let &l:statusline = '%#Normal#'
   exe 'setl fillchars=vert:\ '
   exe 'setl fillchars+=eob:\ '

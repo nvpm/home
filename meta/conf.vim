@@ -1,6 +1,6 @@
 " devl {
 
-"let NVPMTEST = 1
+let NVPMTEST = 1
 if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   let NVPMCRYP = '/iasj/cryp/git.gpg'
   so meta/meta.vim
@@ -46,8 +46,8 @@ if !s:nvim
   set hidden
 endif
 
-let _NVPMAUTO_ = 1
-let _NVPMPLUG_ = 1
+"let _NVPMAUTO_ = 1
+"let _NVPMPLUG_ = 1
 
 let nvpmhome = '/iasj/proj/nvpm/.nvpm'
 
