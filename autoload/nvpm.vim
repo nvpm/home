@@ -87,7 +87,6 @@ fu! nvpm#load(...) abort "{ loading mechanisms (line,zoom,rend,curr,save)
   call nvpm#rend()
   call nvpm#save()
   call nvpm#line()
-  call nvpm#zoom()
 
 endfu "}
 fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
@@ -488,7 +487,6 @@ fu! nvpm#indx(...) abort "{ sets/limits a new index to a given meta field
   endif
 
 endfu "}
-"TODO: re-investigate why these are necessary
 fu! nvpm#line(...) abort "{ initializes nvpm/line
 
   if exists('g:line.mode')&&g:line.mode
@@ -496,14 +494,6 @@ fu! nvpm#line(...) abort "{ initializes nvpm/line
     if exists('*line#show')
       call line#show()
     endif
-  endif
-
-endfu "}
-fu! nvpm#zoom(...) abort "{ initializes nvpm/zoom
-
-  if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
-    only
-    call zoom#show()
   endif
 
 endfu "}
