@@ -154,6 +154,7 @@ fu! zoom#show(...) abort "{ enters zoom mode
   set showtabline=0
   set laststatus=0
 
+  return
   exe 'set fillchars=vert:\ '
   if s:nvim
     exe 'set fillchars+=horiz:\ '
@@ -275,6 +276,12 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
   silent! setl winfixwidth
   silent! setl winfixheight
 
+  let bufnr = bufnr()
+  if -1==index(g:zoom.pads.list,bufnr)
+    call add(g:zoom.pads.list,bufnr)
+  endif
+
+  return
   let &l:statusline = '%#Normal#'
   exe 'setl fillchars=vert:\ '
   exe 'setl fillchars+=eob:\ '
@@ -283,11 +290,6 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
     exe 'setl fillchars+=horizdown:\ '
     exe 'setl fillchars+=vertleft:\ '
     exe 'setl fillchars+=vertright:\ '
-  endif
-
-  let bufnr = bufnr()
-  if -1==index(g:zoom.pads.list,bufnr)
-    call add(g:zoom.pads.list,bufnr)
   endif
 
 endfu " }

@@ -107,8 +107,8 @@ hi arbokeyw guifg=#aa7700 gui=bold
 "}
 " line {
 
-let _LINEAUTO_ = 1
-let _LINEPLUG_ = 1
+"let _LINEAUTO_ = 1
+"let _LINEPLUG_ = 1
 
 let line = {}
 let line.initload = 1

@@ -29,7 +29,7 @@ fu! line#init(...) abort "{ user variables & startup routines
 
   let g:line.mode = 1
   let g:line.nvpm = 0
-  let g:line.zoom = 0
+  "let g:line.zoom = 0
 
   call line#save()
   call line#skel()
@@ -415,9 +415,9 @@ fu! line#head(...) abort "{ builds the tabline (the head)
 
   let line = ''
   if g:line.headl
-    if g:line.zoom
-      let line.= '%#Normal#'..repeat(' ',g:zoom.size.l)
-    endif
+    "if g:line.zoom
+    "  let line.= '%#Normal#'..repeat(' ',g:zoom.size.l)
+    "endif
     let line.= line#bone(g:line.skeleton.head.l,0)
   endif
 
@@ -425,9 +425,9 @@ fu! line#head(...) abort "{ builds the tabline (the head)
 
   if g:line.headr
     let line.= line#bone(g:line.skeleton.head.r,1)
-    if g:line.zoom
-      let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
-    endif
+    "if g:line.zoom
+    "  let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
+    "endif
   endif
 
   if &showtabline
@@ -440,9 +440,9 @@ fu! line#feet(...) abort "{ builds the statusline (the feet)
   let line = ''
 
   if g:line.feetl
-    if g:line.zoom && &laststatus==3
-      let line.= '%#Normal#'..repeat(' ',g:zoom.size.l)
-    endif
+    "if g:line.zoom && &laststatus==3
+    "  let line.= '%#Normal#'..repeat(' ',g:zoom.size.l)
+    "endif
     let line.= line#bone(g:line.skeleton.feet.l,0)
   endif
 
@@ -450,9 +450,9 @@ fu! line#feet(...) abort "{ builds the statusline (the feet)
 
   if g:line.feetr
     let line.= line#bone(g:line.skeleton.feet.r,1)
-    if g:line.zoom && &laststatus==3
-      let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
-    endif
+    "if g:line.zoom && &laststatus==3
+    "  let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
+    "endif
   endif
 
   if &laststatus
