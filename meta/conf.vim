@@ -1,6 +1,6 @@
 " devl {
 
-let NVPMTEST = 1
+"let NVPMTEST = 1
 if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   let NVPMCRYP = '/iasj/cryp/git.gpg'
   so meta/meta.vim
@@ -277,6 +277,8 @@ nmap <silent>ml :Line<cr><c-l>
 "set noshowcmd
 "set noshowmode
 
+"let _ZOOMAUTO_ = 1
+"let _ZOOMPLUG_ = 1
 let zoom = {}
 let zoom.autocmds = 1
 let zoom.autohelp = 1

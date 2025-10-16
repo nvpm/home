@@ -36,6 +36,10 @@ fu! s:test.arbo(...) "{
 endfu "}
 fu! s:test.nvpm(...) "{
 
+  for key in keys(g:line)
+    echo key g:line[key]
+  endfor
+  return
   "so meta/conf.vim
   so autoload/nvpm.vim
   "so plugin/nvpm.vim
