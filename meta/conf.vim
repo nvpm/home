@@ -278,7 +278,7 @@ let zoom.initload = 1
 let zoom.keepline = 1
 let zoom.pushcmdl = 0
 let zoom.height = -4
-let zoom.width  = 80
+let zoom.width  = 60
 "let zoom.top    = 0
 
 nmap <silent>mz :Zoom<cr>

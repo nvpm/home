@@ -178,7 +178,7 @@ endfu "}
 fu! zoom#hide(...) abort "{ leaves zoom mode
 
   call zoom#seth()
-  call zoom#zero()
+  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
   silent! only
   let g:zoom.mode = 0
   echo ''
@@ -311,11 +311,6 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
   endif
 
 endfu " }
-fu! zoom#zero(...) abort "{ resets the size variable
-
-  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
-
-endfu "}
 
 "-- auto function --
 fu! zoom#auto(...) abort "{ handles autocmds & callbacks
