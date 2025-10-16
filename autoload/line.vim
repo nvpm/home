@@ -30,7 +30,6 @@ fu! line#init(...) abort "{ user variables & startup routines
   let g:line.mode = 1
   let g:line.nvpm = 0
   let g:line.pads = #{left:0,right:0}
-  "let g:line.zoom = 0
 
   call line#save()
   call line#skel()
@@ -453,7 +452,7 @@ fu! line#feet(...) abort "{ builds the statusline (the feet)
   if g:line.feetr
     let line.= line#bone(g:line.skeleton.feet.r,1)
     if pads&&g:line.pads.right
-      let line.= '%#Normal#'..repeat(' ',g:zoom.size.r)
+      let line.= '%#Normal#'..repeat(' ',g:line.pads.right)
     endif
   endif
 
