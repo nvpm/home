@@ -1,6 +1,6 @@
 " devl {
 
-let NVPMTEST = 1
+"let NVPMTEST = 1
 if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   let NVPMCRYP = '/iasj/cryp/git.gpg'
   so meta/meta.vim
@@ -45,6 +45,9 @@ hi clear NonText    |hi NonText     ctermfg=0 guifg=#555555
 if !s:nvim
   set hidden
 endif
+
+let _NVPMAUTO_ = 1
+let _NVPMPLUG_ = 1
 
 let nvpmhome = '/iasj/proj/nvpm/.nvpm'
 
@@ -103,6 +106,9 @@ hi arbokeyw guifg=#aa7700 gui=bold
 
 "}
 " line {
+
+let _LINEAUTO_ = 1
+let _LINEPLUG_ = 1
 
 let line = {}
 let line.initload = 1
@@ -275,11 +281,9 @@ let zoom = {}
 let zoom.autocmds = 1
 let zoom.autohelp = 1
 let zoom.initload = 1
-let zoom.keepline = 1
 let zoom.pushcmdl = 0
-let zoom.height = -4
-let zoom.width  = 60
-"let zoom.top    = 0
+let zoom.height   = -4
+let zoom.width    = 80
 
 nmap <silent>mz :Zoom<cr>
 
