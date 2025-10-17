@@ -14,6 +14,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom = get(g:,'zoom',{})
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
+  let g:zoom.autosize = get(g:zoom , 'autosize' , 1)
   let g:zoom.hideline = get(g:zoom , 'hideline' , 1)
   let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
   let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
@@ -375,6 +376,13 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
   if a:1=='back' "{
     if g:zoom.mode&&bufname()=~s:home..'[lrtb]'
       wincmd p
+    endif
+    return
+  endif "}
+  if a:1=='size' "{
+    if g:zoom.mode
+      call zoom#hide()
+      call zoom#show()
     endif
     return
   endif "}
