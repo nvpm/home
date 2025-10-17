@@ -211,6 +211,7 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   endif
 
   for buf in g:zoom.pads.list
+    call zoom#buff(buf)
     if bufexists(buf)|exe 'bwipeout '..buf|endif
   endfor
 
@@ -308,6 +309,16 @@ fu! zoom#seth(...) abort "{ sets hi-groups to saved hi info (zoom#save)
 endfu "}
 fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
+  if a:0
+    if bufexists(a:1)
+      exe 'buffer '..a:1
+      silent! setl nowinfixwidth
+      silent! setl nowinfixheight
+      bprev
+    endif
+    return
+  endif
+
   silent! setl nomodifiable
   silent! setl nonumber
   silent! setl norelativenumber
@@ -362,7 +373,7 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
     return
   endif "}
   if a:1=='back' "{
-    if bufname()=~s:home..'[lrtb]'
+    if g:zoom.mode&&bufname()=~s:home..'[lrtb]'
       wincmd p
     endif
     return
