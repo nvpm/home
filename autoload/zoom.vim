@@ -14,6 +14,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom = get(g:,'zoom',{})
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
+  let g:zoom.hideline = get(g:zoom , 'hideline' , 1)
   let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
   let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
   let g:zoom.height   = get(g:zoom , 'height'   , &lines)
@@ -36,11 +37,16 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.pads.list = []
 
   let g:zoom.colr = {}
-  let g:zoom.colr.TabLine      = ''
-  let g:zoom.colr.TabLineFill  = ''
-  let g:zoom.colr.StatusLine   = ''
-  let g:zoom.colr.StatusLineNC = ''
-  let g:zoom.colr.VertSplit    = ''
+  let g:zoom.colr.VertSplit = ''
+
+  if g:zoom.hideline
+    let g:zoom.colr.TabLine      = ''
+    let g:zoom.colr.TabLineSel   = ''
+    let g:zoom.colr.TabLineFill  = ''
+    let g:zoom.colr.StatusLine   = ''
+    let g:zoom.colr.StatusLineNC = ''
+  endif
+
   let g:zoom.none = ''
 
   if !argc()&&g:zoom.initload
@@ -156,14 +162,20 @@ fu! zoom#show(...) abort "{ enters zoom mode
 
   let g:zoom.mode = 1
 
-  set showtabline=0
-  set laststatus=0
-  set statusline=
-  set tabline=
-
   if exists('g:line.pads')
     let g:line.pads.left  = g:zoom.size.l
     let g:line.pads.right = g:zoom.size.r
+  endif
+
+  if g:zoom.hideline
+    if exists('*line#hide')
+      call line#hide()
+    else
+      set showtabline=0
+      set laststatus=0
+      set statusline=
+      set tabline=
+    endif
   endif
 
   exe 'set fillchars=vert:\ '
@@ -194,6 +206,10 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
     let g:line.pads.right = 0
   endif
 
+  if g:zoom.save.linemode
+    call line#show()
+  endif
+
   for buf in g:zoom.pads.list
     if bufexists(buf)|exe 'bwipeout '..buf|endif
   endfor
@@ -206,6 +222,8 @@ fu! zoom#zoom(...) abort "{ swaps between modes (toggle switch)
   else
     call zoom#show()
   endif
+
+  "if exists('g:line.mode')&&g:line.mode|call line#draw()|endif
 
 endfu "}
 
@@ -245,15 +263,16 @@ fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
   let g:zoom.save.laststatus  = &laststatus
   let g:zoom.save.statusline  = &statusline
   let g:zoom.save.tabline     = &tabline
+  let g:zoom.save.linemode    = exists('g:line.mode')&&g:line.mode
 
 endfu "}
 fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
 
-  if empty(g:zoom.none) "{
+  " builds the none hi arg to put into all hi-groups in g:zoom.colr
+  if empty(g:zoom.none)
     let args = zoom#geth('Normal')
     if empty(args)|return|endif
     let args = split(args)
-
     for arg in args
       let arg = split(arg,'=')
       if arg[0]=='guibg'
@@ -263,8 +282,7 @@ fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
       endif
     endfor
     let g:zoom.none = trim(g:zoom.none)
-
-  endif "}
+  endif
 
   for name in keys(g:zoom.colr)
     exe 'hi clear '..name

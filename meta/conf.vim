@@ -279,10 +279,12 @@ nmap <silent>ml :Line<cr><c-l>
 
 "let _ZOOMAUTO_ = 1
 "let _ZOOMPLUG_ = 1
+
 let zoom = {}
 let zoom.autocmds = 1
 let zoom.autohelp = 1
 let zoom.initload = 1
+let zoom.hideline = 0
 let zoom.pushcmdl = 0
 let zoom.height   = -4
 let zoom.width    = 80
