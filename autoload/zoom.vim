@@ -150,8 +150,6 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
 endfu " }
 fu! zoom#show(...) abort "{ enters zoom mode
 
-  if a:0&&!g:zoom.mode|return|endif
-
   silent! only
 
   let g:zoom.mode = 0
@@ -168,7 +166,7 @@ fu! zoom#show(...) abort "{ enters zoom mode
     let g:line.pads.right = g:zoom.size.r
   endif
 
-  if g:zoom.hideline
+  if g:zoom.hideline&&!a:0
     if exists('*line#hide')
       call line#hide()
     else
@@ -385,7 +383,7 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
   if a:1=='size' "{
     if g:zoom.mode
       call zoom#hide()
-      call zoom#show()
+      call zoom#show(1)
     endif
     return
   endif "}
