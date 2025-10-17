@@ -15,7 +15,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
   let g:zoom.autosize = get(g:zoom , 'autosize' , 1)
-  let g:zoom.hideline = get(g:zoom , 'hideline' , 1)
+  let g:zoom.keepline = get(g:zoom , 'keepline' , 1)
   let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
   let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
   let g:zoom.height   = get(g:zoom , 'height'   , &lines)
@@ -40,7 +40,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.colr = {}
   let g:zoom.colr.VertSplit = ''
 
-  if g:zoom.hideline
+  if !g:zoom.keepline
     let g:zoom.colr.TabLine      = ''
     let g:zoom.colr.TabLineSel   = ''
     let g:zoom.colr.TabLineFill  = ''
@@ -166,7 +166,7 @@ fu! zoom#show(...) abort "{ enters zoom mode
     let g:line.pads.right = g:zoom.size.r
   endif
 
-  if g:zoom.hideline&&!a:0
+  if !g:zoom.keepline&&!a:0
     if exists('*line#hide')
       call line#hide()
     else
@@ -196,7 +196,7 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   let &cmdheight   = g:zoom.save.cmdheight
   let &fillchars   = g:zoom.save.fillchars
 
-  if g:zoom.hideline
+  if !g:zoom.keepline
     if g:zoom.save.linemode
       call line#show()
     else

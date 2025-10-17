@@ -20,7 +20,7 @@ if g:zoom.autocmds
       au BufWinEnter * call zoom#auto('help')
     endif
     if g:zoom.autosize
-      au! VimResized * call zoom#auto('size')
+      au VimResized * call zoom#auto('size')
     endif
   augroup END
 endif
