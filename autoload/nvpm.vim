@@ -86,7 +86,6 @@ fu! nvpm#load(...) abort "{ loading mechanisms (line,zoom,rend,curr,save)
   call nvpm#curr()
   call nvpm#rend()
   call nvpm#save()
-  call nvpm#zoom()
   call nvpm#line()
 
 endfu "}
@@ -233,7 +232,8 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
       return
     endif
 
-    let samefile = g:nvpm.curr.leaf.info==bufname()
+    let bufname  = bufname()
+    let samefile = g:nvpm.curr.leaf.info==bufname
     let keywterm = has_key(g:nvpm.curr.leaf,'cmd')
     let wildterm = 1+index(values(g:nvpm.term),bufnr())
 
@@ -241,10 +241,12 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     if samefile||(keywterm&&!wildterm)
       let node = nvpm#seek(type)
       call nvpm#indx(node,node.meta.indx+step)
+      call nvpm#curr()
+    elseif bufname=~g:nvpmhome..'/zoom/[lrtb]'
+      call zoom#zoom()
+      call zoom#zoom()
     endif
 
-    " renders the newly calculated current leaf node
-    call nvpm#curr()
     call nvpm#rend()
 
   " jumps for unloaded nvpm tree
@@ -495,14 +497,6 @@ fu! nvpm#line(...) abort "{ initializes nvpm/line
     if exists('*line#show')
       call line#show()
     endif
-  endif
-
-endfu "}
-fu! nvpm#zoom(...) abort "{ initializes nvpm/zoom
-
-  if exists('*zoom#show')&&exists('g:zoom.mode')&&g:zoom.mode
-    only
-    call zoom#show()
   endif
 
 endfu "}

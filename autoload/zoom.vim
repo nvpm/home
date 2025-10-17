@@ -14,8 +14,9 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom = get(g:,'zoom',{})
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
+  let g:zoom.autosize = get(g:zoom , 'autosize' , 1)
+  let g:zoom.hideline = get(g:zoom , 'hideline' , 1)
   let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
-  let g:zoom.keepline = get(g:zoom , 'keepline' , 0)
   let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
   let g:zoom.height   = get(g:zoom , 'height'   , &lines)
   let g:zoom.width    = get(g:zoom , 'width'    , &columns)
@@ -24,21 +25,29 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.top      = get(g:zoom , 'top'      , -1)
 
   let g:zoom.mode   = 0
-  let g:zoom.line   = exists('g:_LINEAUTO_')
-  let g:zoom.nvpm   = exists('g:_NVPMAUTO_')
+
+  let g:zoom.save = {}
+
   let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0  }
+
   let g:zoom.pads   = #{}
   let g:zoom.pads.l = s:home..'l'
   let g:zoom.pads.r = s:home..'r'
   let g:zoom.pads.t = s:home..'t'
   let g:zoom.pads.b = s:home..'b'
   let g:zoom.pads.list = []
+
   let g:zoom.colr = {}
-  let g:zoom.colr.TabLine      = ''
-  let g:zoom.colr.TabLineFill  = ''
-  let g:zoom.colr.StatusLine   = ''
-  let g:zoom.colr.StatusLineNC = ''
-  let g:zoom.colr.VertSplit    = ''
+  let g:zoom.colr.VertSplit = ''
+
+  if g:zoom.hideline
+    let g:zoom.colr.TabLine      = ''
+    let g:zoom.colr.TabLineSel   = ''
+    let g:zoom.colr.TabLineFill  = ''
+    let g:zoom.colr.StatusLine   = ''
+    let g:zoom.colr.StatusLineNC = ''
+  endif
+
   let g:zoom.none = ''
 
   if !argc()&&g:zoom.initload
@@ -96,7 +105,7 @@ fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
       endif
     endif
     if g:zoom.top>=0
-      let diff = g:zoom.size.t-g:zoom.top-2*(&ls&&&stal&&g:zoom.keepline)
+      let diff = g:zoom.size.t-g:zoom.top-2*(&ls&&&stal)
       if diff>=0
         let g:zoom.size.b+= diff
         let g:zoom.size.t = g:zoom.top
@@ -119,7 +128,7 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     silent! wincmd p
   endif
   if g:zoom.size.t>1
-    let t = g:zoom.size.t-1-(&showtabline==2&&g:zoom.keepline)
+    let t = g:zoom.size.t-1-(&showtabline==2)
     silent! exec string(t).'split '.g:zoom.pads.t
     call zoom#buff()
     silent! wincmd p
@@ -154,16 +163,20 @@ fu! zoom#show(...) abort "{ enters zoom mode
 
   let g:zoom.mode = 1
 
-  if g:zoom.line
-    let g:line.zoom = 1
-    call line#draw()
+  if exists('g:line.pads')
+    let g:line.pads.left  = g:zoom.size.l
+    let g:line.pads.right = g:zoom.size.r
   endif
 
-  if !g:zoom.keepline||(g:zoom.nvpm&&!g:nvpm.mode)
-    set statusline=
-    set tabline=
-    set showtabline=0
-    set laststatus=0
+  if g:zoom.hideline
+    if exists('*line#hide')
+      call line#hide()
+    else
+      let &showtabline = 0
+      let &laststatus  = 0
+      let &statusline  = ' '
+      let &tabline     = ' '
+    endif
   endif
 
   exe 'set fillchars=vert:\ '
@@ -178,24 +191,32 @@ endfu "}
 fu! zoom#hide(...) abort "{ leaves zoom mode
 
   call zoom#seth()
-  call zoom#zero()
+  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
   silent! only
   let g:zoom.mode = 0
-  echo ''
 
-  if g:zoom.line
-    let g:line.zoom = 0
+  let &cmdheight   = g:zoom.save.cmdheight
+  let &fillchars   = g:zoom.save.fillchars
+
+  if g:zoom.hideline
+    if g:zoom.save.linemode
+      call line#show()
+    else
+      let &showtabline = g:zoom.save.showtabline
+      let &laststatus  = g:zoom.save.laststatus
+      let &statusline  = g:zoom.save.statusline
+      let &tabline     = g:zoom.save.tabline
+    endif
   endif
 
-  let &cmdheight = g:zoom.cmdh
-  let &fillchars = g:zoom.fill
-  if !g:zoom.keepline||(g:zoom.nvpm&&!g:nvpm.mode)
-    let &showtabline = g:zoom.topl
-    let &laststatus  = g:zoom.botl
+  if exists('g:line.pads')
+    let g:line.pads.left  = 0
+    let g:line.pads.right = 0
   endif
 
   for buf in g:zoom.pads.list
-    if bufexists(buf)|exe 'bdel '..buf|endif
+    call zoom#buff(buf)
+    if bufexists(buf)|exe 'bwipeout '..buf|endif
   endfor
 
 endfu "}
@@ -206,7 +227,8 @@ fu! zoom#zoom(...) abort "{ swaps between modes (toggle switch)
   else
     call zoom#show()
   endif
-  if g:zoom.line&&g:line.mode|call line#draw()|endif
+
+  "if exists('g:line.mode')&&g:line.mode|call line#draw()|endif
 
 endfu "}
 
@@ -230,6 +252,7 @@ fu! zoom#geth(...) abort "{ get highlight arguments from hi-group
 endfu "}
 fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
 
+  " save current colors
   for name in keys(g:zoom.colr)
     if empty(g:zoom.colr[name])
       let args = zoom#geth(name)
@@ -238,19 +261,23 @@ fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
     endif
   endfor
 
-  let g:zoom.cmdh = &cmdheight
-  let g:zoom.fill = &fillchars
-  let g:zoom.topl = &showtabline
-  let g:zoom.botl = &laststatus
+  " save current user options
+  let g:zoom.save.cmdheight   = &cmdheight
+  let g:zoom.save.fillchars   = &fillchars
+  let g:zoom.save.showtabline = &showtabline
+  let g:zoom.save.laststatus  = &laststatus
+  let g:zoom.save.statusline  = &statusline
+  let g:zoom.save.tabline     = &tabline
+  let g:zoom.save.linemode    = exists('g:line.mode')&&g:line.mode
 
 endfu "}
 fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
 
-  if empty(g:zoom.none) "{
+  " builds the none hi arg to put into all hi-groups in g:zoom.colr
+  if empty(g:zoom.none)
     let args = zoom#geth('Normal')
     if empty(args)|return|endif
     let args = split(args)
-
     for arg in args
       let arg = split(arg,'=')
       if arg[0]=='guibg'
@@ -260,8 +287,7 @@ fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
       endif
     endfor
     let g:zoom.none = trim(g:zoom.none)
-
-  endif "}
+  endif
 
   for name in keys(g:zoom.colr)
     exe 'hi clear '..name
@@ -287,6 +313,16 @@ fu! zoom#seth(...) abort "{ sets hi-groups to saved hi info (zoom#save)
 endfu "}
 fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
+  if a:0
+    if bufexists(a:1)
+      exe 'buffer '..a:1
+      silent! setl nowinfixwidth
+      silent! setl nowinfixheight
+      bprev
+    endif
+    return
+  endif
+
   silent! setl nomodifiable
   silent! setl nonumber
   silent! setl norelativenumber
@@ -294,6 +330,11 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
   silent! setl nobuflisted
   silent! setl winfixwidth
   silent! setl winfixheight
+
+  let bufnr = bufnr()
+  if -1==index(g:zoom.pads.list,bufnr)
+    call add(g:zoom.pads.list,bufnr)
+  endif
 
   let &l:statusline = '%#Normal#'
   exe 'setl fillchars=vert:\ '
@@ -305,17 +346,7 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
     exe 'setl fillchars+=vertright:\ '
   endif
 
-  let bufnr = bufnr()
-  if -1==index(g:zoom.pads.list,bufnr)
-    call add(g:zoom.pads.list,bufnr)
-  endif
-
 endfu " }
-fu! zoom#zero(...) abort "{ resets the size variable
-
-  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
-
-endfu "}
 
 "-- auto function --
 fu! zoom#auto(...) abort "{ handles autocmds & callbacks
@@ -346,9 +377,17 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
     return
   endif "}
   if a:1=='back' "{
-    if bufname()=~s:home..'[lrtb]'
+    if g:zoom.mode&&bufname()=~s:home..'[lrtb]'
       wincmd p
     endif
     return
   endif "}
+  if a:1=='size' "{
+    if g:zoom.mode
+      call zoom#hide()
+      call zoom#show()
+    endif
+    return
+  endif "}
+
 endfu "}

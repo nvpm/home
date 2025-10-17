@@ -19,6 +19,8 @@ if g:zoom.autocmds
       au FileType  help,man setl nobuflisted
       au BufWinEnter * call zoom#auto('help')
     endif
-    "au ColorScheme * call zoom#show(1)
+    if g:zoom.autosize
+      au! VimResized * call zoom#auto('size')
+    endif
   augroup END
 endif
