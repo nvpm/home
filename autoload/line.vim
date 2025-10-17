@@ -97,10 +97,10 @@ fu! line#hide(...) abort "{ hides both lines from the user's view
 
   call line#save()
 
-  set showtabline=0
-  set laststatus=0
-  set statusline=
-  set tabline=
+  let &showtabline = 0
+  let &laststatus  = 0
+  let &statusline  = ' '
+  let &tabline     = ' '
 
   let g:line.mode = 0
   call line#stop()

@@ -171,10 +171,10 @@ fu! zoom#show(...) abort "{ enters zoom mode
     if exists('*line#hide')
       call line#hide()
     else
-      set showtabline=0
-      set laststatus=0
-      set statusline=
-      set tabline=
+      let &showtabline = 0
+      let &laststatus  = 0
+      let &statusline  = ' '
+      let &tabline     = ' '
     endif
   endif
 
