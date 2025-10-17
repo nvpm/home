@@ -197,18 +197,21 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
 
   let &cmdheight   = g:zoom.save.cmdheight
   let &fillchars   = g:zoom.save.fillchars
-  let &showtabline = g:zoom.save.showtabline
-  let &laststatus  = g:zoom.save.laststatus
-  let &statusline  = g:zoom.save.statusline
-  let &tabline     = g:zoom.save.tabline
+
+  if g:zoom.hideline
+    if g:zoom.save.linemode
+      call line#show()
+    else
+      let &showtabline = g:zoom.save.showtabline
+      let &laststatus  = g:zoom.save.laststatus
+      let &statusline  = g:zoom.save.statusline
+      let &tabline     = g:zoom.save.tabline
+    endif
+  endif
 
   if exists('g:line.pads')
     let g:line.pads.left  = 0
     let g:line.pads.right = 0
-  endif
-
-  if g:zoom.save.linemode
-    call line#show()
   endif
 
   for buf in g:zoom.pads.list
