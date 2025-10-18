@@ -1,5 +1,7 @@
 
   ● account for cmdheight, signcolumn, and others in zoom#calc ~
-  ● save & restore window layout (splits, sizes, and where each one were) ~
+    And both lines
+
+  ● remove size calculations from zoom#pads ~
 
 vim: ft=help: tw=2

@@ -56,22 +56,26 @@ fu! zoom#init(...) abort "{ user variables & startup routines
 endfu "}
 fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
-  if type(g:zoom.height)==type(3.14)
-    let g:zoom.height = float2nr(g:zoom.height*&lines)
-  endif
   if type(g:zoom.width)==type(3.14)
     let g:zoom.width = float2nr(g:zoom.width*&columns)
   endif
-  let g:zoom.height+= (g:zoom.height<=0)*&lines
+  if type(g:zoom.height)==type(3.14)
+    let g:zoom.height = float2nr(g:zoom.height*&lines)
+  endif
+
   let g:zoom.width += (g:zoom.width <=0)*&columns
+  let g:zoom.height+= (g:zoom.height<=0)*&lines
 
-  let dh = &lines   - g:zoom.height
   let dw = &columns - g:zoom.width
+  let dh = &lines   - g:zoom.height
 
-  let g:zoom.size.t = dh/2
-  let g:zoom.size.r = dw/2
-  let g:zoom.size.b = g:zoom.size.t+dh%2
-  let g:zoom.size.l = g:zoom.size.r+dw%2
+  let r = dw/2|let l = r+dw%2
+  let t = dh/2|let b = t+dh%2
+
+  let g:zoom.size.r = r
+  let g:zoom.size.l = l
+  let g:zoom.size.t = t
+  let g:zoom.size.b = b
 
 endfu " }
 fu! zoom#pads(...) abort "{ splits the view with padding buffers
@@ -89,8 +93,8 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     silent! wincmd p
   endif
   if g:zoom.size.t>1
-    let tabs = g:zoom.keepline?((len(gettabinfo())>1&&&stl==1)||&stl==2):0
-    let size = g:zoom.size.t-1-tabs
+    let tabs = &stl==2||(len(gettabinfo())>1&&&stl==1)
+    let size = g:zoom.size.t-1-tabs*(g:zoom.keepline>0)
     silent! exec string(size).'split '.g:zoom.pads.t
     call zoom#buff()
     silent! wincmd p
@@ -172,7 +176,6 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
 
   for buf in g:zoom.pads.list
     call zoom#buff(buf)
-    if bufexists(buf)|exe 'bwipeout '..buf|endif
   endfor
 
 endfu "}
@@ -268,25 +271,19 @@ endfu "}
 fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
   if a:0&&bufexists(a:1)
-    let curr = bufnr()
-    exe 'buffer '..a:1
-    silent! setl nowinfixwidth
-    silent! setl nowinfixheight
-    exe 'buffer '..curr
+    call setbufvar(a:1,'&winfixwidth' ,0)
+    call setbufvar(a:1,'&winfixheight',0)
   else
+    silent! setl winfixwidth
+    silent! setl winfixheight
+    let bufnr = bufnr()
+    if 1+index(g:zoom.pads.list,bufnr)&&bufexists(bufnr)|return|endif
+    call add(g:zoom.pads.list,bufnr)
     silent! setl nomodifiable
     silent! setl nonumber
     silent! setl norelativenumber
     silent! setl signcolumn=no
     silent! setl nobuflisted
-    silent! setl winfixwidth
-    silent! setl winfixheight
-
-    let bufnr = bufnr()
-    if -1==index(g:zoom.pads.list,bufnr)
-      call add(g:zoom.pads.list,bufnr)
-    endif
-
     let &l:statusline = '%#Normal#'
     exe 'setl fillchars=vert:\ '
     exe 'setl fillchars+=eob:\ '
