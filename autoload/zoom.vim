@@ -15,9 +15,8 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.initload = get(g:zoom , 'initload' , 0)
   let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
   let g:zoom.autosize = get(g:zoom , 'autosize' , 1)
-  let g:zoom.keepline = get(g:zoom , 'keepline' , 1)
   let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
-  let g:zoom.pushcmdl = get(g:zoom , 'pushcmdl' , 0)
+  let g:zoom.keepline = get(g:zoom , 'keepline' , 1)
   let g:zoom.height   = get(g:zoom , 'height'   , &lines)
   let g:zoom.width    = get(g:zoom , 'width'    , &columns)
   let g:zoom.left     = get(g:zoom , 'left'     , -1)
@@ -133,19 +132,15 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     call zoom#buff()
     silent! wincmd p
   endif
-  if g:zoom.pushcmdl
-    let &cmdheight = g:zoom.size.b
-  else
-    if g:zoom.size.b>1
-      let b = g:zoom.size.b-&cmdheight-&laststatus>0
-      silent! exec 'rightbelow split '.g:zoom.pads.b
-      call zoom#buff()
-      silent! wincmd p
-    endif
+  if g:zoom.size.b>1
+    let b = g:zoom.size.b-&cmdheight-&laststatus>0
+    silent! exec 'rightbelow split '.g:zoom.pads.b
+    call zoom#buff()
+    silent! wincmd p
   endif
 
-  exe 'vertical resize '..g:zoom.width
-  exe 'resize '..g:zoom.height
+  exe 'vertical resize ' .. g:zoom.width
+  exe 'resize '          .. g:zoom.height
 
 endfu " }
 fu! zoom#show(...) abort "{ enters zoom mode

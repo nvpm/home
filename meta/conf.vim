@@ -112,7 +112,7 @@ hi arbokeyw guifg=#aa7700 gui=bold
 
 let line = {}
 let line.initload = 1
-let line.showmode = 3
+let line.showmode = 2
 let line.gitimode = 2
 let line.gitdelay = 0
 let line.bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
