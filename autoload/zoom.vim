@@ -56,85 +56,48 @@ fu! zoom#init(...) abort "{ user variables & startup routines
 endfu "}
 fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
-  let totalheight = &lines
-  let totalwidth  = &columns
-
   if type(g:zoom.height)==type(3.14)
-    let g:zoom.height = g:zoom.height*totalheight
-    let g:zoom.height = float2nr(g:zoom.height)
+    let g:zoom.height = float2nr(g:zoom.height*&lines)
   endif
   if type(g:zoom.width)==type(3.14)
-    let g:zoom.width = g:zoom.width*totalwidth
-    let g:zoom.width = float2nr(g:zoom.width)
+    let g:zoom.width = float2nr(g:zoom.width*&columns)
   endif
+  let g:zoom.height+= (g:zoom.height<=0)*&lines
+  let g:zoom.width += (g:zoom.width <=0)*&columns
 
-  let g:zoom.height+= (g:zoom.height<=0)*totalheight
-  let g:zoom.width += (g:zoom.width <=0)*totalwidth
+  let dh = &lines   - g:zoom.height
+  let dw = &columns - g:zoom.width
 
-  if g:zoom.height<totalheight
-    let g:zoom.size.b = totalheight-g:zoom.height
-    if g:zoom.size.b>3
-      let g:zoom.size.t = float2nr(g:zoom.size.b/2)
-      let g:zoom.size.b = g:zoom.size.t+g:zoom.size.b%2
-    endif
-  endif
-
-  if g:zoom.width<totalwidth
-    let g:zoom.size.l = totalwidth-g:zoom.width
-    if g:zoom.size.l>3
-      let g:zoom.size.r = float2nr(g:zoom.size.l/2)
-      let g:zoom.size.l = g:zoom.size.r+g:zoom.size.l%2
-    endif
-  endif
-
-  " layout definitions {
-
-    if g:zoom.left>=0
-      let diff = g:zoom.size.l-g:zoom.left
-      if diff>0
-        let g:zoom.size.r+= diff
-        let g:zoom.size.l = g:zoom.left
-      endif
-    endif
-    if g:zoom.right>=0
-      let diff = g:zoom.size.r-g:zoom.right
-      if diff>0
-        let g:zoom.size.l+= diff
-        let g:zoom.size.r = g:zoom.right
-      endif
-    endif
-    if g:zoom.top>=0
-      let diff = g:zoom.size.t-g:zoom.top-2*(&ls&&&stal)
-      if diff>=0
-        let g:zoom.size.b+= diff
-        let g:zoom.size.t = g:zoom.top
-      endif
-    endif
-
-  "}
+  let g:zoom.size.t = dh/2
+  let g:zoom.size.r = dw/2
+  let g:zoom.size.b = g:zoom.size.t+dh%2
+  let g:zoom.size.l = g:zoom.size.r+dw%2
 
 endfu " }
 fu! zoom#pads(...) abort "{ splits the view with padding buffers
 
   if g:zoom.size.l>1
-    silent! exec string(g:zoom.size.l-1).'vsplit '.g:zoom.pads.l
+    let size = g:zoom.size.l-1
+    silent! exec string(size).'vsplit '.g:zoom.pads.l
     call zoom#buff()
     silent! wincmd p
   endif
   if g:zoom.size.r>1
-    silent! exec 'rightb '.string(g:zoom.size.r-1).'vsplit '.g:zoom.pads.r
+    let size = g:zoom.size.r-1
+    silent! exec 'rightbelow '.string(size).'vsplit '.g:zoom.pads.r
     call zoom#buff()
     silent! wincmd p
   endif
   if g:zoom.size.t>1
-    let t = g:zoom.size.t-1-(&showtabline==2)
-    silent! exec string(t).'split '.g:zoom.pads.t
+    let tabs = g:zoom.keepline?((len(gettabinfo())>1&&&stl==1)||&stl==2):0
+    let size = g:zoom.size.t-1-tabs
+    silent! exec string(size).'split '.g:zoom.pads.t
     call zoom#buff()
     silent! wincmd p
   endif
   if g:zoom.size.b>1
-    let b = g:zoom.size.b-&cmdheight-&laststatus>0
-    silent! exec 'rightbelow split '.g:zoom.pads.b
+    let size = g:zoom.size.b-1-g:zoom.keepline*(&ls>0)-(&ch)
+    silent! exec 'rightbelow '..string(size)..'split '.g:zoom.pads.b
     call zoom#buff()
     silent! wincmd p
   endif
@@ -221,8 +184,6 @@ fu! zoom#zoom(...) abort "{ swaps between modes (toggle switch)
     call zoom#show()
   endif
 
-  "if exists('g:line.mode')&&g:line.mode|call line#draw()|endif
-
 endfu "}
 
 "-- auxy functions --
@@ -306,37 +267,35 @@ fu! zoom#seth(...) abort "{ sets hi-groups to saved hi info (zoom#save)
 endfu "}
 fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
-  if a:0
-    if bufexists(a:1)
-      exe 'buffer '..a:1
-      silent! setl nowinfixwidth
-      silent! setl nowinfixheight
-      bprev
+  if a:0&&bufexists(a:1)
+    let curr = bufnr()
+    exe 'buffer '..a:1
+    silent! setl nowinfixwidth
+    silent! setl nowinfixheight
+    exe 'buffer '..curr
+  else
+    silent! setl nomodifiable
+    silent! setl nonumber
+    silent! setl norelativenumber
+    silent! setl signcolumn=no
+    silent! setl nobuflisted
+    silent! setl winfixwidth
+    silent! setl winfixheight
+
+    let bufnr = bufnr()
+    if -1==index(g:zoom.pads.list,bufnr)
+      call add(g:zoom.pads.list,bufnr)
     endif
-    return
-  endif
 
-  silent! setl nomodifiable
-  silent! setl nonumber
-  silent! setl norelativenumber
-  silent! setl signcolumn=no
-  silent! setl nobuflisted
-  silent! setl winfixwidth
-  silent! setl winfixheight
-
-  let bufnr = bufnr()
-  if -1==index(g:zoom.pads.list,bufnr)
-    call add(g:zoom.pads.list,bufnr)
-  endif
-
-  let &l:statusline = '%#Normal#'
-  exe 'setl fillchars=vert:\ '
-  exe 'setl fillchars+=eob:\ '
-  if s:nvim
-    exe 'setl fillchars+=horiz:\ '
-    exe 'setl fillchars+=horizdown:\ '
-    exe 'setl fillchars+=vertleft:\ '
-    exe 'setl fillchars+=vertright:\ '
+    let &l:statusline = '%#Normal#'
+    exe 'setl fillchars=vert:\ '
+    exe 'setl fillchars+=eob:\ '
+    if s:nvim
+      exe 'setl fillchars+=horiz:\ '
+      exe 'setl fillchars+=horizdown:\ '
+      exe 'setl fillchars+=vertleft:\ '
+      exe 'setl fillchars+=vertright:\ '
+    endif
   endif
 
 endfu " }
