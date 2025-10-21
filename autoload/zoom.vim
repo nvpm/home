@@ -56,26 +56,36 @@ fu! zoom#init(...) abort "{ user variables & startup routines
 endfu "}
 fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
-  if type(g:zoom.width)==type(3.14)
-    let g:zoom.width = float2nr(g:zoom.width*&columns)
-  endif
-  if type(g:zoom.height)==type(3.14)
-    let g:zoom.height = float2nr(g:zoom.height*&lines)
-  endif
+  " definition of the unit step math-function {
+  if !exists('*s:u')
+    fu! s:u(t)
+      return a:t>=0
+    endfu
+  endif "}
+  " handling of float value for both height and width {
+  if !exists('*s:f')
+    fu! s:f(x,y)
+      if type(a:x)!=type(3.14)|return a:x|endif
+      return float2nr(ceil(a:y*(a:x-ceil(a:x))))
+    endfu
+  endif "}
+  " handling of negative value for both height and width {
+  if !exists('*s:n')
+    fu! s:n(n,m)
+      return a:n+a:m*s:u(-(a:n+1))
+    endfu
+  endif "}
 
-  let g:zoom.width += (g:zoom.width <=0)*&columns
-  let g:zoom.height+= (g:zoom.height<=0)*&lines
+  let g:zoom.width  = s:n(s:f(g:zoom.width ,&columns),&columns)
+  let g:zoom.height = s:n(s:f(g:zoom.height,&lines  ),&lines)
+  let Dw = &columns-g:zoom.width |let dw = Dw/2
+  let Dh = &lines  -g:zoom.height|let dh = Dh/2
 
-  let dw = &columns - g:zoom.width
-  let dh = &lines   - g:zoom.height
+  let g:zoom.size.r = dw-(dw==1)
+  let g:zoom.size.l = dw+(dw==1)+Dw%2
 
-  let r = dw/2|let l = r+dw%2
-  let t = dh/2|let b = t+dh%2
-
-  let g:zoom.size.r = r
-  let g:zoom.size.l = l
-  let g:zoom.size.t = t
-  let g:zoom.size.b = b
+  let g:zoom.size.t = dh
+  let g:zoom.size.b = dh+Dh%2
 
 endfu " }
 fu! zoom#pads(...) abort "{ splits the view with padding buffers
@@ -92,18 +102,35 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     call zoom#buff()
     silent! wincmd p
   endif
-  if g:zoom.size.t>1
-    let tabs = &stl==2||(len(gettabinfo())>1&&&stl==1)
-    let size = g:zoom.size.t-1-tabs*(g:zoom.keepline>0)
-    silent! exec string(size).'split '.g:zoom.pads.t
-    call zoom#buff()
-    silent! wincmd p
+  if g:zoom.size.t==0
+    set showtabline=0
+  elseif g:zoom.size.t==1 " use the single line occupied by the tabline
+    set showtabline=2
+    if !g:zoom.keepline
+      let &tabline = '%#Normal# '
+    endif
+  elseif g:zoom.size.t>=2
+    let tabs = &stal==2||(len(gettabinfo())>1&&&stal==1)
+    if g:zoom.size.t==2&&g:zoom.keepline&&tabs&&g:zoom.size.b==2
+      let g:zoom.size.t = 1
+      let g:zoom.size.b = 3
+    else
+      let size = g:zoom.size.t-1
+      silent! exec string(size).'split '.g:zoom.pads.t
+      call zoom#buff()
+      silent! wincmd p
+    endif
   endif
-  if g:zoom.size.b>1
-    let size = g:zoom.size.b-1-g:zoom.keepline*(&ls>0)-(&ch)
-    silent! exec 'rightbelow '..string(size)..'split '.g:zoom.pads.b
-    call zoom#buff()
-    silent! wincmd p
+  if g:zoom.size.b<=0
+    set laststatus=0
+    set cmdheight=0
+  else
+    let statusline = (g:zoom.keepline>0)*(&laststatus>0)
+    if g:zoom.size.b==1
+      let &cmdheight = !statusline
+    elseif g:zoom.size.b>1
+      let &cmdheight = g:zoom.size.b-statusline
+    endif
   endif
 
   exe 'vertical resize ' .. g:zoom.width
