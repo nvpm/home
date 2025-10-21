@@ -169,14 +169,14 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   let &fillchars   = g:zoom.save.fillchars
 
   if !g:zoom.keepline
-    if g:zoom.save.linemode
-      call line#show()
-    else
-      let &showtabline = g:zoom.save.showtabline
-      let &laststatus  = g:zoom.save.laststatus
-      let &statusline  = g:zoom.save.statusline
-      let &tabline     = g:zoom.save.tabline
-    endif
+    let &showtabline = g:zoom.save.showtabline
+    let &laststatus  = g:zoom.save.laststatus
+    let &statusline  = g:zoom.save.statusline
+    let &tabline     = g:zoom.save.tabline
+  endif
+
+  if exists('g:line.mode')&&g:line.mode||!g:zoom.keepline
+    call line#show()
   endif
 
   if exists('g:line.pads')
@@ -235,7 +235,6 @@ fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
   let g:zoom.save.laststatus  = &laststatus
   let g:zoom.save.statusline  = &statusline
   let g:zoom.save.tabline     = &tabline
-  let g:zoom.save.linemode    = exists('g:line.mode')&&g:line.mode
 
 endfu "}
 fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups

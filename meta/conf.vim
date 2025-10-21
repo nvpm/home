@@ -125,18 +125,15 @@ let line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
 
 call add(line.skeleton.head.l,['list',3])
 call add(line.skeleton.head.r,['list',2])
-call add(line.skeleton.head.r,'|')
+call add(line.skeleton.head.r,' ')
 call add(line.skeleton.head.r,['curr',1])
-"call add(line.skeleton.head.r,'@')
 call add(line.skeleton.head.r,' ')
 call add(line.skeleton.head.r,['curr',0,'LineSpot'])
 
 call add(line.skeleton.feet.l,['git'])
-"call add(line.skeleton.feet.l,' | ')
 call add(line.skeleton.feet.l,' ')
 call add(line.skeleton.feet.l,['list',4])
 call add(line.skeleton.feet.l,' ')
-"call add(line.skeleton.feet.l,' | ')
 call add(line.skeleton.feet.l,['file'])
 call add(line.skeleton.feet.r,['user','%m %l,%v/%p%%'])
 
