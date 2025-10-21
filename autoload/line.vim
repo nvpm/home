@@ -102,6 +102,9 @@ fu! line#hide(...) abort "{ hides both lines from the user's view
   let &statusline  = ' '
   let &tabline     = ' '
 
+  if exists('g:zoom.mode')&&g:zoom.mode&&bufexists(g:zoom.pads.t)
+    call setbufvar(g:zoom.pads.t,'&statusline','%#Normal# ')
+  endif
   let g:line.mode = 0
   call line#stop()
 
@@ -415,9 +418,6 @@ fu! line#head(...) abort "{ builds the tabline (the head)
 
   let line = ''
   if g:line.headl
-    if g:line.pads.left
-      let line.= '%#Normal#'..repeat(' ',g:line.pads.left)
-    endif
     let line.= line#bone(g:line.skeleton.head.l,0)
   endif
 
@@ -425,25 +425,35 @@ fu! line#head(...) abort "{ builds the tabline (the head)
 
   if g:line.headr
     let line.= line#bone(g:line.skeleton.head.r,1)
-    if g:line.pads.right
-      let line.= '%#Normal#'..repeat(' ',g:line.pads.right)
-    endif
   endif
 
-  if &showtabline
-    let &tabline = line
+  if exists('g:zoom.mode')&&g:zoom.mode&&bufexists(g:zoom.pads.t)
+    if &stal|let &stal=0|endif
+    call setbufvar(g:zoom.pads.t,'&statusline',line)
+    if bufexists(g:zoom.pads.l)
+      call setbufvar(g:zoom.pads.l,'&statusline','%#Normal# ')
+    endif
+    if bufexists(g:zoom.pads.r)
+      call setbufvar(g:zoom.pads.r,'&statusline','%#Normal# ')
+    endif
+  else
+    if g:line.pads.left
+      let line = '%#Normal#'..repeat(' ',g:line.pads.left)..line
+    endif
+    if g:line.pads.right
+      let line = line..'%#Normal#'..repeat(' ',g:line.pads.right)
+    endif
+    if &showtabline
+      let &tabline = line
+    endif
   endif
 
 endfu "}
 fu! line#feet(...) abort "{ builds the statusline (the feet)
 
   let line = ''
-  let pads = &laststatus==3
 
   if g:line.feetl
-    if pads&&g:line.pads.left
-      let line.= '%#Normal#'..repeat(' ',g:line.pads.left)
-    endif
     let line.= line#bone(g:line.skeleton.feet.l,0)
   endif
 
@@ -451,11 +461,16 @@ fu! line#feet(...) abort "{ builds the statusline (the feet)
 
   if g:line.feetr
     let line.= line#bone(g:line.skeleton.feet.r,1)
-    if pads&&g:line.pads.right
-      let line.= '%#Normal#'..repeat(' ',g:line.pads.right)
-    endif
   endif
 
+  if &laststatus==3
+    if g:line.pads.left
+      let line = '%#Normal#'..repeat(' ',g:line.pads.left)..line
+    endif
+    if g:line.pads.right
+      let line = line..'%#Normal#'..repeat(' ',g:line.pads.right)
+    endif
+  endif
   if &laststatus
     let &statusline = line
   endif
