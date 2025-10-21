@@ -70,14 +70,14 @@ fu! line#show(...) abort "{ renders both lines into view
 
   if g:line.nvpm
     set showtabline=2
-    let &laststatus=2+s:nvim
+    let &laststatus=2
   else
     if g:line.showmode==0
       let &laststatus  = g:line.save.laststatus
       let &showtabline = g:line.save.showtabline
     endif
     if g:line.showmode>0
-      let &laststatus=2+s:nvim
+      let &laststatus=2
     endif
     if g:line.showmode>2
       set showtabline=2
