@@ -53,17 +53,20 @@ fu! zoom#init(...) abort "{ user variables & startup routines
 endfu "}
 fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
-  if type(g:zoom.width)==type(3.14)
-    let g:zoom.width = float2nr(g:zoom.width*&columns)
-  endif
-  if type(g:zoom.height)==type(3.14)
-    let g:zoom.height = float2nr(g:zoom.height*&lines)
-  endif
-  let g:zoom.width += (g:zoom.width <=0)*&columns
-  let g:zoom.height+= (g:zoom.height<=0)*&lines
+  let s:width  = g:zoom.width
+  let s:height = g:zoom.height
 
-  let Dw = &columns-g:zoom.width |let dw = Dw/2
-  let Dh = &lines  -g:zoom.height|let dh = Dh/2
+  if type(s:width)==type(3.14)
+    let s:width = float2nr(s:width*&columns)
+  endif
+  if type(s:height)==type(3.14)
+    let s:height = float2nr(s:height*&lines)
+  endif
+  let s:width += (s:width <=0)*&columns
+  let s:height+= (s:height<=0)*&lines
+
+  let Dw = &columns-s:width |let dw = Dw/2
+  let Dh = &lines  -s:height|let dh = Dh/2
 
   let g:zoom.size.r = dw-(dw==1)
   let g:zoom.size.l = dw+(dw==1)+Dw%2
@@ -116,8 +119,8 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     endif
   endif
 
-  exe 'vertical resize ' .. g:zoom.width
-  exe 'resize '          .. g:zoom.height
+  exe 'vertical resize ' .. s:width
+  exe 'resize '          .. s:height
 
 endfu " }
 fu! zoom#show(...) abort "{ enters zoom mode
