@@ -83,25 +83,9 @@ fu! s:test.zoom(...) "{
   so autoload/zoom.vim
 
   let left = repeat(' ' ,g:zoom.size.l )
+  ec left..string(g:zoom.height)..' '..string(g:zoom.width)
   ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
   ec left..string(g:zoom.size)
-
-  return
-
-  let conf = {}
-  let conf.relative = 'win'
-  let conf.style = 'minimal'
-  let conf.border = ['+','-','+','|']
-  let conf.title = 'zoom mode'
-  let conf.title_pos = 'center'
-  let conf.width = 40
-  let conf.height= 12
-  let conf.col= 10
-  let conf.row= 1
-
-  return
-  call nvim_open_win(0,1,conf)
-  ec nvim_win_get_config(0)
 
 endfu "}
 "}

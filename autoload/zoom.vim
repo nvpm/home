@@ -107,16 +107,11 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
       silent! wincmd p
     endif
   endif
-  if g:zoom.size.b<=0
+  if g:zoom.size.b>0
+    let &cmdheight = g:zoom.size.b-(g:zoom.keepline>0&&&laststatus>0)
+  else
     set laststatus=0
     set cmdheight=0
-  else
-    let statusline = (g:zoom.keepline>0)*(&laststatus>0)
-    if g:zoom.size.b==1
-      let &cmdheight = !statusline
-    elseif g:zoom.size.b>1
-      let &cmdheight = g:zoom.size.b-statusline
-    endif
   endif
 
   exe 'vertical resize ' .. s:width
@@ -188,8 +183,13 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   endif
 
   for buf in g:zoom.pads.list
-    call zoom#buff(buf)
+    if bufexists(buf)
+      call setbufvar(buf,'&winfixwidth' ,0)
+      call setbufvar(buf,'&winfixheight',0)
+      call execute('bwipeout '..buf)
+    endif
   endfor
+  let g:zoom.pads.list = []
 
 endfu "}
 fu! zoom#zoom(...) abort "{ swaps between modes (toggle switch)
@@ -282,29 +282,31 @@ fu! zoom#seth(...) abort "{ sets hi-groups to saved hi info (zoom#save)
 endfu "}
 fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
-  if a:0&&bufexists(a:1)
-    call setbufvar(a:1,'&winfixwidth' ,0)
-    call setbufvar(a:1,'&winfixheight',0)
-  else
-    silent! setl winfixwidth
-    silent! setl winfixheight
-    let bufnr = bufnr()
-    if 1+index(g:zoom.pads.list,bufnr)&&bufexists(bufnr)|return|endif
-    call add(g:zoom.pads.list,bufnr)
-    silent! setl nomodifiable
-    silent! setl nonumber
-    silent! setl norelativenumber
-    silent! setl signcolumn=no
-    silent! setl nobuflisted
-    let &l:statusline = '%#Normal#'
-    exe 'setl fillchars=vert:\ '
-    exe 'setl fillchars+=eob:\ '
-    if s:nvim
-      exe 'setl fillchars+=horiz:\ '
-      exe 'setl fillchars+=horizdown:\ '
-      exe 'setl fillchars+=vertleft:\ '
-      exe 'setl fillchars+=vertright:\ '
+  let bufnr  = get(a:,1,bufnr())
+  let bufidx = index(g:zoom.pads.list,bufnr)
+  if 1+bufidx
+    if !bufexists(bufnr)
+      call remove(g:zoom.pads.list,bufidx)
+    else
+      return
     endif
+  endif
+  call add(g:zoom.pads.list,bufnr)
+  silent! setl nomodifiable
+  silent! setl nonumber
+  silent! setl norelativenumber
+  silent! setl signcolumn=no
+  silent! setl nobuflisted
+  silent! setl winfixwidth
+  silent! setl winfixheight
+  exe 'setl statusline=%#Normal# '
+  exe 'setl fillchars=vert:\ '
+  exe 'setl fillchars+=eob:\ '
+  if s:nvim
+    exe 'setl fillchars+=horiz:\ '
+    exe 'setl fillchars+=horizdown:\ '
+    exe 'setl fillchars+=vertleft:\ '
+    exe 'setl fillchars+=vertright:\ '
   endif
 
 endfu " }
