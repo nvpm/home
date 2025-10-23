@@ -428,24 +428,16 @@ fu! line#head(...) abort "{ builds the tabline (the head)
   endif
 
   if exists('g:zoom.mode')&&g:zoom.mode&&bufexists(g:zoom.pads.t)
-    if &stal|let &stal=0|endif
+    if &showtabline|let &showtabline=0|endif
     call setbufvar(g:zoom.pads.t,'&statusline',line)
-    if bufexists(g:zoom.pads.l)
-      call setbufvar(g:zoom.pads.l,'&statusline','%#Normal# ')
-    endif
-    if bufexists(g:zoom.pads.r)
-      call setbufvar(g:zoom.pads.r,'&statusline','%#Normal# ')
-    endif
-  else
+  elseif &showtabline
     if g:line.pads.left
       let line = '%#Normal#'..repeat(' ',g:line.pads.left)..line
     endif
     if g:line.pads.right
       let line = line..'%#Normal#'..repeat(' ',g:line.pads.right)
     endif
-    if &showtabline
-      let &tabline = line
-    endif
+    let &tabline = line
   endif
 
 endfu "}
