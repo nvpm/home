@@ -284,13 +284,7 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
   let bufnr  = get(a:,1,bufnr())
   let bufidx = index(g:zoom.pads.list,bufnr)
-  if 1+bufidx
-    if !bufexists(bufnr)
-      call remove(g:zoom.pads.list,bufidx)
-    else
-      return
-    endif
-  endif
+  if 1+bufidx&&!bufexists(bufnr)|call remove(g:zoom.pads.list,bufidx)|endif
   call add(g:zoom.pads.list,bufnr)
   silent! setl nomodifiable
   silent! setl nonumber
@@ -299,7 +293,7 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
   silent! setl nobuflisted
   silent! setl winfixwidth
   silent! setl winfixheight
-  exe 'setl statusline=%#Normal# '
+  let &l:statusline = '%#Normal# '
   exe 'setl fillchars=vert:\ '
   exe 'setl fillchars+=eob:\ '
   if s:nvim
