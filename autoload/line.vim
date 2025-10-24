@@ -225,7 +225,7 @@ fu! line#mode(...) abort "{ colorizes an atom based on current vim mode
   "return '%#'..a:1..'Normal#'     .. a:2
 
 endfu "}
-fu! line#pack(...) abort "{ packs multiple atoms together
+fu! line#list(...) abort "{ creates the list type
 
   let list = a:1
   let curr = a:2
@@ -319,7 +319,7 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
     elseif type==g:line.leaftype-1 "{
     endif "}
 
-    let list = line#pack(list,indx,leng,revs,colr)
+    let list = line#list(list,indx,leng,revs,colr)
     if !empty(list)
       let line = join(list,'')
       if g:line.bonetype==2
@@ -399,7 +399,7 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
   endif
 
 endfu "}
-fu! line#bone(...) abort "{ creates a bone type
+fu! line#bone(...) abort "{ creates the list of bones
 
   let skel = ''
   for bone in a:1
