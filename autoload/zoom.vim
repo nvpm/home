@@ -134,10 +134,12 @@ fu! zoom#show(...) abort "{ enters zoom mode
 
   let g:zoom.mode = 1
 
+  if exists('g:line.zoom')
+    let g:line.zoom = 1 
+  endif
+
   if !g:zoom.keepline
     if g:zoom.save.linemode
-      let g:line.pads.left  = g:zoom.size.l
-      let g:line.pads.right = g:zoom.size.r
       call line#hide()
     else
       let &showtabline = 0
@@ -161,9 +163,11 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   let &cmdheight   = g:zoom.save.cmdheight
   let &fillchars   = g:zoom.save.fillchars
 
+  if exists('g:line.zoom')
+    let g:line.zoom = 0 
+  endif
+
   if g:zoom.save.linemode
-    let g:line.pads.left  = 0
-    let g:line.pads.right = 0
     call line#show()
   else
     let &showtabline = g:zoom.save.showtabline
