@@ -37,12 +37,14 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.pads.list = []
 
   let g:zoom.colr = {}
-  let g:zoom.colr.VertSplit = ''
-  let g:zoom.colr.TabLine      = ''
-  let g:zoom.colr.TabLineSel   = ''
-  let g:zoom.colr.TabLineFill  = ''
-  let g:zoom.colr.StatusLine   = ''
+  let g:zoom.colr.VertSplit    = ''
   let g:zoom.colr.StatusLineNC = ''
+  "if exists('g:line.mode')&&!g:line.mode
+  "  let g:zoom.colr.TabLine      = ''
+  "  let g:zoom.colr.TabLineSel   = ''
+  "  let g:zoom.colr.TabLineFill  = ''
+  "  let g:zoom.colr.StatusLine   = ''
+  "endif
 
   let g:zoom.none = ''
 
@@ -95,20 +97,21 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     if !g:zoom.keepline
       let &tabline = '%#Normal# '
     endif
-  elseif g:zoom.size.t>=2
-    let tabs = &stal==2||(len(gettabinfo())>1&&&stal==1)
-    if g:zoom.size.t==2&&g:zoom.keepline&&tabs&&g:zoom.size.b==2
-      let g:zoom.size.t = 1
-      let g:zoom.size.b = 3
-    else
-      let size = g:zoom.size.t-1
-      silent! exec string(size).'split '.g:zoom.pads.t
-      call zoom#buff()
-      silent! wincmd p
-    endif
+  elseif g:zoom.size.t>1
+    let size = g:zoom.size.t-1
+    silent! exec string(size).'split '.g:zoom.pads.t
+    call zoom#buff()
+    " TODO: 
+    "let tabs = &stal==2||(len(gettabinfo())>1&&&stal==1)
+    "if g:zoom.keepline&&tabs
+      "let &l:statusline = &tabline
+      "set showtabline=0
+    "endif
+    silent! wincmd p
   endif
   if g:zoom.size.b>0
-    let &cmdheight = g:zoom.size.b-(g:zoom.keepline>0&&&laststatus>0)
+    let line = g:zoom.keepline&&&laststatus
+    let &cmdheight = g:zoom.size.b-line
   else
     set laststatus=0
     set cmdheight=0
@@ -131,13 +134,10 @@ fu! zoom#show(...) abort "{ enters zoom mode
 
   let g:zoom.mode = 1
 
-  if exists('g:line.pads')
-    let g:line.pads.left  = g:zoom.size.l
-    let g:line.pads.right = g:zoom.size.r
-  endif
-
-  if !g:zoom.keepline&&!a:0
-    if exists('*line#hide')
+  if !g:zoom.keepline
+    if g:zoom.save.linemode
+      let g:line.pads.left  = g:zoom.size.l
+      let g:line.pads.right = g:zoom.size.r
       call line#hide()
     else
       let &showtabline = 0
@@ -158,29 +158,23 @@ fu! zoom#show(...) abort "{ enters zoom mode
 endfu "}
 fu! zoom#hide(...) abort "{ leaves zoom mode
 
-  call zoom#seth()
-  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
-  silent! only
-  let g:zoom.mode = 0
-
   let &cmdheight   = g:zoom.save.cmdheight
   let &fillchars   = g:zoom.save.fillchars
 
-  if !g:zoom.keepline
+  if g:zoom.save.linemode
+    let g:line.pads.left  = 0
+    let g:line.pads.right = 0
+    call line#show()
+  else
     let &showtabline = g:zoom.save.showtabline
     let &laststatus  = g:zoom.save.laststatus
     let &statusline  = g:zoom.save.statusline
     let &tabline     = g:zoom.save.tabline
   endif
 
-  if exists('g:line.mode')&&g:line.mode||!g:zoom.keepline
-    call line#show()
-  endif
-
-  if exists('g:line.pads')
-    let g:line.pads.left  = 0
-    let g:line.pads.right = 0
-  endif
+  call zoom#seth()
+  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
+  let g:zoom.mode = 0
 
   for buf in g:zoom.pads.list
     if bufexists(buf)
@@ -238,6 +232,8 @@ fu! zoom#save(...) abort "{ saves vim's related variables & hi-groups in place
   let g:zoom.save.laststatus  = &laststatus
   let g:zoom.save.statusline  = &statusline
   let g:zoom.save.tabline     = &tabline
+
+  let g:zoom.save.linemode    = exists('g:line.mode')&&g:line.mode
 
 endfu "}
 fu! zoom#none(...) abort "{ sets all hi-groups same as the backgroups
@@ -342,7 +338,7 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
   if a:1=='size' "{
     if g:zoom.mode
       call zoom#hide()
-      call zoom#show(1)
+      call zoom#show()
     endif
     return
   endif "}
