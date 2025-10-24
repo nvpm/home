@@ -87,12 +87,6 @@ fu! line#show(...) abort "{ renders both lines into view
 
   let g:line.mode = 1
 
-  augroup LINE
-    au!
-    au BufEnter,ModeChanged,BufDelete * call line#draw()
-    au VimLeavePre * call line#stop()
-  augroup END
-
 endfu "}
 fu! line#hide(...) abort "{ hides both lines from the user's view
 
@@ -513,8 +507,9 @@ fu! line#data(...) abort "{ sets the git data from stream
     let g:line.git.branch   = empty(data[0])?'gitless':data[0]
     let g:line.git.modified = data[1]+0
     let g:line.git.staged   = data[2]+0
-    call line#gitb()
-    call line#draw()
+    if g:line.git.bone!=line#gitb()
+      call line#draw()
+    endif
   endif
 
 endfu "}
@@ -613,6 +608,8 @@ fu! line#gitb(...) abort "{ builds the git bone
     let colr = '%#LineGit'.sfix.'#'
     let g:line.git.bone = colr.' '.g:line.git.branch .char
   endif
+
+  return g:line.git.bone
 
 endfu "}
 fu! line#stop(...) abort "{ stops the timer, job, or tcp connection

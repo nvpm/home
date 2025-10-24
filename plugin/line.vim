@@ -8,3 +8,9 @@ call line#init()
 if !exists(':Line') "{
   com! Line call line#line()
 endif "}
+
+augroup LINE
+  au!
+  au BufEnter,ModeChanged,BufDelete * call line#draw()
+  au VimLeavePre * call line#stop()
+augroup END
