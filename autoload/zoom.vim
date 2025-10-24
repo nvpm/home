@@ -278,10 +278,7 @@ fu! zoom#seth(...) abort "{ sets hi-groups to saved hi info (zoom#save)
 endfu "}
 fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
 
-  let bufnr  = get(a:,1,bufnr())
-  let bufidx = index(g:zoom.pads.list,bufnr)
-  if 1+bufidx&&!bufexists(bufnr)|call remove(g:zoom.pads.list,bufidx)|endif
-  call add(g:zoom.pads.list,bufnr)
+  call add(g:zoom.pads.list,bufnr())
   silent! setl nomodifiable
   silent! setl nonumber
   silent! setl norelativenumber
