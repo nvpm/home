@@ -29,7 +29,8 @@ fu! line#init(...) abort "{ user variables & startup routines
 
   let g:line.mode = 1
   let g:line.nvpm = 0
-  let g:line.pads = #{left:0,right:0}
+  let g:line.zoom = 0
+  "let g:line.pads = #{left:0,right:0}
 
   call line#save()
   call line#skel()
@@ -420,25 +421,26 @@ fu! line#head(...) abort "{ builds the tabline (the head)
   if g:line.headl
     let line.= line#bone(g:line.skeleton.head.l,0)
   endif
-
   let line.= '%='
-
   if g:line.headr
     let line.= line#bone(g:line.skeleton.head.r,1)
   endif
 
-  if exists('g:zoom.mode')&&g:zoom.mode&&bufexists(g:zoom.pads.t)
-    if &showtabline|let &showtabline=0|endif
-    call setbufvar(g:zoom.pads.t,'&statusline',line)
-  elseif &showtabline
-    if g:line.pads.left
-      let line = '%#Normal#'..repeat(' ',g:line.pads.left)..line
+  if g:line.zoom
+    if bufwinnr(g:zoom.pads.t)
+      if &showtabline|let &showtabline=0|endif
+      call setbufvar(g:zoom.pads.t,'&statusline',line)
+      return
     endif
-    if g:line.pads.right
-      let line = line..'%#Normal#'..repeat(' ',g:line.pads.right)
+    if g:zoom.size.l
+      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
     endif
-    let &tabline = line
+    if g:zoom.size.r
+      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
+    endif
   endif
+
+  let &tabline = line
 
 endfu "}
 fu! line#feet(...) abort "{ builds the statusline (the feet)
@@ -448,24 +450,21 @@ fu! line#feet(...) abort "{ builds the statusline (the feet)
   if g:line.feetl
     let line.= line#bone(g:line.skeleton.feet.l,0)
   endif
-
   let line.= '%='
-
   if g:line.feetr
     let line.= line#bone(g:line.skeleton.feet.r,1)
   endif
 
-  if &laststatus==3
-    if g:line.pads.left
-      let line = '%#Normal#'..repeat(' ',g:line.pads.left)..line
+  if g:line.zoom&&&laststatus==3
+    if g:zoom.size.l
+      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
     endif
-    if g:line.pads.right
-      let line = line..'%#Normal#'..repeat(' ',g:line.pads.right)
+    if g:zoom.size.r
+      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
     endif
   endif
-  if &laststatus
-    let &statusline = line
-  endif
+
+  let &statusline = line
 
 endfu "}
 
