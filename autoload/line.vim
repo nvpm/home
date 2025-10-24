@@ -59,11 +59,6 @@ fu! line#init(...) abort "{ user variables & startup routines
   endif
 
 endfu "}
-fu! line#draw(...) abort "{ sets both tab and status lines
-  if !g:line.mode|return|endif
-  call line#head()
-  call line#feet()
-endfu "}
 fu! line#show(...) abort "{ renders both lines into view
 
   call line#giti()
@@ -111,6 +106,52 @@ fu! line#line(...) abort "{ swaps both lines on and off (toggle switch)
     call line#show()
     call line#draw()
   endif
+
+endfu "}
+fu! line#draw(...) abort "{ sets both tab and status lines
+  if !g:line.mode|return|endif
+  call line#head()
+  call line#feet()
+endfu "}
+fu! line#head(...) abort "{ builds the tabline (the head)
+
+  let line = line#bone(g:line.skeleton.head.l,0)
+  let line.= '%='
+  let line.= line#bone(g:line.skeleton.head.r,1)
+
+  if g:line.zoom
+    if bufwinnr(g:zoom.pads.t)
+      if &showtabline|let &showtabline=0|endif
+      call setbufvar(g:zoom.pads.t,'&statusline',line)
+      return
+    endif
+    if g:zoom.size.l
+      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
+    endif
+    if g:zoom.size.r
+      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
+    endif
+  endif
+
+  let &tabline = line
+
+endfu "}
+fu! line#feet(...) abort "{ builds the statusline (the feet)
+
+  let line = line#bone(g:line.skeleton.feet.l,0)
+  let line.= '%='
+  let line.= line#bone(g:line.skeleton.feet.r,1)
+
+  if g:line.zoom&&&laststatus==3
+    if g:zoom.size.l
+      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
+    endif
+    if g:zoom.size.r
+      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
+    endif
+  endif
+
+  let &statusline = line
 
 endfu "}
 
@@ -423,47 +464,6 @@ fu! line#skel(...) abort "{ conforms or creates the skeleton variable
   else
     call line#skel(1)
   endif
-
-endfu "}
-fu! line#head(...) abort "{ builds the tabline (the head)
-
-  let line = line#bone(g:line.skeleton.head.l,0)
-  let line.= '%='
-  let line.= line#bone(g:line.skeleton.head.r,1)
-
-  if g:line.zoom
-    if bufwinnr(g:zoom.pads.t)
-      if &showtabline|let &showtabline=0|endif
-      call setbufvar(g:zoom.pads.t,'&statusline',line)
-      return
-    endif
-    if g:zoom.size.l
-      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
-    endif
-    if g:zoom.size.r
-      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
-    endif
-  endif
-
-  let &tabline = line
-
-endfu "}
-fu! line#feet(...) abort "{ builds the statusline (the feet)
-
-  let line = line#bone(g:line.skeleton.feet.l,0)
-  let line.= '%='
-  let line.= line#bone(g:line.skeleton.feet.r,1)
-
-  if g:line.zoom&&&laststatus==3
-    if g:zoom.size.l
-      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
-    endif
-    if g:zoom.size.r
-      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
-    endif
-  endif
-
-  let &statusline = line
 
 endfu "}
 
