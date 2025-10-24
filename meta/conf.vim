@@ -121,6 +121,7 @@ let line.curredge = ' , ' " () []   
 let line.inacedge = ' , '
 let line.boneedge = ',' "                     
 let line.boneedge = ',' "                     
+
 let line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
 
 call add(line.skeleton.head.l,['list',3])

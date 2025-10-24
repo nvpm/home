@@ -30,7 +30,14 @@ fu! line#init(...) abort "{ user variables & startup routines
   let g:line.mode = 1
   let g:line.nvpm = 0
   let g:line.zoom = 0
-  "let g:line.pads = #{left:0,right:0}
+
+  if !has_key(g:line,'leaftype')
+    if exists('g:nvpm.arbo.leaftype')
+      let g:line.leaftype = g:nvpm.arbo.leaftype
+    else
+      let g:line.leaftype = 4
+    endif
+  endif
 
   call line#save()
   call line#skel()
@@ -46,14 +53,6 @@ fu! line#init(...) abort "{ user variables & startup routines
   let g:line.modeinfo.replace  = 'replace'
   let g:line.modeinfo.cmdline  = 'cmdline'
   let g:line.modeinfo.terminal = 'terminal'
-
-  if !has_key(g:line,'leaftype')
-    if exists('g:nvpm.arbo.leaftype')
-      let g:line.leaftype = g:nvpm.arbo.leaftype
-    else
-      let g:line.leaftype = 4
-    endif
-  endif
 
   if g:line.initload
     call line#show()
@@ -384,41 +383,53 @@ fu! line#skel(...) abort "{ conforms or creates the skeleton variable
     if !has_key(g:,'line')|let g:line = {}|endif
     if !has_key(g:line,'skeleton')
       let g:line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+    else
+      if !has_key(g:line.skeleton,'head')
+        let g:line.skeleton.head = #{l:[],r:[]}
+      else
+        if !has_key(g:line.skeleton.head,'l')
+          let g:line.skeleton.head.l = []
+        endif
+        if !has_key(g:line.skeleton.head,'r')
+          let g:line.skeleton.head.r = []
+        endif
+      endif
+      if !has_key(g:line.skeleton,'feet')
+        let g:line.skeleton.feet = #{l:[],r:[]}
+      else
+        if !has_key(g:line.skeleton.feet,'l')
+          let g:line.skeleton.feet.l = []
+        endif
+        if !has_key(g:line.skeleton.feet,'r')
+          let g:line.skeleton.feet.r = []
+        endif
+      endif
     endif
-  elseif type(g:line.skeleton)!=4 " dict type
+  elseif type(g:line.skeleton)!=type({})
     let g:line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-    call add(g:line.skeleton.head.l,['list',2])
-    call add(g:line.skeleton.head.r,['list',1])
+    call add(g:line.skeleton.head.l,['list',g:line.leaftype-1])
+    call add(g:line.skeleton.head.r,['list',g:line.leaftype-2])
     call add(g:line.skeleton.head.r,' ')
-    call add(g:line.skeleton.head.r,['curr',0])
-    call add(g:line.skeleton.feet.l,['list',3])
-    call add(g:line.skeleton.feet.l,' ')
+    call add(g:line.skeleton.head.r,['curr',g:line.leaftype-3])
+    call add(g:line.skeleton.head.r,' ')
+    call add(g:line.skeleton.head.r,['curr',g:line.leaftype-4])
+
     call add(g:line.skeleton.feet.l,['git'])
+    call add(g:line.skeleton.feet.l,' ')
+    call add(g:line.skeleton.feet.l,['list',g:line.leaftype])
     call add(g:line.skeleton.feet.l,' ')
     call add(g:line.skeleton.feet.l,['file'])
     call add(g:line.skeleton.feet.r,['user','%Y%m ● %l,%v/%p%%'])
-    let g:line.headl = 1
-    let g:line.headr = 1
-    let g:line.feetl = 1
-    let g:line.feetr = 1
   else
-    let g:line.headl = exists('g:line.skeleton.head.l')
-    let g:line.headr = exists('g:line.skeleton.head.r')
-    let g:line.feetl = exists('g:line.skeleton.feet.l')
-    let g:line.feetr = exists('g:line.skeleton.feet.r')
+    call line#skel(1)
   endif
 
 endfu "}
 fu! line#head(...) abort "{ builds the tabline (the head)
 
-  let line = ''
-  if g:line.headl
-    let line.= line#bone(g:line.skeleton.head.l,0)
-  endif
+  let line = line#bone(g:line.skeleton.head.l,0)
   let line.= '%='
-  if g:line.headr
-    let line.= line#bone(g:line.skeleton.head.r,1)
-  endif
+  let line.= line#bone(g:line.skeleton.head.r,1)
 
   if g:line.zoom
     if bufwinnr(g:zoom.pads.t)
@@ -439,15 +450,9 @@ fu! line#head(...) abort "{ builds the tabline (the head)
 endfu "}
 fu! line#feet(...) abort "{ builds the statusline (the feet)
 
-  let line = ''
-
-  if g:line.feetl
-    let line.= line#bone(g:line.skeleton.feet.l,0)
-  endif
+  let line = line#bone(g:line.skeleton.feet.l,0)
   let line.= '%='
-  if g:line.feetr
-    let line.= line#bone(g:line.skeleton.feet.r,1)
-  endif
+  let line.= line#bone(g:line.skeleton.feet.r,1)
 
   if g:line.zoom&&&laststatus==3
     if g:zoom.size.l
@@ -476,10 +481,10 @@ endfu "}
 fu! line#find(...) abort "{ checks if bone is in the skeleton
 
   let name = a:1
-  if g:line.feetl&&1+match(g:line.skeleton.feet.l,name)|return 1|endif
-  if g:line.feetr&&1+match(g:line.skeleton.feet.r,name)|return 1|endif
-  if g:line.headl&&1+match(g:line.skeleton.head.l,name)|return 1|endif
-  if g:line.headr&&1+match(g:line.skeleton.head.r,name)|return 1|endif
+  if 1+match(g:line.skeleton.feet.l,name)|return 1|endif
+  if 1+match(g:line.skeleton.feet.r,name)|return 1|endif
+  if 1+match(g:line.skeleton.head.l,name)|return 1|endif
+  if 1+match(g:line.skeleton.head.r,name)|return 1|endif
 
 endfu "}
 fu! line#zero(...) abort "{ resets the git variable
