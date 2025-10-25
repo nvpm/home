@@ -34,12 +34,6 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.colr = {}
   let g:zoom.colr.VertSplit    = ''
   let g:zoom.colr.StatusLineNC = ''
-  "if exists('g:line.mode')&&!g:line.mode
-  "  let g:zoom.colr.TabLine      = ''
-  "  let g:zoom.colr.TabLineSel   = ''
-  "  let g:zoom.colr.TabLineFill  = ''
-  "  let g:zoom.colr.StatusLine   = ''
-  "endif
 
   let g:zoom.none = ''
 
