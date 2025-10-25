@@ -31,11 +31,11 @@ if !exists(':NvpmTerm') "{
 endif "}
 
 "-- auto commands  --
-if g:nvpm.autocmds
+if g:nvpm_autocmds
   augroup NVPM
     au!
     au! BufEnter *.arbo set ft=arbo
-    if g:nvpm.initload
+    if g:nvpm_initload
       au! VimLeavePre * call nvpm#save()
     endif
     if has('nvim')

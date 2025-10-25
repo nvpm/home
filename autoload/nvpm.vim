@@ -11,25 +11,25 @@ let s:home = g:nvpmhome..'/nvpm/'
 "-- main functions --
 fu! nvpm#init(...) abort "{ user variables & startup routines
 
-  " either gets or sets g:nvpm
-  let g:nvpm          = get(g:     , 'nvpm'     , {})
-  let g:nvpm.initload = get(g:nvpm , 'initload' ,  0)
-  let g:nvpm.autocmds = get(g:nvpm , 'autocmds' ,  1)
-  let g:nvpm.filetree = get(g:nvpm , 'filetree' ,  1)
-  let g:nvpm.invasive = get(g:nvpm , 'invasive' ,  0)
+  " main options
+  let g:nvpm_initload = get(g:,'nvpm_initload',0)
+  let g:nvpm_autocmds = get(g:,'nvpm_autocmds',1)
+  let g:nvpm_filetree = get(g:,'nvpm_filetree',1)
+  let g:nvpm_invasive = get(g:,'nvpm_invasive',0)
 
   " NvpmTerm options
-  let g:nvpm.termlist = get(g:nvpm , 'termlist' ,  1)
-  let g:nvpm.termkeep = get(g:nvpm , 'termkeep' ,  1)
-  let g:nvpm.termexit = get(g:nvpm , 'termexit' ,  1)
-  let g:nvpm.termmode = get(g:nvpm , 'termmode' ,  1)
-  let g:nvpm.termkill = get(g:nvpm , 'termkill' ,  1)
+  let g:nvpm_termlist = get(g:,'nvpm_termlist',1)
+  let g:nvpm_termkeep = get(g:,'nvpm_termkeep',1)
+  let g:nvpm_termexit = get(g:,'nvpm_termexit',1)
+  let g:nvpm_termmode = get(g:,'nvpm_termmode',1)
+  let g:nvpm_termkill = get(g:,'nvpm_termkill',1)
 
-  let s:term = 'term terminal shell open run'
-  " builds the arbo conf dictionary
+  let g:nvpm = {}
+
+  " lexicon options
   let g:nvpm.arbo = {}
-  if has_key(g:nvpm,'lexicon')
-    let g:nvpm.arbo.lexicon = g:nvpm.lexicon
+  if has_key(g:,'nvpm_lexicon')
+    let g:nvpm.arbo.lexicon = g:nvpm_lexicon
   else
     let g:nvpm.arbo.lexicon  = ''
     let g:nvpm.arbo.lexicon .= ',project scheme layout'
@@ -41,8 +41,10 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.arbo.file   = ''
 
   let lexi   = split(g:nvpm.arbo.lexicon,';')
-  let s:term = get(lexi,1,s:term)
+  let s:term = get(lexi,1,'term terminal shell open run')
   let g:nvpm.arbo.lexicon = get(lexi,0,'')..' '..s:term
+
+  " listfies both lexicon and s:term
   call arbo#conf(g:nvpm.arbo)
   let s:term = split(s:term)
 
@@ -50,7 +52,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
 
   " default file locations
   let g:nvpm.path = {}
-  if g:nvpm.invasive
+  if g:nvpm_invasive
     let g:nvpm.path.root = '.nvpm/nvpm/'
   else
     let cwd = join(split(getcwd(),'/'),'.')
@@ -60,8 +62,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   let g:nvpm.path.edit = g:nvpm.path.root..'edit.arbo'
   let g:nvpm.path.tree = g:nvpm.path.root..'tree.json'
 
-  if !argc()&&g:nvpm.initload
-    let g:nvpm.initload = abs(g:nvpm.initload)
+  if !argc()&&g:nvpm_initload
     if filereadable(g:nvpm.path.tree)
       let arbo = get(readfile(g:nvpm.path.tree),0,'')
       let root = json_decode(arbo)
@@ -74,7 +75,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
         call nvpm#fell(g:nvpm.path.edit)
       endif
       let g:nvpm.mode = !!g:nvpm.tree.meta.leng
-      call timer_start(g:nvpm.initload,{->nvpm#load()})
+      call timer_start(g:nvpm_initload,{->nvpm#load()})
     endif
   endif
 
@@ -106,7 +107,7 @@ fu! nvpm#grow(...) abort "{ grows nvpm tree given an arbo file
       let g:nvpm.tree.meta.leng+=1
     endif
     let g:nvpm.tree.meta.indx = indx
-    if g:nvpm.termkill
+    if g:nvpm_termkill
       for bufnr in g:nvpm.tree.term
         if bufexists(bufnr)|exe 'bdelete! '..bufnr|endif
       endfor
@@ -297,8 +298,8 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       call term_sendkeys(term_start($SHELL,conf),leaf.cmd.."\n")
     endif "}
     let leaf.bufnr = bufnr()
-    if g:nvpm.termlist<0|setl nobuflisted|endif
-    if g:nvpm.termmode>1|startinsert|endif
+    if g:nvpm_termlist<0|setl nobuflisted|endif
+    if g:nvpm_termmode>1|startinsert|endif
     call add(g:nvpm.tree.term,leaf.bufnr)
     return
   endif
@@ -309,7 +310,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
 
   if has_key(g:nvpm.term,name)&&bufexists(g:nvpm.term[name])
     exe 'buffer '..g:nvpm.term[name]
-    if !s:nvim&&g:nvpm.termmode|exe 'normal i'|endif
+    if !s:nvim&&g:nvpm_termmode|exe 'normal i'|endif
   else
     if s:nvim " nvim{
       if name=='main'
@@ -317,7 +318,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
         if g:nvpm.mode==2|let cwd=g:nvpm.path.root|endif
         exec 'edit term://'..cwd..'/'..cmd
       else
-        if g:nvpm.termkeep
+        if g:nvpm_termkeep
           exec 'edit term://.//'..$SHELL
           call chansend(&channel,cmd.."\n")
         else
@@ -339,9 +340,9 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
       call term_sendkeys(term_start($SHELL,conf),cmd)
     endif "}
     let g:nvpm.term[name] = bufnr()
-    if !g:nvpm.termlist|setl nobuflisted|endif
+    if !g:nvpm_termlist|setl nobuflisted|endif
   endif
-  if g:nvpm.termmode|startinsert|endif
+  if g:nvpm_termmode|startinsert|endif
 
 endfu "}
 
@@ -385,7 +386,7 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
   if has_key(leaf,'cmd')
     if has_key(leaf,'bufnr')&&bufexists(leaf.bufnr)
       exec 'buffer '..leaf.bufnr
-      if g:nvpm.termmode>2|startinsert|endif
+      if g:nvpm_termmode>2|startinsert|endif
     else
       call nvpm#term()
     endif
@@ -401,12 +402,12 @@ fu! nvpm#rend(...) abort "{ renders the current leaf node
       setl filetype=arbo
     endif
   endif
-  if g:nvpm.filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
+  if g:nvpm_filetree&&!empty(head)&&!filereadable(head)&&&bt!='terminal'
     call mkdir(head,'p')
   endif
 
 endfu "}
-fu! nvpm#null(...) abort "{ resets the nvpm tree
+fu! nvpm#null(...) abort "{ sets important variables to their initial states
 
   if !a:0
     call nvpm#null('nvpm')
@@ -436,7 +437,7 @@ fu! nvpm#save(...) abort "{ saves the state of the nvpm tree for startup use
     call delete(g:nvpm.path.tree)
     return
   endif
-  if g:nvpm.initload&&g:nvpm.mode==1
+  if g:nvpm_initload&&g:nvpm.mode==1
     if has_key(g:nvpm.curr.leaf,'bufnr')
       unlet g:nvpm.curr.leaf.bufnr
     endif
@@ -466,7 +467,7 @@ fu! nvpm#seek(...) abort "{ looks for the current node of a given number type
 
   if !has_key(root,'meta') | return {}   | endif
   if type==root.meta.type  | return root | endif
-  
+
   if root.meta.leng
     return nvpm#seek(type,root.list[root.meta.indx])
   endif
@@ -629,8 +630,8 @@ fu! nvpm#auto(...) abort "{ handles autocmds & callbacks
       endif
       return
     endif
-    if !g:nvpm.termexit||
-      \(g:nvpm.termexit==1&&-1==index(values(g:nvpm.term),bufnr))
+    if !g:nvpm_termexit||
+      \(g:nvpm_termexit==1&&-1==index(values(g:nvpm.term),bufnr))
       return
     endif
     call nvpm#rend()

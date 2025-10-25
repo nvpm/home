@@ -51,19 +51,18 @@ endif
 
 let nvpmhome = '/iasj/proj/nvpm/.nvpm'
 
-let nvpm = {}
-let nvpm.initload = 1
-let nvpm.autocmds = 1
+let nvpm_initload = 1
+let nvpm_autocmds = 1
 
-let nvpm.termlist = -1
-let nvpm.termkeep = 0
-let nvpm.termexit = 2
-let nvpm.termmode = 2
+let nvpm_termlist = -1
+let nvpm_termkeep = 0
+let nvpm_termexit = 2
+let nvpm_termmode = 2
 
-let nvpm.filetree = 1
-let nvpm.invasive = 0
+let nvpm_filetree = 1
+let nvpm_invasive = 0
 
-let nvpm.lexicon  = 'project,workspace,tab,file'
+let nvpm_lexicon  = 'project,workspace,tab,file'
 
 hi arbovars guifg=#00ff00 gui=bold
 hi arbokeyw guifg=#aa7700 gui=bold
