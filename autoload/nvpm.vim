@@ -3,10 +3,10 @@ if !exists('NVPMTEST')&&exists('_NVPMAUTO_')|finish|endif
 let _NVPMAUTO_ = 1
 let s:nvim = has('nvim')
 
-if !has_key(g:,'nvpmhome')
-  let g:nvpmhome = resolve(expand('~/.nvpm'))
+if empty($NVPMHOME)
+  let $NVPMHOME = resolve(expand('~/.nvpm'))
 endif
-let s:home = g:nvpmhome..'/nvpm/'
+let s:home = $NVPMHOME..'/nvpm/'
 
 "-- main functions --
 fu! nvpm#init(...) abort "{ user variables & startup routines
@@ -243,7 +243,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
       let node = nvpm#seek(type)
       call nvpm#indx(node,node.meta.indx+step)
       call nvpm#curr()
-    elseif bufname=~g:nvpmhome..'/zoom/[lrtb]'&&exists('*zoom#auto')
+    elseif bufname=~$NVPMHOME..'/zoom/[lrtb]'&&exists('*zoom#auto')
       call zoom#auto('size')
     endif
 

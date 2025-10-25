@@ -3,10 +3,10 @@ if !exists('NVPMTEST')&&exists('_ZOOMAUTO_')|finish|endif
 let _ZOOMAUTO_ = 1
 let s:nvim = has('nvim')
 
-if !has_key(g:,'nvpmhome')
-  let g:nvpmhome = resolve(expand('~/.nvpm'))
+if empty($NVPMHOME)
+  let $NVPMHOME = resolve(expand('~/.nvpm'))
 endif
-let s:home = g:nvpmhome..'/zoom/'
+let s:home = $NVPMHOME..'/zoom/'
 
 "-- main functions --
 fu! zoom#init(...) abort "{ user variables & startup routines

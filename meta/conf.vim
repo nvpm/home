@@ -49,8 +49,6 @@ endif
 "let _NVPMAUTO_ = 1
 "let _NVPMPLUG_ = 1
 
-let nvpmhome = '/iasj/proj/nvpm/.nvpm'
-
 let nvpm_initload = 1
 let nvpm_autocmds = 1
 

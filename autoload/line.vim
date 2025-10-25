@@ -3,10 +3,10 @@ if !exists('NVPMTEST')&&exists('_LINEAUTO_')|finish|endif
 let _LINEAUTO_ = 1
 let s:nvim = has('nvim')
 
-if !has_key(g:,'nvpmhome')
-  let g:nvpmhome = resolve(expand('~/.nvpm'))
+if empty($NVPMHOME)
+  let $NVPMHOME = resolve(expand('~/.nvpm'))
 endif
-let s:home = g:nvpmhome..'/line/'
+let s:home = $NVPMHOME..'/line/'
 
 "-- main functions --
 fu! line#init(...) abort "{ user variables & startup routines
