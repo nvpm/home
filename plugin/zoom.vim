@@ -10,16 +10,16 @@ if !exists(':Zoom') "{
 endif "}
 
 "-- auto commands --
-if g:zoom.autocmds
+if g:zoom_autocmds
   augroup ZOOM
     au!
     au WinEnter    * call zoom#auto('back')
     au VimLeavePre * call zoom#auto('quit')
-    if g:zoom.autohelp
+    if g:zoom_autohelp
       au FileType  help,man setl nobuflisted
       au BufWinEnter * call zoom#auto('help')
     endif
-    if g:zoom.autosize
+    if g:zoom_autosize
       au VimResized * call zoom#auto('size')
     endif
   augroup END

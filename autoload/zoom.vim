@@ -11,24 +11,19 @@ let s:home = $NVPMHOME..'/zoom/'
 "-- main functions --
 fu! zoom#init(...) abort "{ user variables & startup routines
 
-  let g:zoom = get(g:,'zoom',{})
-  let g:zoom.initload = get(g:zoom , 'initload' , 0)
-  let g:zoom.autocmds = get(g:zoom , 'autocmds' , 1)
-  let g:zoom.autosize = get(g:zoom , 'autosize' , 1)
-  let g:zoom.autohelp = get(g:zoom , 'autohelp' , 1)
-  let g:zoom.keepline = get(g:zoom , 'keepline' , 1)
-  let g:zoom.height   = get(g:zoom , 'height'   , &lines)
-  let g:zoom.width    = get(g:zoom , 'width'    , &columns)
-  let g:zoom.left     = get(g:zoom , 'left'     , -1)
-  let g:zoom.right    = get(g:zoom , 'right'    , -1)
-  let g:zoom.top      = get(g:zoom , 'top'      , -1)
+  let g:zoom_initload = get(g:,'zoom_initload', 0)
+  let g:zoom_autocmds = get(g:,'zoom_autocmds', 1)
+  let g:zoom_autosize = get(g:,'zoom_autosize', 1)
+  let g:zoom_autohelp = get(g:,'zoom_autohelp', 1)
+  let g:zoom_keepline = get(g:,'zoom_keepline', 1)
+  let g:zoom_height   = get(g:,'zoom_height'  ,-4)
+  let g:zoom_width    = get(g:,'zoom_width'   ,-4)
 
-  let g:zoom.mode   = 0
-
+  let g:zoom = {}
+  let g:zoom.mode = 0
   let g:zoom.save = {}
 
   let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0  }
-
   let g:zoom.pads   = #{}
   let g:zoom.pads.l = s:home..'l'
   let g:zoom.pads.r = s:home..'r'
@@ -48,15 +43,15 @@ fu! zoom#init(...) abort "{ user variables & startup routines
 
   let g:zoom.none = ''
 
-  if !argc()&&g:zoom.initload
-    call timer_start(g:zoom.initload,{->zoom#show()})
+  if !argc()&&g:zoom_initload
+    call timer_start(g:zoom_initload,{->zoom#show()})
   endif
 
 endfu "}
 fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
-  let s:width  = g:zoom.width
-  let s:height = g:zoom.height
+  let s:width  = g:zoom_width
+  let s:height = g:zoom_height
 
   if type(s:width)==type(3.14)
     let s:width = float2nr(s:width*&columns)
@@ -94,7 +89,7 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     set showtabline=0
   elseif g:zoom.size.t==1 " use the single line occupied by the tabline
     set showtabline=2
-    if !g:zoom.keepline
+    if !g:zoom_keepline
       let &tabline = '%#Normal# '
     endif
   elseif g:zoom.size.t>1
@@ -103,14 +98,14 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     call zoom#buff()
     " TODO: 
     "let tabs = &stal==2||(len(gettabinfo())>1&&&stal==1)
-    "if g:zoom.keepline&&tabs
+    "if g:zoom_keepline&&tabs
       "let &l:statusline = &tabline
       "set showtabline=0
     "endif
     silent! wincmd p
   endif
   if g:zoom.size.b>0
-    let line = g:zoom.keepline&&&laststatus
+    let line = g:zoom_keepline&&&laststatus
     let &cmdheight = g:zoom.size.b-line
   else
     set laststatus=0
@@ -138,7 +133,7 @@ fu! zoom#show(...) abort "{ enters zoom mode
     let g:line.zoom = 1 
   endif
 
-  if !g:zoom.keepline
+  if !g:zoom_keepline
     if g:zoom.save.linemode
       call line#hide()
     else

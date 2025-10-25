@@ -275,13 +275,12 @@ nmap <silent>ml :Line<cr><c-l>
 "let _ZOOMAUTO_ = 1
 "let _ZOOMPLUG_ = 1
 
-let zoom = {}
-let zoom.initload = 1
-let zoom.autocmds = 1
-let zoom.autohelp = 1
-let zoom.keepline = 1
-let zoom.height   = -4
-let zoom.width    = 80
+let zoom_initload = 1
+let zoom_autocmds = 1
+let zoom_autohelp = 1
+let zoom_keepline = 1
+let zoom_height   = -4
+let zoom_width    = 80
 
 nmap <silent>mz :Zoom<cr>
 
