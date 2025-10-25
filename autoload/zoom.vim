@@ -136,7 +136,10 @@ fu! zoom#show(...) abort "{ enters zoom mode
       let &statusline  = ' '
       let &tabline     = ' '
     endif
+  elseif exists('*line#draw')
+    call line#draw()
   endif
+
 
   exe 'set fillchars=vert:\ '
   if s:nvim
@@ -158,6 +161,8 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
 
   if g:zoom.save.linemode
     call line#show()
+  elseif exists('*line#draw')
+    call line#draw()
   else
     let &showtabline = g:zoom.save.showtabline
     let &laststatus  = g:zoom.save.laststatus
@@ -166,7 +171,7 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   endif
 
   call zoom#seth()
-  let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0 , w : 0 , h : 0}
+  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0 , w : 0 , h : 0}
   let g:zoom.mode = 0
 
   for buf in g:zoom.pads.list
