@@ -115,23 +115,23 @@ let line_bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
 let line_curredge = '[,]' " () []   
 let line_curredge = ' , ' " () []   
 let line_inacedge = ' , '
-let line_boneedge = ',' "                     
 let line_boneedge = ',' "                     
+let line_boneedge = ',' "                     
 
 nmap <silent>ml :Line<cr><c-l>
 
 let line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
 call add(line_skeleton.head.l,['list',3])
 call add(line_skeleton.head.r,['list',2])
-call add(line_skeleton.head.r,' ')
+"call add(line_skeleton.head.r,' ')
 call add(line_skeleton.head.r,['curr',1])
-call add(line_skeleton.head.r,' ')
+"call add(line_skeleton.head.r,' ')
 call add(line_skeleton.head.r,['curr',0,'LineSpot'])
 
 call add(line_skeleton.feet.l,['git'])
-call add(line_skeleton.feet.l,' ')
+"call add(line_skeleton.feet.l,' ')
 call add(line_skeleton.feet.l,['list',4])
-call add(line_skeleton.feet.l,' ')
+"call add(line_skeleton.feet.l,' ')
 call add(line_skeleton.feet.l,['file'])
 call add(line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
 

@@ -136,10 +136,10 @@ fu! zoom#show(...) abort "{ enters zoom mode
       let &statusline  = ' '
       let &tabline     = ' '
     endif
-  elseif exists('*line#draw')
+  endif
+  if exists('*line#draw')
     call line#draw()
   endif
-
 
   exe 'set fillchars=vert:\ '
   if s:nvim
@@ -161,13 +161,14 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
 
   if g:zoom.save.linemode
     call line#show()
-  elseif exists('*line#draw')
-    call line#draw()
   else
     let &showtabline = g:zoom.save.showtabline
     let &laststatus  = g:zoom.save.laststatus
     let &statusline  = g:zoom.save.statusline
     let &tabline     = g:zoom.save.tabline
+  endif
+  if exists('*line#draw')
+    call line#draw()
   endif
 
   call zoom#seth()
