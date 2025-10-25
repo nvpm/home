@@ -83,7 +83,7 @@ fu! s:test.zoom(...) "{
   so autoload/zoom.vim
 
   let left = repeat(' ' ,g:zoom.size.l )
-  ec left..string(g:zoom.height)..' '..string(g:zoom.width)
+  ec left..string(g:zoom_height)..' '..string(g:zoom_width)
   ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
   ec left..string(g:zoom.size)
 

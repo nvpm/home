@@ -107,35 +107,33 @@ hi arbokeyw guifg=#aa7700 gui=bold
 "let _LINEAUTO_ = 1
 "let _LINEPLUG_ = 1
 
-let line = {}
-let line.initload = 1
-let line.showmode = 2
-let line.gitimode = 2
-let line.gitdelay = 0
-let line.bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
-let line.curredge = '[,]' " () []   
-let line.curredge = ' , ' " () []   
-let line.inacedge = ' , '
-let line.boneedge = ',' "                     
-let line.boneedge = ',' "                     
-
-let line.skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
-
-call add(line.skeleton.head.l,['list',3])
-call add(line.skeleton.head.r,['list',2])
-call add(line.skeleton.head.r,' ')
-call add(line.skeleton.head.r,['curr',1])
-call add(line.skeleton.head.r,' ')
-call add(line.skeleton.head.r,['curr',0,'LineSpot'])
-
-call add(line.skeleton.feet.l,['git'])
-call add(line.skeleton.feet.l,' ')
-call add(line.skeleton.feet.l,['list',4])
-call add(line.skeleton.feet.l,' ')
-call add(line.skeleton.feet.l,['file'])
-call add(line.skeleton.feet.r,['user','%m %l,%v/%p%%'])
+let line_initload = 1
+let line_showmode = 2
+let line_gitimode = 2
+let line_gitdelay = 0
+let line_bonetype = 2 "0:none,1:normal,2:buttons,3:powerline
+let line_curredge = '[,]' " () []   
+let line_curredge = ' , ' " () []   
+let line_inacedge = ' , '
+let line_boneedge = ',' "                     
+let line_boneedge = ',' "                     
 
 nmap <silent>ml :Line<cr><c-l>
+
+let line_skeleton = #{head:#{l:[],r:[]},feet:#{l:[],r:[]}}
+call add(line_skeleton.head.l,['list',3])
+call add(line_skeleton.head.r,['list',2])
+call add(line_skeleton.head.r,' ')
+call add(line_skeleton.head.r,['curr',1])
+call add(line_skeleton.head.r,' ')
+call add(line_skeleton.head.r,['curr',0,'LineSpot'])
+
+call add(line_skeleton.feet.l,['git'])
+call add(line_skeleton.feet.l,' ')
+call add(line_skeleton.feet.l,['list',4])
+call add(line_skeleton.feet.l,' ')
+call add(line_skeleton.feet.l,['file'])
+call add(line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
 
 " Colors   {
 
@@ -143,7 +141,7 @@ nmap <silent>ml :Line<cr><c-l>
   hi clear statusline
   " LineFill {
 
-    if line.bonetype==2
+    if line_bonetype==2
       hi def link LineFill Normal
     else
       hi def link LineFill DiffChange
@@ -152,7 +150,7 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineMode {
 
-    if line.bonetype
+    if line_bonetype
       hi LineModeNormal   guibg=#000077 guifg=White
       hi LineModeInsert   guibg=#ff0000 guifg=White
       hi LineModeReplace  guibg=#00ffff guifg=Black
@@ -160,7 +158,7 @@ nmap <silent>ml :Line<cr><c-l>
       hi LineModeCmdline  guibg=#ffff00 guifg=Black
       hi LineModeTerminal guibg=#ffffff guifg=Black
 
-      if line.bonetype==2
+      if line_bonetype==2
         hi LineModeEdgeNormal   guibg=bg guifg=#000077
         hi LineModeEdgeInsert   guibg=bg guifg=#ff0000
         hi LineModeEdgeReplace  guibg=bg guifg=#00ffff
@@ -175,7 +173,7 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineSpot {
 
-    if line.bonetype
+    if line_bonetype
       hi def link LineSpotNormal   LineModeNormal
       hi def link LineSpotInsert   LineModeInsert
       hi def link LineSpotReplace  LineModeReplace
@@ -183,7 +181,7 @@ nmap <silent>ml :Line<cr><c-l>
       hi def link LineSpotCmdline  LineModeCmdline
       hi def link LineSpotTerminal LineModeTerminal
 
-      if line.bonetype==2
+      if line_bonetype==2
         hi def link LineSpotEdgeNormal   LineModeEdgeNormal
         hi def link LineSpotEdgeInsert   LineModeEdgeInsert
         hi def link LineSpotEdgeReplace  LineModeEdgeReplace
@@ -198,9 +196,9 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineCurr {
 
-    if line.bonetype
+    if line_bonetype
       hi LineCurr     guibg=#000033 guifg=White
-      if line.bonetype==2
+      if line_bonetype==2
         hi LineCurrEdge guibg=bg    guifg=#000033
       endif
     else
@@ -210,9 +208,9 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineInac {
 
-    if line.bonetype
+    if line_bonetype
       hi LineInac     guibg=#000011 guifg=#007777
-      if line.bonetype==2
+      if line_bonetype==2
         hi LineInacEdge guibg=bg    guifg=#000011
       endif
     else
@@ -222,9 +220,9 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineFile {
 
-    if line.bonetype
+    if line_bonetype
       hi def link LineFile LineCurr
-      if line.bonetype==2
+      if line_bonetype==2
         hi def link LineFileEdge LineCurrEdge
       endif
     else
@@ -234,9 +232,9 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineUser {
 
-    if line.bonetype
+    if line_bonetype
       hi def link LineUser LineFile
-      if line.bonetype==2
+      if line_bonetype==2
         hi def link LineUserEdge LineFileEdge
       endif
     else
@@ -246,11 +244,11 @@ nmap <silent>ml :Line<cr><c-l>
   " }
   " LineGitx {
 
-    if line.bonetype
+    if line_bonetype
       hi LineGits guibg=#555500 guifg=#000000
       hi LineGitm guibg=#440000 guifg=#ffffff
       hi def link LineGitc LineCurr
-      if line.bonetype==2
+      if line_bonetype==2
         hi LineGitsEdge guifg=#555500
         hi LineGitmEdge guifg=#440000
         hi def link LineGitcEdge LineCurrEdge
