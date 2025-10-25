@@ -160,8 +160,9 @@ fu! nvpm#edit(...) abort "{ enters/leaves Nvpm Edit Mode
   if !isdirectory(g:nvpm.path.arbo)|return 1|endif
 
   if g:nvpm.mode == 2 "{
-    let currarbo = bufname()
+    silent! wall
 
+    let currarbo = bufname()
     " only leaves Edit Mode upon valid arbo file
     if nvpm#grow(currarbo)
       echohl WarningMsg
@@ -227,11 +228,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
   if g:nvpm.mode
 
     " leaves edit mode on non-leaf jumps
-    if g:nvpm.mode==2&&type<g:nvpm.arbo.leaftype
-      wall
-      call nvpm#edit()
-      return
-    endif
+    if g:nvpm.mode==2&&type-g:nvpm.arbo.leaftype|return nvpm#edit()|endif
 
     let bufname  = bufname()
     let samefile = g:nvpm.curr.leaf.info==bufname

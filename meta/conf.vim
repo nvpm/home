@@ -97,7 +97,7 @@ hi arbokeyw guifg=#aa7700 gui=bold
 " }
 " Random   maps {
 
-  nnoremap <c-e> :NvpmEdit<cr>
+  nnoremap <silent><c-e> :NvpmEdit<cr>
 
 " }
 
