@@ -23,7 +23,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.mode = 0
   let g:zoom.save = {}
 
-  let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0  }
+  let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0 , w : 0 , h : 0}
   let g:zoom.pads   = #{}
   let g:zoom.pads.l = s:home..'l'
   let g:zoom.pads.r = s:home..'r'
@@ -44,20 +44,20 @@ fu! zoom#init(...) abort "{ user variables & startup routines
 endfu "}
 fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 
-  let s:width  = g:zoom_width
-  let s:height = g:zoom_height
+  let g:zoom.size.w = g:zoom_width
+  let g:zoom.size.h = g:zoom_height
 
-  if type(s:width)==type(3.14)
-    let s:width = float2nr(s:width*&columns)
+  if type(g:zoom.size.w)==type(3.14)
+    let g:zoom.size.w = float2nr(g:zoom.size.w*&columns)
   endif
-  if type(s:height)==type(3.14)
-    let s:height = float2nr(s:height*&lines)
+  if type(g:zoom.size.h)==type(3.14)
+    let g:zoom.size.h = float2nr(g:zoom.size.h*&lines)
   endif
-  let s:width += (s:width <=0)*&columns
-  let s:height+= (s:height<=0)*&lines
+  let g:zoom.size.w+= (g:zoom.size.w<=0)*&columns
+  let g:zoom.size.h+= (g:zoom.size.h<=0)*&lines
 
-  let Dw = &columns-s:width |let dw = Dw/2
-  let Dh = &lines  -s:height|let dh = Dh/2
+  let Dw = &columns-g:zoom.size.w |let dw = Dw/2
+  let Dh = &lines  -g:zoom.size.h|let dh = Dh/2
 
   let g:zoom.size.r = dw-(dw==1)
   let g:zoom.size.l = dw+(dw==1)+Dw%2
@@ -106,8 +106,8 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
     set cmdheight=0
   endif
 
-  exe 'vertical resize ' .. s:width
-  exe 'resize '          .. s:height
+  exe 'vertical resize ' .. g:zoom.size.w
+  exe 'resize '          .. g:zoom.size.h
 
 endfu " }
 fu! zoom#show(...) abort "{ enters zoom mode
@@ -166,7 +166,7 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   endif
 
   call zoom#seth()
-  let g:zoom.size = #{ l : 0  , r : 0  , t : 0  , b : 0  }
+  let g:zoom.size   = #{ l : 0  , r : 0  , t : 0  , b : 0 , w : 0 , h : 0}
   let g:zoom.mode = 0
 
   for buf in g:zoom.pads.list
