@@ -1,7 +1,5 @@
 
-  ● account for cmdheight, signcolumn, and others in zoom#calc ~
-    And both lines
-
-  ● remove size calculations from zoom#pads ~
+  ● recheck each width and height combinations possible (autotests) ~
+  ● account for signcolumn, and others in zoom#calc ~
 
 vim: ft=help: tw=2
