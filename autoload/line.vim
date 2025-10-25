@@ -63,7 +63,7 @@ fu! line#show(...) abort "{ renders both lines into view
 
   call line#giti()
 
-  if g:line.nvpm
+  if g:line.nvpm&&!g:line.zoom
     set showtabline=2
     let &laststatus=2
   else
