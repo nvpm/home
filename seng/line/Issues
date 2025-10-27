@@ -1,5 +1,25 @@
 
 |bugs|
+  ● zoom mode not updating line numbers in user defined bones { ~
+  Mon, october 27, 2025
+
+  In this case, statusline or tabline definitions such as "%m %l,%v/%p%%", 
+  which relates to the "user" field in the skeleton variable.
+
+  Such definitions do not update automatically if either lines are placed in 
+  the padding buffers g:zoom.pads.{t,b} (top bottom buffers).
+
+  The reason is obvious, such definitions relate to the current buffer being 
+  edited. Therefore, the padding buffers will show only their information in 
+  their statuslines.
+
+  The solution would be to treat each user definition in the user atom, in 
+  the line#atom(...) function, and update the padding lines every time the 
+  event CursorMoved hits.
+
+  }
+
+
   ● [bug] ~
 
 |fixed|
