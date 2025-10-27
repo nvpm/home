@@ -91,9 +91,10 @@ fu! line#hide(...) abort "{ hides both lines from the user's view
   let &statusline  = ' '
   let &tabline     = ' '
 
-  if exists('g:zoom.mode')&&g:zoom.mode&&bufexists(g:zoom.pads.t)
+  if g:line.zoom&&(1+bufwinnr(g:zoom.pads.t))
     call setbufvar(g:zoom.pads.t,'&statusline','%#Normal# ')
   endif
+
   let g:line.mode = 0
   call line#stop()
 
@@ -120,10 +121,9 @@ fu! line#head(...) abort "{ builds the tabline (the head)
   let line.= line#bone(g:line_skeleton.head.r,1)
 
   if g:line.zoom
-    if bufwinnr(g:zoom.pads.t)
-      if &showtabline|let &showtabline=0|endif
-      call setbufvar(g:zoom.pads.t,'&statusline',line)
-      return
+    if 1+bufwinnr(g:zoom.pads.t)
+      let &showtabline = 0
+      return setbufvar(g:zoom.pads.t,'&statusline',line)
     endif
     if g:zoom.size.l
       let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
@@ -142,12 +142,18 @@ fu! line#feet(...) abort "{ builds the statusline (the feet)
   let line.= '%='
   let line.= line#bone(g:line_skeleton.feet.r,1)
 
-  if g:line.zoom&&&laststatus==3
-    if g:zoom.size.l
-      let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
+  if g:line.zoom
+    if 1+bufwinnr(g:zoom.pads.b)
+      let &l:statusline = ' '
+      return setbufvar(g:zoom.pads.b,'&statusline',line)
     endif
-    if g:zoom.size.r
-      let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
+    if &laststatus>2 " Global statusline in Neovim
+      if g:zoom.size.l
+        let line = '%#Normal#'..repeat(' ',g:zoom.size.l)..line
+      endif
+      if g:zoom.size.r
+        let line = line..'%#Normal#'..repeat(' ',g:zoom.size.r)
+      endif
     endif
   endif
 

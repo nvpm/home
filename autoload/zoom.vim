@@ -16,6 +16,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom_autosize = get(g:,'zoom_autosize', 1)
   let g:zoom_autohelp = get(g:,'zoom_autohelp', 1)
   let g:zoom_keepline = get(g:,'zoom_keepline', 1)
+  let g:zoom_pushline = get(g:,'zoom_pushline', 0)
   let g:zoom_height   = get(g:,'zoom_height'  ,-4)
   let g:zoom_width    = get(g:,'zoom_width'   ,-4)
 
@@ -28,6 +29,7 @@ fu! zoom#init(...) abort "{ user variables & startup routines
   let g:zoom.pads.l = s:home..'l'
   let g:zoom.pads.r = s:home..'r'
   let g:zoom.pads.t = s:home..'t'
+  let g:zoom.pads.u = s:home..'u'
   let g:zoom.pads.b = s:home..'b'
   let g:zoom.pads.list = []
 
@@ -67,19 +69,19 @@ fu! zoom#calc(...) abort "{ calculates padding buffers based on user variables
 endfu " }
 fu! zoom#pads(...) abort "{ splits the view with padding buffers
 
-  if g:zoom.size.l>1
+  if g:zoom.size.l>1  " left   {
     let size = g:zoom.size.l-1
-    silent! exec string(size).'vsplit '.g:zoom.pads.l
+    silent! exec 'topleft '..string(size).'vsplit '.g:zoom.pads.l
     call zoom#buff()
     silent! wincmd p
-  endif
-  if g:zoom.size.r>1
+  endif "}
+  if g:zoom.size.r>1  " right  {
     let size = g:zoom.size.r-1
-    silent! exec 'rightbelow '.string(size).'vsplit '.g:zoom.pads.r
+    silent! exec 'rightbelow '..string(size).'vsplit '.g:zoom.pads.r
     call zoom#buff()
     silent! wincmd p
-  endif
-  if g:zoom.size.t==0
+  endif "}
+  if g:zoom.size.t==0 " top    {
     set showtabline=0
   elseif g:zoom.size.t==1 " use the single line occupied by the tabline
     set showtabline=2
@@ -87,24 +89,31 @@ fu! zoom#pads(...) abort "{ splits the view with padding buffers
       let &tabline = '%#Normal# '
     endif
   elseif g:zoom.size.t>1
-    let size = g:zoom.size.t-1
-    silent! exec string(size).'split '.g:zoom.pads.t
+    let pushline = g:zoom_pushline&&g:zoom.size.t>3
+    let size = g:zoom.size.t-1-2*pushline
+    silent! exec string(size)..'split '.g:zoom.pads.t
     call zoom#buff()
-    " TODO: 
-    "let tabs = &stal==2||(len(gettabinfo())>1&&&stal==1)
-    "if g:zoom_keepline&&tabs
-      "let &l:statusline = &tabline
-      "set showtabline=0
-    "endif
     silent! wincmd p
-  endif
-  if g:zoom.size.b>0
+    if pushline
+      silent! exec '1split '.g:zoom.pads.u
+      call zoom#buff()
+      silent! wincmd p
+    endif
+  endif "}
+  if g:zoom.size.b>0  " bottom{
+    let size = g:zoom.size.b
+    if g:zoom_pushline&&size>3&&g:zoom.size.t>3
+      exec 'rightbelow 1split '..g:zoom.pads.b
+      call zoom#buff()
+      wincmd p
+      let size-=2
+    endif
     let line = g:zoom_keepline&&&laststatus
-    let &cmdheight = g:zoom.size.b-line
+    let &cmdheight = size-line
   else
     set laststatus=0
     set cmdheight=0
-  endif
+  endif "}
 
   exe 'vertical resize ' .. g:zoom.size.w
   exe 'resize '          .. g:zoom.size.h
@@ -326,7 +335,7 @@ fu! zoom#auto(...) abort "{ handles autocmds & callbacks
     return
   endif "}
   if a:1=='back' "{
-    if g:zoom.mode&&bufname()=~s:home..'[lrtb]'
+    if g:zoom.mode&&bufname()=~s:home..'[lrtbu]'
       wincmd p
     endif
     return

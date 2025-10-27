@@ -240,7 +240,7 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
       let node = nvpm#seek(type)
       call nvpm#indx(node,node.meta.indx+step)
       call nvpm#curr()
-    elseif bufname=~$NVPMHOME..'/zoom/[lrtb]'&&exists('*zoom#auto')
+    elseif bufname=~$NVPMHOME..'/zoom/[lrtbu]'&&exists('*zoom#auto')
       call zoom#auto('size')
     endif
 
