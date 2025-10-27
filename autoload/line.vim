@@ -257,6 +257,25 @@ fu! line#list(...) abort "{ creates the list type
   return revs?reverse(pack):pack
 
 endfu "}
+fu! line#bone(...) abort "{ creates the list of bones
+
+  let skel = ''
+  for bone in a:1
+    if     type(bone)==1 " string type
+      let skel.= bone
+    elseif type(bone)==3 " list type
+      let func = bone[0]
+      if func=='git'&&g:line_gitimode
+        let skel.= g:line.git.bone
+      else
+        let skel.= line#atom(func,bone[1:],a:2)
+      endif
+    endif
+    let skel.= '%#LineFill#'
+  endfor
+  return skel
+
+endfu "}
 fu! line#atom(...) abort "{ builds an atom based on functions and arguments
 
   if a:0!=3|return ''|endif
@@ -403,25 +422,6 @@ fu! line#atom(...) abort "{ builds an atom based on functions and arguments
     return info
   "}
   endif
-
-endfu "}
-fu! line#bone(...) abort "{ creates the list of bones
-
-  let skel = ''
-  for bone in a:1
-    if     type(bone)==1 " string type
-      let skel.= bone
-    elseif type(bone)==3 " list type
-      let func = bone[0]
-      if func=='git'&&g:line_gitimode
-        let skel.= g:line.git.bone
-      else
-        let skel.= line#atom(func,bone[1:],a:2)
-      endif
-    endif
-    let skel.= '%#LineFill#'
-  endfor
-  return skel
 
 endfu "}
 fu! line#skel(...) abort "{ conforms or creates the skeleton variable
