@@ -80,7 +80,7 @@ fu! nvpm#init(...) abort "{ user variables & startup routines
   endif
 
 endfu "}
-fu! nvpm#load(...) abort "{ loading mechanisms (line,zoom,rend,curr,save)
+fu! nvpm#load(...) abort "{ loading mechanisms (line,rend,curr,save)
 
   if !g:nvpm.mode|return|endif
 
@@ -230,17 +230,17 @@ fu! nvpm#jump(...) abort "{ jumps between nodes
     " leaves edit mode on non-leaf jumps
     if g:nvpm.mode==2&&type-g:nvpm.arbo.leaftype|return nvpm#edit()|endif
 
-    let bufname  = bufname()
-    let samefile = g:nvpm.curr.leaf.info==bufname
+    let bufnr    = bufnr()
+    let samefile = g:nvpm.curr.leaf.info==bufname()
     let keywterm = has_key(g:nvpm.curr.leaf,'cmd')
-    let wildterm = 1+index(values(g:nvpm.term),bufnr())
+    let wildterm = 1+index(values(g:nvpm.term),bufnr)
 
     " updates indx based on given step
     if samefile||(keywterm&&!wildterm)
       let node = nvpm#seek(type)
       call nvpm#indx(node,node.meta.indx+step)
       call nvpm#curr()
-    elseif bufname=~$NVPMHOME..'/zoom/[lrtbu]'&&exists('*zoom#auto')
+    elseif g:nvpm.zoom&&(1+index(g:zoom.pads.list,bufnr))
       call zoom#auto('size')
     endif
 
@@ -416,6 +416,7 @@ fu! nvpm#null(...) abort "{ sets important variables to their initial states
 
   if a:1=='nvpm'
     let g:nvpm.mode = 0
+    let g:nvpm.zoom = 0
   elseif a:1=='tree'
     let g:nvpm.tree      = {}
     let g:nvpm.tree.list = []

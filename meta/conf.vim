@@ -17,6 +17,7 @@ if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   com! MetaSync call meta#sync()
   com! MetaMake call meta#make()
   com! -nargs=? -complete=customlist,meta#plug MetaSave call meta#save("<args>")
+"colorscheme ayu
   com! -nargs=? -complete=customlist,meta#plug MetaPush call meta#push("<args>")
 endif
 
@@ -29,6 +30,7 @@ if !s:nvim
   syntax on
   set bg=dark
 endif
+"colorscheme shine
 colorscheme ayu
 
 hi clear Pmenu      |hi Pmenu       guibg=#1f252a guifg=#888888
@@ -52,15 +54,15 @@ endif
 let nvpm_initload = 1
 let nvpm_autocmds = 1
 
-let nvpm_termlist = -1
+let nvpm_termlist = 0
 let nvpm_termkeep = 0
-let nvpm_termexit = 2
+let nvpm_termexit = 1
 let nvpm_termmode = 2
 
 let nvpm_filetree = 1
 let nvpm_invasive = 0
 
-let nvpm_lexicon  = 'project,workspace,tab,file'
+let nvpm_lexicon  = 'project,workspace plugin,tab,file'
 
 hi arbovars guifg=#00ff00 gui=bold
 hi arbokeyw guifg=#aa7700 gui=bold
@@ -71,7 +73,7 @@ hi arbokeyw guifg=#aa7700 gui=bold
   nnoremap mgd :wa<cr>:NvpmTerm git diff<cr>
   nnoremap mgs :wa<cr>:NvpmTerm git status<cr>
   nnoremap mgg :wa<cr>:NvpmTerm tig<cr>
-  nnoremap mf  :wa<cr>:NvpmTerm yazi<cr>
+  nnoremap mf  :wa<cr>:NvpmTerm ranger<cr>
   nnoremap mgR :wa<cr>:!git restore .<cr>
   nnoremap mgr :wa<cr>:!git restore --staged .<cr>
 
@@ -275,7 +277,7 @@ let zoom_autocmds = 1
 let zoom_autohelp = 1
 let zoom_keepline = 1
 let zoom_pushline = 1
-let zoom_height   = -4
+let zoom_height   = -6
 let zoom_width    = 80
 
 nmap <silent>mz :Zoom<cr>

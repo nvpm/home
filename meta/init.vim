@@ -80,12 +80,22 @@ fu! s:test.line(...) "{
 endfu "}
 fu! s:test.zoom(...) "{
 
+  fu! Line() abort
+    return "%#Normal#%l/%L"
+  endfu
+  let line = '%!Line()'
+  call setbufvar(g:zoom.pads.t,'&statusline',line)
+
+  return
   so autoload/zoom.vim
 
   let left = repeat(' ' ,g:zoom.size.l )
   ec left..string(g:zoom_height)..' '..string(g:zoom_width)
   ec left..'h: '.winheight(0).'/'.&lines ' ,  w: '.winwidth(0).'/'.&columns
   ec left..string(g:zoom.size)
+
+endfu "}
+fu! s:test.sell(...) "{
 
 endfu "}
 "}
@@ -116,9 +126,9 @@ endfu "}
 "}
 " exec {
 
-if 0|call s:test.arbo()|endif
+if 1|call s:test.arbo()|endif
 if 0|call s:test.nvpm()|endif
-if 1|call s:test.zoom()|endif
+if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
 
 "}

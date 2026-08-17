@@ -27,9 +27,6 @@ The point was to provide a markup language that can be used inside the scope
 of the nvpm/* plugins. Theses plugins will then have a mechanism to store meta
 data, and other important information, in various contexts.
 
-Note: for now, only the nvpm/nvpm plugins uses it, but other nvpm/* plugins
-will too in the future.
-
 And you may be wondering: why not just use languages such as YAML or XML?
 Well, simply because of the following reasons:
 
@@ -50,7 +47,7 @@ Also, although the arbo language can be used in various contexts, it's features
 were thought to be used in the nvpm/* plugins. This also has the benefit of
 keeping the language as clean as possible, by only having what the nvpm/*
 plugins need, as opposed to the huge set of contexts that YAML or XML can be
-used. Again, reason (2).
+applied. Again, reason (2).
 
 As we will see, the arbo language works in a different manner. No spell check
 mechanisms were developed in the nvpm/arbo plugin. Instead, the user (human or
@@ -108,7 +105,7 @@ interpreted. In the example above, "foo" keywords will have precedence over
 "bar" keywords, in the arbo file. This means that the "bar" entries are
 interpreted as children of the "foo" ones. This will become clear later!
 
-Also, there are two ways you can write a lexicon fields: in either string or
+Also, there are two ways you can write lexicon fields: in either string or
 list formats. The following is the general syntax for both ways:
 
 - string format >
@@ -169,8 +166,8 @@ The following, is lexicon for countries, states, and cities:
 >
   ```vimscript
   let places = {}
-  let places.lexicon = "country, state, city"
-  let places.lexicon = ["country","state","city"]
+  let places.lexicon = "country nation, state province, city tawn village"
+  let places.lexicon = ["country nation,","state province,","city tawn village"]
   ```                      
 <
 Another for events:

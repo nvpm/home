@@ -129,12 +129,9 @@ fu! zoom#show(...) abort "{ enters zoom mode
   call zoom#none()
   call zoom#calc()
   call zoom#pads()
+  call zoom#mode()
 
   let g:zoom.mode = 1
-
-  if exists('g:line.zoom')
-    let g:line.zoom = 1 
-  endif
 
   if !g:zoom_keepline
     if g:zoom.save.linemode
@@ -164,9 +161,7 @@ fu! zoom#hide(...) abort "{ leaves zoom mode
   let &cmdheight   = g:zoom.save.cmdheight
   let &fillchars   = g:zoom.save.fillchars
 
-  if exists('g:line.zoom')
-    let g:line.zoom = 0 
-  endif
+  call zoom#mode(0)
 
   if g:zoom.save.linemode
     call line#show()
@@ -302,6 +297,17 @@ fu! zoom#buff(...) abort "{ sets appropriate vim variables to padding buffers
     exe 'setl fillchars+=horizdown:\ '
     exe 'setl fillchars+=vertleft:\ '
     exe 'setl fillchars+=vertright:\ '
+  endif
+
+endfu " }
+fu! zoom#mode(...) abort "{ sets g:<plug>.zoom vars in plugins
+
+  if a:0
+    if exists('g:line.zoom')|let g:line.zoom=0|endif
+    if exists('g:nvpm.zoom')|let g:nvpm.zoom=0|endif
+  else
+    if exists('g:line.zoom')|let g:line.zoom=1|endif
+    if exists('g:nvpm.zoom')|let g:nvpm.zoom=1|endif
   endif
 
 endfu " }
