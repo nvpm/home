@@ -14,7 +14,7 @@ fu! s:test.gbox(...) "{
 
   let g:gbox_safefile = '/iasj/empty.gpg'
   let g:gbox_safefile = '/iasj/cryp/git.gpg'
-  let g:gbox_pushcmd  = 'push --force origin --mirror'
+  let g:gbox_pushcmd  = 'push --force'
 
   call gbox#push()
 
