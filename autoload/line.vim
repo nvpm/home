@@ -267,6 +267,9 @@ fu! line#bone(...) abort "{ creates the list of bones
       let func = bone[0]
       if func=='git'&&g:line_gitimode
         let skel.= g:line.git.bone
+        if !empty(g:line.git.bone)
+          let skel.=' '
+        endif
       else
         let skel.= line#atom(func,bone[1:],a:2)
       endif
@@ -578,7 +581,7 @@ fu! line#giti(...) abort "{ sets the timer, job, or tcp connection for git info
 endfu "}
 fu! line#gitb(...) abort "{ builds the git bone
 
-  if !g:line_gitimode|return|endif
+  if !g:line_gitimode||g:line.git.branch=='gitless'|return|endif
 
   if g:line_gitimode==1
     let gits = 'git diff --no-ext-diff --cached --shortstat'

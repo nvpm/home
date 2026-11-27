@@ -1,0 +1,54 @@
+*chat.txt*  Minimal file-oriented AI chat for Vim/Neovim
+
+==============================================================================
+INTRODUCTION                                               *chat*
+
+This plugin stores conversations as ordinary .gpt files. It uses classic
+Vimscript and curl. The initial transport targets the OpenAI Responses API.
+
+==============================================================================
+COMMANDS                                                    *chat-commands*
+
+:OpenChat {name}       Create or open a conversation.
+:Chat                  Open an editable question buffer.
+:Chat {question}       Submit the argument as a question.
+:ChatFile {file}       Submit a file as context.
+:Chats                 List stored conversations.
+
+In a question buffer, call chat#SubmitQuestion() to submit its contents.
+Call chat#CancelQuestion() to discard it.
+
+==============================================================================
+CONFIGURATION                                                *chat-config*
+
+g:chat_directory
+    Directory containing .gpt conversation files.
+    Default: ~/chat/conversations
+
+g:chat_credential_file
+    GPG-encrypted file containing the API key as plaintext when decrypted.
+    Default: /iasj/cryp/openai.gpg
+
+g:chat_api_url
+    Default: https://api.openai.com/v1/responses
+
+g:chat_model
+    Default: gpt-4.1-mini
+
+g:chat_max_output_tokens
+    Default: 2048
+
+==============================================================================
+CREDENTIALS                                                   *chat-credentials*
+
+The credential file must be encrypted with GPG. The plugin prompts for the
+GPG passphrase when making each API request. The decrypted key is held in a
+Vimscript variable and is not written to a plaintext credential file.
+
+==============================================================================
+NOTES                                                          *chat-notes*
+
+An API key does not imply that the account has API credits. An API error is
+shown in a separate buffer and does not append a failed exchange to history.
+
+The first implementation is synchronous: Vim waits while curl completes.

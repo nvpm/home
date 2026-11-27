@@ -339,7 +339,7 @@ fu! nvpm#term(...) abort "{ creates the nvpm wild terminal
     let g:nvpm.term[name] = bufnr()
     if !g:nvpm_termlist|setl nobuflisted|endif
   endif
-  if g:nvpm_termmode|startinsert|endif
+  if g:nvpm_termmode||name=='main'|startinsert|endif
 
 endfu "}
 
@@ -551,8 +551,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       echohl None
       return 1
     endif
-    call nvpm#jump(step,type)
-    return
+    return nvpm#jump(step,type)
   endif "}
   if func=='grow' "{
     if g:nvpm.mode==2
@@ -570,8 +569,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     else
       call nvpm#grow(file)
     endif
-    call nvpm#load()
-    return
+    return nvpm#load()
   endif "}
   if func=='fell' "{
     if g:nvpm.mode==2
@@ -582,8 +580,7 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
     endif
     if empty(trim(args))&&g:nvpm.mode|return nvpm#fell()|endif
     let args = g:nvpm.path.arbo..args
-    call nvpm#fell(args)
-    return
+    return nvpm#fell(args)
   endif "}
   if func=='make' "{
 
@@ -597,15 +594,11 @@ fu! nvpm#user(...) abort "{ handles all user input (user -> nvpm)
       echohl None
       return 1
     endif
-    call nvpm#make(arbo)
-    return
+    return nvpm#make(arbo)
   endif "}
   if func=='term' "{
     if !empty(args)
-      let args = split(args)
-      let name = args[0]..' '..get(args,1,'')
-      call nvpm#term(name,join(args))
-      return
+      return nvpm#term(args,args)
     endif
   endif "}
 

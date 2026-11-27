@@ -7,19 +7,19 @@ call nvpm#init()
 "-- user commands --
 if !exists(':NvpmMake') "{
   com! -complete=customlist,nvpm#user -nargs=* 
-  \NvpmMake call nvpm#user('make','<args>')
+  \ NvpmMake call nvpm#user('make','<args>')
 endif "}
 if !exists(':NvpmGrow') "{
   com! -complete=customlist,nvpm#user -nargs=* 
-  \NvpmGrow call nvpm#user('grow','<args>')
+  \ NvpmGrow call nvpm#user('grow','<args>')
 endif "}
 if !exists(':NvpmFell') "{
   com! -complete=customlist,nvpm#user -nargs=* 
-  \NvpmFell call nvpm#user('fell','<args>')
+  \ NvpmFell call nvpm#user('fell','<args>')
 endif "}
 if !exists(':NvpmJump') "{
   com! -complete=customlist,nvpm#user -count -nargs=* 
-  \NvpmJump call nvpm#user('jump','<args>')
+  \ NvpmJump call nvpm#user('jump','<args>')
 endif "}
 if !exists(':NvpmEdit') "{
   com! NvpmEdit call nvpm#user('edit')
@@ -27,7 +27,7 @@ endif "}
 if !exists(':NvpmTerm') "{
   "com! NvpmTerm call nvpm#user('term')
   com! -complete=customlist,nvpm#user -nargs=* 
-  \NvpmTerm call nvpm#user('term','<args>')
+  \ NvpmTerm call nvpm#user('term','<args>')
 endif "}
 
 "-- auto commands  --

@@ -1,6 +1,6 @@
 " devl {
 
-"let NVPMTEST = 1
+let NVPMTEST = 1
 if exists('g:nvpmdev')&&getcwd()==g:nvpmdev
   let NVPMCRYP = '/iasj/cryp/git.gpg'
   so meta/meta.vim
@@ -32,6 +32,13 @@ if !s:nvim
 endif
 "colorscheme shine
 colorscheme ayu
+"colorscheme evening
+
+"" Transparent background
+"highlight Normal guibg=NONE ctermbg=NONE
+"highlight NormalNC guibg=NONE ctermbg=NONE
+"highlight NonText guibg=NONE ctermbg=NONE
+"highlight EndOfBuffer guibg=NONE ctermbg=NONE
 
 hi clear Pmenu      |hi Pmenu       guibg=#1f252a guifg=#888888
 hi clear PmenuSel   |hi PmenuSel    guibg=#aa361b guifg=#ffffff
@@ -40,6 +47,12 @@ hi clear DiffAdded  |hi DiffAdded   guifg=#00ff00 gui=bold
 hi clear DiffRemoved|hi DiffRemoved guifg=#ff5555 gui=bold
 hi clear Visual     |hi Visual      ctermfg=231 ctermbg=24 guifg=#ffffff guibg=#005f87
 hi clear NonText    |hi NonText     ctermfg=0 guifg=#555555
+
+"}
+" gbox {
+
+let g:gbox_safefile = '/iasj/cryp/git.gpg'
+let g:gbox_pushcmd  = 'push --force origin --mirror'
 
 "}
 " nvpm {
@@ -57,20 +70,20 @@ let nvpm_autocmds = 1
 let nvpm_termlist = 0
 let nvpm_termkeep = 0
 let nvpm_termexit = 1
-let nvpm_termmode = 2
+let nvpm_termmode = 0
 
 let nvpm_filetree = 1
 let nvpm_invasive = 0
 
-let nvpm_lexicon  = 'project,workspace plugin,tab,file'
+let nvpm_lexicon  = 'project group,workspace plugin,tab,file'
 
 hi arbovars guifg=#00ff00 gui=bold
 hi arbokeyw guifg=#aa7700 gui=bold
 
 " NvpmTerm maps {
 
-  nnoremap mgl :wa<cr>:NvpmTerm git log --all --graph --oneline<cr>
-  nnoremap mgd :wa<cr>:NvpmTerm git diff<cr>
+  nnoremap mgl :wa<cr>:NvpmTerm git --no-pager log --all --graph --oneline<cr>
+  nnoremap mgd :wa<cr>:NvpmTerm git --no-pager diff<cr>
   nnoremap mgs :wa<cr>:NvpmTerm git status<cr>
   nnoremap mgg :wa<cr>:NvpmTerm tig<cr>
   nnoremap mf  :wa<cr>:NvpmTerm ranger<cr>
@@ -128,11 +141,9 @@ call add(line_skeleton.head.l,['list',3])
 call add(line_skeleton.head.r,['list',2])
 call add(line_skeleton.head.r,' ')
 call add(line_skeleton.head.r,['curr',1])
-call add(line_skeleton.head.r,' ')
-call add(line_skeleton.head.r,['curr',0,'LineSpot'])
+"call add(line_skeleton.head.r,['curr',0,'LineSpot'])
 
 call add(line_skeleton.feet.l,['git'])
-call add(line_skeleton.feet.l,' ')
 call add(line_skeleton.feet.l,['list',4])
 call add(line_skeleton.feet.l,' ')
 call add(line_skeleton.feet.l,['file'])
@@ -154,15 +165,15 @@ call add(line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
   " LineMode {
 
     if line_bonetype
-      hi LineModeNormal   guibg=#000077 guifg=White
-      hi LineModeInsert   guibg=#ff0000 guifg=White
-      hi LineModeReplace  guibg=#00ffff guifg=Black
-      hi LineModeVisual   guibg=#005f87 guifg=White
-      hi LineModeCmdline  guibg=#ffff00 guifg=Black
-      hi LineModeTerminal guibg=#ffffff guifg=Black
+      hi LineModeNormal   guibg=#008877 guifg=White gui=bold
+      hi LineModeInsert   guibg=#ff0000 guifg=White gui=bold
+      hi LineModeReplace  guibg=#00ffff guifg=Black gui=bold
+      hi LineModeVisual   guibg=#005f87 guifg=White gui=bold
+      hi LineModeCmdline  guibg=#ffff00 guifg=Black gui=bold
+      hi LineModeTerminal guibg=#ffffff guifg=Black gui=bold
 
       if line_bonetype==2
-        hi LineModeEdgeNormal   guibg=bg guifg=#000077
+        hi LineModeEdgeNormal   guibg=bg guifg=#008877
         hi LineModeEdgeInsert   guibg=bg guifg=#ff0000
         hi LineModeEdgeReplace  guibg=bg guifg=#00ffff
         hi LineModeEdgeVisual   guibg=bg guifg=#005f87
@@ -200,9 +211,9 @@ call add(line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
   " LineCurr {
 
     if line_bonetype
-      hi LineCurr     guibg=#000033 guifg=White
+      hi LineCurr     guibg=#005533 guifg=White gui=bold
       if line_bonetype==2
-        hi LineCurrEdge guibg=bg    guifg=#000033
+        hi LineCurrEdge guibg=bg    guifg=#005533
       endif
     else
       hi def link LineCurr LineFill
@@ -212,9 +223,9 @@ call add(line_skeleton.feet.r,['user','%m %l,%v/%p%%'])
   " LineInac {
 
     if line_bonetype
-      hi LineInac     guibg=#000011 guifg=#007777
+      hi LineInac     guibg=#002211 guifg=#00aa77
       if line_bonetype==2
-        hi LineInacEdge guibg=bg    guifg=#000011
+        hi LineInacEdge guibg=bg    guifg=#002211
       endif
     else
       hi def link LineInac LineCurr
@@ -295,4 +306,3 @@ vmap maj :'<,'>TextFixs<cr>:'<,'>TextJust 76<cr>
 "}
 
 "}
-" vim: nowrap

@@ -5,6 +5,20 @@ let s:test = {}
 
 "}
 " plug {
+fu! s:test.gbox(...) "{
+
+  so autoload/gbox.vim
+  "so plugin/gbox.vim
+
+  so autoload/safe.vim
+
+  let g:gbox_safefile = '/iasj/empty.gpg'
+  let g:gbox_safefile = '/iasj/cryp/git.gpg'
+  let g:gbox_pushcmd  = 'push --force origin --mirror'
+
+  call gbox#push()
+
+endfu "}
 fu! s:test.arbo(...) "{
 
   so autoload/arbo.vim
@@ -126,7 +140,8 @@ endfu "}
 "}
 " exec {
 
-if 1|call s:test.arbo()|endif
+if 1|call s:test.gbox()|endif
+if 0|call s:test.arbo()|endif
 if 0|call s:test.nvpm()|endif
 if 0|call s:test.zoom()|endif
 if 0|call s:test.line()|endif
