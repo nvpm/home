@@ -52,7 +52,7 @@ hi clear NonText    |hi NonText     ctermfg=0 guifg=#555555
 " gbox {
 
 let g:gbox_safefile = '/iasj/cryp/git.gpg'
-let g:gbox_pushcmd  = 'push --force origin --mirror'
+let g:gbox_pushcmd  = 'push --force'
 
 "}
 " nvpm {

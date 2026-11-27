@@ -4,7 +4,9 @@ let _GBOXAUTO_=1
 fu! gbox#init(...) abort "{
 
   let g:gbox_safefile = get(g:,'gbox_safefile','')
-  let g:gbox_pushcmd  = get(g:,'gbox_pushcmd','push origin main')
+  let g:gbox_remote   = get(g:,'gbox_remote','origin')
+  let g:gbox_branch   = get(g:,'gbox_branch','main')
+  let g:gbox_pushcmd  = get(g:,'gbox_pushcmd','push')
 
   " TODO: user defined timeout
   let s:cache = "git -c credential.helper= "
@@ -25,8 +27,26 @@ fu! gbox#push(...) abort "{
           \ })
   endif
 
+  let remote = g:gbox_remote
+  let branch = g:gbox_branch
+
+  " checks for commits to push
+  let ahead = system('git rev-list --count '.remote.'/'.branch.'..'.branch)
+
+  if v:shell_error
+    return gbox#echo({
+          \ 'fail':1,
+          \ 'echo':'nvpm/gbox: unable to compare branches'
+          \ })
+  elseif !str2nr(ahead)
+    return gbox#echo({
+          \ 'fail':0,
+          \ 'echo':'nvpm/gbox: nothing to push'
+          \ })
+  endif
+
+  let pushcmd = s:cache..' '.g:gbox_pushcmd.' '.remote.' '.branch
   let content = 'url='.safe.content."\n\n"
-  let pushcmd = s:cache..' '..g:gbox_pushcmd
   let approve = s:cache..' credential approve'
   let reject  = s:cache..' credential reject'
 
