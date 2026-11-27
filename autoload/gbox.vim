@@ -41,15 +41,14 @@ fu! gbox#push(...) abort "{
   endif
 
   " pushes
-  let stdout = system(pushcmd)
-
-  " catches shell's error
-  let fail = v:shell_error
+  let echo = {}
+  let echo.echo = system(pushcmd)
+  let echo.fail = v:shell_error
 
   " rejects temporary credentials
   call system(reject,content)
 
-  return gbox#echo({'fail':fail,'echo':stdout})
+  return gbox#echo(echo)
 
 endfu "}
 fu! gbox#echo(...) abort "{
