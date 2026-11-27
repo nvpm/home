@@ -12,6 +12,9 @@ fu! gbox#init(...) abort "{
   let s:cache = "git -c credential.helper= "
   let s:cache.= "-c 'credential.helper=cache --timeout=300'"
 
+  hi def NVPMGboxPass guifg=#00FF00 gui=bold
+  hi def NVPMGboxFail guifg=#FF0000
+
 endfu "}
 fu! gbox#push(...) abort "{
 
@@ -40,7 +43,7 @@ fu! gbox#push(...) abort "{
           \ })
   elseif !str2nr(ahead)
     return gbox#echo({
-          \ 'fail':0,
+          \ 'fail':1,
           \ 'echo':'nvpm/gbox: nothing to push'
           \ })
   endif
@@ -76,7 +79,7 @@ fu! gbox#echo(...) abort "{
   let obj = a:1
 
   echo "\n"
-  exec 'echohl '.(obj.fail ? 'WarningMsg' : 'Normal')
+  exec 'echohl '.(obj.fail ? 'NVPMGboxFail' : 'NVPMGboxPass')
   echon obj.echo
   echohl None
 
