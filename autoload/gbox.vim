@@ -37,6 +37,7 @@ fu! gbox#push(...) abort "{
     let approved = 1
 
     let output = system(g:gbox_cachecmd.' '.g:gbox_pushcmd)
+    let fail = !v:shell_error
 
   finally
     if approved
@@ -44,7 +45,7 @@ fu! gbox#push(...) abort "{
     endif
   endtry "}
 
-  return gbox#echo({'fail':!v:shell_error,'echo':output})
+  return gbox#echo({'fail':fail,'echo':output})
 
 endfu "}
 fu! gbox#echo(...) abort "{

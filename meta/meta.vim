@@ -78,56 +78,57 @@ fu! meta#push(...) "{
   echo "\n"
 
   if meta#save()|return 1|endif
+  call gbox#push()
 
-  call meta#tabs()
-  let git = 'git -C '.s:root.' '
-
-  " retrive token {
-
-    let tfile = fnamemodify(g:NVPMCRYP,':p:r')
-    if filereadable(tfile)|call delete(tfile)|endif
-    echo "\n"
-    echohl Title
-    echo s:tabs..'Pushing to https://github.com/nvpm/'..repo
-    let password = inputsecret(s:tabs..'type the passphrase: ')
-    if empty(password)|return 1|endif
-    let command = 'gpg -q --no-symkey-cache --batch --passphrase '
-    let command.= password..' '..g:NVPMCRYP
-    call system(command)
-    if v:shell_error
-      echon "\n"
-      echon s:tabs
-      echohl Error
-      echon 'Wrong passphrase'
-      echohl None
-      return 1
-    endif
-
-  " }
-  " push w/ token {
-
-    if filereadable(tfile)
-      let sys = system(git..'push --force origin --mirror')
-      call delete(tfile)
-      let sys = split(sys,"\n")
-      call map(sys,'trim(v:val)')
-      let sys = s:tabs.. join(sys,"\n".s:tabs)
-      if v:shell_error
-        echo  "\n"
-        echohl WarningMsg
-        echon sys
-        echohl None
-        return 1
-      else
-        echo  "\n"
-        echohl Normal
-        echo sys
-        echohl None
-      endif
-    endif
-
-  " }
-
+  "call meta#tabs()
+  "let git = 'git -C '.s:root.' '
+  "
+  "" retrive token {
+  "
+  "  let tfile = fnamemodify(g:NVPMCRYP,':p:r')
+  "  if filereadable(tfile)|call delete(tfile)|endif
+  "  echo "\n"
+  "  echohl Title
+  "  echo s:tabs..'Pushing to https://github.com/nvpm/'..repo
+  "  let password = inputsecret(s:tabs..'type the passphrase: ')
+  "  if empty(password)|return 1|endif
+  "  let command = 'gpg -q --no-symkey-cache --batch --passphrase '
+  "  let command.= password..' '..g:NVPMCRYP
+  "  call system(command)
+  "  if v:shell_error
+  "    echon "\n"
+  "    echon s:tabs
+  "    echohl Error
+  "    echon 'Wrong passphrase'
+  "    echohl None
+  "    return 1
+  "  endif
+  "
+  "" }
+  "" push w/ token {
+  "
+  "  if filereadable(tfile)
+  "    let sys = system(git..'push --force origin --mirror')
+  "    call delete(tfile)
+  "    let sys = split(sys,"\n")
+  "    call map(sys,'trim(v:val)')
+  "    let sys = s:tabs.. join(sys,"\n".s:tabs)
+  "    if v:shell_error
+  "      echo  "\n"
+  "      echohl WarningMsg
+  "      echon sys
+  "      echohl None
+  "      return 1
+  "    else
+  "      echo  "\n"
+  "      echohl Normal
+  "      echo sys
+  "      echohl None
+  "    endif
+  "  endif
+  "
+  "" }
+  "
   let s:root = ''
 
 endfu "}
