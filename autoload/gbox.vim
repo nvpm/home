@@ -44,7 +44,7 @@ fu! gbox#push(...) abort "{
   let stdout = system(pushcmd)
 
   " catches shell's error
-  let fail = v:shell_error != 0
+  let fail = v:shell_error
 
   " rejects temporary credentials
   call system(reject,content)
